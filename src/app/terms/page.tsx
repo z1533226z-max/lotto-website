@@ -36,7 +36,7 @@ export default function TermsOfService() {
                 제1조 (목적)
               </h2>
               <p className="text-gray-700 leading-relaxed">
-                이 약관은 로또 AI 예측 서비스('lotto.gon.ai.kr', 이하 &apos;서비스&apos;)를 이용함에 있어 서비스와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
+                이 약관은 로또 AI 예측 서비스(&#39;lotto.gon.ai.kr&#39;, 이하 &#39;서비스&#39;)를 이용함에 있어 서비스와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
               </p>
             </section>
 
@@ -46,9 +46,9 @@ export default function TermsOfService() {
               </h2>
               <div className="text-gray-700">
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>"서비스"</strong>란 로또 번호 예측, 통계 분석, 당첨 정보 제공 등의 서비스를 의미합니다.</li>
-                  <li><strong>"이용자"</strong>란 이 약관에 따라 서비스를 이용하는 개인 또는 법인을 의미합니다.</li>
-                  <li><strong>&quot;콘텐츠&quot;</strong>란 서비스에서 제공하는 로또 관련 정보, 예측 데이터, 통계 자료 등을 의미합니다.</li>
+                  <li><strong>&#34;서비스&#34;</strong>란 로또 번호 예측, 통계 분석, 당첨 정보 제공 등의 서비스를 의미합니다.</li>
+                  <li><strong>&#34;이용자&#34;</strong>란 이 약관에 따라 서비스를 이용하는 개인 또는 법인을 의미합니다.</li>
+                  <li><strong>&#34;콘텐츠&#34;</strong>란 서비스에서 제공하는 로또 관련 정보, 예측 데이터, 통계 자료 등을 의미합니다.</li>
                 </ul>
               </div>
             </section>
