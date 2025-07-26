@@ -157,7 +157,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
       }));
 
     // 2. 구간별 분포 분석
-    const sectionData: SectionDistribution[] = [
+    const sectionData: any[] = [
       { section: '1-9', count: 0, percentage: 0 },
       { section: '10-19', count: 0, percentage: 0 },
       { section: '20-29', count: 0, percentage: 0 },
@@ -169,15 +169,15 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
     
     stats.forEach(stat => {
       const number = stat.number;
-      if (number <= 9) sectionData[0].count += stat.frequency;
-      else if (number <= 19) sectionData[1].count += stat.frequency;
-      else if (number <= 29) sectionData[2].count += stat.frequency;
-      else if (number <= 39) sectionData[3].count += stat.frequency;
-      else sectionData[4].count += stat.frequency;
+      if (number <= 9) sectionData[0].frequency += stat.frequency;
+      else if (number <= 19) sectionData[1].frequency += stat.frequency;
+      else if (number <= 29) sectionData[2].frequency += stat.frequency;
+      else if (number <= 39) sectionData[3].frequency += stat.frequency;
+      else sectionData[4].frequency += stat.frequency;
     });
 
     sectionData.forEach(section => {
-      section.percentage = Math.round((section.count / totalFrequency) * 100);
+      section.percentage = Math.round((section.frequency / totalFrequency) * 100);
     });
 
     // 3. 홀짝 분석
