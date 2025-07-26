@@ -111,6 +111,9 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
         
+        {/* Google AdSense Account */}
+        <meta name="google-adsense-account" content="ca-pub-7479840445702290" />
+        
         {/* 추가 메타태그 */}
         <meta name="theme-color" content="#FF6B35" />
         <meta name="msapplication-TileColor" content="#FF6B35" />
@@ -134,14 +137,12 @@ export default function RootLayout({
         </Script>
         
         {/* Google AdSense */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7479840445702290"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
