@@ -1,0 +1,9 @@
+# ads.txt file for lotto.gon.ai.kr
+# 이 파일은 Google AdSense 승인 후 실제 게시자 ID로 업데이트해야 합니다.
+
+# Google AdSense
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+
+# 주석: 실제 게시자 ID를 받은 후 위의 XXXXXXXXXXXXXXXX 부분을 
+# 실제 AdSense 게시자 ID로 교체해야 합니다.
+# 예: google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0

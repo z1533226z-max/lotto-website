@@ -6,13 +6,13 @@ import Script from 'next/script';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lotto-king.vercel.app'),
-  title: '로또킹 - AI가 추천하는 로또번호',
-  description: '딥러닝 분석으로 뽑은 이번주 고확률 로또번호를 무료로 확인하세요! 1,180회 데이터 분석 기반 AI 추천번호, 당첨통계, 번호분석을 제공합니다.',
-  keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측'],
-  authors: [{ name: 'Lotto King' }],
-  creator: 'Lotto King',
-  publisher: 'Lotto King',
+  metadataBase: new URL('https://lotto.gon.ai.kr'),
+  title: '로또 AI 예측 - 인공지능 로또번호 추천',
+  description: '최신 AI 기술로 분석한 로또번호 예측 서비스. 1,180회 데이터 분석 기반으로 당첨 확률이 높은 번호를 추천합니다. 실시간 통계와 트렌드 분석 제공.',
+  keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측', '인공지능', '딥러닝'],
+  authors: [{ name: 'Lotto AI' }],
+  creator: 'Lotto AI',
+  publisher: 'Gon AI',
   formatDetection: {
     email: false,
     address: false,
