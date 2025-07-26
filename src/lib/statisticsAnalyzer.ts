@@ -419,9 +419,10 @@ export class LottoStatisticsAnalyzer {
       
       distributions.push({
         section: section.name,
+        count: frequency,
+        percentage: Math.round(percentage * 100) / 100,
         sectionNumber: section.number,
         frequency,
-        percentage: Math.round(percentage * 100) / 100,
         recentTrend
       });
     }
@@ -493,6 +494,10 @@ export class LottoStatisticsAnalyzer {
     for (const [ratio, data] of Array.from(patterns.entries())) {
       const [oddStr, evenStr] = ratio.split(':');
       result.push({
+        type: `${oddStr}:${evenStr}`,
+        count: data.count,
+        numbers: parseInt(oddStr) + parseInt(evenStr),
+        percentage: Math.round((data.count / patterns.size) * 100),
         oddCount: parseInt(oddStr),
         evenCount: parseInt(evenStr),
         ratio,
@@ -501,7 +506,7 @@ export class LottoStatisticsAnalyzer {
       });
     }
     
-    return result.sort((a, b) => b.frequency - a.frequency);
+    return result.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
   }
 
   /**

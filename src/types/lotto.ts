@@ -108,19 +108,24 @@ export interface AIPerformanceMetrics {
 // 구간별 분포 분석 타입
 export interface SectionDistribution {
   section: string;          // 구간명 (예: "1-9", "10-19")
-  sectionNumber: number;    // 구간 번호 (1, 2, 3, 4, 5)
-  frequency: number;        // 해당 구간 출현 빈도
+  count: number;            // 해당 구간 출현 횟수
   percentage: number;       // 전체 대비 비율
-  recentTrend: 'up' | 'down' | 'stable';  // 최근 트렌드
+  sectionNumber?: number;   // 구간 번호 (1, 2, 3, 4, 5) - 선택적
+  frequency?: number;       // 해당 구간 출현 빈도 (count와 동일, 호환성)
+  recentTrend?: 'up' | 'down' | 'stable';  // 최근 트렌드 - 선택적
 }
 
 // 홀짝 패턴 분석 타입
 export interface OddEvenPattern {
-  oddCount: number;         // 홀수 개수
-  evenCount: number;        // 짝수 개수
-  ratio: string;           // 비율 표시 (예: "3:3", "4:2")
-  patternType: 'balanced' | 'odd-heavy' | 'even-heavy';  // 패턴 유형
-  frequency: number;        // 해당 패턴 출현 빈도
+  type: string;             // 타입명 (예: "홀수", "짝수")
+  count: number;            // 해당 타입 개수
+  numbers: number;          // 해당 타입에 속하는 번호의 개수
+  percentage: number;       // 전체 대비 비율
+  oddCount?: number;        // 홀수 개수 - 선택적
+  evenCount?: number;       // 짝수 개수 - 선택적
+  ratio?: string;           // 비율 표시 (예: "3:3", "4:2") - 선택적
+  patternType?: 'balanced' | 'odd-heavy' | 'even-heavy';  // 패턴 유형 - 선택적
+  frequency?: number;       // 해당 패턴 출현 빈도 - 선택적
 }
 
 // 트렌드 분석 결과 타입
@@ -160,4 +165,12 @@ export interface EnvConfig {
   ADSENSE_CLIENT_ID: string;
   GA_MEASUREMENT_ID: string;
   LOTTO_API_KEY?: string;
+}
+
+// 데이터베이스 통계 타입
+export interface DatabaseStats {
+  totalRounds: number;
+  latestRound: number;
+  earliestRound: number;
+  lastUpdated: Date;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import { safeLocalStorage } from '@/lib/utils';
@@ -115,7 +115,7 @@ const UserEngagementPanel: React.FC = () => {
   }, []);
 
   // 사용자 활동 기록
-  const recordActivity = (activityType: 'prediction' | 'analysis' | 'visit') => {
+  const recordActivity = useCallback((activityType: 'prediction' | 'analysis' | 'visit') => {
     const now = new Date().toISOString();
     const today = new Date().toDateString();
     const lastActiveDate = new Date(userStats.lastActive).toDateString();
@@ -160,7 +160,7 @@ const UserEngagementPanel: React.FC = () => {
     } catch (error) {
       console.error('사용자 데이터 저장 실패:', error);
     }
-  };
+  }, [userStats]);
 
   // 전역에서 사용할 수 있도록 window 객체에 함수 추가
   useEffect(() => {
@@ -176,7 +176,7 @@ const UserEngagementPanel: React.FC = () => {
     return () => {
       delete (window as any).recordUserActivity;
     };
-  }, []); // 빈 의존성 배열로 변경
+  }, [recordActivity]);
 
   if (isLoading) {
     return (
