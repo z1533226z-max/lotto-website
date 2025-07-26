@@ -184,7 +184,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
     const oddCount = stats.filter(stat => stat.number % 2 === 1).reduce((sum, stat) => sum + stat.frequency, 0);
     const evenCount = totalFrequency - oddCount;
     
-    const oddEvenData: OddEvenPattern[] = [
+    const oddEvenData: any[] = [
       { 
         type: '홀수', 
         count: oddCount, 
