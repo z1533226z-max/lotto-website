@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
                 제1조 (개인정보의 처리목적)
               </h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                로또 AI 예측 서비스('lotto.gon.ai.kr', 이하 '서비스')는 다음의 목적을 위하여 개인정보를 처리합니다.
+                로또 AI 예측 서비스(&apos;lotto.gon.ai.kr&apos;, 이하 &apos;서비스&apos;)는 다음의 목적을 위하여 개인정보를 처리합니다.
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li>서비스 제공 및 운영</li>
