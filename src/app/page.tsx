@@ -9,8 +9,6 @@ import { AD_SLOTS } from '@/lib/constants';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      </div>
-
       {/* 헤더 네비게이션 */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 lg:px-8">
