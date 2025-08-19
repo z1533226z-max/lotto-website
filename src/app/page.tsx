@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import AdBanner from '@/components/ads/AdBanner';
 import LatestResult from '@/components/lotto/LatestResult';
 import NumberGenerator from '@/components/lotto/NumberGenerator';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
@@ -10,24 +9,6 @@ import { AD_SLOTS } from '@/lib/constants';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* 헤더 광고 - 데스크톱 */}
-      <div className="hidden md:block bg-white border-b border-gray-100">
-        <div className="container mx-auto flex justify-center py-4">
-          <AdBanner 
-            slot={AD_SLOTS.DESKTOP.HEADER}
-            size="leaderboard"
-            className="w-full max-w-4xl"
-          />
-        </div>
-      </div>
-      
-      {/* 모바일 상단 광고 */}
-      <div className="md:hidden bg-white border-b border-gray-100">
-        <AdBanner 
-          slot={AD_SLOTS.MOBILE.TOP}
-          size="mobile"
-          className="w-full py-2"
-        />
       </div>
 
       {/* 헤더 네비게이션 */}
@@ -71,14 +52,6 @@ export default function HomePage() {
               <LatestResult />
             </section>
 
-            {/* 중간 광고 */}
-            <div className="flex justify-center">
-              <AdBanner 
-                slot={AD_SLOTS.DESKTOP.CONTENT}
-                size="rectangle"
-                className="w-full max-w-sm"
-              />
-            </div>
 
             {/* AI 추천번호 섹션 */}
             <section id="generator">
@@ -89,27 +62,11 @@ export default function HomePage() {
             <section id="statistics">
               <AnalyticsDashboard />
             </section>
-
-            {/* 하단 광고 */}
-            <div className="flex justify-center">
-              <AdBanner 
-                slot={AD_SLOTS.DESKTOP.FOOTER}
-                size="rectangle"
-                className="w-full max-w-md"
-              />
-            </div>
           </div>
           
           {/* 사이드바 - 데스크톱만 */}
           <aside className="hidden lg:block lg:col-span-4">
             <div className="sticky top-24 space-y-6">
-              {/* 사이드바 광고 */}
-              <AdBanner 
-                slot={AD_SLOTS.DESKTOP.SIDEBAR}
-                size="skyscraper"
-                className="w-full"
-              />
-              
               {/* 추가 정보 카드 */}
               <div className="bg-white rounded-xl shadow-card p-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">📈 이번주 통계</h3>
@@ -176,13 +133,6 @@ export default function HomePage() {
       </footer>
 
       {/* 모바일 하단 고정 광고 */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40">
-        <AdBanner 
-          slot={AD_SLOTS.MOBILE.BOTTOM}
-          size="mobile"
-          className="w-full"
-        />
-      </div>
     </div>
   );
 }
