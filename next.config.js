@@ -16,14 +16,26 @@ const nextConfig = {
               *.googlesyndication.com 
               *.googletagmanager.com 
               *.google.com 
-              *.gstatic.com;
+              *.gstatic.com
+              *.doubleclick.net
+              *.googleadservices.com
+              *.adtrafficquality.google;
               frame-src 'self' 
               *.googlesyndication.com 
-              *.google.com;
+              *.google.com
+              *.doubleclick.net
+              *.googleadservices.com;
               img-src 'self' data: 
               *.googlesyndication.com 
               *.google.com 
-              *.gstatic.com;
+              *.gstatic.com
+              *.doubleclick.net
+              *.googleadservices.com;
+              connect-src 'self'
+              *.googlesyndication.com
+              *.google.com
+              *.doubleclick.net
+              *.googleadservices.com;
             `.replace(/\s+/g, ' ').trim(),
           },
         ],
