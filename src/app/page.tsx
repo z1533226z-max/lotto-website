@@ -4,7 +4,6 @@ import React from 'react';
 import LatestResult from '@/components/lotto/LatestResult';
 import NumberGenerator from '@/components/lotto/NumberGenerator';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
-import { AD_SLOTS } from '@/lib/constants';
 
 export default function HomePage() {
   return (
