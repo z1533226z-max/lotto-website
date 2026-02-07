@@ -1,7 +1,6 @@
-// 데이터베이스 기반 로또 서비스 레이어
-// SQLite 데이터베이스를 사용한 고성능 로또 데이터 서비스
+// 인메모리 캐시 기반 로또 서비스 레이어
+// Vercel 서버리스 환경 호환
 
-import path from 'path';
 import { LottoDatabase } from './database';
 import { LottoStatisticsAnalyzer } from './statisticsAnalyzer';
 import type { LottoResult, NumberStatistics, DatabaseStats } from '@/types/lotto';
