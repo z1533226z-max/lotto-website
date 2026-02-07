@@ -38,7 +38,7 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24시간
 
 export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): UseStatisticsCacheReturn {
   const {
-    maxRound = 1180,
+    maxRound,
     forceRefresh = false,
     enableClientCache = true
   } = options;
@@ -79,7 +79,7 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       }
       
       // 요청된 회차 이상인지 확인
-      if (cacheData.maxRound < maxRound) {
+      if (maxRound && cacheData.maxRound < maxRound) {
         console.log(`캐시된 회차(${cacheData.maxRound})가 요청 회차(${maxRound})보다 적음`);
         return null;
       }
@@ -133,7 +133,7 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       setLoading(true);
       setError(null);
       
-      const url = `/api/lotto/statistics?maxRound=${maxRound}${refresh ? '&refresh=true' : ''}`;
+      const url = `/api/lotto/statistics${maxRound ? `?maxRound=${maxRound}` : ''}${refresh ? (maxRound ? '&' : '?') + 'refresh=true' : ''}`;
       console.log(`API 호출: ${url}`);
       
       const response = await fetch(url);
@@ -162,7 +162,7 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       
       // 캐시에 저장 (서버 캐시가 아닌 경우만)
       if (!result.source?.includes('cache')) {
-        saveToCache(statsData, summaryData, maxRound);
+        saveToCache(statsData, summaryData, maxRound || result.data?.maxRound || 0);
       }
       
       console.log(`통계 데이터 로드 완료: ${statsData.length}개 번호, 소스: ${result.source}`);

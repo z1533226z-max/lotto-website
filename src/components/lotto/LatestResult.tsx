@@ -219,7 +219,7 @@ const LatestResult: React.FC = () => {
           <div className="flex gap-2">
             <input
               type="number"
-              placeholder="회차 입력 (예: 1180)"
+              placeholder="회차 입력 (예: 1209)"
               value={searchRound}
               onChange={(e) => setSearchRound(e.target.value)}
               onKeyPress={handleKeyPress}

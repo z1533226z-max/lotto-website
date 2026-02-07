@@ -38,7 +38,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15초 타임아웃
         
-        const response = await fetch('/api/lotto/statistics?maxRound=100', {
+        const response = await fetch('/api/lotto/statistics', {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
@@ -122,7 +122,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-gray-800">📊 AI 분석 대시보드 준비 중</h3>
-            <p className="text-gray-600">1,180회차 데이터를 종합 분석하고 있습니다...</p>
+            <p className="text-gray-600">전체 회차 데이터를 종합 분석하고 있습니다...</p>
             <div className="flex justify-center space-x-2 text-sm text-gray-500">
               <span>• 실시간 통계 카드</span>
               <span>• AI 성능 검증</span>
@@ -150,7 +150,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
           📊 AI 분석 대시보드
         </h2>
         <p className="text-gray-600 mb-2">
-          실시간 100회차 데이터 기반 종합 분석 결과
+          역대 전체 회차 데이터 기반 종합 분석 결과
         </p>
         
         {/* 대시보드 상태 표시 */}
@@ -252,7 +252,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
             <ul className="text-indigo-600 space-y-1">
               <li>• 핫/콜드 번호 실시간 추적</li>
               <li>• AI 신뢰도 지수 모니터링</li>
-              <li>• 100회차 완전 분석</li>
+              <li>• 전체 회차 완전 분석</li>
             </ul>
           </div>
           

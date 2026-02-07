@@ -74,7 +74,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8초로 단축
       
-      const response = await fetch('/api/lotto/statistics?maxRound=1180', {
+      const response = await fetch('/api/lotto/statistics', {
         signal: controller.signal,
         headers: {
           'Accept': 'application/json',
@@ -185,7 +185,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         patternDetectionRate: Math.min(75 + Math.floor(validatedStatistics.length / 8), 88),
         confidenceLevel: Math.min(70 + Math.floor(validatedStatistics.length / 5), 82),
         lastUpdated: new Date().toISOString(),
-        totalAnalyzedRounds: validatedStatistics.length > 0 ? Math.min(validatedStatistics.length * 10, 1180) : 0
+        totalAnalyzedRounds: validatedStatistics.length > 0 ? validatedStatistics.length * 10 : 0
       } : getDefaultAIPerformance();
 
       const result = {

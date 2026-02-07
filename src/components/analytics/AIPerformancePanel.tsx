@@ -76,7 +76,7 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 7000);
       
-      const response = await fetch('/api/lotto/statistics?maxRound=1180', {
+      const response = await fetch('/api/lotto/statistics', {
         signal: controller.signal,
         headers: {
           'Accept': 'application/json',

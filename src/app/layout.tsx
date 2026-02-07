@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
   title: '로또 AI 예측 - 인공지능 로또번호 추천',
-  description: '최신 AI 기술로 분석한 로또번호 예측 서비스. 1,180회 데이터 기반 당첨 확률 높은 번호 추천과. 실시간 통계와 트렌드 분석 제공.',
+  description: '최신 AI 기술로 분석한 로또번호 예측 서비스. 역대 전체 회차 데이터 기반 당첨 확률 높은 번호 추천. 실시간 통계와 트렌드 분석 제공.',
   keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측', '인공지능', '딥러닝'],
   authors: [{ name: 'Lotto AI' }],
   creator: 'Lotto AI',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'AI 로또번호 추천 - 로또킹',
-    description: '1,180회 데이터 분석으로 찾은 패턴으로 번호를 추천합니다. 매주 업데이트되는 AI 분석 결과를 확인해보세요!',
+    description: '역대 전체 회차 데이터 분석으로 찾은 패턴으로 번호를 추천합니다. 매주 업데이트되는 AI 분석 결과를 확인해보세요!',
     url: 'https://lotto-king.vercel.app',
     siteName: '로또킹',
     images: [

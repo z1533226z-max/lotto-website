@@ -23,6 +23,7 @@ const NumberGenerator: React.FC = () => {
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
   const [aiStatus, setAiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
+  const [totalRounds, setTotalRounds] = useState<number>(0);
 
   // 통계 데이터 로딩
   useEffect(() => {
@@ -40,7 +41,7 @@ const NumberGenerator: React.FC = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10초 타임아웃
         
-        const response = await fetch('/api/lotto/statistics?maxRound=1180', {
+        const response = await fetch('/api/lotto/statistics', {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
@@ -71,6 +72,7 @@ const NumberGenerator: React.FC = () => {
         const loadTime = loadEndTime - loadStartTime;
         
         setStatistics(statsData);
+        setTotalRounds(result.data?.maxRound || statsData.length > 0 ? result.data?.maxRound || 0 : 0);
         setAiStatus('ready');
         
         console.log(`통계 데이터 로딩 완료: ${statsData.length}개 번호, 로딩시간: ${loadTime}ms`);
@@ -248,7 +250,7 @@ const NumberGenerator: React.FC = () => {
             ) : aiStatus === 'ready' ? (
               <div className="flex items-center gap-2 text-xs text-green-600">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                <span>AI 분석 준비 완료 (1,180회차 데이터)</span>
+                <span>AI 분석 준비 완료 ({totalRounds.toLocaleString()}회차 데이터)</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-xs text-orange-600">
@@ -273,7 +275,7 @@ const NumberGenerator: React.FC = () => {
               <div className="space-y-2">
                 <p className="text-lg font-medium text-gray-700">
                   {aiStatus === 'ready' 
-                    ? 'AI가 1,180회 통계 데이터를 분석 중...' 
+                    ? `AI가 ${totalRounds.toLocaleString()}회 통계 데이터를 분석 중...`
                     : 'AI가 고급 패턴을 분석 중...'
                   }
                 </p>
@@ -369,7 +371,7 @@ const NumberGenerator: React.FC = () => {
                   <div className="space-y-3">
                     <p className="text-sm text-gray-500">
                       💡 Tip: {aiStatus === 'ready' 
-                        ? '1,180회차 실제 데이터를 기반으로 AI가 분석합니다' 
+                        ? `${totalRounds.toLocaleString()}회차 실제 데이터를 기반으로 AI가 분석합니다`
                         : '고급 수학적 패턴을 통해 번호를 추천합니다'
                       }
                     </p>

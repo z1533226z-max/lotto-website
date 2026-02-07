@@ -28,14 +28,14 @@ export const LOTTO_TEXT_COLORS = {
 } as const;
 
 export const MARKETING_MESSAGES = [
-  "AI가 1,180회 데이터를 딥러닝 분석한 결과",
+  "AI가 전체 회차 데이터를 딥러닝 분석한 결과",
   "머신러닝 알고리즘이 발견한 숨겨진 패턴",
   "빅데이터 분석으로 예측한 고확률 번호",
   "신경망이 계산한 다음회차 최적 조합",
   "AI가 찾아낸 황금비율 번호",
   "통계학적 분석으로 도출한 추천번호",
   "패턴 인식 AI가 선별한 특별번호",
-  "과거 1,180회 데이터 기반 예측번호"
+  "역대 전체 회차 데이터 기반 예측번호"
 ] as const;
 
 export const AD_SLOTS = {
