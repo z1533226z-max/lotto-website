@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AI 로또번호 추천 - 로또킹',
     description: '역대 전체 회차 데이터 분석으로 찾은 패턴으로 번호를 추천합니다. 매주 업데이트되는 AI 분석 결과를 확인해보세요!',
-    url: 'https://lotto-king.vercel.app',
+    url: 'https://lotto.gon.ai.kr',
     siteName: '로또킹',
     images: [
       {
@@ -62,7 +62,7 @@ const jsonLd = {
   '@type': 'WebApplication',
   name: '로또킹',
   description: 'AI 기반 로또번호 추천 서비스',
-  url: 'https://lotto-king.vercel.app',
+  url: 'https://lotto.gon.ai.kr',
   applicationCategory: 'Entertainment',
   operatingSystem: 'Web',
   offers: {
@@ -74,7 +74,7 @@ const jsonLd = {
   provider: {
     '@type': 'Organization',
     name: '로또킹',
-    url: 'https://lotto-king.vercel.app'
+    url: 'https://lotto.gon.ai.kr'
   },
   featureList: [
     'AI 기반 번호 추천',

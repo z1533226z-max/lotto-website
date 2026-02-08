@@ -55,7 +55,7 @@ export interface WeightedNumber {
 export interface LottoNumbersProps {
   numbers: number[];
   bonusNumber?: number;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   animated?: boolean;
   className?: string;
 }
@@ -70,7 +70,7 @@ export interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   disabled?: boolean;
   className?: string;
 }

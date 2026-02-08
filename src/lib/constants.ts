@@ -54,11 +54,13 @@ export const AD_SLOTS = {
 
 export const SIZE_CLASSES = {
   BALL: {
+    xs: 'w-6 h-6 text-xs',
     sm: 'w-8 h-8 text-sm',
-    md: 'w-12 h-12 text-lg', 
+    md: 'w-12 h-12 text-lg',
     lg: 'w-16 h-16 text-xl'
   },
   BUTTON: {
+    xs: 'px-2 py-1 text-xs',
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base',
     lg: 'px-6 py-3 text-lg'
