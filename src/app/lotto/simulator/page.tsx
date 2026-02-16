@@ -12,6 +12,7 @@ import type { LottoResult } from '@/types/lotto';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import MemberGate from '@/components/auth/MemberGate';
 
 // ============================================================
 // Types
@@ -344,7 +345,7 @@ export default function SimulatorPage() {
   // JSX
   // ----------------------------------------------------------
   return (
-    <>
+    <MemberGate featureName="당첨 시뮬레이터" featureIcon="🎰" featureDesc="내 번호로 역대 당첨을 시뮬레이션해요">
       <Breadcrumb items={[
         { label: '홈', href: '/' },
         { label: '당첨 시뮬레이터' },
@@ -900,6 +901,6 @@ export default function SimulatorPage() {
         isOpen={showLimitModal}
         onClose={() => setShowLimitModal(false)}
       />
-    </>
+    </MemberGate>
   );
 }

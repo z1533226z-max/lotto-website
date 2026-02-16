@@ -17,6 +17,7 @@ import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import MemberGate from '@/components/auth/MemberGate';
 import { getNextDrawRound } from '@/lib/lottoUtils';
 
 const MAX_KEYWORDS = 6;
@@ -302,7 +303,7 @@ export default function DreamNumberPage() {
   }, []);
 
   return (
-    <>
+    <MemberGate featureName="꿈번호 해몽" featureIcon="🌙" featureDesc="꿈 키워드로 행운 번호를 뽑아봐요">
       <Breadcrumb
         items={[
           { label: '홈', href: '/' },
@@ -848,6 +849,6 @@ export default function DreamNumberPage() {
         isOpen={showLimitModal}
         onClose={() => setShowLimitModal(false)}
       />
-    </>
+    </MemberGate>
   );
 }

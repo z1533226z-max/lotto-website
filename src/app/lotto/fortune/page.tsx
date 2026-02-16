@@ -11,6 +11,7 @@ import { useUsageLimit, type LimitedFeature } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import MemberGate from '@/components/auth/MemberGate';
 import { getNextDrawRound } from '@/lib/lottoUtils';
 
 // ============================================
@@ -743,7 +744,7 @@ export default function FortunePage() {
   const auth = useAuthSafe();
 
   return (
-    <>
+    <MemberGate featureName="행운번호 생성기" featureIcon="🍀" featureDesc="생년월일로 나만의 행운 번호를 확인해요">
       <style jsx global>{`
         @keyframes fortuneBallPop {
           0% {
@@ -822,6 +823,6 @@ export default function FortunePage() {
         isOpen={showLimitModal}
         onClose={() => setShowLimitModal(false)}
       />
-    </>
+    </MemberGate>
   );
 }
