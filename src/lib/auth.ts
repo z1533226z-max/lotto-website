@@ -153,6 +153,24 @@ export function getAuthFromRequest(request: NextRequest): AuthUser | null {
 }
 
 /**
+ * 관리자 여부 확인
+ */
+export function isAdminUser(nickname: string): boolean {
+  const adminNicknames = (process.env.ADMIN_NICKNAMES || '').split(',').map(n => n.trim()).filter(Boolean);
+  return adminNicknames.includes(nickname);
+}
+
+/**
+ * 요청에서 관리자 인증 확인 (관리자가 아니면 null 반환)
+ */
+export function getAdminFromRequest(request: NextRequest): AuthUser | null {
+  const auth = getAuthFromRequest(request);
+  if (!auth) return null;
+  if (!isAdminUser(auth.nickname)) return null;
+  return auth;
+}
+
+/**
  * 클라이언트 IP 주소 가져오기 (rate limiting용)
  */
 export function getClientIp(request: NextRequest): string {

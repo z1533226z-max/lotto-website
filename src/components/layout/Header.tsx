@@ -242,6 +242,21 @@ const Header: React.FC = () => {
                           </p>
                         </div>
                         <div className="p-1">
+                          {auth.user.isAdmin && (
+                            <Link
+                              href="/admin"
+                              onClick={() => setUserMenuOpen(false)}
+                              className={cn(
+                                'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
+                                'transition-colors duration-200',
+                                'hover:bg-[var(--surface-hover)]',
+                              )}
+                              style={{ color: '#EF4444' }}
+                            >
+                              <span>{'🛡️'}</span>
+                              관리자 페이지
+                            </Link>
+                          )}
                           <Link
                             href="/mypage"
                             onClick={() => setUserMenuOpen(false)}

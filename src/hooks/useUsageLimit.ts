@@ -7,8 +7,8 @@ import { useAuthSafe } from '@/components/providers/AuthProvider';
 // ─── Types ──────────────────────────────────────────
 export type LimitedFeature = 'ai' | 'dream' | 'fortune' | 'simulator';
 
-interface DailyUsage {
-  date: string; // YYYY-MM-DD
+interface WeeklyUsage {
+  weekStart: string; // YYYY-MM-DD (월요일)
   ai: number;
   dream: number;
   fortune: number;
@@ -16,37 +16,53 @@ interface DailyUsage {
 }
 
 // ─── Constants ──────────────────────────────────────
-const STORAGE_KEY = 'lotto-daily-usage';
+const STORAGE_KEY = 'lotto-weekly-usage';
 
-const DAILY_LIMITS: Record<LimitedFeature, number> = {
+const WEEKLY_LIMITS_GUEST: Record<LimitedFeature, number> = {
   ai: 3,
-  dream: 1,
-  fortune: 1,
-  simulator: 1,
+  dream: 3,
+  fortune: 3,
+  simulator: 3,
+};
+
+const WEEKLY_LIMITS_MEMBER: Record<LimitedFeature, number> = {
+  ai: 10,
+  dream: 10,
+  fortune: 10,
+  simulator: 10,
 };
 
 // ─── Helpers ────────────────────────────────────────
-function getToday(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+/** 이번 주 월요일 날짜 (KST 기준) */
+function getWeekStart(): string {
+  const now = new Date();
+  // KST (UTC+9) 기준
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const day = kst.getUTCDay(); // 0=일 ~ 6=토
+  const diff = day === 0 ? 6 : day - 1; // 월요일까지 차이
+  const monday = new Date(kst);
+  monday.setUTCDate(monday.getUTCDate() - diff);
+  return `${monday.getUTCFullYear()}-${String(monday.getUTCMonth() + 1).padStart(2, '0')}-${String(monday.getUTCDate()).padStart(2, '0')}`;
 }
 
-function loadUsage(): DailyUsage {
+function loadUsage(): WeeklyUsage {
+  const empty: WeeklyUsage = { weekStart: getWeekStart(), ai: 0, dream: 0, fortune: 0, simulator: 0 };
   try {
     const raw = safeLocalStorage.getItem(STORAGE_KEY);
-    if (!raw) return { date: getToday(), ai: 0, dream: 0, fortune: 0, simulator: 0 };
-    const parsed = JSON.parse(raw) as DailyUsage;
-    // 날짜가 바뀌면 리셋
-    if (parsed.date !== getToday()) {
-      return { date: getToday(), ai: 0, dream: 0, fortune: 0, simulator: 0 };
+    if (!raw) return empty;
+    const parsed = JSON.parse(raw) as WeeklyUsage;
+    // 주가 바뀌면 리셋
+    if (parsed.weekStart !== getWeekStart()) {
+      return empty;
     }
     return parsed;
   } catch {
-    return { date: getToday(), ai: 0, dream: 0, fortune: 0, simulator: 0 };
+    return empty;
   }
 }
 
-function saveUsage(usage: DailyUsage): void {
+function saveUsage(usage: WeeklyUsage): void {
   safeLocalStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
 }
 
@@ -72,30 +88,35 @@ export function useUsageLimit(): UseUsageLimitReturn {
   const auth = useAuthSafe();
   const isMember = !!auth?.user;
 
-  const canUse = useCallback((feature: LimitedFeature): boolean => {
-    if (isMember) return true;
-    const usage = loadUsage();
-    return usage[feature] < DAILY_LIMITS[feature];
+  const getLimits = useCallback((): Record<LimitedFeature, number> => {
+    return isMember ? WEEKLY_LIMITS_MEMBER : WEEKLY_LIMITS_GUEST;
   }, [isMember]);
+
+  const canUse = useCallback((feature: LimitedFeature): boolean => {
+    const limits = getLimits();
+    const usage = loadUsage();
+    return usage[feature] < limits[feature];
+  }, [getLimits]);
 
   const remaining = useCallback((feature: LimitedFeature): number => {
-    if (isMember) return Infinity;
+    const limits = getLimits();
     const usage = loadUsage();
-    return Math.max(0, DAILY_LIMITS[feature] - usage[feature]);
-  }, [isMember]);
+    return Math.max(0, limits[feature] - usage[feature]);
+  }, [getLimits]);
 
   const limit = useCallback((feature: LimitedFeature): number => {
-    return DAILY_LIMITS[feature];
-  }, []);
+    const limits = getLimits();
+    return limits[feature];
+  }, [getLimits]);
 
   const recordUsage = useCallback((feature: LimitedFeature): boolean => {
-    if (isMember) return true;
+    const limits = getLimits();
     const usage = loadUsage();
-    if (usage[feature] >= DAILY_LIMITS[feature]) return false;
+    if (usage[feature] >= limits[feature]) return false;
     usage[feature] += 1;
     saveUsage(usage);
     return true;
-  }, [isMember]);
+  }, [getLimits]);
 
   const featureName = useCallback((feature: LimitedFeature): string => {
     return FEATURE_NAMES[feature];

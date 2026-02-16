@@ -20,25 +20,34 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
   const limitCount = limit(feature);
   const isAtLimit = remainingCount === 0;
 
-  // ── Member: subtle unlimited badge ──
+  // ── Member: weekly remaining badge ──
   if (isMember) {
     return (
       <div
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '4px',
-          padding: '4px 10px',
-          borderRadius: '9999px',
-          fontSize: '12px',
-          fontWeight: 600,
-          background: 'rgba(255, 107, 53, 0.08)',
-          color: '#FF6B35',
+          gap: '6px',
+          padding: '8px 14px',
+          borderRadius: '10px',
+          fontSize: '13px',
+          background: 'rgba(255, 107, 53, 0.06)',
           border: '1px solid rgba(255, 107, 53, 0.15)',
+          color: 'var(--text-secondary, #6b7280)',
+          fontWeight: 500,
         }}
       >
-        <span>♾️</span>
-        <span>무제한</span>
+        <span style={{ fontSize: '14px' }}>🎫</span>
+        <span>이번 주 남은 이용:</span>
+        <span
+          style={{
+            color: remainingCount > 0 ? '#FF6B35' : '#EF4444',
+            fontWeight: 700,
+            fontSize: '14px',
+          }}
+        >
+          {remainingCount}/{limitCount}회
+        </span>
       </div>
     );
   }
@@ -77,7 +86,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
             ⚠️
           </span>
           <span style={{ fontWeight: 500 }}>
-            오늘 무료 이용 횟수를 모두 사용했어요
+            이번 주 무료 이용을 모두 사용했어요
           </span>
         </div>
         <button
@@ -98,7 +107,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
           onMouseEnter={(e) => { (e.target as HTMLButtonElement).style.opacity = '0.85'; }}
           onMouseLeave={(e) => { (e.target as HTMLButtonElement).style.opacity = '1'; }}
         >
-          회원가입하면 무제한!
+          회원가입하면 주 10회!
         </button>
       </div>
     );
@@ -121,7 +130,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
       }}
     >
       <span style={{ fontSize: '14px' }}>🎟️</span>
-      <span>오늘 남은 무료 이용:</span>
+      <span>이번 주 남은 무료 이용:</span>
       <span
         style={{
           color: '#FF6B35',

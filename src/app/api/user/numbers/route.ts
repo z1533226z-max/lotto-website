@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const VALID_SOURCES: NumberSource[] = ['ai', 'dream', 'fortune'];
 const MAX_SETS_PER_REQUEST = 5;
-const MAX_SAVED_PER_USER = 500; // 사용자당 최대 저장 개수
+const MAX_SAVED_PER_USER = 100; // 사용자당 최대 저장 개수
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 20;
 

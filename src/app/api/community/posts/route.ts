@@ -173,93 +173,62 @@ export async function GET(request: NextRequest) {
     const supabase = getServiceSupabase();
     const offset = (page - 1) * limit;
 
-    // 고정글 먼저 가져오기
-    let pinnedQuery = supabase
-      .from('posts')
-      .select('id, nickname, title, category, likes, views, is_pinned, created_at')
+    // posts_with_comment_count 뷰 사용 (댓글 수 자동 포함, N+1 쿼리 제거)
+    const viewFields = 'id, nickname, title, category, likes, views, is_pinned, created_at, comment_count';
+    const isValidCategory = category && VALID_CATEGORIES.includes(category as PostCategory);
+
+    // 고정글 + 일반글 병렬 조회
+    let pinnedQuery = (supabase.from('posts_with_comment_count') as any)
+      .select(viewFields)
       .eq('is_pinned', true)
       .order('created_at', { ascending: false });
 
-    if (category && VALID_CATEGORIES.includes(category as PostCategory)) {
-      pinnedQuery = pinnedQuery.eq('category', category as PostCategory);
-    }
-
-    const { data: pinnedPosts } = await pinnedQuery;
-
-    // 일반 게시글 가져오기
-    let query = supabase
-      .from('posts')
-      .select('id, nickname, title, category, likes, views, is_pinned, created_at', { count: 'exact' })
+    let postsQuery = (supabase.from('posts_with_comment_count') as any)
+      .select(viewFields, { count: 'exact' })
       .eq('is_pinned', false);
 
-    // 카테고리 필터
-    if (category && VALID_CATEGORIES.includes(category as PostCategory)) {
-      query = query.eq('category', category as PostCategory);
+    if (isValidCategory) {
+      pinnedQuery = pinnedQuery.eq('category', category as PostCategory);
+      postsQuery = postsQuery.eq('category', category as PostCategory);
     }
 
     // 정렬
     switch (sort) {
       case 'popular':
-        query = query.order('views', { ascending: false });
+        postsQuery = postsQuery.order('views', { ascending: false });
         break;
       case 'likes':
-        query = query.order('likes', { ascending: false });
+        postsQuery = postsQuery.order('likes', { ascending: false });
         break;
       case 'latest':
       default:
-        query = query.order('created_at', { ascending: false });
+        postsQuery = postsQuery.order('created_at', { ascending: false });
         break;
     }
 
     // 페이지네이션
-    query = query.range(offset, offset + limit - 1);
+    postsQuery = postsQuery.range(offset, offset + limit - 1);
 
-    const { data: posts, error, count } = await query;
+    // 병렬 실행
+    const [pinnedResult, postsResult] = await Promise.all([pinnedQuery, postsQuery]);
 
-    if (error) {
-      console.error('Post list query error:', error);
+    if (postsResult.error) {
+      console.error('Post list query error:', postsResult.error);
       return NextResponse.json(
-        { success: false, error: error.message },
+        { success: false, error: postsResult.error.message },
         { status: 500 }
       );
     }
 
-    // 댓글 수 가져오기 - 게시글 ID 목록으로 조회
-    const allPostIds = [
-      ...((pinnedPosts || []) as any[]).map((p: any) => p.id),
-      ...((posts || []) as any[]).map((p: any) => p.id),
-    ];
-
-    const commentCountMap: Record<string, number> = {};
-
-    if (allPostIds.length > 0) {
-      const { data: commentCounts } = await supabase
-        .from('comments')
-        .select('post_id')
-        .in('post_id', allPostIds);
-
-      if (commentCounts) {
-        commentCounts.forEach((c: { post_id: string }) => {
-          commentCountMap[c.post_id] = (commentCountMap[c.post_id] || 0) + 1;
-        });
-      }
-    }
-
-    // 댓글 수 추가
-    const enrichPost = (post: any) => ({
-      ...post,
-      comment_count: commentCountMap[post.id] || 0,
-    });
-
     return NextResponse.json({
       success: true,
-      pinnedPosts: (pinnedPosts || []).map(enrichPost),
-      posts: (posts || []).map(enrichPost),
+      pinnedPosts: pinnedResult.data || [],
+      posts: postsResult.data || [],
       pagination: {
         page,
         limit,
-        total: count || 0,
-        totalPages: Math.ceil((count || 0) / limit),
+        total: postsResult.count || 0,
+        totalPages: Math.ceil((postsResult.count || 0) / limit),
       },
     });
   } catch (error) {
