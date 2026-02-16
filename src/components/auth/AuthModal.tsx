@@ -220,7 +220,7 @@ const AuthModal: React.FC = () => {
                 'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
               )}
               style={{
-                background: 'var(--background, #f9fafb)',
+                background: 'var(--surface-hover, #f3f4f6)',
                 borderColor: 'var(--border, #e5e7eb)',
                 color: 'var(--text, #1f2937)',
               }}
@@ -250,7 +250,7 @@ const AuthModal: React.FC = () => {
                 'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
               )}
               style={{
-                background: 'var(--background, #f9fafb)',
+                background: 'var(--surface-hover, #f3f4f6)',
                 borderColor: 'var(--border, #e5e7eb)',
                 color: 'var(--text, #1f2937)',
               }}
@@ -281,7 +281,7 @@ const AuthModal: React.FC = () => {
                   'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
                 )}
                 style={{
-                  background: 'var(--background, #f9fafb)',
+                  background: 'var(--surface-hover, #f3f4f6)',
                   borderColor: 'var(--border, #e5e7eb)',
                   color: 'var(--text, #1f2937)',
                 }}
@@ -301,35 +301,6 @@ const AuthModal: React.FC = () => {
             {tab === 'login' ? '로그인' : '회원가입'}
           </Button>
 
-          {/* Benefits hint */}
-          {tab === 'register' && (
-            <div className="mt-4 space-y-1.5">
-              <p className="text-xs font-semibold text-center" style={{ opacity: 0.5 }}>
-                회원가입 혜택
-              </p>
-              <div className="flex flex-col gap-1">
-                {[
-                  ['♾️', '모든 도구 무제한 이용'],
-                  ['📊', '번호 히스토리 & 당첨 확인'],
-                  ['🎯', '5세트 동시 생성'],
-                  ['💾', '진행상황 서버 저장'],
-                  ['🏆', '리더보드 참여'],
-                ].map(([icon, text]) => (
-                  <div
-                    key={text}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
-                    style={{
-                      background: 'var(--background, #f9fafb)',
-                      opacity: 0.7,
-                    }}
-                  >
-                    <span>{icon}</span>
-                    <span>{text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </form>
       </div>
 
