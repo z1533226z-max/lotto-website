@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const VALID_SOURCES: NumberSource[] = ['ai', 'dream', 'fortune'];
 const MAX_SETS_PER_REQUEST = 5;
+const MAX_SAVED_PER_USER = 500; // 사용자당 최대 저장 개수
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 20;
 
@@ -154,6 +155,31 @@ export async function POST(request: NextRequest) {
         { success: false, error: '번호 저장에 실패했습니다.' },
         { status: 500 }
       );
+    }
+
+    // 총 저장 개수 확인 후 초과분 삭제 (FIFO)
+    const { count: totalCount } = await (supabase
+      .from('saved_numbers') as any)
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', auth.userId);
+
+    if (totalCount && totalCount > MAX_SAVED_PER_USER) {
+      const excessCount = totalCount - MAX_SAVED_PER_USER;
+      // 가장 오래된 번호 ID 조회
+      const { data: oldestRows } = await (supabase
+        .from('saved_numbers') as any)
+        .select('id')
+        .eq('user_id', auth.userId)
+        .order('created_at', { ascending: true })
+        .limit(excessCount);
+
+      if (oldestRows && oldestRows.length > 0) {
+        const idsToDelete = oldestRows.map((r: any) => r.id);
+        await (supabase
+          .from('saved_numbers') as any)
+          .delete()
+          .in('id', idsToDelete);
+      }
     }
 
     // user_progress 업데이트: saved_numbers_count 증가

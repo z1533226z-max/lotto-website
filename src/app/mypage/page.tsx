@@ -284,9 +284,9 @@ export default function MyPage() {
                 </h1>
                 <span
                   className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
-                  style={{ backgroundColor: '#FF6B35' }}
+                  style={{ backgroundColor: auth.user.isAdmin ? '#EF4444' : '#FF6B35' }}
                 >
-                  {'\uD68C\uC6D0'}
+                  {auth.user.isAdmin ? '\u26A1 \uAD00\uB9AC\uC790' : '\uD68C\uC6D0'}
                 </span>
               </div>
               <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>

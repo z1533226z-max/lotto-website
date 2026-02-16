@@ -42,12 +42,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // 관리자 여부 확인
+    const adminNicknames = (process.env.ADMIN_NICKNAMES || '').split(',').map(n => n.trim()).filter(Boolean);
+    const isAdmin = adminNicknames.includes(user.nickname);
+
     return NextResponse.json({
       success: true,
       user: {
         id: user.id,
         nickname: user.nickname,
         createdAt: user.created_at,
+        isAdmin,
       },
     });
   } catch (error) {

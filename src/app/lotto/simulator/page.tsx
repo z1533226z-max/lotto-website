@@ -303,6 +303,11 @@ export default function SimulatorPage() {
       // Record usage
       recordUsage('simulator');
 
+      // 게임화 배지 카운터
+      if (typeof window !== 'undefined' && (window as any).__trackAction) {
+        (window as any).__trackAction('simulatorRun');
+      }
+
       return currentData;
     });
   }, [isValid, dataLoaded, lottoData.length, fetchData, periodType, customStart, customEnd, validNumbers, canUse, recordUsage]);

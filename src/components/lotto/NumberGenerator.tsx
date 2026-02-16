@@ -160,9 +160,9 @@ const NumberGenerator: React.FC = () => {
       // 사용량 기록
       recordUsage('ai');
 
-      // 사용자 활동 기록 (게임화)
-      if (typeof window !== 'undefined' && (window as any).recordUserActivity) {
-        (window as any).recordUserActivity('prediction');
+      // 사용자 활동 기록 (게임화 배지 카운터)
+      if (typeof window !== 'undefined' && (window as any).__trackAction) {
+        (window as any).__trackAction('aiGeneration');
       }
 
       // 회원이면 서버에 자동 저장

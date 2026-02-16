@@ -238,7 +238,7 @@ const Header: React.FC = () => {
                             {auth.user.nickname}
                           </p>
                           <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                            회원
+                            {auth.user.isAdmin ? '⚡ 관리자' : '회원'}
                           </p>
                         </div>
                         <div className="p-1">

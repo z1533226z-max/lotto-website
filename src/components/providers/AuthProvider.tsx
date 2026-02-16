@@ -8,6 +8,7 @@ export interface AuthUser {
   id: string;
   nickname: string;
   createdAt?: string;
+  isAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -63,6 +64,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             id: data.user.id,
             nickname: data.user.nickname,
             createdAt: data.user.createdAt,
+            isAdmin: data.user.isAdmin || false,
           });
         }
       }
