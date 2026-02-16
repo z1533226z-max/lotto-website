@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import StoreCard from '@/components/stores/StoreCard';
+import StoreRanking from '@/components/stores/StoreRanking';
 import RegionStats from '@/components/stores/RegionStats';
 import type { WinningStore, RegionStats as RegionStatsType } from '@/types/database';
 
@@ -16,8 +17,21 @@ const REGIONS = [
   '전북', '전남', '경북', '경남', '제주',
 ];
 
+interface RankingStore {
+  store_name: string;
+  store_address: string;
+  region: string;
+  sub_region: string;
+  win_count: number;
+  last_round: number;
+  rounds: number[];
+}
+
+type ViewMode = 'list' | 'ranking' | 'stats';
+
 export default function StoresPage() {
   const [stores, setStores] = useState<WinningStore[]>([]);
+  const [rankingStores, setRankingStores] = useState<RankingStore[]>([]);
   const [regionStats, setRegionStats] = useState<RegionStatsType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState('전체');
@@ -25,7 +39,7 @@ export default function StoresPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [viewMode, setViewMode] = useState<'list' | 'stats'>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('ranking');
 
   const fetchStores = useCallback(async () => {
     setLoading(true);
@@ -51,6 +65,30 @@ export default function StoresPage() {
     }
   }, [selectedRegion, selectedRank, page]);
 
+  const fetchRanking = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.set('ranking', 'true');
+      if (selectedRegion !== '전체') params.set('region', selectedRegion);
+      params.set('page', String(page));
+      params.set('limit', '20');
+
+      const res = await fetch(`/api/stores?${params}`);
+      const data = await res.json();
+
+      if (data.success) {
+        setRankingStores(data.ranking);
+        setTotalPages(data.pagination.totalPages);
+        setTotal(data.pagination.total);
+      }
+    } catch (error) {
+      console.error('판매점 랭킹 조회 오류:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedRegion, page]);
+
   const fetchRegionStats = useCallback(async () => {
     try {
       const res = await fetch('/api/stores?stats=region');
@@ -63,9 +101,14 @@ export default function StoresPage() {
     }
   }, []);
 
+  // 뷰 모드에 따라 데이터 fetch
   useEffect(() => {
-    fetchStores();
-  }, [fetchStores]);
+    if (viewMode === 'list') {
+      fetchStores();
+    } else if (viewMode === 'ranking') {
+      fetchRanking();
+    }
+  }, [viewMode, fetchStores, fetchRanking]);
 
   useEffect(() => {
     fetchRegionStats();
@@ -74,7 +117,7 @@ export default function StoresPage() {
   // 필터 변경 시 페이지 리셋
   useEffect(() => {
     setPage(1);
-  }, [selectedRegion]);
+  }, [selectedRegion, viewMode]);
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -86,18 +129,25 @@ export default function StoresPage() {
           </h1>
           <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
             로또 1등 당첨 판매점 정보를 확인하세요.
-            지역별 당첨 현황과 판매점 정보를 한눈에 볼 수 있습니다.
+            당첨 횟수별 랭킹과 지역별 통계를 한눈에 볼 수 있습니다.
           </p>
         </div>
 
         {/* 뷰 모드 토글 */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <Button
+            variant={viewMode === 'ranking' ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('ranking')}
+          >
+            🏆 당첨 랭킹
+          </Button>
+          <Button
             variant={viewMode === 'list' ? 'primary' : 'ghost'}
             size="sm"
             onClick={() => setViewMode('list')}
           >
-            📋 판매점 목록
+            📋 회차별 목록
           </Button>
           <Button
             variant={viewMode === 'stats' ? 'primary' : 'ghost'}
@@ -143,17 +193,19 @@ export default function StoresPage() {
 
                 {/* 결과 건수 */}
                 <div className="flex items-center gap-3">
-                  <Badge variant="warning">🥇 1등 판매점</Badge>
+                  <Badge variant="warning">
+                    {viewMode === 'ranking' ? '🏆 당첨 랭킹' : '🥇 1등 판매점'}
+                  </Badge>
                   <div className="ml-auto">
                     <Badge variant="info">
-                      총 {total.toLocaleString()}건
+                      총 {total.toLocaleString()}{viewMode === 'ranking' ? '개 판매점' : '건'}
                     </Badge>
                   </div>
                 </div>
               </div>
             </Card>
 
-            {/* 판매점 목록 */}
+            {/* 목록 */}
             {loading ? (
               <div className="grid gap-4 sm:grid-cols-2">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -163,72 +215,106 @@ export default function StoresPage() {
                   />
                 ))}
               </div>
-            ) : stores.length === 0 ? (
-              <Card variant="default" className="text-center py-12">
-                <p className="text-4xl mb-4">🏪</p>
-                <p className="text-lg font-medium text-[var(--text)]">
-                  판매점 정보가 없습니다
-                </p>
-                <p className="text-sm text-[var(--text-secondary)] mt-2">
-                  Supabase 데이터베이스 연결 후 스크래핑 스크립트를 실행해주세요.
-                </p>
-              </Card>
+            ) : viewMode === 'ranking' ? (
+              /* 랭킹 뷰 */
+              rankingStores.length === 0 ? (
+                <Card variant="default" className="text-center py-12">
+                  <p className="text-4xl mb-4">🏆</p>
+                  <p className="text-lg font-medium text-[var(--text)]">
+                    랭킹 데이터가 없습니다
+                  </p>
+                </Card>
+              ) : (
+                <>
+                  <StoreRanking ranking={rankingStores} page={page} limit={20} />
+
+                  {/* 페이지네이션 */}
+                  {totalPages > 1 && (
+                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                  )}
+                </>
+              )
             ) : (
-              <>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {stores.map((store) => (
-                    <StoreCard key={store.id} store={store} />
-                  ))}
-                </div>
-
-                {/* 페이지네이션 */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-8">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      disabled={page <= 1}
-                    >
-                      ← 이전
-                    </Button>
-
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                        const pageNum = Math.max(1, Math.min(page - 2, totalPages - 4)) + i;
-                        if (pageNum > totalPages) return null;
-                        return (
-                          <button
-                            key={pageNum}
-                            onClick={() => setPage(pageNum)}
-                            className={cn(
-                              'w-9 h-9 rounded-lg text-sm font-medium transition-all',
-                              page === pageNum
-                                ? 'bg-primary text-white'
-                                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'
-                            )}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={page >= totalPages}
-                    >
-                      다음 →
-                    </Button>
+              /* 회차별 목록 뷰 */
+              stores.length === 0 ? (
+                <Card variant="default" className="text-center py-12">
+                  <p className="text-4xl mb-4">🏪</p>
+                  <p className="text-lg font-medium text-[var(--text)]">
+                    판매점 정보가 없습니다
+                  </p>
+                </Card>
+              ) : (
+                <>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {stores.map((store) => (
+                      <StoreCard key={store.id} store={store} />
+                    ))}
                   </div>
-                )}
-              </>
+
+                  {/* 페이지네이션 */}
+                  {totalPages > 1 && (
+                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                  )}
+                </>
+              )
             )}
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/* 페이지네이션 컴포넌트 */
+function Pagination({
+  page,
+  totalPages,
+  onPageChange,
+}: {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2 mt-8">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+        disabled={page <= 1}
+      >
+        ← 이전
+      </Button>
+
+      <div className="flex items-center gap-1">
+        {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+          const pageNum = Math.max(1, Math.min(page - 2, totalPages - 4)) + i;
+          if (pageNum > totalPages) return null;
+          return (
+            <button
+              key={pageNum}
+              onClick={() => onPageChange(pageNum)}
+              className={cn(
+                'w-9 h-9 rounded-lg text-sm font-medium transition-all',
+                page === pageNum
+                  ? 'bg-primary text-white'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'
+              )}
+            >
+              {pageNum}
+            </button>
+          );
+        })}
+      </div>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+        disabled={page >= totalPages}
+      >
+        다음 →
+      </Button>
     </div>
   );
 }

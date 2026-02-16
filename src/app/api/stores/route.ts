@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import type { RegionStats as RegionStatsType } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +12,8 @@ export const dynamic = 'force-dynamic';
  *   region: 지역 (시/도)
  *   page: 페이지 번호 (기본 1)
  *   limit: 페이지당 항목 수 (기본 20)
- *   stats: 'region' - 지역별 통계만 반환
+ *   stats: 'region' - 지역별 통계
+ *   ranking: 'true' - 판매점 당첨 랭킹
  */
 export async function GET(request: NextRequest) {
   try {
@@ -24,10 +24,16 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
     const stats = searchParams.get('stats');
+    const ranking = searchParams.get('ranking');
 
-    // 지역별 통계 모드
+    // 지역별 통계 모드 (RPC 함수 사용)
     if (stats === 'region') {
-      return await getRegionStats(round ? parseInt(round, 10) : undefined);
+      return await getRegionStats();
+    }
+
+    // 판매점 당첨 랭킹 모드 (RPC 함수 사용)
+    if (ranking === 'true') {
+      return await getStoreRanking(page, limit, region);
     }
 
     // 기본 쿼리
@@ -82,56 +88,87 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * 지역별 당첨 통계
+ * 지역별 당첨 통계 (RPC 함수)
  */
-async function getRegionStats(round?: number) {
+async function getRegionStats() {
   try {
-    let query = supabase
-      .from('winning_stores')
-      .select('region, rank');
-
-    if (round) {
-      query = query.eq('round', round);
-    }
-
-    const { data, error } = await query;
+    const { data, error } = await (supabase.rpc as Function)('get_region_stats');
 
     if (error) {
+      console.error('Region stats RPC error:', error);
       return NextResponse.json(
         { success: false, error: error.message },
         { status: 500 }
       );
     }
 
-    // 지역별로 집계
-    const regionMap = new Map<string, RegionStatsType>();
-    const rows = (data || []) as unknown as { region: string; rank: number }[];
-
-    rows.forEach((store) => {
-      const existing = regionMap.get(store.region) || {
-        region: store.region,
-        count: 0,
-        firstPrizeCount: 0,
-        secondPrizeCount: 0,
-      };
-
-      existing.count++;
-      if (store.rank === 1) existing.firstPrizeCount++;
-      if (store.rank === 2) existing.secondPrizeCount++;
-
-      regionMap.set(store.region, existing);
-    });
-
-    const stats = Array.from(regionMap.values())
-      .sort((a, b) => b.count - a.count);
+    const rows = (data || []) as { region_name: string; total_count: number }[];
+    const stats = rows.map((row) => ({
+      region: row.region_name,
+      count: row.total_count,
+      firstPrizeCount: row.total_count,
+      secondPrizeCount: 0,
+    }));
 
     return NextResponse.json({
       success: true,
       stats,
-      totalStores: data?.length || 0,
+      totalStores: stats.reduce((sum: number, s: { count: number }) => sum + s.count, 0),
     });
   } catch (error) {
     console.error('Region stats error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * 판매점 당첨 랭킹 (RPC 함수)
+ */
+async function getStoreRanking(page: number, limit: number, region: string | null) {
+  try {
+    const offset = (page - 1) * limit;
+
+    // 랭킹 데이터
+    const { data, error } = await (supabase.rpc as Function)('get_store_ranking', {
+      p_limit: limit,
+      p_offset: offset,
+      p_region: region || null,
+    });
+
+    if (error) {
+      console.error('Store ranking RPC error:', error);
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      );
+    }
+
+    // 전체 개수
+    const { data: countData, error: countError } = await (supabase.rpc as Function)('get_store_ranking_count', {
+      p_region: region || null,
+    });
+
+    if (countError) {
+      console.error('Store ranking count error:', countError);
+    }
+
+    const total = countData || 0;
+
+    return NextResponse.json({
+      success: true,
+      ranking: data || [],
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error('Store ranking error:', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }
