@@ -29,17 +29,13 @@ export function getNextDrawRound(): number {
   const hour = kstDate.getHours();
   const minute = kstDate.getMinutes();
 
-  // 토요일 20:45 이후이면 다음 주 회차
-  if (dayOfWeek === 6 && (hour > 20 || (hour === 20 && minute >= 45))) {
-    return currentWeekRound + 1;
+  // 토요일 20:45 이전이면 아직 추첨 전 → 현재 주의 회차
+  if (dayOfWeek === 6 && (hour < 20 || (hour === 20 && minute < 45))) {
+    return currentWeekRound;
   }
 
-  // 일요일이면 이미 추첨 완료 → 다음 주 회차
-  if (dayOfWeek === 0) {
-    return currentWeekRound + 1;
-  }
-
-  return currentWeekRound;
+  // 그 외(토 20:45 이후, 일~금) → 추첨 완료, 다음 회차
+  return currentWeekRound + 1;
 }
 
 /**

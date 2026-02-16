@@ -64,12 +64,14 @@ export async function POST(request: NextRequest) {
 
     const results: CheckResult[] = [];
     const now = new Date().toISOString();
+    let pendingCount = 0;
 
     for (const saved of uncheckedNumbers as SavedNumber[]) {
       const drawResult = drawResultMap.get(saved.round_target);
 
       // 해당 회차 추첨 결과가 아직 없으면 건너뜀
       if (!drawResult) {
+        pendingCount++;
         continue;
       }
 
@@ -128,6 +130,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       checked: results.length,
+      pending: pendingCount,
       results,
     });
   } catch (error) {

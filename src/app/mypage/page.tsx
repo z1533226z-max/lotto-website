@@ -6,7 +6,7 @@ import { useAuth } from '@/components/providers/AuthProvider';
 import { useUserProgress } from '@/hooks/useUserProgress';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import { cn } from '@/lib/utils';
-import { calculateRank, getRankLabel, getRankColor } from '@/lib/lottoUtils';
+import { calculateRank, getRankLabel, getRankColor, getNextDrawRound } from '@/lib/lottoUtils';
 import type { SavedNumber, NumberStats, NumberSource } from '@/types/database';
 
 // --- Helpers ---
@@ -27,6 +27,29 @@ function formatJoinDate(dateString: string | undefined): string {
     month: 'long',
     day: 'numeric',
   });
+}
+
+function getNextDrawDateLabel(): string {
+  const now = new Date();
+  const kstOffset = 9 * 60;
+  const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const kstDate = new Date(utcMs + (kstOffset * 60000));
+  const dayOfWeek = kstDate.getDay();
+  const hour = kstDate.getHours();
+  const minute = kstDate.getMinutes();
+
+  let daysUntilSat: number;
+  if (dayOfWeek === 6) {
+    daysUntilSat = (hour < 20 || (hour === 20 && minute < 45)) ? 0 : 7;
+  } else {
+    daysUntilSat = (6 - dayOfWeek + 7) % 7 || 7;
+  }
+
+  const nextSat = new Date(kstDate);
+  nextSat.setDate(kstDate.getDate() + daysUntilSat);
+  const m = String(nextSat.getMonth() + 1).padStart(2, '0');
+  const d = String(nextSat.getDate()).padStart(2, '0');
+  return `${m}/${d} (토) 20:45`;
 }
 
 const SOURCE_LABELS: Record<NumberSource, { emoji: string; label: string; bg: string }> = {
@@ -110,7 +133,7 @@ export default function MyPage() {
 
   // Check results state
   const [checking, setChecking] = useState(false);
-  const [checkResult, setCheckResult] = useState<{ checked: number } | null>(null);
+  const [checkResult, setCheckResult] = useState<{ checked: number; pending: number } | null>(null);
 
   // Stats state
   const [stats, setStats] = useState<NumberStats | null>(null);
@@ -183,7 +206,7 @@ export default function MyPage() {
       if (!res.ok) throw new Error('check failed');
       const data = await res.json();
       if (data.success) {
-        setCheckResult({ checked: data.checked });
+        setCheckResult({ checked: data.checked, pending: data.pending || 0 });
         fetchNumbers(1, false);
         fetchStats();
       }
@@ -201,6 +224,12 @@ export default function MyPage() {
   };
 
   // --- Computed values ---
+
+  const nextDrawRound = useMemo(() => getNextDrawRound(), []);
+
+  const pendingNumbersCount = useMemo(() => {
+    return numbers.filter(num => num.checked_at === null && num.round_target >= nextDrawRound).length;
+  }, [numbers, nextDrawRound]);
 
   const badgeStats = useMemo(() => {
     const unlocked = badges.filter((b) => b.unlocked).length;
@@ -361,16 +390,31 @@ export default function MyPage() {
         {/* Check result notification */}
         {checkResult !== null && (
           <div
-            className="mx-5 sm:mx-6 mb-3 p-3 rounded-lg text-sm flex items-center gap-2"
+            className="mx-5 sm:mx-6 mb-3 p-3 rounded-lg text-sm"
             style={{
               backgroundColor: checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 107, 53, 0.1)',
               color: checkResult.checked > 0 ? '#10B981' : '#FF6B35',
               border: `1px solid ${checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 107, 53, 0.2)'}`,
             }}
           >
-            {checkResult.checked > 0
-              ? `${checkResult.checked}\uAC1C \uBC88\uD638\uC758 \uB2F9\uCCA8 \uACB0\uACFC\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4!`
-              : '\uD655\uC778\uD560 \uBBF8\uB300\uC870 \uBC88\uD638\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.'}
+            {checkResult.checked > 0 && (
+              <p className="flex items-center gap-1.5">
+                <span>{'\u2713'}</span>
+                <span>{checkResult.checked}{'\uAC1C \uBC88\uD638\uC758 \uB2F9\uCCA8 \uACB0\uACFC\uB97C \uD655\uC778\uD588\uC2B5\uB2C8\uB2E4!'}</span>
+              </p>
+            )}
+            {checkResult.pending > 0 && (
+              <p className={`flex items-center gap-1.5${checkResult.checked > 0 ? ' mt-1.5 text-xs' : ''}`} style={checkResult.checked > 0 ? { color: 'var(--text-secondary)' } : undefined}>
+                <span>{'\uD83D\uDD2E'}</span>
+                <span>{checkResult.pending}{'\uAC1C \uBC88\uD638\uB294 \uC544\uC9C1 \uCD94\uCCA8 \uC804\uC785\uB2C8\uB2E4 (\uB2E4\uC74C \uCD94\uCCA8: '}{getNextDrawDateLabel()}{')'}</span>
+              </p>
+            )}
+            {checkResult.checked === 0 && checkResult.pending === 0 && (
+              <p className="flex items-center gap-1.5">
+                <span>{'\u2139'}</span>
+                <span>{'\uD655\uC778\uD560 \uBBF8\uB300\uC870 \uBC88\uD638\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.'}</span>
+              </p>
+            )}
           </div>
         )}
 
@@ -394,6 +438,37 @@ export default function MyPage() {
             );
           })}
         </div>
+
+        {/* Pending draw banner */}
+        {pendingNumbersCount > 0 && (
+          <div
+            className="mx-5 sm:mx-6 mb-4 p-4 rounded-xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.1))',
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                style={{ backgroundColor: 'rgba(139, 92, 246, 0.2)' }}
+              >
+                <span className="text-lg">{'\uD83D\uDD2E'}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold" style={{ color: '#8B5CF6' }}>
+                  {pendingNumbersCount}{'\uAC1C \uBC88\uD638\uAC00 \uCD94\uCCA8 \uB300\uAE30 \uC911'}
+                </p>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  {'\uB2E4\uC74C \uCD94\uCCA8: '}{getNextDrawDateLabel()}{' | \uC81C '}{nextDrawRound}{'\uD68C'}
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+                  {'\uCD94\uCCA8 \uD6C4 \u201C\uB2F9\uCCA8 \uD655\uC778\uD558\uAE30\u201D \uBC84\uD2BC\uC744 \uB20C\uB7EC \uACB0\uACFC\uB97C \uD655\uC778\uD558\uC138\uC694'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Number list */}
         <div className="border-t" style={{ borderColor: 'var(--border)' }}>
@@ -463,12 +538,29 @@ export default function MyPage() {
                               ? `${getRankLabel(rank)} (${num.matched_count}\uAC1C \uC77C\uCE58)`
                               : `${num.matched_count}\uAC1C \uC77C\uCE58`}
                           </span>
+                        ) : num.round_target >= nextDrawRound ? (
+                          <span
+                            className="px-2.5 py-1 rounded flex items-center gap-1"
+                            style={{
+                              backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                              color: '#8B5CF6',
+                              border: '1px solid rgba(139, 92, 246, 0.3)',
+                            }}
+                          >
+                            <span>{'\uD83D\uDD2E'}</span>
+                            <span>{'\uCD94\uCCA8 \uB300\uAE30'}</span>
+                          </span>
                         ) : (
                           <span
-                            className="px-2.5 py-1 rounded"
-                            style={{ backgroundColor: 'var(--surface-hover)', color: 'var(--text-tertiary)', border: '1px solid var(--border)' }}
+                            className="px-2.5 py-1 rounded flex items-center gap-1"
+                            style={{
+                              backgroundColor: 'rgba(255, 107, 53, 0.15)',
+                              color: '#FF6B35',
+                              border: '1px solid rgba(255, 107, 53, 0.3)',
+                            }}
                           >
-                            {'\uBBF8\uD655\uC778'}
+                            <span>{'\u23F3'}</span>
+                            <span>{'\uD655\uC778 \uAC00\uB2A5'}</span>
                           </span>
                         )}
                         <span style={{ color: 'var(--text-tertiary)' }}>{formatDate(num.created_at)}</span>
