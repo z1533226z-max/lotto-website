@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import LottoNumbers from './LottoNumbers';
 import { formatDate, formatCurrency, getNextDrawTime, formatCountdown } from '@/lib/utils';

@@ -1,13 +1,35 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import LatestResult from '@/components/lotto/LatestResult';
 import NumberGenerator from '@/components/lotto/NumberGenerator';
-import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
+import type { Metadata } from 'next';
+
+const AnalyticsDashboard = dynamic(
+  () => import('@/components/analytics/AnalyticsDashboard'),
+  {
+    loading: () => (
+      <div className="animate-pulse space-y-4 p-6 bg-white rounded-xl">
+        <div className="h-8 bg-gray-200 rounded w-48" />
+        <div className="h-64 bg-gray-200 rounded" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+export const metadata: Metadata = {
+  title: '로또킹 - AI 로또번호 추천 | 당첨번호 조회 & 통계 분석',
+  description: '최신 AI 기술로 분석한 로또번호 추천 서비스. 역대 전체 회차 데이터 기반 당첨번호 조회, 통계 분석, 세금 계산기까지. 매주 자동 업데이트.',
+  openGraph: {
+    title: '로또킹 - AI 로또번호 추천',
+    description: '역대 전체 회차 데이터 분석으로 찾은 패턴으로 번호를 추천합니다. 매주 업데이트되는 AI 분석 결과를 확인해보세요!',
+    url: 'https://lotto.gon.ai.kr',
+  },
+};
 
 export default function HomePage() {
   return (
