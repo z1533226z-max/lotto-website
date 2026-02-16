@@ -44,6 +44,11 @@ const DailyChallengeWidget = dynamic(
   { ssr: false }
 );
 
+const LeaderboardWidget = dynamic(
+  () => import('@/components/gamification/LeaderboardWidget'),
+  { ssr: false }
+);
+
 const NumberGenerator = dynamic(
   () => import('@/components/lotto/NumberGenerator'),
   {
@@ -198,6 +203,9 @@ export default function HomePage() {
               <div className="sticky top-24 space-y-6">
                 {/* Daily Challenge */}
                 <DailyChallengeWidget />
+
+                {/* Leaderboard */}
+                <LeaderboardWidget />
 
                 {/* Quick Links Card */}
                 <div

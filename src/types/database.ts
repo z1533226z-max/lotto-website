@@ -5,6 +5,8 @@
  * - winning_stores: 당첨 판매점 정보
  * - posts: 커뮤니티 게시글
  * - comments: 커뮤니티 댓글 (대댓글 지원)
+ * - user_profiles: 회원 프로필
+ * - user_progress: 회원 진행상황
  */
 
 export interface Database {
@@ -24,6 +26,16 @@ export interface Database {
         Row: Comment;
         Insert: CommentInsert;
         Update: Partial<CommentInsert>;
+      };
+      user_profiles: {
+        Row: UserProfile;
+        Insert: UserProfileInsert;
+        Update: Partial<UserProfileInsert>;
+      };
+      user_progress: {
+        Row: UserProgressRow;
+        Insert: UserProgressInsert;
+        Update: Partial<UserProgressInsert>;
       };
     };
     Views: Record<string, never>;
@@ -186,4 +198,66 @@ export interface RegionStats {
   count: number;
   firstPrizeCount: number;
   secondPrizeCount: number;
+}
+
+// ============================================
+// 회원 프로필 관련 타입
+// ============================================
+
+export interface UserProfile {
+  id: string; // UUID
+  nickname: string;
+  password_hash: string;
+  created_at: string;
+  last_login_at: string;
+}
+
+export interface UserProfileInsert {
+  nickname: string;
+  password_hash: string;
+  created_at?: string;
+  last_login_at?: string;
+}
+
+// ============================================
+// 회원 진행상황 관련 타입
+// ============================================
+
+export interface UserProgressRow {
+  user_id: string; // FK → user_profiles.id
+  visit_streak: number;
+  longest_streak: number;
+  last_visit_date: string | null; // DATE
+  first_visit_date: string; // DATE
+  ai_generations: number;
+  simulator_runs: number;
+  dream_generations: number;
+  fortune_generations: number;
+  page_views: number;
+  unlocked_badges: string[];
+  daily_challenge_completed: string | null; // DATE
+  updated_at: string;
+}
+
+export interface UserProgressInsert {
+  user_id: string;
+  visit_streak?: number;
+  longest_streak?: number;
+  last_visit_date?: string | null;
+  first_visit_date?: string;
+  ai_generations?: number;
+  simulator_runs?: number;
+  dream_generations?: number;
+  fortune_generations?: number;
+  page_views?: number;
+  unlocked_badges?: string[];
+  daily_challenge_completed?: string | null;
+}
+
+// 리더보드 항목 타입
+export interface LeaderboardEntry {
+  nickname: string;
+  longest_streak: number;
+  badge_count: number;
+  rank: number;
 }

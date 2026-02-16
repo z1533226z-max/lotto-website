@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { useAuthSafe } from '@/components/providers/AuthProvider';
 
 const mainNavLinks = [
   { name: '홈', path: '/' },
@@ -39,7 +40,10 @@ const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
+  const auth = useAuthSafe();
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Track scroll position for header background enhancement
   useEffect(() => {
@@ -66,6 +70,18 @@ const Header: React.FC = () => {
       document.body.style.overflow = '';
     };
   }, [mobileMenuOpen]);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [userMenuOpen]);
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -186,8 +202,83 @@ const Header: React.FC = () => {
               </div>
             </nav>
 
-            {/* Right section: Theme toggle + Mobile menu button */}
+            {/* Right section: Auth + Theme toggle + Mobile menu button */}
             <div className="flex items-center gap-2">
+              {/* Auth button */}
+              {auth && !auth.isLoading && (
+                auth.user ? (
+                  <div className="relative" ref={userMenuRef}>
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className={cn(
+                        'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium',
+                        'transition-all duration-200',
+                        'hover:bg-[var(--surface-hover)]',
+                        'border',
+                      )}
+                      style={{
+                        borderColor: 'var(--border)',
+                        color: 'var(--text)',
+                      }}
+                    >
+                      <span className="text-base">{'👤'}</span>
+                      <span className="hidden sm:inline max-w-[80px] truncate">{auth.user.nickname}</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {userMenuOpen && (
+                      <div
+                        className="absolute top-full right-0 mt-1 w-48 glass rounded-xl shadow-xl overflow-hidden z-50"
+                        style={{ animation: 'scaleIn 0.15s ease-out' }}
+                      >
+                        <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <p className="text-sm font-bold truncate" style={{ color: 'var(--text)' }}>
+                            {auth.user.nickname}
+                          </p>
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                            회원
+                          </p>
+                        </div>
+                        <div className="p-1">
+                          <button
+                            onClick={() => {
+                              auth.logout();
+                              setUserMenuOpen(false);
+                            }}
+                            className={cn(
+                              'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
+                              'transition-colors duration-200',
+                              'hover:bg-[var(--surface-hover)]',
+                            )}
+                            style={{ color: 'var(--text)' }}
+                          >
+                            <span>{'🚪'}</span>
+                            로그아웃
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => auth.openAuthModal()}
+                    className={cn(
+                      'px-3 py-1.5 rounded-lg text-sm font-semibold',
+                      'transition-all duration-200',
+                      'hover:opacity-90 active:scale-95',
+                    )}
+                    style={{
+                      background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+                      color: '#fff',
+                    }}
+                  >
+                    로그인
+                  </button>
+                )
+              )}
+
               <ThemeToggle size="sm" />
 
               {/* Mobile menu button */}
@@ -305,6 +396,64 @@ const Header: React.FC = () => {
                   {link.name}
                 </Link>
               ))}
+
+              {/* Mobile auth section */}
+              {auth && !auth.isLoading && !auth.user && (
+                <>
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                      계정
+                    </span>
+                  </div>
+                  <button
+                    className={cn(
+                      'w-full flex items-center gap-3 px-4 py-3 rounded-xl',
+                      'text-base font-semibold',
+                      'transition-all duration-200',
+                    )}
+                    style={{
+                      background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+                      color: '#fff',
+                    }}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      auth.openAuthModal();
+                    }}
+                  >
+                    {'👤'} 로그인 / 회원가입
+                  </button>
+                </>
+              )}
+              {auth && auth.user && (
+                <>
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                      계정
+                    </span>
+                  </div>
+                  <div
+                    className="flex items-center justify-between px-4 py-3 rounded-xl"
+                    style={{ background: 'var(--surface-hover)' }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span>{'👤'}</span>
+                      <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>
+                        {auth.user.nickname}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        auth.logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-xs font-medium px-2 py-1 rounded-lg"
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                </>
+              )}
             </nav>
           </div>
         </div>

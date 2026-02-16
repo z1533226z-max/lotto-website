@@ -3,6 +3,8 @@ import { Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
 import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider';
+import AuthProvider from '@/components/providers/AuthProvider';
+import AuthModal from '@/components/auth/AuthModal';
 import GamificationProvider from '@/components/gamification/GamificationProvider';
 
 const notoSansKR = Noto_Sans_KR({
@@ -129,8 +131,11 @@ export default function RootLayout({
       </head>
       <body className={notoSansKR.className}>
         <ThemeProvider>
-          {children}
-          <GamificationProvider />
+          <AuthProvider>
+            {children}
+            <GamificationProvider />
+            <AuthModal />
+          </AuthProvider>
         </ThemeProvider>
 
         {/* Google Analytics 4 */}
