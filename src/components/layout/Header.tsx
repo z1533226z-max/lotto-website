@@ -6,20 +6,38 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
-const navLinks = [
+const mainNavLinks = [
   { name: '홈', path: '/' },
   { name: '최근당첨', path: '/lotto/recent' },
   { name: '당첨조회', path: '/lotto/list' },
   { name: 'AI적중', path: '/lotto/ai-hits' },
   { name: '통계분석', path: '/lotto/statistics' },
   { name: '판매점', path: '/lotto/stores' },
-  { name: '계산기', path: '/lotto/calculator' },
   { name: '순위', path: '/lotto/rankings' },
   { name: '커뮤니티', path: '/community' },
 ];
 
+const toolLinks = [
+  { name: '🎰 시뮬레이터', path: '/lotto/simulator', desc: '매주 이 번호를 샀다면?' },
+  { name: '🌙 꿈번호', path: '/lotto/dream', desc: '꿈해몽 기반 번호 생성' },
+  { name: '🍀 행운번호', path: '/lotto/fortune', desc: '생년월일 행운번호' },
+  { name: '🧮 계산기', path: '/lotto/calculator', desc: '당첨금 세금 계산' },
+  { name: '📖 가이드', path: '/lotto/guide', desc: '로또 완전 가이드' },
+];
+
+// 모바일 메뉴용 전체 목록
+const allNavLinks = [
+  ...mainNavLinks,
+  { name: '시뮬레이터', path: '/lotto/simulator' },
+  { name: '꿈번호', path: '/lotto/dream' },
+  { name: '행운번호', path: '/lotto/fortune' },
+  { name: '계산기', path: '/lotto/calculator' },
+  { name: '가이드', path: '/lotto/guide' },
+];
+
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
@@ -86,7 +104,7 @@ const Header: React.FC = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
+              {mainNavLinks.map((link) => (
                 <Link
                   key={link.path}
                   href={link.path}
@@ -102,7 +120,6 @@ const Header: React.FC = () => {
                   }}
                 >
                   {link.name}
-                  {/* Active indicator */}
                   {isActive(link.path) && (
                     <span
                       className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary"
@@ -110,6 +127,63 @@ const Header: React.FC = () => {
                   )}
                 </Link>
               ))}
+
+              {/* Tools dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setToolsOpen(true)}
+                onMouseLeave={() => setToolsOpen(false)}
+              >
+                <button
+                  className={cn(
+                    'relative px-3 py-2 rounded-lg text-sm font-medium',
+                    'transition-all duration-200',
+                    'hover:bg-[var(--surface-hover)]',
+                    'flex items-center gap-1',
+                    toolLinks.some(l => isActive(l.path)) && 'text-primary',
+                  )}
+                  style={{
+                    color: toolLinks.some(l => isActive(l.path)) ? undefined : 'var(--text-secondary)',
+                  }}
+                >
+                  도구
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {toolLinks.some(l => isActive(l.path)) && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary" />
+                  )}
+                </button>
+
+                {toolsOpen && (
+                  <div className="absolute top-full right-0 mt-1 w-56 glass rounded-xl shadow-xl p-2 animate-fade-in z-50">
+                    {toolLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        href={link.path}
+                        className={cn(
+                          'flex items-start gap-3 px-3 py-2.5 rounded-lg',
+                          'transition-all duration-200',
+                          isActive(link.path)
+                            ? 'bg-primary/10 text-primary'
+                            : 'hover:bg-[var(--surface-hover)]'
+                        )}
+                        style={{
+                          color: isActive(link.path) ? undefined : 'var(--text)',
+                        }}
+                        onClick={() => setToolsOpen(false)}
+                      >
+                        <div>
+                          <div className="text-sm font-medium">{link.name}</div>
+                          <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+                            {link.desc}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </nav>
 
             {/* Right section: Theme toggle + Mobile menu button */}
@@ -178,7 +252,37 @@ const Header: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="p-4 space-y-1">
-              {navLinks.map((link) => (
+              {mainNavLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 rounded-xl',
+                    'text-base font-medium',
+                    'transition-all duration-200',
+                    isActive(link.path)
+                      ? 'bg-primary/10 text-primary'
+                      : 'hover:bg-[var(--surface-hover)]'
+                  )}
+                  style={{
+                    color: isActive(link.path) ? undefined : 'var(--text)',
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {isActive(link.path) && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  )}
+                  {link.name}
+                </Link>
+              ))}
+
+              {/* Tools section divider */}
+              <div className="px-4 pt-3 pb-1">
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+                  도구
+                </span>
+              </div>
+              {toolLinks.map((link) => (
                 <Link
                   key={link.path}
                   href={link.path}
