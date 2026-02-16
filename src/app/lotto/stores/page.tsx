@@ -21,7 +21,7 @@ export default function StoresPage() {
   const [regionStats, setRegionStats] = useState<RegionStatsType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState('전체');
-  const [selectedRank, setSelectedRank] = useState<number | null>(null);
+  const [selectedRank] = useState<number | null>(1);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
@@ -74,7 +74,7 @@ export default function StoresPage() {
   // 필터 변경 시 페이지 리셋
   useEffect(() => {
     setPage(1);
-  }, [selectedRegion, selectedRank]);
+  }, [selectedRegion]);
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -82,10 +82,10 @@ export default function StoresPage() {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-3">
-            🏪 당첨 판매점
+            🏪 1등 당첨 판매점
           </h1>
           <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
-            로또 1등, 2등 당첨 판매점 정보를 확인하세요.
+            로또 1등 당첨 판매점 정보를 확인하세요.
             지역별 당첨 현황과 판매점 정보를 한눈에 볼 수 있습니다.
           </p>
         </div>
@@ -141,32 +141,9 @@ export default function StoresPage() {
                   </div>
                 </div>
 
-                {/* 등수 필터 */}
+                {/* 결과 건수 */}
                 <div className="flex items-center gap-3">
-                  <label className="text-sm font-medium text-[var(--text-secondary)]">
-                    등수:
-                  </label>
-                  <div className="flex gap-2">
-                    {[
-                      { label: '전체', value: null },
-                      { label: '🥇 1등', value: 1 },
-                      { label: '🥈 2등', value: 2 },
-                    ].map(({ label, value }) => (
-                      <button
-                        key={label}
-                        onClick={() => setSelectedRank(value)}
-                        className={cn(
-                          'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200',
-                          selectedRank === value
-                            ? 'bg-secondary text-white'
-                            : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-
+                  <Badge variant="warning">🥇 1등 판매점</Badge>
                   <div className="ml-auto">
                     <Badge variant="info">
                       총 {total.toLocaleString()}건

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllLottoData, invalidateAllDataCache } from '@/lib/dataFetcher';
+import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 /**
  * Vercel Cron Job - 매주 토요일 추첨 후 자동 실행
@@ -66,7 +67,14 @@ export async function GET(request: NextRequest) {
     // 레이아웃 전체 revalidate (공통 부분)
     revalidatePath('/', 'layout');
 
-    // 4. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
+    // 4. 1등 당첨 판매점 데이터 자동 수집 (pyony.com → Supabase)
+    let storeResult = { success: false, count: 0 };
+    if (latestRound > 0) {
+      storeResult = await fetchAndSaveWinningStores(latestRound);
+      console.log(`[Cron] Store data: round=${latestRound}, count=${storeResult.count}`);
+    }
+
+    // 5. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lotto.gon.ai.kr';
     const warmupResults: Record<string, string> = {};
 
@@ -92,13 +100,14 @@ export async function GET(request: NextRequest) {
 
     const elapsed = Date.now() - startTime;
 
-    console.log(`[Cron] Revalidation complete: round=${latestRound}, total=${allData.length}, elapsed=${elapsed}ms`);
+    console.log(`[Cron] Revalidation complete: round=${latestRound}, total=${allData.length}, stores=${storeResult.count}, elapsed=${elapsed}ms`);
 
     return NextResponse.json({
       success: true,
       latestRound,
       totalRounds: allData.length,
       revalidatedPaths: pathsToRevalidate.length + 2,
+      storeData: storeResult,
       warmupResults,
       elapsed: `${elapsed}ms`,
       timestamp: new Date().toISOString(),
