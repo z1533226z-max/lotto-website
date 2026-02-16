@@ -70,9 +70,11 @@ async function fetchFromPyony(round: number): Promise<StoreData[]> {
   const stores: StoreData[] = [];
 
   for (let i = 1; i < rows.length; i++) {
-    const cells = (rows[i].match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [])
+    // td + th 모두 매칭 (번호는 th, 나머지는 td)
+    const cells = (rows[i].match(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi) || [])
       .map(c => c.replace(/<[^>]*>/g, '').trim());
 
+    // 4열: 번호(th), 상호명(td), 구분(td), 소재지(td)
     if (cells.length >= 4) {
       const address = cells[3];
       const { region, subRegion } = parseRegion(address);
@@ -85,6 +87,20 @@ async function fetchFromPyony(round: number): Promise<StoreData[]> {
         region,
         sub_region: subRegion,
         purchase_type: normalizePurchaseType(cells[2]),
+      });
+    } else if (cells.length >= 3) {
+      // 3열: 상호명(td), 구분(td), 소재지(td) - 번호 없는 경우
+      const address = cells[2];
+      const { region, subRegion } = parseRegion(address);
+
+      stores.push({
+        round,
+        rank: 1,
+        store_name: cells[0],
+        store_address: address,
+        region,
+        sub_region: subRegion,
+        purchase_type: normalizePurchaseType(cells[1]),
       });
     }
   }
