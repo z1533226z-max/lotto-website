@@ -36,10 +36,12 @@ export async function GET(request: NextRequest) {
       return await getStoreRanking(page, limit, region);
     }
 
-    // 기본 쿼리
+    // 기본 쿼리 (온라인 판매점 제외)
     let query = supabase
       .from('winning_stores')
       .select('*', { count: 'exact' })
+      .not('store_name', 'like', '%인터넷%')
+      .not('store_name', 'like', '%온라인%')
       .order('round', { ascending: false })
       .order('rank', { ascending: true });
 
