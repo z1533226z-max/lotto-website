@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
+/** 온라인 판매점 필터 키워드 */
+const ONLINE_STORE_KEYWORDS = ['인터넷', '온라인'];
+
 /**
  * 당첨 판매점 목록 API
  *
@@ -105,12 +108,15 @@ async function getRegionStats() {
     }
 
     const rows = (data || []) as { region_name: string; total_count: number }[];
-    const stats = rows.map((row) => ({
-      region: row.region_name,
-      count: row.total_count,
-      firstPrizeCount: row.total_count,
-      secondPrizeCount: 0,
-    }));
+    // 지역명이 온라인 키워드와 겹치는 경우 필터 (안전장치)
+    const stats = rows
+      .filter((row) => !ONLINE_STORE_KEYWORDS.some(kw => row.region_name.includes(kw)))
+      .map((row) => ({
+        region: row.region_name,
+        count: row.total_count,
+        firstPrizeCount: row.total_count,
+        secondPrizeCount: 0,
+      }));
 
     return NextResponse.json({
       success: true,
@@ -148,6 +154,11 @@ async function getStoreRanking(page: number, limit: number, region: string | nul
       );
     }
 
+    // 온라인 판매점 JS 레벨 필터링 (RPC 필터 보완)
+    const filteredRanking = (data || []).filter(
+      (s: { store_name: string }) => !ONLINE_STORE_KEYWORDS.some(kw => s.store_name.includes(kw))
+    );
+
     // 전체 개수
     const { data: countData, error: countError } = await (supabase.rpc as Function)('get_store_ranking_count', {
       p_region: region || null,
@@ -157,11 +168,11 @@ async function getStoreRanking(page: number, limit: number, region: string | nul
       console.error('Store ranking count error:', countError);
     }
 
-    const total = countData || 0;
+    const total = Math.max((countData || 0) - ((data || []).length - filteredRanking.length), 0);
 
     return NextResponse.json({
       success: true,
-      ranking: data || [],
+      ranking: filteredRanking,
       pagination: {
         page,
         limit,
