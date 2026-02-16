@@ -39,6 +39,11 @@ const AnalyticsDashboard = dynamic(
   }
 );
 
+const DailyChallengeWidget = dynamic(
+  () => import('@/components/gamification/DailyChallengeWidget'),
+  { ssr: false }
+);
+
 const NumberGenerator = dynamic(
   () => import('@/components/lotto/NumberGenerator'),
   {
@@ -191,6 +196,9 @@ export default function HomePage() {
             {/* Sidebar */}
             <aside className="hidden lg:block lg:col-span-4">
               <div className="sticky top-24 space-y-6">
+                {/* Daily Challenge */}
+                <DailyChallengeWidget />
+
                 {/* Quick Links Card */}
                 <div
                   className="rounded-2xl p-6 border backdrop-blur-sm"
