@@ -12,7 +12,7 @@
  */
 
 import type { LottoResult, NumberStatistics } from '@/types/lotto';
-import type { AIPrediction } from '@/data/aiPredictionHistory';
+import type { AIPrediction, AIMultiSetPrediction } from '@/data/aiPredictionHistory';
 import { LOTTO_CONFIG } from './constants';
 import { LottoStatisticsAnalyzer } from './statisticsAnalyzer';
 
@@ -193,4 +193,169 @@ export function estimateCurrentRound(): number {
   const diffMs = now.getTime() - firstDraw.getTime();
   const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
   return diffWeeks + 1;
+}
+
+/**
+ * 특정 회차에 대해 다중 세트(5세트) AI 예측번호 생성
+ * 각 세트는 서로 다른 시드 변형을 사용하여 결정론적으로 생성
+ *
+ * 세트별 전략:
+ * - Set 0: 기본 통계 가중치 (기존과 동일)
+ * - Set 1: 최근 트렌드 강화 (recentness 가중치 UP)
+ * - Set 2: 핫넘버 강화 (hotCold 가중치 UP)
+ * - Set 3: 콜드넘버 역발상 (잘 안 나온 번호 가중치 UP)
+ * - Set 4: 균형 번호 (가중치 평균화)
+ */
+export function generateMultiSetPrediction(
+  round: number,
+  statistics?: NumberStatistics[],
+  options?: { useFairMode?: boolean; allData?: LottoResult[] }
+): AIMultiSetPrediction {
+  const baseSeed = getRoundSeed(round);
+  const sets: { setIndex: number; predictedNumbers: number[] }[] = [];
+
+  let effectiveStatistics = statistics;
+  if (options?.useFairMode && options?.allData) {
+    const dataBeforeRound = options.allData.filter(d => d.round < round);
+    if (dataBeforeRound.length > 0) {
+      effectiveStatistics = LottoStatisticsAnalyzer.generateStatistics(dataBeforeRound);
+    } else {
+      effectiveStatistics = undefined;
+    }
+  }
+
+  for (let setIdx = 0; setIdx < 5; setIdx++) {
+    // 각 세트마다 다른 시드 변형 (소수 곱 활용)
+    const setSeed = baseSeed + setIdx * 31337;
+    const random = createSeededRandom(setSeed);
+
+    let numbers: number[];
+
+    if (effectiveStatistics && effectiveStatistics.length > 0) {
+      numbers = selectWeightedNumbersWithStrategy(random, effectiveStatistics, LOTTO_CONFIG.NUMBERS_COUNT, setIdx);
+    } else {
+      numbers = selectRandomNumbers(random, LOTTO_CONFIG.NUMBERS_COUNT);
+    }
+
+    sets.push({ setIndex: setIdx, predictedNumbers: numbers });
+  }
+
+  return {
+    round,
+    sets,
+    predictedAt: getPredictionDate(round),
+  };
+}
+
+/**
+ * 전략별 가중치 번호 선택
+ */
+function selectWeightedNumbersWithStrategy(
+  random: () => number,
+  statistics: NumberStatistics[],
+  count: number,
+  strategy: number
+): number[] {
+  const seed = Math.floor(random() * 100000);
+
+  const weighted = statistics.map(stat => {
+    const averageFrequency = 25;
+    let frequencyW: number, recentnessW: number, hotColdW: number, seedW: number;
+
+    switch (strategy) {
+      case 1: // 최근 트렌드 강화
+        frequencyW = 0.2;
+        recentnessW = 0.4;
+        hotColdW = 0.2;
+        seedW = 0.2;
+        break;
+      case 2: // 핫넘버 강화
+        frequencyW = 0.2;
+        recentnessW = 0.1;
+        hotColdW = 0.5;
+        seedW = 0.2;
+        break;
+      case 3: // 콜드넘버 역발상
+        frequencyW = 0.15;
+        recentnessW = 0.15;
+        hotColdW = -0.3;
+        seedW = 0.2;
+        break;
+      case 4: // 균형
+        frequencyW = 0.25;
+        recentnessW = 0.25;
+        hotColdW = 0.25;
+        seedW = 0.25;
+        break;
+      default: // 기본 (Set 0)
+        frequencyW = 0.3;
+        recentnessW = 0.2;
+        hotColdW = 0.3;
+        seedW = 0.2;
+        break;
+    }
+
+    const frequencyWeight = (stat.frequency / averageFrequency) * frequencyW;
+    const recentnessWeight = Math.max(0, (50 - stat.lastAppeared) / 50) * recentnessW;
+    const hotColdWeight = (stat.hotColdScore + 100) / 200 * hotColdW;
+    const seedFactor = (Math.sin(seed * stat.number * 0.1) + 1) / 2 * seedW;
+    const weight = Math.max(0.1, 1.0 + frequencyWeight + recentnessWeight + hotColdWeight + seedFactor);
+
+    return { number: stat.number, weight };
+  });
+
+  const selected: number[] = [];
+  const available = [...weighted];
+
+  while (selected.length < count && available.length > 0) {
+    const totalWeight = available.reduce((sum, item) => sum + item.weight, 0);
+    const target = random() * totalWeight;
+    let cumulative = 0;
+    for (let i = 0; i < available.length; i++) {
+      cumulative += available[i].weight;
+      if (target <= cumulative) {
+        selected.push(available[i].number);
+        available.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  return selected.sort((a, b) => a - b);
+}
+
+/**
+ * 다중 세트 동적 예측 생성 (정적 데이터 이후 ~ 현재+1)
+ */
+export function generateDynamicMultiSetPredictions(
+  latestStaticRound: number,
+  currentRound: number,
+  statistics?: NumberStatistics[],
+  options?: { useFairMode?: boolean; allData?: LottoResult[] }
+): AIMultiSetPrediction[] {
+  const predictions: AIMultiSetPrediction[] = [];
+
+  for (let round = latestStaticRound + 1; round <= currentRound + 1; round++) {
+    predictions.push(generateMultiSetPrediction(round, statistics, options));
+  }
+
+  return predictions;
+}
+
+/**
+ * 정적 데이터를 다중 세트 형식으로 변환
+ * 기존 1세트 데이터를 Set 0으로 유지하고, 나머지 4세트를 시드 기반으로 추가 생성
+ */
+export function convertStaticToMultiSet(
+  staticPredictions: AIPrediction[],
+  statistics?: NumberStatistics[],
+  options?: { useFairMode?: boolean; allData?: LottoResult[] }
+): AIMultiSetPrediction[] {
+  return staticPredictions.map(pred => {
+    const multiSet = generateMultiSetPrediction(pred.round, statistics, options);
+    // Set 0은 정적 데이터의 원래 번호로 교체 (일관성 유지)
+    multiSet.sets[0].predictedNumbers = pred.predictedNumbers;
+    multiSet.predictedAt = pred.predictedAt;
+    return multiSet;
+  });
 }

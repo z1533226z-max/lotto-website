@@ -14,6 +14,30 @@ export interface AIPredictionWithResult extends AIPrediction {
   bonusMatch: boolean;
 }
 
+// 다중 세트 AI 예측 (회차당 5세트)
+export interface AIMultiSetPrediction {
+  round: number;
+  sets: { setIndex: number; predictedNumbers: number[] }[];
+  predictedAt: string;
+}
+
+export interface AIMultiSetResult {
+  round: number;
+  predictedAt: string;
+  actualNumbers: number[];
+  bonusNumber: number;
+  sets: {
+    setIndex: number;
+    predictedNumbers: number[];
+    matchCount: number;
+    matchedNumbers: number[];
+    bonusMatch: boolean;
+  }[];
+  bestSetIndex: number;
+  bestMatchCount: number;
+  bestBonusMatch: boolean;
+}
+
 // 정적 데이터의 마지막 회차 (이후는 동적 생성)
 // 새 회차 데이터 추가 시 이 값도 함께 업데이트 (scripts/updateLottoData.js에서 자동 처리)
 export const LATEST_STATIC_PREDICTION_ROUND = 1211;
@@ -72,5 +96,70 @@ export function calculateStats(results: AIPredictionWithResult[]) {
     maxMatch,
     totalPredictions: results.length,
     threeOrMore,
+  };
+}
+
+// 다중 세트 적중 결과 계산
+export function calculateMultiSetMatches(
+  predictions: AIMultiSetPrediction[],
+  lottoData: LottoResult[]
+): AIMultiSetResult[] {
+  return predictions
+    .map(pred => {
+      const actual = lottoData.find(d => d.round === pred.round);
+      if (!actual) return null;
+
+      const sets = pred.sets.map(set => {
+        const matchedNumbers = set.predictedNumbers.filter(n => actual.numbers.includes(n));
+        const bonusMatch = set.predictedNumbers.includes(actual.bonusNumber);
+        return {
+          setIndex: set.setIndex,
+          predictedNumbers: set.predictedNumbers,
+          matchCount: matchedNumbers.length,
+          matchedNumbers,
+          bonusMatch,
+        };
+      });
+
+      // 베스트 세트 찾기 (적중수 우선, 같으면 보너스 적중 우선)
+      let bestIdx = 0;
+      for (let i = 1; i < sets.length; i++) {
+        if (
+          sets[i].matchCount > sets[bestIdx].matchCount ||
+          (sets[i].matchCount === sets[bestIdx].matchCount && sets[i].bonusMatch && !sets[bestIdx].bonusMatch)
+        ) {
+          bestIdx = i;
+        }
+      }
+
+      return {
+        round: pred.round,
+        predictedAt: pred.predictedAt,
+        actualNumbers: actual.numbers,
+        bonusNumber: actual.bonusNumber,
+        sets,
+        bestSetIndex: bestIdx,
+        bestMatchCount: sets[bestIdx].matchCount,
+        bestBonusMatch: sets[bestIdx].bonusMatch,
+      };
+    })
+    .filter((r): r is AIMultiSetResult => r !== null);
+}
+
+// 다중 세트 통계 요약 (베스트 세트 기준)
+export function calculateMultiSetStats(results: AIMultiSetResult[]) {
+  if (results.length === 0) return { avgMatch: 0, maxMatch: 0, totalPredictions: 0, threeOrMore: 0, totalSets: 0 };
+
+  const bestMatches = results.map(r => r.bestMatchCount);
+  const avgMatch = bestMatches.reduce((sum, m) => sum + m, 0) / bestMatches.length;
+  const maxMatch = Math.max(...bestMatches);
+  const threeOrMore = bestMatches.filter(m => m >= 3).length;
+
+  return {
+    avgMatch: Math.round(avgMatch * 10) / 10,
+    maxMatch,
+    totalPredictions: results.length,
+    threeOrMore,
+    totalSets: results.length * (results[0]?.sets.length || 0),
   };
 }
