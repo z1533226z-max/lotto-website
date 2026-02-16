@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
 
 // 로또 세금 계산
 function calculateTax(amount: number) {
@@ -11,11 +14,6 @@ function calculateTax(amount: number) {
   const breakdown: { label: string; amount: number; rate: number; tax: number }[] = [];
 
   let totalTax = 0;
-
-  if (amount <= 50_000_000) {
-    // 5천만원 이하: 비과세 (복권 당첨금 비과세 한도)
-    // 실제로는 200만원 이하가 비과세이지만, 편의상 세금 계산
-  }
 
   if (amount <= 300_000_000) {
     // 3억 이하: 22% (소득세 20% + 지방소득세 2%)
@@ -79,12 +77,12 @@ export default function LottoCalculatorPage() {
   const result = calculateTax(amount);
 
   const presets = [
-    { label: '1등 평균 (20억)', value: 2_000_000_000 },
-    { label: '10억', value: 1_000_000_000 },
-    { label: '5억', value: 500_000_000 },
-    { label: '3억', value: 300_000_000 },
-    { label: '1억', value: 100_000_000 },
-    { label: '2등 평균 (5천만)', value: 50_000_000 },
+    { label: '1등 평균 (20억)', value: 2_000_000_000, icon: '🏆' },
+    { label: '10억', value: 1_000_000_000, icon: '💰' },
+    { label: '5억', value: 500_000_000, icon: '💵' },
+    { label: '3억', value: 300_000_000, icon: '💴' },
+    { label: '1억', value: 100_000_000, icon: '💳' },
+    { label: '2등 평균', value: 50_000_000, icon: '🎯' },
   ];
 
   return (
@@ -95,90 +93,209 @@ export default function LottoCalculatorPage() {
       ]} />
 
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-          로또 당첨금 세금 계산기
-        </h1>
-        <p className="text-gray-600 mb-6">
-          로또 당첨금의 세후 실수령액을 계산해보세요
-        </p>
+        {/* Page header */}
+        <div className="text-center mb-8">
+          <div
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
+            style={{
+              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+              boxShadow: '0 8px 24px rgba(255, 107, 53, 0.3)',
+            }}
+          >
+            <span className="text-3xl">🧮</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
+            로또 당첨금 세금 계산기
+          </h1>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            로또 당첨금의 세후 실수령액을 계산해보세요
+          </p>
+        </div>
 
-        <Card className="mb-6">
-          <div className="space-y-4">
+        {/* Input Card */}
+        <Card variant="glass" padding="lg" className="mb-6">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: 'var(--text)' }}
+              >
                 당첨금액 입력
               </label>
               <input
                 type="text"
-                value={inputValue}
+                value={inputValue ? Number(inputValue).toLocaleString() : ''}
                 onChange={(e) => setInputValue(e.target.value.replace(/[^0-9]/g, ''))}
                 placeholder="금액을 입력하세요 (원)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className={cn(
+                  'w-full px-5 py-4 rounded-xl text-lg font-medium',
+                  'transition-all duration-200',
+                  'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary'
+                )}
+                style={{
+                  backgroundColor: 'var(--bg)',
+                  color: 'var(--text)',
+                  border: '2px solid var(--border)',
+                }}
               />
               {amount > 0 && (
-                <p className="text-sm text-gray-500 mt-1">{formatKRW(amount)}</p>
+                <p className="text-sm mt-2 font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  {formatKRW(amount)}
+                </p>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {presets.map((preset) => (
-                <button
-                  key={preset.value}
-                  onClick={() => setInputValue(String(preset.value))}
-                  className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-                >
-                  {preset.label}
-                </button>
-              ))}
+            <div>
+              <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                빠른 입력
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {presets.map((preset) => (
+                  <button
+                    key={preset.value}
+                    onClick={() => setInputValue(String(preset.value))}
+                    className={cn(
+                      'px-3 py-2.5 rounded-xl text-xs font-medium',
+                      'transition-all duration-200',
+                      'hover:-translate-y-0.5 hover:shadow-md',
+                      'active:scale-95'
+                    )}
+                    style={{
+                      backgroundColor: amount === preset.value ? 'var(--primary)' : 'var(--surface-hover)',
+                      color: amount === preset.value ? 'white' : 'var(--text-secondary)',
+                      border: amount === preset.value ? 'none' : '1px solid var(--border)',
+                    }}
+                  >
+                    <span className="block text-base mb-0.5">{preset.icon}</span>
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {amount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setInputValue('')}
+                className="w-full"
+              >
+                초기화
+              </Button>
+            )}
           </div>
         </Card>
 
+        {/* Results */}
         {amount > 0 && (
-          <Card className="bg-gradient-to-br from-blue-50 to-purple-50">
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-white/70 rounded-lg">
-                  <p className="text-sm text-gray-600">당첨금 (세전)</p>
-                  <p className="text-xl font-bold text-gray-800">{formatKRW(result.gross)}</p>
-                </div>
-                <div className="text-center p-4 bg-white/70 rounded-lg">
-                  <p className="text-sm text-gray-600">세금 합계</p>
-                  <p className="text-xl font-bold text-red-600">-{formatKRW(result.tax)}</p>
-                </div>
-              </div>
+          <div className="space-y-4 animate-fadeInUp">
+            {/* Net amount - hero card */}
+            <div
+              className="rounded-2xl p-8 text-center relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+              }}
+            >
+              {/* Decorative elements */}
+              <div
+                className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-10"
+                style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)' }}
+              />
+              <div
+                className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full opacity-10"
+                style={{ background: 'radial-gradient(circle, white 0%, transparent 70%)' }}
+              />
 
-              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-                <p className="text-sm text-gray-600 mb-1">실수령액 (세후)</p>
-                <p className="text-3xl font-bold text-primary">{formatKRW(result.net)}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  실효세율: {result.taxRate.toFixed(1)}%
+              <div className="relative z-10 space-y-2">
+                <p className="text-sm text-white/80 font-medium">실수령액 (세후)</p>
+                <p className="text-4xl md:text-5xl font-black text-white">
+                  {formatKRW(result.net)}
                 </p>
+                <Badge
+                  variant="default"
+                  className="bg-white/20 text-white border-white/30"
+                >
+                  실효세율 {result.taxRate.toFixed(1)}%
+                </Badge>
               </div>
+            </div>
 
-              {result.breakdown.length > 0 && (
-                <div className="bg-white/70 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">세금 상세 내역</h3>
-                  <div className="space-y-2">
-                    {result.breakdown.map((item, idx) => (
-                      <div key={idx} className="flex justify-between text-sm">
-                        <span className="text-gray-600">
-                          {item.label} ({item.rate}%)
-                        </span>
-                        <span className="text-gray-800 font-medium">
-                          {formatKRW(item.tax)}
+            {/* Gross & Tax breakdown */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card variant="glass">
+                <div className="text-center space-y-1">
+                  <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    당첨금 (세전)
+                  </p>
+                  <p className="text-xl font-bold" style={{ color: 'var(--text)' }}>
+                    {formatKRW(result.gross)}
+                  </p>
+                </div>
+              </Card>
+              <Card variant="glass">
+                <div className="text-center space-y-1">
+                  <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    세금 합계
+                  </p>
+                  <p className="text-xl font-bold" style={{ color: '#EF4444' }}>
+                    -{formatKRW(result.tax)}
+                  </p>
+                </div>
+              </Card>
+            </div>
+
+            {/* Tax detail breakdown */}
+            {result.breakdown.length > 0 && (
+              <Card variant="glass">
+                <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>
+                  세금 상세 내역
+                </h3>
+                <div className="space-y-3">
+                  {result.breakdown.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between py-2 border-b last:border-b-0"
+                      style={{ borderColor: 'var(--border-light)' }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Badge variant={item.rate === 22 ? 'info' : 'warning'} size="sm">
+                          {item.rate}%
+                        </Badge>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                          {item.label}
                         </span>
                       </div>
-                    ))}
-                  </div>
+                      <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>
+                        {formatKRW(item.tax)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </Card>
+            )}
 
-              <div className="text-xs text-gray-500 bg-white/50 rounded-lg p-3">
+            {/* Info note */}
+            <Card variant="outlined" padding="sm">
+              <div className="space-y-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>
                 <p>* 3억원 이하: 소득세 20% + 지방소득세 2% = 22%</p>
                 <p>* 3억원 초과: 소득세 30% + 지방소득세 3% = 33%</p>
                 <p>* 본 계산은 참고용이며, 정확한 세금은 세무서에 문의하세요.</p>
               </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {amount === 0 && (
+          <Card variant="glass" className="text-center py-12">
+            <div className="space-y-3">
+              <span className="text-5xl block">💸</span>
+              <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>
+                당첨금액을 입력하면 세후 실수령액을 계산합니다
+              </p>
+              <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                빠른 입력 버튼을 사용하거나 직접 금액을 입력하세요
+              </p>
             </div>
           </Card>
         )}

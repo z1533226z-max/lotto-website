@@ -3,11 +3,18 @@
  *
  * 핵심: 같은 회차번호 → 항상 같은 예측번호 (DB 없이 동작)
  * 시드 기반 의사 난수로 통계 가중치 반영
+ *
+ * 중요: "추첨 전 예측"의 공정성
+ * - 정적 데이터(aiPredictionHistory.ts): 배포 전에 확정되므로 공정
+ * - 동적 생성: 현재 전체 통계를 사용하므로 해당 회차 데이터가 포함될 수 있음
+ * - useFairMode 옵션: true이면 해당 회차 미만의 데이터만으로 통계를 재계산
+ * - 단, 시드 기반이므로 통계 유무와 관계없이 결과는 결정론적
  */
 
-import type { NumberStatistics } from '@/types/lotto';
+import type { LottoResult, NumberStatistics } from '@/types/lotto';
 import type { AIPrediction } from '@/data/aiPredictionHistory';
 import { LOTTO_CONFIG } from './constants';
+import { LottoStatisticsAnalyzer } from './statisticsAnalyzer';
 
 /**
  * 시드 기반 의사 난수 생성기 (Mulberry32)
@@ -114,16 +121,34 @@ function selectRandomNumbers(random: () => number, count: number): number[] {
 /**
  * 특정 회차의 AI 예측번호 생성
  * 같은 회차 + 같은 통계 → 항상 같은 결과
+ *
+ * @param round - 예측 대상 회차
+ * @param statistics - 번호 통계 (없으면 시드 기반 랜덤 생성)
+ * @param options.useFairMode - true이면 allData에서 round 미만의 데이터만 필터링하여 통계 재계산
+ * @param options.allData - 전체 로또 데이터 (useFairMode 사용 시 필요)
  */
 export function generatePredictionForRound(
   round: number,
-  statistics?: NumberStatistics[]
+  statistics?: NumberStatistics[],
+  options?: { useFairMode?: boolean; allData?: LottoResult[] }
 ): AIPrediction {
   const seed = getRoundSeed(round);
   const random = createSeededRandom(seed);
 
-  const predictedNumbers = statistics && statistics.length > 0
-    ? selectWeightedNumbers(random, statistics, LOTTO_CONFIG.NUMBERS_COUNT)
+  let effectiveStatistics = statistics;
+
+  // 공정 모드: 해당 회차 이전 데이터만으로 통계 재계산
+  if (options?.useFairMode && options?.allData) {
+    const dataBeforeRound = options.allData.filter(d => d.round < round);
+    if (dataBeforeRound.length > 0) {
+      effectiveStatistics = LottoStatisticsAnalyzer.generateStatistics(dataBeforeRound);
+    } else {
+      effectiveStatistics = undefined;
+    }
+  }
+
+  const predictedNumbers = effectiveStatistics && effectiveStatistics.length > 0
+    ? selectWeightedNumbers(random, effectiveStatistics, LOTTO_CONFIG.NUMBERS_COUNT)
     : selectRandomNumbers(random, LOTTO_CONFIG.NUMBERS_COUNT);
 
   return {
@@ -135,16 +160,25 @@ export function generatePredictionForRound(
 
 /**
  * 정적 데이터 이후~현재 회차까지 모든 예측 생성
+ *
+ * 참고: 동적 예측에서는 현재 전체 통계를 사용합니다.
+ * 이는 해당 회차 결과가 이미 통계에 포함될 수 있음을 의미하지만,
+ * 시드 기반 결정론적 생성이므로 결과의 일관성은 보장됩니다.
+ * 진정한 "추첨 전 예측"이 필요한 경우 useFairMode 옵션을 사용하세요.
+ *
+ * @param options.useFairMode - true이면 각 회차 R의 예측에 R-1까지의 데이터 통계만 사용
+ * @param options.allData - 전체 로또 데이터 (useFairMode 사용 시 필요)
  */
 export function generateDynamicPredictions(
   latestStaticRound: number,
   currentRound: number,
-  statistics?: NumberStatistics[]
+  statistics?: NumberStatistics[],
+  options?: { useFairMode?: boolean; allData?: LottoResult[] }
 ): AIPrediction[] {
   const predictions: AIPrediction[] = [];
 
   for (let round = latestStaticRound + 1; round <= currentRound + 1; round++) {
-    predictions.push(generatePredictionForRound(round, statistics));
+    predictions.push(generatePredictionForRound(round, statistics, options));
   }
 
   return predictions;

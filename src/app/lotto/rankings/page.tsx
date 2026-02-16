@@ -16,9 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
+const rankMedals = ['🥇', '🥈', '🥉'];
+
 export default async function LottoRankingsPage() {
   const allData = await getAllLottoData();
-  // 1인당 당첨금 기준 정렬 (총 당첨금 / 당첨자수)
+  const maxPrize = Math.max(
+    ...allData.filter(d => d.prizeMoney.first > 0 && d.prizeMoney.firstWinners > 0).map(d => d.prizeMoney.first)
+  );
   const rankings = [...allData]
     .filter(d => d.prizeMoney.first > 0 && d.prizeMoney.firstWinners > 0)
     .map(d => ({
@@ -35,53 +39,164 @@ export default async function LottoRankingsPage() {
         { label: '역대 당첨금 순위' },
       ]} />
 
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-        역대 로또 최고 당첨금 순위
-      </h1>
-      <p className="text-gray-600 mb-6">
-        1등 1인당 당첨금 기준 TOP 50
-      </p>
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
+          역대 로또 최고 당첨금 순위
+        </h1>
+        <p style={{ color: 'var(--text-secondary)' }}>
+          1등 1인당 당첨금 기준 TOP 50
+        </p>
+      </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      {/* Top 3 podium cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {rankings.slice(0, 3).map((item, idx) => (
+          <div
+            key={item.round}
+            className="relative rounded-2xl p-6 border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            style={{
+              backgroundColor: 'var(--surface)',
+              borderColor: idx === 0 ? '#FBBF24' : idx === 1 ? '#9CA3AF' : '#D97706',
+              borderWidth: '2px',
+            }}
+          >
+            {/* Rank decoration */}
+            <div className="absolute top-3 right-3 text-3xl opacity-80">
+              {rankMedals[idx]}
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <span
+                  className="text-xs font-medium px-2 py-0.5 rounded-full"
+                  style={{
+                    backgroundColor: idx === 0 ? 'rgba(251, 191, 36, 0.15)' : idx === 1 ? 'rgba(156, 163, 175, 0.15)' : 'rgba(217, 119, 6, 0.15)',
+                    color: idx === 0 ? '#B45309' : idx === 1 ? '#6B7280' : '#92400E',
+                  }}
+                >
+                  {idx + 1}위
+                </span>
+              </div>
+              <Link
+                href={`/lotto/${item.round}`}
+                className="text-lg font-bold hover:text-primary transition-colors block"
+                style={{ color: 'var(--text)' }}
+              >
+                {item.round}회
+              </Link>
+              <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.drawDate}</p>
+              <div className="py-2">
+                <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="xs" />
+              </div>
+              <div>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>1등 당첨금</p>
+                <p className="text-xl font-black text-primary">{formatCurrency(item.perPerson)}</p>
+              </div>
+              <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                당첨자 {item.prizeMoney.firstWinners}명
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Rankings table */}
+      <div
+        className="rounded-2xl border overflow-hidden"
+        style={{
+          backgroundColor: 'var(--surface)',
+          borderColor: 'var(--border)',
+        }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-4 py-3 text-center font-medium text-gray-600 w-12">순위</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">회차</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 hidden md:table-cell">추첨일</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600 hidden lg:table-cell">당첨번호</th>
-                <th className="px-4 py-3 text-right font-medium text-gray-600">1등 당첨금</th>
-                <th className="px-4 py-3 text-right font-medium text-gray-600">당첨자</th>
+            <thead>
+              <tr style={{ backgroundColor: 'var(--surface-hover)' }}>
+                <th className="px-4 py-3.5 text-center font-semibold w-16" style={{ color: 'var(--text-secondary)' }}>
+                  순위
+                </th>
+                <th className="px-4 py-3.5 text-left font-semibold" style={{ color: 'var(--text-secondary)' }}>
+                  회차
+                </th>
+                <th className="px-4 py-3.5 text-left font-semibold hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                  추첨일
+                </th>
+                <th className="px-4 py-3.5 text-left font-semibold hidden lg:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                  당첨번호
+                </th>
+                <th className="px-4 py-3.5 text-right font-semibold" style={{ color: 'var(--text-secondary)' }}>
+                  1등 당첨금
+                </th>
+                <th className="px-4 py-3.5 text-right font-semibold hidden sm:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                  당첨자
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rankings.map((item, idx) => (
-                <tr key={item.round} className={`hover:bg-gray-50 transition-colors ${idx < 3 ? 'bg-yellow-50/50' : ''}`}>
-                  <td className="px-4 py-3 text-center">
-                    {idx < 3 ? (
-                      <span className="text-lg">{['🥇', '🥈', '🥉'][idx]}</span>
-                    ) : (
-                      <span className="text-gray-500">{idx + 1}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/lotto/${item.round}`} className="text-primary hover:underline font-medium">
-                      {item.round}회
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{item.drawDate}</td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="xs" />
-                  </td>
-                  <td className="px-4 py-3 text-right font-bold text-gray-800">
-                    {formatCurrency(item.perPerson)}
-                  </td>
-                  <td className="px-4 py-3 text-right text-gray-600">
-                    {item.prizeMoney.firstWinners}명
-                  </td>
-                </tr>
-              ))}
+            <tbody>
+              {rankings.slice(3).map((item, idx) => {
+                const rank = idx + 4;
+                const barWidth = maxPrize > 0 ? (item.perPerson / maxPrize) * 100 : 0;
+
+                return (
+                  <tr
+                    key={item.round}
+                    className="transition-colors duration-200 border-t"
+                    style={{
+                      borderColor: 'var(--border-light)',
+                    }}
+                  >
+                    <td className="px-4 py-3.5 text-center">
+                      <span
+                        className="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold"
+                        style={{
+                          backgroundColor: 'var(--surface-hover)',
+                          color: 'var(--text-secondary)',
+                        }}
+                      >
+                        {rank}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <Link
+                        href={`/lotto/${item.round}`}
+                        className="text-primary hover:underline font-semibold"
+                      >
+                        {item.round}회
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3.5 hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                      {item.drawDate}
+                    </td>
+                    <td className="px-4 py-3.5 hidden lg:table-cell">
+                      <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="xs" />
+                    </td>
+                    <td className="px-4 py-3.5 text-right">
+                      <div className="space-y-1">
+                        <span className="font-bold" style={{ color: 'var(--text)' }}>
+                          {formatCurrency(item.perPerson)}
+                        </span>
+                        {/* Progress bar */}
+                        <div
+                          className="h-1 rounded-full w-full max-w-[120px] ml-auto"
+                          style={{ backgroundColor: 'var(--surface-hover)' }}
+                        >
+                          <div
+                            className="h-1 rounded-full transition-all duration-500"
+                            style={{
+                              width: `${barWidth}%`,
+                              background: 'linear-gradient(90deg, var(--primary), var(--accent))',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5 text-right hidden sm:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                      {item.prizeMoney.firstWinners}명
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

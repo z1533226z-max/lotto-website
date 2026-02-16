@@ -1,12 +1,145 @@
 // 로또 데이터 증분 업데이트 스크립트
 // 기존 realLottoData.ts에서 마지막 회차를 읽고, 이후 회차만 추가 fetch
 // smok95 GitHub Pages API 사용
+// 새 회차 추가 시 aiPredictionHistory.ts도 자동으로 업데이트
 
 const fs = require('fs').promises;
 const path = require('path');
 
 const API_BASE_URL = 'https://smok95.github.io/lotto/results';
 const DATA_FILE = path.join(__dirname, '..', 'src', 'data', 'realLottoData.ts');
+const AI_PREDICTION_FILE = path.join(__dirname, '..', 'src', 'data', 'aiPredictionHistory.ts');
+
+// ===== Mulberry32 PRNG (aiPredictionGenerator.ts와 동일) =====
+function createSeededRandom(seed) {
+  let state = seed | 0;
+  return () => {
+    state = (state + 0x6D2B79F5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function getRoundSeed(round) {
+  return round * 7919 + 104729;
+}
+
+function selectRandomNumbers(random, count) {
+  const MAX_NUMBER = 45;
+  const selected = [];
+  while (selected.length < count) {
+    const num = Math.floor(random() * MAX_NUMBER) + 1;
+    if (!selected.includes(num)) {
+      selected.push(num);
+    }
+  }
+  return selected.sort((a, b) => a - b);
+}
+
+function getPredictionDate(round) {
+  const firstDraw = new Date(2002, 11, 7); // 2002-12-07
+  const drawDate = new Date(firstDraw.getTime() + (round - 1) * 7 * 24 * 60 * 60 * 1000);
+  drawDate.setDate(drawDate.getDate() - 1); // 하루 전 (금요일)
+  return drawDate.toISOString().split('T')[0];
+}
+
+/**
+ * 시드 기반으로 예측번호 생성 (통계 없이, aiPredictionGenerator.ts의 selectRandomNumbers와 동일)
+ * 참고: 정적 데이터에서는 통계 가중치 없이 시드만으로 생성
+ * 동적 생성 시에는 API 서버에서 통계 가중치를 적용하므로 결과가 다를 수 있음
+ * 하지만 정적 데이터는 "확정된 기록"이므로, 이 스크립트에서 생성한 값이 최종값
+ */
+function generatePredictionForRound(round) {
+  const seed = getRoundSeed(round);
+  const random = createSeededRandom(seed);
+  const predictedNumbers = selectRandomNumbers(random, 6);
+  const predictedAt = getPredictionDate(round);
+  return { round, predictedNumbers, predictedAt };
+}
+
+// ===== AI 예측 기록 업데이트 =====
+
+/**
+ * aiPredictionHistory.ts에서 현재 LATEST_STATIC_PREDICTION_ROUND 값 추출
+ */
+async function getLatestStaticPredictionRound() {
+  try {
+    const content = await fs.readFile(AI_PREDICTION_FILE, 'utf8');
+    const match = content.match(/LATEST_STATIC_PREDICTION_ROUND\s*=\s*(\d+)/);
+    if (!match) return 0;
+    return parseInt(match[1]);
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * aiPredictionHistory.ts에 새 회차 예측 추가
+ * - LATEST_STATIC_PREDICTION_ROUND를 새 값으로 업데이트
+ * - AI_PREDICTION_HISTORY 배열 맨 앞에 새 엔트리 추가
+ */
+async function updateAIPredictionHistory(newRounds) {
+  if (newRounds.length === 0) return;
+
+  let content = await fs.readFile(AI_PREDICTION_FILE, 'utf8');
+
+  const currentLatest = await getLatestStaticPredictionRound();
+  const newLatestRound = Math.max(...newRounds.map(r => r.round));
+
+  if (newLatestRound <= currentLatest) {
+    console.log(`AI 예측: 이미 최신 (${currentLatest}회). 스킵.`);
+    return;
+  }
+
+  // 새로 추가할 회차만 필터링 (현재 정적 데이터 이후의 회차)
+  const roundsToAdd = newRounds
+    .filter(r => r.round > currentLatest)
+    .sort((a, b) => b.round - a.round); // 내림차순 (최신이 위에)
+
+  if (roundsToAdd.length === 0) {
+    console.log('AI 예측: 추가할 새 회차 없음.');
+    return;
+  }
+
+  console.log(`\nAI 예측 기록 업데이트 (${roundsToAdd.length}개 회차)...`);
+
+  // 1. LATEST_STATIC_PREDICTION_ROUND 업데이트
+  content = content.replace(
+    /LATEST_STATIC_PREDICTION_ROUND\s*=\s*\d+/,
+    `LATEST_STATIC_PREDICTION_ROUND = ${newLatestRound}`
+  );
+
+  // 2. 주석의 회차 범위 업데이트
+  content = content.replace(
+    /AI 추천 기록 \(정적 데이터 - \d+~\d+회\)/,
+    `AI 추천 기록 (정적 데이터 - 1201~${newLatestRound}회)`
+  );
+
+  // 3. AI_PREDICTION_HISTORY 배열 앞에 새 엔트리 추가
+  const newEntries = roundsToAdd.map(r => {
+    const prediction = generatePredictionForRound(r.round);
+    console.log(`  ${r.round}회차 예측: [${prediction.predictedNumbers.join(', ')}] (생성일: ${prediction.predictedAt})`);
+    return `  { round: ${prediction.round}, predictedNumbers: [${prediction.predictedNumbers.join(', ')}], predictedAt: '${prediction.predictedAt}' },`;
+  });
+
+  // 배열 시작 부분 찾기: "AI_PREDICTION_HISTORY: AIPrediction[] = [" 다음 줄
+  const arrayStartPattern = /AI_PREDICTION_HISTORY:\s*AIPrediction\[\]\s*=\s*\[\n/;
+  const arrayStartMatch = content.match(arrayStartPattern);
+
+  if (!arrayStartMatch) {
+    console.error('AI 예측 배열을 찾을 수 없습니다.');
+    return;
+  }
+
+  const insertPos = arrayStartMatch.index + arrayStartMatch[0].length;
+  content = content.slice(0, insertPos) + newEntries.join('\n') + '\n' + content.slice(insertPos);
+
+  await fs.writeFile(AI_PREDICTION_FILE, content, 'utf8');
+  console.log(`AI 예측 기록 업데이트 완료 (LATEST_STATIC_PREDICTION_ROUND = ${newLatestRound})`);
+}
+
+// ===== 로또 데이터 업데이트 (기존 코드) =====
 
 // 현재 데이터에서 마지막 회차 번호 추출
 async function getLastRoundFromFile() {
@@ -178,9 +311,17 @@ async function main() {
 
   console.log(`병합 후 데이터: ${updatedData.length}개 회차`);
   await writeDataFile(updatedData);
-  console.log(`\n=== 업데이트 완료 ===`);
+  console.log(`\n=== 로또 데이터 업데이트 완료 ===`);
   console.log(`총 ${updatedData.length}개 회차 (${newData.length}개 추가됨)`);
   console.log(`마지막 회차: ${updatedData[updatedData.length - 1].round}회`);
+
+  // AI 예측 기록도 자동 업데이트
+  try {
+    await updateAIPredictionHistory(newData);
+  } catch (err) {
+    console.error('AI 예측 기록 업데이트 실패 (로또 데이터 업데이트는 정상):', err.message);
+    // AI 예측 업데이트 실패는 치명적이지 않으므로 프로세스를 종료하지 않음
+  }
 }
 
 main().catch(err => {

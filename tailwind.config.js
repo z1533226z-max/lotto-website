@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,16 +9,67 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#FF6B35',    // 주색상 (신뢰감 있는 오렌지)
-        secondary: '#004E98',  // 보조색상 (안정감 있는 블루)
-        accent: '#FFD23F',     // 강조색상 (행운의 골드)
-        background: '#F8F9FA', // 배경색 (깔끔한 회색)
-        'lotto-red': '#FF4444',     // 1-10번
-        'lotto-orange': '#FF8800',  // 11-20번
-        'lotto-yellow': '#FFDD00',  // 21-30번
-        'lotto-blue': '#0088FF',    // 31-40번
-        'lotto-purple': '#8844FF',  // 41-45번
-        'lotto-bonus': '#FFD700',   // 보너스번호
+        // Brand colors with full scale
+        primary: {
+          50: '#FFF3ED',
+          100: '#FFE4D4',
+          200: '#FFC5A8',
+          300: '#FF9E71',
+          400: '#FF6B35',
+          DEFAULT: '#FF6B35',
+          500: '#F54D10',
+          600: '#E63A06',
+          700: '#BA2B07',
+          800: '#95240C',
+          900: '#7A200E',
+        },
+        secondary: {
+          50: '#E8F1FB',
+          100: '#CDDFF5',
+          200: '#A2C4EB',
+          300: '#6BA0DC',
+          400: '#3B7CC9',
+          DEFAULT: '#004E98',
+          500: '#004E98',
+          600: '#004080',
+          700: '#003366',
+          800: '#00264D',
+          900: '#001933',
+        },
+        accent: {
+          50: '#FFFBEB',
+          100: '#FFF3C4',
+          200: '#FFE68A',
+          300: '#FFD23F',
+          DEFAULT: '#FFD23F',
+          400: '#FFC107',
+          500: '#E6A800',
+          600: '#CC9500',
+          700: '#A67A00',
+          800: '#806000',
+          900: '#664D00',
+        },
+        background: '#F8F9FA',
+        // Dark mode colors
+        dark: {
+          bg: '#0F1117',
+          'bg-alt': '#161822',
+          surface: '#1E2030',
+          'surface-hover': '#282A3A',
+          'surface-active': '#323446',
+          border: '#2E3046',
+          'border-light': '#252738',
+          text: '#F9FAFB',
+          'text-secondary': '#9CA3AF',
+          'text-tertiary': '#6B7280',
+        },
+        // Lotto ball colors
+        'lotto-red': '#FF4444',
+        'lotto-orange': '#FF8800',
+        'lotto-yellow': '#FFDD00',
+        'lotto-blue': '#0088FF',
+        'lotto-purple': '#8844FF',
+        'lotto-bonus': '#FFD700',
       },
       fontFamily: {
         'sans': ['Noto Sans KR', 'sans-serif'],
@@ -28,6 +80,12 @@ module.exports = {
         'pulse-slow': 'pulse 3s infinite',
         'slide-up': 'slideUp 0.5s ease-out',
         'slide-down': 'slideDown 0.5s ease-out',
+        'shimmer': 'shimmer 2s linear infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
+        'spin-slow': 'spin 3s linear infinite',
+        'fade-in': 'fadeIn 0.4s ease-out forwards',
+        'scale-in': 'scaleIn 0.3s ease-out forwards',
       },
       keyframes: {
         slideUp: {
@@ -38,6 +96,26 @@ module.exports = {
           '0%': { transform: 'translateY(-100%)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        glowPulse: {
+          '0%, 100%': { boxShadow: '0 0 5px rgba(255, 107, 53, 0.2), 0 0 20px rgba(255, 107, 53, 0.1)' },
+          '50%': { boxShadow: '0 0 20px rgba(255, 107, 53, 0.4), 0 0 60px rgba(255, 107, 53, 0.2)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
       },
       screens: {
         'xs': '475px',
@@ -45,6 +123,27 @@ module.exports = {
       boxShadow: {
         'lotto': '0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
         'card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.1)',
+        'glass-dark': '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        'elevated': '0 12px 40px -8px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.08)',
+        'elevated-dark': '0 12px 40px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -2px rgba(0, 0, 0, 0.2)',
+        'glow': '0 0 20px rgba(255, 107, 53, 0.3), 0 0 60px rgba(255, 107, 53, 0.1)',
+        'glow-secondary': '0 0 20px rgba(0, 78, 152, 0.3), 0 0 60px rgba(0, 78, 152, 0.1)',
+        'glow-accent': '0 0 20px rgba(255, 210, 63, 0.3), 0 0 60px rgba(255, 210, 63, 0.1)',
+        'inner-glow': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+      },
+      backdropBlur: {
+        xs: '2px',
+        '3xl': '64px',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
+        'shimmer-dark': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
+      },
+      backgroundSize: {
+        'shimmer': '200% 100%',
       },
     },
   },

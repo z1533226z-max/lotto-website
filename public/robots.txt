@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Allow: /lotto/
+Allow: /community/
 Disallow: /_next/
 Disallow: /api/
 

@@ -8,27 +8,37 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "update-data": "node scripts/updateLottoData.js"
+    "update-data": "node scripts/updateLottoData.js",
+    "scrape-stores": "node scripts/scrapeWinningStores.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
+    "bcryptjs": "^3.0.3",
+    "framer-motion": "^11.3.0",
     "next": "14.2.30",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "framer-motion": "^11.3.0",
     "recharts": "^2.12.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "@types/node": "^22.0.0",
-    "typescript": "^5.5.0",
-    "tailwindcss": "^3.4.0",
     "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.30"
+    "eslint-config-next": "14.2.30",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.5.0"
   },
-  "keywords": ["로또", "로또번호", "AI추천", "당첨번호", "NextJS"],
+  "keywords": [
+    "로또",
+    "로또번호",
+    "AI추천",
+    "당첨번호",
+    "NextJS"
+  ],
   "author": "Claude",
   "license": "MIT"
 }

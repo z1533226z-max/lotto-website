@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
+import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider';
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -96,8 +97,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={notoSansKR.variable}>
+    <html lang="ko" className={notoSansKR.variable} suppressHydrationWarning>
       <head>
+        {/* Theme initialization script - prevents flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+
         {/* 구조화 데이터 */}
         <script
           type="application/ld+json"
@@ -123,7 +127,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
       <body className={notoSansKR.className}>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
 
         {/* Google Analytics 4 */}
         <Script

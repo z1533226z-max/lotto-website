@@ -263,6 +263,192 @@ export class LottoStatisticsAnalyzer {
     return statistics;
   }
   
+  // =============================================
+  // 시간 윈도우 기반 통계 메서드들
+  // =============================================
+
+  /**
+   * 최근 N회차에 대한 윈도우 통계 생성
+   */
+  static generateTimeWindowedStats(data: LottoResult[], windowSize: number): NumberStatistics[] {
+    if (data.length === 0) return this.getDefaultStatistics();
+
+    const sortedData = [...data].sort((a, b) => b.round - a.round);
+    const windowData = sortedData.slice(0, Math.min(windowSize, sortedData.length));
+
+    return this.generateStatistics(windowData);
+  }
+
+  /**
+   * 두 시간 윈도우를 비교하여 트렌드 변화 반환
+   */
+  static compareWindows(data: LottoResult[], recentSize: number, previousSize: number): {
+    hotNumbers: { number: number; recentFreq: number; previousFreq: number; change: number }[];
+    coldNumbers: { number: number; recentFreq: number; previousFreq: number; change: number }[];
+    newlyAppeared: number[];
+    disappeared: number[];
+  } {
+    const sortedData = [...data].sort((a, b) => b.round - a.round);
+    const recentData = sortedData.slice(0, Math.min(recentSize, sortedData.length));
+    const previousData = sortedData.slice(recentSize, Math.min(recentSize + previousSize, sortedData.length));
+
+    const comparisons: { number: number; recentFreq: number; previousFreq: number; change: number }[] = [];
+
+    for (let num = LOTTO_CONFIG.MIN_NUMBER; num <= LOTTO_CONFIG.MAX_NUMBER; num++) {
+      const recentFreq = this.calculateFrequency(num, recentData);
+      const previousFreq = this.calculateFrequency(num, previousData);
+      // Normalize by window sizes for fair comparison
+      const recentRate = recentData.length > 0 ? recentFreq / recentData.length : 0;
+      const previousRate = previousData.length > 0 ? previousFreq / previousData.length : 0;
+      const change = recentRate - previousRate;
+      comparisons.push({ number: num, recentFreq, previousFreq, change });
+    }
+
+    // Hot numbers: sorted by highest positive change
+    const hotNumbers = comparisons
+      .filter(c => c.change > 0)
+      .sort((a, b) => b.change - a.change)
+      .slice(0, 10);
+
+    // Cold numbers: sorted by most negative change
+    const coldNumbers = comparisons
+      .filter(c => c.change < 0)
+      .sort((a, b) => a.change - b.change)
+      .slice(0, 10);
+
+    // Newly appeared: appeared in recent but NOT in previous window
+    const newlyAppeared = comparisons
+      .filter(c => c.recentFreq > 0 && c.previousFreq === 0)
+      .map(c => c.number);
+
+    // Disappeared: appeared in previous but NOT in recent window
+    const disappeared = comparisons
+      .filter(c => c.recentFreq === 0 && c.previousFreq > 0)
+      .map(c => c.number);
+
+    return { hotNumbers, coldNumbers, newlyAppeared, disappeared };
+  }
+
+  /**
+   * 이번 주 변화 요약 (최신 회차 기준)
+   */
+  static getWeeklyChanges(data: LottoResult[]): {
+    latestRound: number;
+    newNumbers: number[];
+    bonusNumber: number;
+    longestAbsent: { number: number; rounds: number }[];
+    hottestStreak: { number: number; consecutiveAppearances: number }[];
+    overduePredictions: number[];
+  } {
+    if (data.length === 0) {
+      return {
+        latestRound: 0,
+        newNumbers: [],
+        bonusNumber: 0,
+        longestAbsent: [],
+        hottestStreak: [],
+        overduePredictions: [],
+      };
+    }
+
+    const sortedData = [...data].sort((a, b) => b.round - a.round);
+    const latest = sortedData[0];
+    const latestRound = latest.round;
+
+    // Latest winning numbers and bonus
+    const newNumbers = [...latest.numbers].sort((a, b) => a - b);
+    const bonusNumber = latest.bonusNumber;
+
+    // Longest absent: numbers that haven't appeared for the most rounds
+    const absentInfo: { number: number; rounds: number }[] = [];
+    for (let num = LOTTO_CONFIG.MIN_NUMBER; num <= LOTTO_CONFIG.MAX_NUMBER; num++) {
+      const lastAppeared = this.calculateLastAppeared(num, data);
+      const roundsAbsent = lastAppeared > 0 ? latestRound - lastAppeared : latestRound;
+      absentInfo.push({ number: num, rounds: roundsAbsent });
+    }
+    const longestAbsent = absentInfo
+      .sort((a, b) => b.rounds - a.rounds)
+      .slice(0, 5);
+
+    // Hottest streak: consecutive appearances from latest round backwards
+    const streakInfo: { number: number; consecutiveAppearances: number }[] = [];
+    for (let num = LOTTO_CONFIG.MIN_NUMBER; num <= LOTTO_CONFIG.MAX_NUMBER; num++) {
+      const consecutive = this.calculateConsecutiveCount(num, data);
+      if (consecutive > 0) {
+        streakInfo.push({ number: num, consecutiveAppearances: consecutive });
+      }
+    }
+    const hottestStreak = streakInfo
+      .sort((a, b) => b.consecutiveAppearances - a.consecutiveAppearances)
+      .slice(0, 5);
+
+    // Overdue predictions: numbers whose actual absence exceeds expected average interval
+    // Expected interval = total rounds / frequency
+    const overduePredictions: number[] = [];
+    for (let num = LOTTO_CONFIG.MIN_NUMBER; num <= LOTTO_CONFIG.MAX_NUMBER; num++) {
+      const frequency = this.calculateFrequency(num, data);
+      if (frequency === 0) {
+        overduePredictions.push(num);
+        continue;
+      }
+      const expectedInterval = data.length / frequency;
+      const lastAppeared = this.calculateLastAppeared(num, data);
+      const currentAbsence = latestRound - lastAppeared;
+      // Consider "overdue" if absent for more than 1.5x the expected interval
+      if (currentAbsence > expectedInterval * 1.5) {
+        overduePredictions.push(num);
+      }
+    }
+
+    return {
+      latestRound,
+      newNumbers,
+      bonusNumber,
+      longestAbsent,
+      hottestStreak,
+      overduePredictions: overduePredictions.slice(0, 10),
+    };
+  }
+
+  /**
+   * 특정 번호의 시계열 트렌드 데이터 생성
+   */
+  static getTrendTimeSeries(
+    number: number,
+    data: LottoResult[],
+    windowSize: number,
+    steps: number
+  ): { labels: string[]; values: number[] } {
+    const sortedData = [...data].sort((a, b) => a.round - b.round);
+    const labels: string[] = [];
+    const values: number[] = [];
+
+    // Calculate total data points we can use
+    const totalRounds = sortedData.length;
+    // Start from the end and work backwards in steps
+    const effectiveSteps = Math.min(steps, Math.ceil(totalRounds / windowSize));
+
+    for (let i = 0; i < effectiveSteps; i++) {
+      // From latest going backwards
+      const endIndex = totalRounds - (i * windowSize);
+      const startIndex = Math.max(0, endIndex - windowSize);
+
+      if (startIndex >= endIndex) break;
+
+      const windowData = sortedData.slice(startIndex, endIndex);
+      if (windowData.length === 0) break;
+
+      const startRound = windowData[0].round;
+      const endRound = windowData[windowData.length - 1].round;
+      labels.unshift(`${startRound}-${endRound}`);
+
+      const freq = this.calculateFrequency(number, windowData);
+      values.unshift(freq);
+    }
+
+    return { labels, values };
+  }
+
   /**
    * 통계 데이터 유효성 검증
    */

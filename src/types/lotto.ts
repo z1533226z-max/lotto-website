@@ -69,16 +69,24 @@ export interface AdBannerProps {
 export interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'glass' | 'gradient';
   size?: 'xs' | 'sm' | 'md' | 'lg';
   disabled?: boolean;
+  loading?: boolean;
+  icon?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  fullWidth?: boolean;
   className?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export interface CardProps {
   children: React.ReactNode;
   className?: string;
   title?: string;
+  variant?: 'default' | 'glass' | 'elevated' | 'gradient' | 'outlined';
+  hover?: 'none' | 'lift' | 'glow' | 'scale';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
 // 분석 관련 타입들

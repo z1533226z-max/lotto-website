@@ -13,10 +13,11 @@ import {
   estimateCurrentRound,
 } from '@/lib/aiPredictionGenerator';
 
-// 캐시 (1시간)
+// 캐시 (1시간) - lottoDataLength와 latestDataRound 모두 확인하여 유효성 검증
 let cachedResult: {
   predictions: AIPrediction[];
   lottoDataLength: number;
+  latestDataRound: number;
   timestamp: number;
 } | null = null;
 const CACHE_TTL = 60 * 60 * 1000; // 1시간
@@ -33,12 +34,19 @@ export async function GET(request: NextRequest) {
     // 최신 로또 데이터 가져오기 (정적 + 동적)
     const allLottoData = await getAllLottoData();
 
-    // 캐시 히트 (데이터 길이도 일치해야 유효)
-    if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL && cachedResult.lottoDataLength === allLottoData.length) {
+    // 최신 데이터 회차 번호 계산 (캐시 검증에도 사용)
+    const latestDataRound = Math.max(...allLottoData.map(d => d.round));
+
+    // 캐시 히트 (데이터 길이 + 최신 회차 모두 일치해야 유효)
+    if (
+      cachedResult &&
+      (now - cachedResult.timestamp) < CACHE_TTL &&
+      cachedResult.lottoDataLength === allLottoData.length &&
+      cachedResult.latestDataRound === latestDataRound
+    ) {
       const allPredictions = cachedResult.predictions;
       const results = calculateMatches(allPredictions, allLottoData);
       const stats = calculateStats(results);
-      const latestDataRound = Math.max(...allLottoData.map(d => d.round));
       const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
       return NextResponse.json({
@@ -58,25 +66,29 @@ export async function GET(request: NextRequest) {
     // 현재 회차 추정
     const currentRound = estimateCurrentRound();
 
-    // 동적 예측 생성 (1211회~현재+1)
+    // 동적 예측 생성 (정적 데이터 이후 ~ 현재+1)
     const dynamicPredictions = generateDynamicPredictions(
       LATEST_STATIC_PREDICTION_ROUND,
       currentRound,
       statistics
     );
 
-    // 정적(1201~1210) + 동적(1211~) 합치기
+    // 정적(1201~LATEST_STATIC) + 동적(LATEST_STATIC+1~) 합치기
     const allPredictions = [...AI_PREDICTION_HISTORY, ...dynamicPredictions];
 
-    // 캐시 저장
-    cachedResult = { predictions: allPredictions, lottoDataLength: allLottoData.length, timestamp: now };
+    // 캐시 저장 (latestDataRound 포함)
+    cachedResult = {
+      predictions: allPredictions,
+      lottoDataLength: allLottoData.length,
+      latestDataRound,
+      timestamp: now,
+    };
 
     // 적중 결과 계산
     const results = calculateMatches(allPredictions, allLottoData);
     const stats = calculateStats(results);
 
     // 다음 회차 예측 (아직 추첨 안 된 것)
-    const latestDataRound = Math.max(...allLottoData.map(d => d.round));
     const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
     return NextResponse.json({

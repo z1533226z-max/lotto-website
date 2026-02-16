@@ -28,17 +28,21 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <nav aria-label="breadcrumb" className="text-sm text-gray-500 mb-4">
+      <nav aria-label="breadcrumb" className="text-sm mb-4" style={{ color: 'var(--text-tertiary)' }}>
         <ol className="flex items-center gap-1 flex-wrap">
           {items.map((item, index) => (
             <li key={index} className="flex items-center">
-              {index > 0 && <span className="mx-1">&gt;</span>}
+              {index > 0 && <span className="mx-1" style={{ color: 'var(--text-tertiary)' }}>/</span>}
               {item.href ? (
-                <Link href={item.href} className="hover:text-primary transition-colors">
+                <Link
+                  href={item.href}
+                  className="hover:text-primary transition-colors"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
                   {item.label}
                 </Link>
               ) : (
-                <span className="text-gray-800 font-medium">{item.label}</span>
+                <span className="font-medium" style={{ color: 'var(--text)' }}>{item.label}</span>
               )}
             </li>
           ))}

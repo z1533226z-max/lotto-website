@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 
@@ -31,6 +31,7 @@ export default async function LottoListPage({ searchParams }: Props) {
   const currentPage = Math.min(page, totalPages);
   const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageData = sortedData.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  const latestRound = allData[allData.length - 1]?.round;
 
   return (
     <>
@@ -39,100 +40,182 @@ export default async function LottoListPage({ searchParams }: Props) {
         { label: '당첨번호 전체 조회' },
       ]} />
 
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-        로또 당첨번호 전체 조회
-      </h1>
-      <p className="text-gray-600 mb-6">
-        1회부터 {allData[allData.length - 1]?.round}회까지 역대 전체 당첨번호
-      </p>
-
-      {/* 테이블 */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">회차</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">추첨일</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">당첨번호</th>
-                <th className="px-4 py-3 text-right font-medium text-gray-600 hidden md:table-cell">1등 당첨금</th>
-                <th className="px-4 py-3 text-right font-medium text-gray-600 hidden md:table-cell">당첨자</th>
-                <th className="px-4 py-3 text-center font-medium text-gray-600">상세</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {pageData.map((item) => (
-                <tr key={item.round} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-800">{item.round}회</td>
-                  <td className="px-4 py-3 text-gray-600 text-xs">{item.drawDate}</td>
-                  <td className="px-4 py-3">
-                    <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="sm" />
-                  </td>
-                  <td className="px-4 py-3 text-right text-gray-800 hidden md:table-cell">
-                    {formatCurrency(item.prizeMoney.first)}
-                  </td>
-                  <td className="px-4 py-3 text-right text-gray-600 hidden md:table-cell">
-                    {item.prizeMoney.firstWinners}명
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <Link
-                      href={`/lotto/${item.round}`}
-                      className="text-primary hover:underline text-xs"
-                    >
-                      보기
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
+          로또 당첨번호 전체 조회
+        </h1>
+        <p style={{ color: 'var(--text-secondary)' }}>
+          1회부터 {latestRound}회까지 역대 전체 당첨번호
+        </p>
       </div>
 
-      {/* 페이지네이션 */}
-      <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
+      {/* Page info bar */}
+      <div
+        className="flex items-center justify-between flex-wrap gap-3 mb-6 px-4 py-3 rounded-xl"
+        style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', border: '1px solid var(--border)' }}
+      >
+        <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+          총 {sortedData.length}개 중 {startIdx + 1} - {Math.min(startIdx + ITEMS_PER_PAGE, sortedData.length)}
+        </span>
+        <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+          페이지 {currentPage} / {totalPages}
+        </span>
+      </div>
+
+      {/* Card Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        {pageData.map((item) => (
+          <Link
+            key={item.round}
+            href={`/lotto/${item.round}`}
+            className="block rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+            style={{
+              backgroundColor: 'var(--surface)',
+              borderColor: 'var(--border)',
+            }}
+          >
+            <div className="space-y-3">
+              {/* Round and date */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-lg font-bold group-hover:text-primary transition-colors"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    {item.round}회
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--surface-hover)', color: 'var(--text-tertiary)' }}>
+                    {item.drawDate}
+                  </span>
+                </div>
+                <svg
+                  className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ color: 'var(--text-tertiary)' }}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+
+              {/* Numbers */}
+              <div className="py-1">
+                <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="sm" />
+              </div>
+
+              {/* Prize info */}
+              <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid var(--border-light)' }}>
+                <div>
+                  <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>1등 당첨금</span>
+                  <p className="text-sm font-bold text-primary">
+                    {formatCurrency(item.prizeMoney.first)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>당첨자</span>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    {item.prizeMoney.firstWinners}명
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-2 flex-wrap">
+        {/* First page */}
+        {currentPage > 3 && (
+          <>
+            <Link
+              href="/lotto/list?page=1"
+              className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+              style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+            >
+              1
+            </Link>
+            {currentPage > 4 && (
+              <span className="px-1" style={{ color: 'var(--text-tertiary)' }}>...</span>
+            )}
+          </>
+        )}
+
+        {/* Previous */}
         {currentPage > 1 && (
           <Link
             href={`/lotto/list?page=${currentPage - 1}`}
-            className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+            className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           >
-            이전
+            ← 이전
           </Link>
         )}
 
-        {Array.from({ length: Math.min(10, totalPages) }, (_, i) => {
+        {/* Page numbers */}
+        {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
           let pageNum: number;
-          if (totalPages <= 10) {
+          if (totalPages <= 7) {
             pageNum = i + 1;
-          } else if (currentPage <= 5) {
+          } else if (currentPage <= 4) {
             pageNum = i + 1;
-          } else if (currentPage >= totalPages - 4) {
-            pageNum = totalPages - 9 + i;
+          } else if (currentPage >= totalPages - 3) {
+            pageNum = totalPages - 6 + i;
           } else {
-            pageNum = currentPage - 4 + i;
+            pageNum = currentPage - 3 + i;
           }
           return pageNum;
-        }).map(pageNum => (
+        }).filter(p => p >= 1 && p <= totalPages).map(pageNum => (
           <Link
             key={pageNum}
             href={`/lotto/list?page=${pageNum}`}
-            className={`px-3 py-2 rounded-lg transition-colors ${
+            className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            style={
               pageNum === currentPage
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-            }`}
+                ? {
+                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                    color: 'white',
+                    boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
+                  }
+                : {
+                    backgroundColor: 'var(--surface)',
+                    color: 'var(--text-secondary)',
+                    border: '1px solid var(--border)',
+                  }
+            }
           >
             {pageNum}
           </Link>
         ))}
 
+        {/* Next */}
         {currentPage < totalPages && (
           <Link
             href={`/lotto/list?page=${currentPage + 1}`}
-            className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+            className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           >
-            다음
+            다음 →
           </Link>
+        )}
+
+        {/* Last page */}
+        {currentPage < totalPages - 2 && (
+          <>
+            {currentPage < totalPages - 3 && (
+              <span className="px-1" style={{ color: 'var(--text-tertiary)' }}>...</span>
+            )}
+            <Link
+              href={`/lotto/list?page=${totalPages}`}
+              className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+              style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+            >
+              {totalPages}
+            </Link>
+          </>
         )}
       </div>
     </>

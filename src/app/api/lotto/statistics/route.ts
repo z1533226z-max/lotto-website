@@ -25,11 +25,99 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const maxRound = parseInt(searchParams.get('maxRound') || '9999');
     const forceRefresh = searchParams.get('forceRefresh') === 'true';
+    const windowParam = searchParams.get('window');
+    const compareParam = searchParams.get('compare') === 'true';
 
     // 최신 데이터 가져오기 (정적 + 동적)
     const allLottoData = await getAllLottoData();
+    const lottoData = allLottoData.filter((d) => d.round <= maxRound);
 
-    // 1단계: 인메모리 캐시 확인
+    if (lottoData.length === 0) {
+      return NextResponse.json({
+        success: false,
+        error: '통계 생성을 위한 데이터가 없습니다.',
+        timestamp: new Date().toISOString(),
+      }, { status: 404 });
+    }
+
+    // ===== Windowed Statistics Mode =====
+    if (windowParam) {
+      const windowSize = parseInt(windowParam);
+      if (isNaN(windowSize) || windowSize <= 0) {
+        return NextResponse.json({
+          success: false,
+          error: 'window 파라미터는 양의 정수여야 합니다.',
+          timestamp: new Date().toISOString(),
+        }, { status: 400 });
+      }
+
+      const windowedStats = LottoStatisticsAnalyzer.generateTimeWindowedStats(lottoData, windowSize);
+      const responseTime = Date.now() - performanceStart;
+
+      const responseData: any = {
+        success: true,
+        data: {
+          statistics: windowedStats,
+          windowSize,
+          totalRounds: lottoData.length,
+        },
+        stats: {
+          totalCollected: lottoData.length,
+          windowSize,
+          responseTime: `${responseTime}ms`,
+        },
+        source: 'windowed_analysis',
+        message: `최근 ${windowSize}회차 윈도우 통계 분석 완료`,
+        timestamp: new Date().toISOString(),
+      };
+
+      // If compare=true, also include window comparison data
+      if (compareParam) {
+        const comparison = LottoStatisticsAnalyzer.compareWindows(lottoData, windowSize, windowSize);
+        const weeklyChanges = LottoStatisticsAnalyzer.getWeeklyChanges(lottoData);
+        responseData.data.comparison = comparison;
+        responseData.data.weeklyChanges = weeklyChanges;
+      }
+
+      return NextResponse.json(responseData, {
+        headers: {
+          'Cache-Control': 'public, max-age=1800',
+          'X-Cache-Status': 'MISS',
+        },
+      });
+    }
+
+    // ===== Compare-Only Mode =====
+    if (compareParam && !windowParam) {
+      const comparison = LottoStatisticsAnalyzer.compareWindows(lottoData, 10, 10);
+      const weeklyChanges = LottoStatisticsAnalyzer.getWeeklyChanges(lottoData);
+      const responseTime = Date.now() - performanceStart;
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          comparison,
+          weeklyChanges,
+          totalRounds: lottoData.length,
+        },
+        stats: {
+          totalCollected: lottoData.length,
+          responseTime: `${responseTime}ms`,
+        },
+        source: 'comparison_analysis',
+        message: '윈도우 비교 분석 완료',
+        timestamp: new Date().toISOString(),
+      }, {
+        headers: {
+          'Cache-Control': 'public, max-age=1800',
+          'X-Cache-Status': 'MISS',
+        },
+      });
+    }
+
+    // ===== Default: All-time Statistics =====
+
+    // 인메모리 캐시 확인
     if (!forceRefresh && cachedStats && Date.now() - cachedStats.timestamp < CACHE_TTL) {
       const responseTime = Date.now() - performanceStart;
       return NextResponse.json({
@@ -57,17 +145,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 2단계: 통계 계산
-    const lottoData = allLottoData.filter((d) => d.round <= maxRound);
-
-    if (lottoData.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: '통계 생성을 위한 데이터가 없습니다.',
-        timestamp: new Date().toISOString(),
-      }, { status: 404 });
-    }
-
+    // 통계 계산
     const statistics = LottoStatisticsAnalyzer.generateStatistics(lottoData);
     const summary = LottoStatisticsAnalyzer.generateSummary(statistics, lottoData);
 

@@ -4,15 +4,85 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import type { CardProps } from '@/types/lotto';
 
-const Card: React.FC<CardProps> = ({ children, className, title }) => {
+const variantStyles: Record<string, string> = {
+  default: cn(
+    'bg-white dark:bg-dark-surface',
+    'border border-gray-100 dark:border-dark-border',
+    'shadow-card dark:shadow-none'
+  ),
+  glass: cn(
+    'backdrop-blur-xl',
+    'bg-white/60 dark:bg-dark-surface/60',
+    'border border-white/20 dark:border-white/[0.08]',
+    'shadow-glass dark:shadow-glass-dark'
+  ),
+  elevated: cn(
+    'bg-white dark:bg-dark-surface',
+    'border border-gray-100 dark:border-dark-border',
+    'shadow-elevated dark:shadow-elevated-dark'
+  ),
+  gradient: cn(
+    'bg-gradient-to-br from-primary/5 via-white to-secondary/5',
+    'dark:from-primary/10 dark:via-dark-surface dark:to-secondary/10',
+    'border border-primary/10 dark:border-primary/20'
+  ),
+  outlined: cn(
+    'bg-transparent',
+    'border-2 border-gray-200 dark:border-dark-border',
+    'shadow-none'
+  ),
+};
+
+const hoverStyles: Record<string, string> = {
+  none: '',
+  lift: cn(
+    'transition-all duration-300 ease-out',
+    'hover:-translate-y-1.5',
+    'hover:shadow-xl dark:hover:shadow-2xl'
+  ),
+  glow: cn(
+    'transition-all duration-300 ease-out',
+    'hover:shadow-glow dark:hover:shadow-glow'
+  ),
+  scale: cn(
+    'transition-all duration-300 ease-out',
+    'hover:scale-[1.02]',
+    'hover:shadow-lg dark:hover:shadow-xl'
+  ),
+};
+
+const paddingStyles: Record<string, string> = {
+  none: 'p-0',
+  sm: 'p-3 sm:p-4',
+  md: 'p-4 sm:p-6',
+  lg: 'p-6 sm:p-8',
+};
+
+const Card: React.FC<CardProps> = ({
+  children,
+  className,
+  title,
+  variant = 'default',
+  hover = 'none',
+  padding = 'md',
+}) => {
   return (
-    <div className={cn(
-      'bg-white rounded-xl shadow-card border border-gray-100',
-      'p-6 transition-shadow duration-300 hover:shadow-lg',
-      className
-    )}>
+    <div
+      className={cn(
+        'rounded-xl',
+        'transition-colors duration-200',
+        variantStyles[variant],
+        hoverStyles[hover],
+        paddingStyles[padding],
+        className
+      )}
+    >
       {title && (
-        <h3 className="text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">
+        <h3 className={cn(
+          'text-lg font-bold mb-4 pb-2',
+          'text-gray-800 dark:text-dark-text',
+          'border-b border-gray-100 dark:border-dark-border'
+        )}>
           {title}
         </h3>
       )}
