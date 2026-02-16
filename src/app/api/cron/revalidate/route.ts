@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllLottoData, invalidateAllDataCache } from '@/lib/dataFetcher';
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
+import { getServiceSupabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
@@ -74,7 +75,43 @@ export async function GET(request: NextRequest) {
       console.log(`[Cron] Store data: round=${latestRound}, count=${storeResult.count}`);
     }
 
-    // 5. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
+    // 5. 저장된 번호 자동 당첨 확인
+    let matchCheckResult = { checked: 0 };
+    if (latestRound > 0) {
+      try {
+        const supabase = getServiceSupabase();
+        const { data: unchecked } = await (supabase as any)
+          .from('saved_numbers')
+          .select('*')
+          .eq('round_target', latestRound)
+          .is('checked_at', null);
+
+        if (unchecked && unchecked.length > 0) {
+          const drawData = allData.find(d => d.round === latestRound);
+          if (drawData) {
+            const winningSet = new Set(drawData.numbers);
+            for (const saved of unchecked as any[]) {
+              const matchedCount = (saved.numbers as number[]).filter((n: number) => winningSet.has(n)).length;
+              const bonusMatched = (saved.numbers as number[]).includes(drawData.bonusNumber);
+              await (supabase as any)
+                .from('saved_numbers')
+                .update({
+                  matched_count: matchedCount,
+                  bonus_matched: bonusMatched,
+                  checked_at: new Date().toISOString(),
+                })
+                .eq('id', saved.id);
+            }
+            matchCheckResult.checked = unchecked.length;
+            console.log(`[Cron] Match check: ${unchecked.length} numbers checked for round ${latestRound}`);
+          }
+        }
+      } catch (e) {
+        console.error('[Cron] Match check failed:', e);
+      }
+    }
+
+    // 6. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lotto.gon.ai.kr';
     const warmupResults: Record<string, string> = {};
 
@@ -108,6 +145,7 @@ export async function GET(request: NextRequest) {
       totalRounds: allData.length,
       revalidatedPaths: pathsToRevalidate.length + 2,
       storeData: storeResult,
+      matchCheck: matchCheckResult,
       warmupResults,
       elapsed: `${elapsed}ms`,
       timestamp: new Date().toISOString(),

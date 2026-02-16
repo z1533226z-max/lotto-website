@@ -7,6 +7,11 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Tabs from '@/components/ui/Tabs';
 import { cn } from '@/lib/utils';
+import { useUsageLimit, type LimitedFeature } from '@/hooks/useUsageLimit';
+import { useAuthSafe } from '@/components/providers/AuthProvider';
+import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
+import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import { getNextDrawRound } from '@/lib/lottoUtils';
 
 // ============================================
 // Seeded random number generator (deterministic)
@@ -168,7 +173,7 @@ function FortuneBall({
 // ============================================
 // Tab 1: Birthday Fortune Numbers
 // ============================================
-function BirthdayTab() {
+function BirthdayTab({ canUse, recordUsage, auth, onShowLimitModal }: { canUse: (f: LimitedFeature) => boolean; recordUsage: (f: LimitedFeature) => boolean; auth: ReturnType<typeof useAuthSafe>; onShowLimitModal: () => void }) {
   const [birthday, setBirthday] = useState('');
   const [name, setName] = useState('');
   const [result, setResult] = useState<{
@@ -179,6 +184,12 @@ function BirthdayTab() {
 
   const handleGenerate = useCallback(() => {
     if (!birthday) return;
+
+    // Usage limit check
+    if (!canUse('fortune')) {
+      onShowLimitModal();
+      return;
+    }
 
     const dateParts = birthday.replace(/-/g, '');
     let seed = parseInt(dateParts, 10);
@@ -196,7 +207,27 @@ function BirthdayTab() {
     setResult({ numbers, personality: PERSONALITY_TRAITS[personalityIndex] });
 
     setTimeout(() => setAnimating(false), 1500);
-  }, [birthday, name]);
+
+    // Record usage
+    recordUsage('fortune');
+
+    // Server save for members
+    if (auth?.user) {
+      try {
+        fetch('/api/user/numbers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            numbers: [numbers],
+            source: 'fortune',
+            roundTarget: getNextDrawRound(),
+          }),
+        });
+      } catch (e) {
+        console.error('번호 저장 실패:', e);
+      }
+    }
+  }, [birthday, name, canUse, recordUsage, auth, onShowLimitModal]);
 
   return (
     <div className="space-y-6">
@@ -477,7 +508,7 @@ function TodayTab() {
 // ============================================
 // Tab 3: Compatibility Numbers
 // ============================================
-function CompatibilityTab() {
+function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { canUse: (f: LimitedFeature) => boolean; recordUsage: (f: LimitedFeature) => boolean; auth: ReturnType<typeof useAuthSafe>; onShowLimitModal: () => void }) {
   const [myBirthday, setMyBirthday] = useState('');
   const [partnerBirthday, setPartnerBirthday] = useState('');
   const [result, setResult] = useState<{
@@ -489,6 +520,12 @@ function CompatibilityTab() {
 
   const handleGenerate = useCallback(() => {
     if (!myBirthday || !partnerBirthday) return;
+
+    // Usage limit check
+    if (!canUse('fortune')) {
+      onShowLimitModal();
+      return;
+    }
 
     const myDate = parseInt(myBirthday.replace(/-/g, ''), 10);
     const partnerDate = parseInt(partnerBirthday.replace(/-/g, ''), 10);
@@ -512,7 +549,27 @@ function CompatibilityTab() {
     });
 
     setTimeout(() => setAnimating(false), 1500);
-  }, [myBirthday, partnerBirthday]);
+
+    // Record usage
+    recordUsage('fortune');
+
+    // Server save for members
+    if (auth?.user) {
+      try {
+        fetch('/api/user/numbers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            numbers: [numbers],
+            source: 'fortune',
+            roundTarget: getNextDrawRound(),
+          }),
+        });
+      } catch (e) {
+        console.error('번호 저장 실패:', e);
+      }
+    }
+  }, [myBirthday, partnerBirthday, canUse, recordUsage, auth, onShowLimitModal]);
 
   return (
     <div className="space-y-6">
@@ -671,6 +728,9 @@ const TABS = [
 
 export default function FortunePage() {
   const [activeTab, setActiveTab] = useState('birthday');
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const { canUse, recordUsage } = useUsageLimit();
+  const auth = useAuthSafe();
 
   return (
     <>
@@ -726,6 +786,8 @@ export default function FortunePage() {
           </p>
         </div>
 
+        <UsageLimitBanner feature="fortune" />
+
         {/* Tab navigation */}
         <div className="mb-6">
           <Tabs
@@ -739,11 +801,17 @@ export default function FortunePage() {
 
         {/* Tab content */}
         <div role="tabpanel" id={`tabpanel-${activeTab}`}>
-          {activeTab === 'birthday' && <BirthdayTab />}
+          {activeTab === 'birthday' && <BirthdayTab canUse={canUse} recordUsage={recordUsage} auth={auth} onShowLimitModal={() => setShowLimitModal(true)} />}
           {activeTab === 'today' && <TodayTab />}
-          {activeTab === 'compatibility' && <CompatibilityTab />}
+          {activeTab === 'compatibility' && <CompatibilityTab canUse={canUse} recordUsage={recordUsage} auth={auth} onShowLimitModal={() => setShowLimitModal(true)} />}
         </div>
       </div>
+
+      <UsageLimitModal
+        feature="fortune"
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+      />
     </>
   );
 }

@@ -13,6 +13,11 @@ import {
   type DreamCategory,
 } from '@/data/dreamNumbers';
 import { cn, copyToClipboard, shuffleArray, sortNumbers } from '@/lib/utils';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import { useAuthSafe } from '@/components/providers/AuthProvider';
+import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
+import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import { getNextDrawRound } from '@/lib/lottoUtils';
 
 const MAX_KEYWORDS = 6;
 const LOTTO_COUNT = 6;
@@ -111,6 +116,9 @@ export default function DreamNumberPage() {
   const [animateKey, setAnimateKey] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const { canUse, recordUsage } = useUsageLimit();
+  const auth = useAuthSafe();
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -165,6 +173,12 @@ export default function DreamNumberPage() {
         return;
       }
 
+      // Usage limit check
+      if (!canUse('dream')) {
+        setShowLimitModal(true);
+        return;
+      }
+
       // Count frequency of each number across all selected keywords
       const freq: Record<number, number> = {};
       keywords.forEach((kw) => {
@@ -204,8 +218,28 @@ export default function DreamNumberPage() {
 
       setGeneratedNumbers(selected);
       setAnimateKey((prev) => prev + 1);
+
+      // Record usage
+      recordUsage('dream');
+
+      // Server save for members
+      if (auth?.user) {
+        try {
+          fetch('/api/user/numbers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              numbers: [selected],
+              source: 'dream',
+              roundTarget: getNextDrawRound(),
+            }),
+          });
+        } catch (e) {
+          console.error('번호 저장 실패:', e);
+        }
+      }
     },
-    []
+    [canUse, recordUsage, auth]
   );
 
   // Add keyword
@@ -293,6 +327,8 @@ export default function DreamNumberPage() {
             어젯밤 꿈을 로또 번호로 바꿔보세요
           </p>
         </div>
+
+        <UsageLimitBanner feature="dream" />
 
         {/* ─── Search Section ─── */}
         <Card variant="glass" padding="lg" className="mb-6">
@@ -801,6 +837,12 @@ export default function DreamNumberPage() {
           </div>
         </Card>
       </div>
+
+      <UsageLimitModal
+        feature="dream"
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+      />
     </>
   );
 }

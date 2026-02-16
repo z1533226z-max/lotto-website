@@ -242,6 +242,19 @@ const Header: React.FC = () => {
                           </p>
                         </div>
                         <div className="p-1">
+                          <Link
+                            href="/mypage"
+                            onClick={() => setUserMenuOpen(false)}
+                            className={cn(
+                              'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
+                              'transition-colors duration-200',
+                              'hover:bg-[var(--surface-hover)]',
+                            )}
+                            style={{ color: 'var(--text)' }}
+                          >
+                            <span>{'📋'}</span>
+                            마이페이지
+                          </Link>
                           <button
                             onClick={() => {
                               auth.logout();
@@ -441,16 +454,26 @@ const Header: React.FC = () => {
                         {auth.user.nickname}
                       </span>
                     </div>
-                    <button
-                      onClick={() => {
-                        auth.logout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="text-xs font-medium px-2 py-1 rounded-lg"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      로그아웃
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href="/mypage"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="text-xs font-medium px-2 py-1 rounded-lg"
+                        style={{ color: '#FF6B35' }}
+                      >
+                        마이페이지
+                      </Link>
+                      <button
+                        onClick={() => {
+                          auth.logout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="text-xs font-medium px-2 py-1 rounded-lg"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        로그아웃
+                      </button>
+                    </div>
                   </div>
                 </>
               )}

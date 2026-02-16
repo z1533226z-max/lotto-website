@@ -20,6 +20,9 @@ export interface UserProgress {
   };
   unlockedBadges: string[]; // badge ids
   dailyChallengeCompleted: string; // YYYY-MM-DD of last completed challenge
+  savedNumbersCount: number;
+  matchChecksCount: number;
+  multiSetGenerations: number;
 }
 
 export interface Badge {
@@ -127,6 +130,9 @@ function getDefaultProgress(): UserProgress {
     },
     unlockedBadges: [],
     dailyChallengeCompleted: '',
+    savedNumbersCount: 0,
+    matchChecksCount: 0,
+    multiSetGenerations: 0,
   };
 }
 
@@ -181,6 +187,9 @@ function mergeProgress(local: UserProgress, server: UserProgress): UserProgress 
     dailyChallengeCompleted: local.dailyChallengeCompleted >= server.dailyChallengeCompleted
       ? local.dailyChallengeCompleted
       : server.dailyChallengeCompleted,
+    savedNumbersCount: Math.max(local.savedNumbersCount || 0, server.savedNumbersCount || 0),
+    matchChecksCount: Math.max(local.matchChecksCount || 0, server.matchChecksCount || 0),
+    multiSetGenerations: Math.max(local.multiSetGenerations || 0, server.multiSetGenerations || 0),
   };
   return merged;
 }
@@ -203,6 +212,9 @@ function serverToLocal(serverData: any): UserProgress {
     },
     unlockedBadges: serverData.unlocked_badges || [],
     dailyChallengeCompleted: serverData.daily_challenge_completed || '',
+    savedNumbersCount: serverData.saved_numbers_count || 0,
+    matchChecksCount: serverData.match_checks_count || 0,
+    multiSetGenerations: serverData.multi_set_generations || 0,
   };
 }
 
@@ -306,6 +318,30 @@ function computeBadges(progress: UserProgress, isLoggedIn: boolean = false): Bad
         icon: '\u2601\uFE0F', // ☁️
         requirement: 1,
         current: unlockedBadges.includes('sync_master') ? 1 : 0,
+      },
+      {
+        id: 'number_collector',
+        name: '번호 수집가',
+        description: '50개 이상 번호를 저장했습니다',
+        icon: '\uD83D\uDCDA', // 📚
+        requirement: 50,
+        current: (progress as any).savedNumbersCount || 0,
+      },
+      {
+        id: 'lucky_checker',
+        name: '당첨 확인왕',
+        description: '당첨 확인을 10회 이상 했습니다',
+        icon: '\uD83D\uDD0D', // 🔍
+        requirement: 10,
+        current: (progress as any).matchChecksCount || 0,
+      },
+      {
+        id: 'multi_set_user',
+        name: '다중 분석가',
+        description: '5세트 생성을 10회 이상 했습니다',
+        icon: '\uD83C\uDFAF', // 🎯
+        requirement: 10,
+        current: (progress as any).multiSetGenerations || 0,
       },
     );
   }

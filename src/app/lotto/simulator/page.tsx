@@ -9,6 +9,9 @@ import LottoNumbers from '@/components/lotto/LottoNumbers';
 import { cn } from '@/lib/utils';
 import { LOTTO_CONFIG, PRIZE_RANKS } from '@/lib/constants';
 import type { LottoResult } from '@/types/lotto';
+import { useUsageLimit } from '@/hooks/useUsageLimit';
+import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
+import UsageLimitModal from '@/components/usage/UsageLimitModal';
 
 // ============================================================
 // Types
@@ -93,6 +96,8 @@ export default function SimulatorPage() {
   const [result, setResult] = useState<SimulationSummary | null>(null);
   const [showAllResults, setShowAllResults] = useState(false);
   const [validationError, setValidationError] = useState('');
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const { canUse, recordUsage } = useUsageLimit();
 
   // ----------------------------------------------------------
   // Derived state
@@ -190,6 +195,13 @@ export default function SimulatorPage() {
   // ----------------------------------------------------------
   const runSimulation = useCallback(async () => {
     if (!isValid) return;
+
+    // Usage limit check
+    if (!canUse('simulator')) {
+      setShowLimitModal(true);
+      return;
+    }
+
     setLoading(true);
     setResult(null);
     setShowAllResults(false);
@@ -287,9 +299,13 @@ export default function SimulatorPage() {
       });
 
       setLoading(false);
+
+      // Record usage
+      recordUsage('simulator');
+
       return currentData;
     });
-  }, [isValid, dataLoaded, lottoData.length, fetchData, periodType, customStart, customEnd, validNumbers]);
+  }, [isValid, dataLoaded, lottoData.length, fetchData, periodType, customStart, customEnd, validNumbers, canUse, recordUsage]);
 
   // Load data on mount
   React.useEffect(() => {
@@ -348,6 +364,8 @@ export default function SimulatorPage() {
             내가 매주 같은 번호를 샀다면? 과거 전 회차 당첨 결과를 확인해보세요
           </p>
         </div>
+
+        <UsageLimitBanner feature="simulator" />
 
         {/* ========== Number Input Section ========== */}
         <Card variant="glass" padding="lg" className="mb-6">
@@ -871,6 +889,12 @@ export default function SimulatorPage() {
           </Card>
         )}
       </div>
+
+      <UsageLimitModal
+        feature="simulator"
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+      />
     </>
   );
 }

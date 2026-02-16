@@ -37,6 +37,11 @@ export interface Database {
         Insert: UserProgressInsert;
         Update: Partial<UserProgressInsert>;
       };
+      saved_numbers: {
+        Row: SavedNumber;
+        Insert: SavedNumberInsert;
+        Update: Partial<SavedNumberInsert>;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -236,6 +241,9 @@ export interface UserProgressRow {
   page_views: number;
   unlocked_badges: string[];
   daily_challenge_completed: string | null; // DATE
+  saved_numbers_count: number;
+  match_checks_count: number;
+  multi_set_generations: number;
   updated_at: string;
 }
 
@@ -252,6 +260,9 @@ export interface UserProgressInsert {
   page_views?: number;
   unlocked_badges?: string[];
   daily_challenge_completed?: string | null;
+  saved_numbers_count?: number;
+  match_checks_count?: number;
+  multi_set_generations?: number;
 }
 
 // 리더보드 항목 타입
@@ -260,4 +271,44 @@ export interface LeaderboardEntry {
   longest_streak: number;
   badge_count: number;
   rank: number;
+}
+
+// ============================================
+// 저장 번호 히스토리 관련 타입
+// ============================================
+
+export type NumberSource = 'ai' | 'dream' | 'fortune';
+
+export interface SavedNumber {
+  id: string; // UUID
+  user_id: string; // FK → user_profiles.id
+  numbers: number[]; // INTEGER[]
+  source: NumberSource;
+  round_target: number;
+  matched_count: number | null;
+  bonus_matched: boolean | null;
+  checked_at: string | null; // TIMESTAMPTZ
+  created_at: string;
+}
+
+export interface SavedNumberInsert {
+  user_id: string;
+  numbers: number[];
+  source: NumberSource;
+  round_target: number;
+}
+
+// API 요청/응답 타입
+export interface SaveNumberRequest {
+  numbers: number[][]; // 1세트 또는 5세트
+  source: NumberSource;
+  roundTarget: number;
+}
+
+export interface NumberStats {
+  totalSaved: number;
+  bySource: { ai: number; dream: number; fortune: number };
+  bestMatch: number;
+  totalChecked: number;
+  matchDistribution: Record<number, number>; // { 0: 10, 1: 5, 2: 3, ... }
 }
