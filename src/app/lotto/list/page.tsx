@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 
 const ITEMS_PER_PAGE = 20;
+
+export const revalidate = 3600; // ISR: 1시간마다 재생성
 
 export const metadata: Metadata = {
   title: '로또 당첨번호 전체 조회 - 역대 당첨번호 목록 | 로또킹',
@@ -21,9 +23,10 @@ interface Props {
   searchParams: { page?: string };
 }
 
-export default function LottoListPage({ searchParams }: Props) {
+export default async function LottoListPage({ searchParams }: Props) {
+  const allData = await getAllLottoData();
   const page = Math.max(1, parseInt(searchParams.page || '1') || 1);
-  const sortedData = [...REAL_LOTTO_DATA].reverse(); // 최신순
+  const sortedData = [...allData].reverse(); // 최신순
   const totalPages = Math.ceil(sortedData.length / ITEMS_PER_PAGE);
   const currentPage = Math.min(page, totalPages);
   const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -40,7 +43,7 @@ export default function LottoListPage({ searchParams }: Props) {
         로또 당첨번호 전체 조회
       </h1>
       <p className="text-gray-600 mb-6">
-        1회부터 {REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1]?.round}회까지 역대 전체 당첨번호
+        1회부터 {allData[allData.length - 1]?.round}회까지 역대 전체 당첨번호
       </p>
 
       {/* 테이블 */}

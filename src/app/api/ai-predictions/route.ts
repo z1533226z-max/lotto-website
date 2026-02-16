@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData, registerCacheInvalidationCallback } from '@/lib/dataFetcher';
 import {
   AI_PREDICTION_HISTORY,
   LATEST_STATIC_PREDICTION_ROUND,
@@ -16,20 +16,29 @@ import {
 // 캐시 (1시간)
 let cachedResult: {
   predictions: AIPrediction[];
+  lottoDataLength: number;
   timestamp: number;
 } | null = null;
 const CACHE_TTL = 60 * 60 * 1000; // 1시간
+
+// dataFetcher 캐시 무효화 시 이 캐시도 같이 날림
+registerCacheInvalidationCallback(() => {
+  cachedResult = null;
+});
 
 export async function GET(request: NextRequest) {
   try {
     const now = Date.now();
 
-    // 캐시 히트
-    if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL) {
+    // 최신 로또 데이터 가져오기 (정적 + 동적)
+    const allLottoData = await getAllLottoData();
+
+    // 캐시 히트 (데이터 길이도 일치해야 유효)
+    if (cachedResult && (now - cachedResult.timestamp) < CACHE_TTL && cachedResult.lottoDataLength === allLottoData.length) {
       const allPredictions = cachedResult.predictions;
-      const results = calculateMatches(allPredictions, REAL_LOTTO_DATA);
+      const results = calculateMatches(allPredictions, allLottoData);
       const stats = calculateStats(results);
-      const latestDataRound = Math.max(...REAL_LOTTO_DATA.map(d => d.round));
+      const latestDataRound = Math.max(...allLottoData.map(d => d.round));
       const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
       return NextResponse.json({
@@ -44,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 통계 생성 (동적 예측의 가중치용)
-    const statistics = LottoStatisticsAnalyzer.generateStatistics(REAL_LOTTO_DATA);
+    const statistics = LottoStatisticsAnalyzer.generateStatistics(allLottoData);
 
     // 현재 회차 추정
     const currentRound = estimateCurrentRound();
@@ -60,14 +69,14 @@ export async function GET(request: NextRequest) {
     const allPredictions = [...AI_PREDICTION_HISTORY, ...dynamicPredictions];
 
     // 캐시 저장
-    cachedResult = { predictions: allPredictions, timestamp: now };
+    cachedResult = { predictions: allPredictions, lottoDataLength: allLottoData.length, timestamp: now };
 
     // 적중 결과 계산
-    const results = calculateMatches(allPredictions, REAL_LOTTO_DATA);
+    const results = calculateMatches(allPredictions, allLottoData);
     const stats = calculateStats(results);
 
     // 다음 회차 예측 (아직 추첨 안 된 것)
-    const latestDataRound = Math.max(...REAL_LOTTO_DATA.map(d => d.round));
+    const latestDataRound = Math.max(...allLottoData.map(d => d.round));
     const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
     return NextResponse.json({
@@ -83,6 +92,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('AI predictions error:', error);
     // fallback: 정적 데이터만
+    const { REAL_LOTTO_DATA } = await import('@/data/realLottoData');
     const results = calculateMatches(AI_PREDICTION_HISTORY, REAL_LOTTO_DATA);
     const stats = calculateStats(results);
 

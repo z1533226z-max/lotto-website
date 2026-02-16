@@ -1,10 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import Card from '@/components/ui/Card';
+
+export const revalidate = 3600; // ISR: 1시간마다 재생성
 
 export const metadata: Metadata = {
   title: '최근 로또 당첨번호 - 최근 10회 추첨 결과 | 로또킹',
@@ -15,8 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LottoRecentPage() {
-  const recentData = [...REAL_LOTTO_DATA].reverse().slice(0, 10);
+export default async function LottoRecentPage() {
+  const allData = await getAllLottoData();
+  const recentData = [...allData].reverse().slice(0, 10);
 
   return (
     <>

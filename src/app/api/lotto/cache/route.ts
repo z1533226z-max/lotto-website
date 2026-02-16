@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 
 export async function GET(request: NextRequest) {
   try {
-    const latestRound = REAL_LOTTO_DATA.length > 0 ? REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1].round : 0;
+    const allData = await getAllLottoData();
+    const latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
 
     return NextResponse.json({
       success: true,
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
         metadata: {
           lastUpdated: new Date().toISOString(),
           maxRound: latestRound,
-          totalRounds: REAL_LOTTO_DATA.length,
+          totalRounds: allData.length,
           isValid: true,
         },
       },

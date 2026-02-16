@@ -1,9 +1,11 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+
+export const revalidate = 3600; // ISR: 1시간마다 재생성
 
 export const metadata: Metadata = {
   title: '역대 로또 최고 당첨금 순위 - 1등 당첨금 랭킹 | 로또킹',
@@ -14,9 +16,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LottoRankingsPage() {
+export default async function LottoRankingsPage() {
+  const allData = await getAllLottoData();
   // 1인당 당첨금 기준 정렬 (총 당첨금 / 당첨자수)
-  const rankings = [...REAL_LOTTO_DATA]
+  const rankings = [...allData]
     .filter(d => d.prizeMoney.first > 0 && d.prizeMoney.firstWinners > 0)
     .map(d => ({
       ...d,

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
-import { fetchRound } from '@/lib/dataFetcher';
+import { fetchRound, getEstimatedLatestRound } from '@/lib/dataFetcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
@@ -55,9 +55,10 @@ export default async function LottoRoundPage({ params }: Props) {
   }
 
   const { data } = result;
-  const maxRound = REAL_LOTTO_DATA.length > 0
+  const staticMaxRound = REAL_LOTTO_DATA.length > 0
     ? REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1].round
     : round;
+  const maxRound = Math.max(staticMaxRound, getEstimatedLatestRound());
 
   const jsonLd = {
     '@context': 'https://schema.org',

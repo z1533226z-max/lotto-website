@@ -5,6 +5,10 @@ import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 const roundCache = new Map<number, { data: LottoResult; fetchedAt: number }>();
 const CACHE_TTL = 60 * 60 * 1000; // 1시간
 
+// 전체 데이터 캐시 (정적 + 동적 합산)
+let allDataCache: { data: LottoResult[]; fetchedAt: number } | null = null;
+const ALL_DATA_CACHE_TTL = 30 * 60 * 1000; // 30분
+
 // 현재 예상 최신 회차 계산
 export function getEstimatedLatestRound(): number {
   const startDate = new Date('2002-12-07');
@@ -126,4 +130,71 @@ export async function fetchLatestRound(): Promise<{ data: LottoResult; source: s
   }
 
   throw new Error('로또 데이터를 가져올 수 없습니다.');
+}
+
+// 전체 로또 데이터 반환 (정적 데이터 + 최신 API 데이터 합산)
+// 서버 컴포넌트에서 REAL_LOTTO_DATA 대신 사용
+export async function getAllLottoData(): Promise<LottoResult[]> {
+  // 캐시 확인
+  if (allDataCache && Date.now() - allDataCache.fetchedAt < ALL_DATA_CACHE_TTL) {
+    return allDataCache.data;
+  }
+
+  const staticData = [...REAL_LOTTO_DATA];
+  const lastStaticRound = staticData.length > 0
+    ? staticData[staticData.length - 1].round
+    : 0;
+  const estimatedLatest = getEstimatedLatestRound();
+
+  // 정적 데이터 이후 ~ 예상 최신 회차까지 fetch 시도
+  const newRounds: LottoResult[] = [];
+  for (let round = lastStaticRound + 1; round <= estimatedLatest + 1; round++) {
+    // 캐시된 게 있으면 사용
+    const cached = roundCache.get(round);
+    if (cached && Date.now() - cached.fetchedAt < CACHE_TTL) {
+      newRounds.push(cached.data);
+      continue;
+    }
+
+    const smok95 = await fetchFromSmok95(round);
+    if (smok95) {
+      roundCache.set(round, { data: smok95, fetchedAt: Date.now() });
+      newRounds.push(smok95);
+      continue;
+    }
+
+    const dhl = await fetchFromDhlottery(round);
+    if (dhl) {
+      roundCache.set(round, { data: dhl, fetchedAt: Date.now() });
+      newRounds.push(dhl);
+      continue;
+    }
+
+    // 해당 회차가 없으면 중단 (아직 추첨 안 됨)
+    break;
+  }
+
+  const allData = [...staticData, ...newRounds];
+
+  // 캐시 저장
+  allDataCache = { data: allData, fetchedAt: Date.now() };
+
+  return allData;
+}
+
+// 외부 캐시 무효화 콜백 (API 라우트 등에서 등록)
+const cacheInvalidationCallbacks: Array<() => void> = [];
+
+export function registerCacheInvalidationCallback(cb: () => void): void {
+  cacheInvalidationCallbacks.push(cb);
+}
+
+// 전체 데이터 캐시 무효화 (cron 등에서 호출)
+export function invalidateAllDataCache(): void {
+  allDataCache = null;
+  roundCache.clear();
+  // 등록된 외부 캐시도 모두 무효화
+  for (const cb of cacheInvalidationCallbacks) {
+    cb();
+  }
 }
