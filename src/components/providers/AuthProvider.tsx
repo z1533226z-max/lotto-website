@@ -87,10 +87,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       const data = await res.json();
 
       if (data.success && data.user) {
-        setUser({
-          id: data.user.id,
-          nickname: data.user.nickname,
-        });
+        // checkAuth로 isAdmin 등 전체 정보 가져오기
+        await checkAuth();
         return { success: true };
       }
 
@@ -112,10 +110,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       const data = await res.json();
 
       if (data.success && data.user) {
-        setUser({
-          id: data.user.id,
-          nickname: data.user.nickname,
-        });
+        // checkAuth로 isAdmin 등 전체 정보 가져오기
+        await checkAuth();
         return { success: true };
       }
 
