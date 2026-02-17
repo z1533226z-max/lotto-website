@@ -30,13 +30,13 @@ interface NumberPatternChartProps {
 const ChartSkeletonLoader = () => (
   <Card className="p-6 animate-pulse">
     <div className="flex items-center mb-4">
-      <div className="h-6 bg-gray-300 rounded w-40"></div>
+      <div className="h-6 rounded w-40" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
     </div>
     <div className="space-y-4">
-      <div className="h-64 bg-gray-200 rounded"></div>
+      <div className="h-64 rounded" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
       <div className="flex gap-4">
-        <div className="h-32 bg-gray-200 rounded flex-1"></div>
-        <div className="h-32 bg-gray-200 rounded flex-1"></div>
+        <div className="h-32 rounded flex-1" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
+        <div className="h-32 rounded flex-1" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
       </div>
     </div>
   </Card>
@@ -48,7 +48,7 @@ const ChartErrorCard = ({ onRetry, error }: { onRetry: () => void; error: string
     <div className="text-center space-y-4">
       <div>
         <h3 className="font-bold text-red-600 mb-2">⚠️ 패턴 차트 로딩 실패</h3>
-        <p className="text-sm text-gray-600 mb-4">{error}</p>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
       <div className="flex gap-2 justify-center">
         <button 
@@ -262,7 +262,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
       >
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="font-bold text-gray-800">📊 번호별 출현 패턴</h3>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>📊 번호별 출현 패턴</h3>
             {chartData.dataSource === 'fallback' && (
               <span className="text-xs text-orange-500">* 샘플 데이터</span>
             )}
@@ -270,7 +270,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
           
           {/* 상위 10개 번호 막대 차트 */}
           <div className="mb-8">
-            <h4 className="font-semibold text-gray-700 mb-4">🔥 빈도 TOP 10</h4>
+            <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>🔥 빈도 TOP 10</h4>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData.top10Data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -290,7 +290,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* 구간별 분포 파이 차트 */}
             <div>
-              <h4 className="font-semibold text-gray-700 mb-4">📊 구간별 분포</h4>
+              <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>📊 구간별 분포</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -315,7 +315,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
 
             {/* 홀짝 분포 파이 차트 */}
             <div>
-              <h4 className="font-semibold text-gray-700 mb-4">⚡ 홀짝 분포</h4>
+              <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>⚡ 홀짝 분포</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -344,8 +344,8 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <div className="flex justify-between text-sm text-gray-500">
+          <div className="mt-6 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex justify-between text-sm" style={{ color: 'var(--text-tertiary)' }}>
               <span>총 분석 데이터: {chartData.totalAnalyzed.toLocaleString()}회</span>
               <span>업데이트: {new Date(chartData.lastUpdated).toLocaleTimeString()}</span>
             </div>

@@ -234,18 +234,18 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* 맞춤형 전략 카드 */}
-      <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+      <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800 flex items-center">
+            <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
               <span className="mr-2">🎯</span>
               {personalizedStrategy.name}
             </h3>
             
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">신뢰도</span>
+              <span className="text-sm text-[var(--text-secondary)]">신뢰도</span>
               <div className="flex items-center space-x-1">
-                <div className="w-16 bg-gray-200 rounded-full h-2">
+                <div className="w-16 rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
                   <motion.div
                     className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
                     initial={{ width: 0 }}
@@ -260,12 +260,12 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
             </div>
           </div>
           
-          <p className="text-gray-700 mb-4">{personalizedStrategy.description}</p>
+          <p className="text-[var(--text-secondary)] mb-4">{personalizedStrategy.description}</p>
           
           {/* 추천 번호 */}
           {personalizedStrategy.recommendedNumbers.length > 0 && (
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">추천 번호</h4>
+              <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">추천 번호</h4>
               <div className="flex flex-wrap gap-2">
                 {personalizedStrategy.recommendedNumbers.map(number => (
                   <motion.span
@@ -285,10 +285,10 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
           
           {/* 전략 근거 */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">전략 근거</h4>
+            <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">전략 근거</h4>
             <ul className="space-y-1">
               {personalizedStrategy.reasoning.map((reason, index) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start">
+                <li key={index} className="text-sm text-[var(--text-secondary)] flex items-start">
                   <span className="mr-2 text-green-500">•</span>
                   {reason}
                 </li>
@@ -302,7 +302,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
       <Card>
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800 flex items-center">
+            <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
               <span className="mr-2">⚙️</span>
               개인 설정
             </h3>
@@ -318,7 +318,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
             <div className="space-y-4">
               {/* 플레이 스타일 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                   플레이 스타일
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -329,8 +329,9 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
                       className={`p-2 text-sm rounded-lg border transition-colors ${
                         userPreferences.playStyle === style
                           ? 'bg-blue-500 text-white border-blue-500'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                          : 'text-[var(--text-secondary)] border-[var(--border)] hover:border-blue-300'
                       }`}
+                      style={userPreferences.playStyle !== style ? { backgroundColor: 'var(--surface)' } : undefined}
                     >
                       {style === 'conservative' ? '안정형' : 
                        style === 'balanced' ? '균형형' : '공격형'}
@@ -341,7 +342,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
               
               {/* 리스크 성향 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                   리스크 성향
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -352,8 +353,9 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
                       className={`p-2 text-sm rounded-lg border transition-colors ${
                         userPreferences.riskTolerance === risk
                           ? 'bg-green-500 text-white border-green-500'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-green-300'
+                          : 'text-[var(--text-secondary)] border-[var(--border)] hover:border-green-300'
                       }`}
+                      style={userPreferences.riskTolerance !== risk ? { backgroundColor: 'var(--surface)' } : undefined}
                     >
                       {risk === 'low' ? '낮음' : risk === 'medium' ? '보통' : '높음'}
                     </button>
@@ -363,17 +365,17 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
-                <div className="text-sm text-gray-600">플레이 스타일</div>
+              <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">플레이 스타일</div>
                 <div className="font-medium text-blue-600">
-                  {userPreferences.playStyle === 'conservative' ? '안정형' : 
+                  {userPreferences.playStyle === 'conservative' ? '안정형' :
                    userPreferences.playStyle === 'balanced' ? '균형형' : '공격형'}
                 </div>
               </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
-                <div className="text-sm text-gray-600">리스크 성향</div>
+              <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div className="text-sm text-[var(--text-secondary)]">리스크 성향</div>
                 <div className="font-medium text-green-600">
-                  {userPreferences.riskTolerance === 'low' ? '낮음' : 
+                  {userPreferences.riskTolerance === 'low' ? '낮음' :
                    userPreferences.riskTolerance === 'medium' ? '보통' : '높음'}
                 </div>
               </div>
@@ -382,7 +384,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
           
           {/* 선호 번호 */}
           <div className="mt-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">
+            <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-2">
               선호 번호 ({userPreferences.favoriteNumbers.length}/10)
             </h4>
             {userPreferences.favoriteNumbers.length > 0 ? (
@@ -398,7 +400,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--text-tertiary)]">
                 추천 번호를 클릭하여 선호 번호로 추가하세요.
               </p>
             )}

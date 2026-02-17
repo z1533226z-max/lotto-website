@@ -133,7 +133,7 @@ const CommentForm: React.FC<{
   return (
     <form onSubmit={handleSubmit} className={cn(
       'space-y-3',
-      isReply ? 'mt-3 ml-8 pl-4 border-l-2 border-gray-200 dark:border-dark-border' : 'mt-6'
+      isReply ? 'mt-3 ml-8 pl-4 border-l-2 border-[var(--border)]' : 'mt-6'
     )}>
       <div className="flex gap-2">
         <input
@@ -144,13 +144,12 @@ const CommentForm: React.FC<{
           maxLength={20}
           className={cn(
             'flex-1 px-3 py-2 text-sm rounded-lg',
-            'bg-white dark:bg-dark-surface',
-            'border border-gray-200 dark:border-dark-border',
-            'text-gray-900 dark:text-dark-text',
-            'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+            'border border-[var(--border)]',
+            'text-[var(--text)]',
             'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
             'transition-colors duration-200'
           )}
+          style={{ backgroundColor: 'var(--surface)' }}
         />
         <input
           type="password"
@@ -160,13 +159,12 @@ const CommentForm: React.FC<{
           maxLength={30}
           className={cn(
             'flex-1 px-3 py-2 text-sm rounded-lg',
-            'bg-white dark:bg-dark-surface',
-            'border border-gray-200 dark:border-dark-border',
-            'text-gray-900 dark:text-dark-text',
-            'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+            'border border-[var(--border)]',
+            'text-[var(--text)]',
             'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
             'transition-colors duration-200'
           )}
+          style={{ backgroundColor: 'var(--surface)' }}
         />
       </div>
       <div className="flex gap-2">
@@ -178,13 +176,12 @@ const CommentForm: React.FC<{
           rows={isReply ? 2 : 3}
           className={cn(
             'flex-1 px-3 py-2 text-sm rounded-lg resize-none',
-            'bg-white dark:bg-dark-surface',
-            'border border-gray-200 dark:border-dark-border',
-            'text-gray-900 dark:text-dark-text',
-            'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+            'border border-[var(--border)]',
+            'text-[var(--text)]',
             'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
             'transition-colors duration-200'
           )}
+          style={{ backgroundColor: 'var(--surface)' }}
         />
       </div>
       {error && (
@@ -258,24 +255,24 @@ const CommentItem: React.FC<{
 
   return (
     <div className={cn(
-      depth > 0 && 'ml-8 pl-4 border-l-2 border-gray-100 dark:border-dark-border'
+      depth > 0 && 'ml-8 pl-4 border-l-2 border-[var(--border)]'
     )}>
       <div className={cn(
         'py-3',
-        depth === 0 && 'border-b border-gray-100 dark:border-dark-border'
+        depth === 0 && 'border-b border-[var(--border)]'
       )}>
         {/* 댓글 헤더 */}
         <div className="flex items-center gap-2 mb-1.5">
-          <span className="text-sm font-medium text-gray-900 dark:text-dark-text">
+          <span className="text-sm font-medium text-[var(--text)]">
             {comment.nickname}
           </span>
-          <span className="text-xs text-gray-400 dark:text-dark-text-tertiary">
+          <span className="text-xs text-[var(--text-tertiary)]">
             {formatTimeAgo(comment.created_at)}
           </span>
         </div>
 
         {/* 댓글 내용 */}
-        <p className="text-sm text-gray-700 dark:text-dark-text-secondary whitespace-pre-wrap break-words">
+        <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap break-words">
           {comment.content}
         </p>
 
@@ -284,7 +281,7 @@ const CommentItem: React.FC<{
           {depth < 2 && (
             <button
               onClick={() => setShowReplyForm(!showReplyForm)}
-              className="text-xs text-gray-500 dark:text-dark-text-tertiary hover:text-primary dark:hover:text-primary-400 transition-colors"
+              className="text-xs text-[var(--text-tertiary)] hover:text-primary dark:hover:text-primary-400 transition-colors"
             >
               답글
             </button>
@@ -295,7 +292,7 @@ const CommentItem: React.FC<{
               setDeleteError('');
               setDeletePassword('');
             }}
-            className="text-xs text-gray-500 dark:text-dark-text-tertiary hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            className="text-xs text-[var(--text-tertiary)] hover:text-red-500 dark:hover:text-red-400 transition-colors"
           >
             삭제
           </button>
@@ -314,12 +311,12 @@ const CommentItem: React.FC<{
               }}
               className={cn(
                 'px-2 py-1 text-xs rounded',
-                'bg-white dark:bg-dark-surface',
-                'border border-gray-200 dark:border-dark-border',
-                'text-gray-900 dark:text-dark-text',
+                'border border-[var(--border)]',
+                'text-[var(--text)]',
                 'focus:outline-none focus:ring-1 focus:ring-red-300',
                 'transition-colors duration-200'
               )}
+              style={{ backgroundColor: 'var(--surface)' }}
             />
             <button
               onClick={handleDelete}
@@ -333,7 +330,7 @@ const CommentItem: React.FC<{
                 setShowDeleteInput(false);
                 setDeleteError('');
               }}
-              className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
             >
               취소
             </button>
@@ -397,8 +394,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
       {/* 댓글 헤더 */}
       <h3 className={cn(
         'text-base font-bold mb-4 pb-2',
-        'text-gray-800 dark:text-dark-text',
-        'border-b border-gray-200 dark:border-dark-border',
+        'text-[var(--text)]',
+        'border-b border-[var(--border)]',
         'flex items-center gap-2'
       )}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
@@ -409,7 +406,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ postId, initialComments
 
       {/* 댓글 목록 */}
       {commentTree.length === 0 ? (
-        <p className="text-sm text-gray-500 dark:text-dark-text-tertiary text-center py-8">
+        <p className="text-sm text-[var(--text-tertiary)] text-center py-8">
           아직 댓글이 없습니다. 첫 댓글을 작성해보세요!
         </p>
       ) : (

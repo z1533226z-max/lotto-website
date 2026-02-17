@@ -16,14 +16,14 @@ interface AIPerformancePanelProps {
 const PerformanceSkeletonLoader = () => (
   <Card className="p-6 animate-pulse">
     <div className="flex items-center mb-4">
-      <div className="w-8 h-8 bg-gray-300 rounded-full mr-3"></div>
-      <div className="h-6 bg-gray-300 rounded w-32"></div>
+      <div className="w-8 h-8 rounded-full mr-3" style={{ backgroundColor: 'var(--border)' }}></div>
+      <div className="h-6 rounded w-32" style={{ backgroundColor: 'var(--border)' }}></div>
     </div>
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
         <div key={i} className="flex justify-between items-center">
-          <div className="h-4 bg-gray-200 rounded w-24"></div>
-          <div className="h-4 bg-gray-300 rounded w-16"></div>
+          <div className="h-4 rounded w-24" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
+          <div className="h-4 rounded w-16" style={{ backgroundColor: 'var(--border)' }}></div>
         </div>
       ))}
     </div>
@@ -36,7 +36,7 @@ const PerformanceErrorCard = ({ onRetry, error }: { onRetry: () => void; error: 
     <div className="text-center space-y-4">
       <div>
         <h3 className="font-bold text-red-600 mb-2">⚠️ AI 성능 데이터 로딩 실패</h3>
-        <p className="text-sm text-gray-600 mb-4">{error}</p>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
       <div className="flex gap-2 justify-center">
         <button 
@@ -221,10 +221,10 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
 
   // 성능 등급 계산
   const getPerformanceGrade = (accuracy: number) => {
-    if (accuracy >= 80) return { grade: 'S', color: 'text-green-600', bgColor: 'bg-green-100' };
-    if (accuracy >= 70) return { grade: 'A', color: 'text-blue-600', bgColor: 'bg-blue-100' };
-    if (accuracy >= 60) return { grade: 'B', color: 'text-yellow-600', bgColor: 'bg-yellow-100' };
-    return { grade: 'C', color: 'text-red-600', bgColor: 'bg-red-100' };
+    if (accuracy >= 80) return { grade: 'S', color: 'text-green-600', bgColor: 'bg-green-500/10' };
+    if (accuracy >= 70) return { grade: 'A', color: 'text-blue-600', bgColor: 'bg-blue-500/10' };
+    if (accuracy >= 60) return { grade: 'B', color: 'text-yellow-600', bgColor: 'bg-yellow-500/10' };
+    return { grade: 'C', color: 'text-red-600', bgColor: 'bg-red-500/10' };
   };
 
   const grade = getPerformanceGrade(performanceMetrics.confidenceLevel);
@@ -239,7 +239,7 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
         <Card className="p-6">
           <div className="flex items-center mb-4">
             <span className="text-2xl mr-3">🤖</span>
-            <h3 className="font-bold text-gray-800">AI 성능 검증</h3>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 성능 검증</h3>
             <div className={`ml-auto px-3 py-1 rounded-full text-sm font-bold ${grade.color} ${grade.bgColor}`}>
               {grade.grade}등급
             </div>
@@ -248,11 +248,11 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
           <div className="space-y-4">
             {/* 예측 정확도 */}
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">예측 정확도</span>
+              <span style={{ color: 'var(--text-secondary)' }}>예측 정확도</span>
               <div className="flex items-center">
                 <span className="font-bold text-lg mr-2">{performanceMetrics.predictionAccuracy}%</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
+                <div className="w-20 rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
+                  <div
                     className="bg-blue-500 h-2 rounded-full transition-all duration-1000"
                     style={{ width: `${performanceMetrics.predictionAccuracy}%` }}
                   />
@@ -262,11 +262,11 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
             
             {/* 패턴 감지율 */}
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">패턴 감지율</span>
+              <span style={{ color: 'var(--text-secondary)' }}>패턴 감지율</span>
               <div className="flex items-center">
                 <span className="font-bold text-lg mr-2">{performanceMetrics.patternDetectionRate}%</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
+                <div className="w-20 rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
+                  <div
                     className="bg-green-500 h-2 rounded-full transition-all duration-1000"
                     style={{ width: `${performanceMetrics.patternDetectionRate}%` }}
                   />
@@ -276,11 +276,11 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
             
             {/* 신뢰도 */}
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">신뢰도</span>
+              <span style={{ color: 'var(--text-secondary)' }}>신뢰도</span>
               <div className="flex items-center">
                 <span className="font-bold text-lg mr-2">{performanceMetrics.confidenceLevel}%</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
+                <div className="w-20 rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
+                  <div
                     className="bg-purple-500 h-2 rounded-full transition-all duration-1000"
                     style={{ width: `${performanceMetrics.confidenceLevel}%` }}
                   />
@@ -289,8 +289,8 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <div className="flex justify-between text-sm text-gray-500">
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+            <div className="flex justify-between text-sm" style={{ color: 'var(--text-tertiary)' }}>
               <span>분석 회차: {performanceMetrics.totalAnalyzedRounds}회</span>
               <span>업데이트: {new Date(performanceMetrics.lastUpdated).toLocaleTimeString()}</span>
             </div>

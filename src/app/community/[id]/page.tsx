@@ -239,7 +239,7 @@ export default function CommunityPostPage() {
               'w-8 h-8 border-3 border-primary/30 border-t-primary',
               'rounded-full animate-spin'
             )} />
-            <span className="text-sm text-gray-500 dark:text-dark-text-tertiary">
+            <span className="text-sm text-[var(--text-tertiary)]">
               로딩 중...
             </span>
           </div>
@@ -251,7 +251,7 @@ export default function CommunityPostPage() {
   if (error || !post) {
     return (
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col items-center justify-center py-32 text-gray-500 dark:text-dark-text-tertiary">
+        <div className="flex flex-col items-center justify-center py-32 text-[var(--text-tertiary)]">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-3 opacity-50">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
           </svg>
@@ -276,8 +276,8 @@ export default function CommunityPostPage() {
         onClick={() => router.push('/community')}
         className={cn(
           'flex items-center gap-1 mb-4 text-sm',
-          'text-gray-500 dark:text-dark-text-tertiary',
-          'hover:text-gray-700 dark:hover:text-dark-text-secondary',
+          'text-[var(--text-tertiary)]',
+          'hover:text-[var(--text-secondary)]',
           'transition-colors duration-200'
         )}
       >
@@ -306,24 +306,24 @@ export default function CommunityPostPage() {
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
               maxLength={100}
+              style={{ backgroundColor: 'var(--surface)' }}
               className={cn(
                 'w-full px-3 py-2 text-lg font-bold rounded-lg',
-                'bg-white dark:bg-dark-surface',
-                'border border-gray-200 dark:border-dark-border',
-                'text-gray-900 dark:text-dark-text',
+                'border border-[var(--border)]',
+                'text-[var(--text)]',
                 'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 'transition-colors duration-200'
               )}
             />
           ) : (
-            <h1 className="text-xl font-bold text-gray-900 dark:text-dark-text">
+            <h1 className="text-xl font-bold text-[var(--text)]">
               {post.title}
             </h1>
           )}
 
           {/* 메타 정보 */}
-          <div className="flex items-center gap-3 mt-3 text-sm text-gray-500 dark:text-dark-text-tertiary">
-            <span className="font-medium text-gray-700 dark:text-dark-text-secondary">
+          <div className="flex items-center gap-3 mt-3 text-sm text-[var(--text-tertiary)]">
+            <span className="font-medium text-[var(--text-secondary)]">
               {post.nickname}
             </span>
             <span>{formatDate(post.created_at)}</span>
@@ -340,7 +340,7 @@ export default function CommunityPostPage() {
         {/* 본문 */}
         <div className={cn(
           'py-6 border-t border-b',
-          'border-gray-100 dark:border-dark-border'
+          'border-[var(--border)]'
         )}>
           {editMode ? (
             <div>
@@ -349,11 +349,11 @@ export default function CommunityPostPage() {
                 onChange={(e) => setEditContent(e.target.value)}
                 maxLength={5000}
                 rows={15}
+                style={{ backgroundColor: 'var(--surface)' }}
                 className={cn(
                   'w-full px-3 py-2 text-sm rounded-lg resize-y',
-                  'bg-white dark:bg-dark-surface',
-                  'border border-gray-200 dark:border-dark-border',
-                  'text-gray-900 dark:text-dark-text',
+                  'border border-[var(--border)]',
+                  'text-[var(--text)]',
                   'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                   'transition-colors duration-200'
                 )}
@@ -384,7 +384,7 @@ export default function CommunityPostPage() {
               </div>
             </div>
           ) : (
-            <div className="text-sm text-gray-700 dark:text-dark-text-secondary whitespace-pre-wrap break-words leading-relaxed">
+            <div className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap break-words leading-relaxed">
               {post.content}
             </div>
           )}
@@ -402,8 +402,8 @@ export default function CommunityPostPage() {
                 liked
                   ? 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400'
                   : cn(
-                      'border-gray-200 dark:border-dark-border',
-                      'text-gray-500 dark:text-dark-text-tertiary',
+                      'border-[var(--border)]',
+                      'text-[var(--text-tertiary)]',
                       'hover:border-red-300 hover:text-red-500',
                       'dark:hover:border-red-500/30 dark:hover:text-red-400'
                     )
@@ -460,16 +460,18 @@ export default function CommunityPostPage() {
           />
 
           {/* 모달 */}
-          <div className={cn(
-            'relative w-full max-w-sm p-6 rounded-2xl',
-            'bg-white dark:bg-dark-surface',
-            'shadow-2xl',
-            'border border-gray-200 dark:border-dark-border'
-          )}>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text mb-2">
+          <div
+            style={{ backgroundColor: 'var(--surface)' }}
+            className={cn(
+              'relative w-full max-w-sm p-6 rounded-2xl',
+              'shadow-2xl',
+              'border border-[var(--border)]'
+            )}
+          >
+            <h3 className="text-lg font-bold text-[var(--text)] mb-2">
               {showPasswordModal === 'edit' ? '게시글 수정' : '게시글 삭제'}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-dark-text-tertiary mb-4">
+            <p className="text-sm text-[var(--text-tertiary)] mb-4">
               {showPasswordModal === 'edit'
                 ? '게시글을 수정하려면 비밀번호를 입력해주세요.'
                 : '게시글을 삭제하려면 비밀번호를 입력해주세요. 이 작업은 되돌릴 수 없습니다.'}
@@ -486,12 +488,11 @@ export default function CommunityPostPage() {
                 }
               }}
               autoFocus
+              style={{ backgroundColor: 'var(--bg)' }}
               className={cn(
                 'w-full px-3 py-2.5 text-sm rounded-lg',
-                'bg-white dark:bg-dark-bg',
-                'border border-gray-200 dark:border-dark-border',
-                'text-gray-900 dark:text-dark-text',
-                'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+                'border border-[var(--border)]',
+                'text-[var(--text)]',
                 'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 'transition-colors duration-200'
               )}

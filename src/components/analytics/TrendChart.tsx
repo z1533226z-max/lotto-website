@@ -100,7 +100,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl">📈</span>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+          <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
             번호 트렌드 분석
           </h3>
         </div>
@@ -115,8 +115,12 @@ const TrendChart: React.FC<TrendChartProps> = ({
                 'px-3 py-1 text-xs rounded-full font-medium transition-all duration-200',
                 windowSize === opt.value
                   ? 'bg-primary text-white shadow-sm'
-                  : 'bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-surface-hover'
+                  : 'hover:opacity-80'
               )}
+              style={windowSize !== opt.value ? {
+                backgroundColor: 'var(--surface-hover)',
+                color: 'var(--text-secondary)',
+              } : undefined}
             >
               {opt.label}
             </button>
@@ -127,7 +131,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
       {/* Selected Numbers Display */}
       <div className="mb-4">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-500 dark:text-dark-text-tertiary">선택 번호:</span>
+          <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>선택 번호:</span>
           {selectedNumbers.map((num, idx) => (
             <button
               key={num}
@@ -149,15 +153,16 @@ const TrendChart: React.FC<TrendChartProps> = ({
               'w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center',
               'border-2 border-dashed transition-all duration-200',
               selectedNumbers.length >= 5
-                ? 'border-gray-300 dark:border-dark-border text-gray-400 cursor-not-allowed'
+                ? 'cursor-not-allowed'
                 : 'border-primary text-primary hover:bg-primary/10'
             )}
             disabled={selectedNumbers.length >= 5 && !showPicker}
+            style={selectedNumbers.length >= 5 ? { borderColor: 'var(--border)', color: 'var(--text-tertiary)' } : undefined}
           >
             {showPicker ? '-' : '+'}
           </button>
           {selectedNumbers.length < 5 && (
-            <span className="text-[10px] text-gray-400 dark:text-dark-text-tertiary">
+            <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
               최대 5개
             </span>
           )}
@@ -166,7 +171,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
 
       {/* Number Picker Grid */}
       {showPicker && (
-        <div className="mb-4 p-3 bg-gray-50 dark:bg-dark-surface rounded-lg">
+        <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--surface-hover)' }}>
           <div className="grid grid-cols-9 gap-1">
             {Array.from({ length: 45 }, (_, i) => i + 1).map((num) => {
               const isSelected = selectedNumbers.includes(num);
@@ -180,10 +185,12 @@ const TrendChart: React.FC<TrendChartProps> = ({
                     'transition-all duration-150',
                     isSelected
                       ? cn(getPickerBg(num), 'ring-2 ring-offset-1 ring-primary scale-110')
-                      : selectedNumbers.length >= 5
-                        ? 'bg-gray-200 dark:bg-dark-surface-hover text-gray-400 dark:text-dark-text-tertiary cursor-not-allowed'
-                        : 'bg-gray-200 dark:bg-dark-surface-hover text-gray-600 dark:text-dark-text-secondary hover:bg-gray-300 dark:hover:bg-dark-surface-active'
+                      : (!isSelected && selectedNumbers.length >= 5) ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:opacity-80'
                   )}
+                  style={!isSelected ? {
+                    backgroundColor: 'var(--surface-hover)',
+                    color: selectedNumbers.length >= 5 ? 'var(--text-tertiary)' : 'var(--text-secondary)',
+                  } : undefined}
                 >
                   {num}
                 </button>
@@ -223,8 +230,13 @@ const TrendChart: React.FC<TrendChartProps> = ({
                   borderRadius: '8px',
                   fontSize: '12px',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  color: 'var(--text, #1f2937)',
                 }}
-                labelStyle={{ fontWeight: 'bold', marginBottom: 4 }}
+                labelStyle={{ fontWeight: 'bold', marginBottom: 4, color: 'var(--text, #1f2937)' }}
+                formatter={(value: number, name: string) => {
+                  const num = name.replace('num_', '');
+                  return [`${value}회`, `${num}번`];
+                }}
               />
               <Legend
                 formatter={(value: string) => {
@@ -250,13 +262,13 @@ const TrendChart: React.FC<TrendChartProps> = ({
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-500 dark:text-dark-text-secondary">
+        <div className="text-center py-12" style={{ color: 'var(--text-secondary)' }}>
           번호를 선택하면 트렌드 차트가 표시됩니다
         </div>
       )}
 
       {/* Legend explanation */}
-      <div className="mt-3 text-[11px] text-gray-400 dark:text-dark-text-tertiary text-center">
+      <div className="mt-3 text-[11px] text-center" style={{ color: 'var(--text-tertiary)' }}>
         각 구간({windowSize}회차)별 선택 번호의 출현 횟수 추이
       </div>
     </Card>

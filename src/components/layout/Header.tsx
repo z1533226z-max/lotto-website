@@ -44,6 +44,7 @@ const Header: React.FC = () => {
   const pathname = usePathname();
   const auth = useAuthSafe();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
 
   // Track scroll position for header background enhancement
   useEffect(() => {
@@ -82,6 +83,18 @@ const Header: React.FC = () => {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [userMenuOpen]);
+
+  // Close tools dropdown on outside click
+  useEffect(() => {
+    if (!toolsOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) {
+        setToolsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [toolsOpen]);
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -147,10 +160,10 @@ const Header: React.FC = () => {
               {/* Tools dropdown */}
               <div
                 className="relative"
-                onMouseEnter={() => setToolsOpen(true)}
-                onMouseLeave={() => setToolsOpen(false)}
+                ref={toolsRef}
               >
                 <button
+                  onClick={() => setToolsOpen(!toolsOpen)}
                   className={cn(
                     'relative px-3 py-2 rounded-lg text-sm font-medium',
                     'transition-all duration-200',

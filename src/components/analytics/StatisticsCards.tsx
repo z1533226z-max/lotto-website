@@ -14,25 +14,25 @@ interface StatisticsCardsProps {
 
 // 스켈레톤 로더 컴포넌트
 const SkeletonCard = ({ icon, title }: { icon: string; title: string }) => (
-  <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 animate-pulse">
+  <div className="rounded-xl p-6 animate-pulse" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
     <div className="flex items-center mb-3">
       <span className="text-2xl mr-2">{icon}</span>
-      <h3 className="font-bold text-gray-800">{title}</h3>
+      <h3 className="font-bold" style={{ color: 'var(--text)' }}>{title}</h3>
     </div>
     <div className="space-y-2">
-      <div className="h-8 bg-gray-300 rounded w-20"></div>
-      <div className="h-4 bg-gray-200 rounded w-32"></div>
+      <div className="h-8 rounded w-20" style={{ backgroundColor: 'var(--border)' }}></div>
+      <div className="h-4 rounded w-32" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
     </div>
   </div>
 );
 
 // 에러 상태 컴포넌트
 const ErrorCard = ({ onRetry, error }: { onRetry: () => void; error: string }) => (
-  <Card className="col-span-full text-center py-8 border-red-200 bg-red-50">
+  <Card className="col-span-full text-center py-8 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
     <div className="space-y-4">
       <div>
-        <p className="text-red-600 font-semibold mb-2">⚠️ 통계 데이터 로딩 실패</p>
-        <p className="text-sm text-gray-600 mb-4">{error}</p>
+        <p className="text-red-600 dark:text-red-400 font-semibold mb-2">⚠️ 통계 데이터 로딩 실패</p>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
       <div className="flex gap-2 justify-center">
         <button 
@@ -240,16 +240,16 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
+        <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
           <div className="flex items-center mb-3">
             <span className="text-2xl mr-2">🔥</span>
-            <h3 className="font-bold text-gray-800">핫넘버</h3>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>핫넘버</h3>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-red-600">
+            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
               {analysisData.hotNumber ? `${analysisData.hotNumber.number}번` : '--'}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {analysisData.hotNumber 
                 ? `점수: ${Math.round(analysisData.hotNumber.hotColdScore)}, 빈도: ${analysisData.hotNumber.frequency}회`
                 : '데이터 분석 중...'
@@ -268,16 +268,16 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
           <div className="flex items-center mb-3">
             <span className="text-2xl mr-2">❄️</span>
-            <h3 className="font-bold text-gray-800">콜드넘버</h3>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>콜드넘버</h3>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-blue-600">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
               {analysisData.coldNumber ? `${analysisData.coldNumber.number}번` : '--'}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {analysisData.coldNumber
                 ? `마지막 출현: ${analysisData.coldNumber.lastAppeared}회차`
                 : '데이터 분석 중...'
@@ -296,16 +296,16 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-200">
+        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded-xl p-6 border border-yellow-200 dark:border-yellow-800">
           <div className="flex items-center mb-3">
             <span className="text-2xl mr-2">⚡</span>
-            <h3 className="font-bold text-gray-800">AI 신뢰도</h3>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 신뢰도</h3>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-yellow-600">
+            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
               {analysisData.aiPerformance ? `${analysisData.aiPerformance.confidenceLevel}%` : '--'}
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {analysisData.aiPerformance 
                 ? `${analysisData.aiPerformance.totalAnalyzedRounds}회차 학습 완료`
                 : '고급 패턴 분석 모드'
@@ -319,7 +319,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
           {/* 신뢰도 프로그레스 바 */}
           {analysisData.aiPerformance && (
             <div className="mt-3">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
                 <div 
                   className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-1000"
                   style={{ width: `${analysisData.aiPerformance.confidenceLevel}%` }}

@@ -56,7 +56,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
   if (!weeklyChanges) {
     return (
       <Card variant="glass" className={className}>
-        <div className="text-center py-8 text-gray-500 dark:text-dark-text-secondary">
+        <div className="text-center py-8 text-[var(--text-secondary)]">
           데이터를 불러오는 중...
         </div>
       </Card>
@@ -69,7 +69,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl">🎱</span>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+          <h3 className="text-lg font-bold text-[var(--text)]">
             {weeklyChanges.latestRound}회차 당첨번호
           </h3>
         </div>
@@ -77,10 +77,10 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
           {weeklyChanges.newNumbers.map((num) => (
             <NumberBall key={num} num={num} size="md" />
           ))}
-          <span className="text-gray-400 dark:text-dark-text-tertiary mx-1 text-lg font-light">+</span>
+          <span className="text-[var(--text-tertiary)] mx-1 text-lg font-light">+</span>
           <div className="relative">
             <NumberBall num={weeklyChanges.bonusNumber} size="md" />
-            <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-gray-500 dark:text-dark-text-tertiary whitespace-nowrap">
+            <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-[var(--text-tertiary)] whitespace-nowrap">
               보너스
             </span>
           </div>
@@ -92,11 +92,11 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xl">🔥</span>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+            <h3 className="text-lg font-bold text-[var(--text)]">
               이번 주 핫넘버 / 콜드넘버
             </h3>
           </div>
-          <p className="text-xs text-gray-500 dark:text-dark-text-tertiary mb-3">
+          <p className="text-xs text-[var(--text-tertiary)] mb-3">
             최근 10회차 vs 이전 10회차 출현 빈도 비교
           </p>
 
@@ -144,7 +144,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xl">❄️</span>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+          <h3 className="text-lg font-bold text-[var(--text)]">
             최장 미출현 번호
           </h3>
         </div>
@@ -152,10 +152,10 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
           {weeklyChanges.longestAbsent.map((item) => (
             <div
               key={item.number}
-              className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-dark-border last:border-b-0"
+              className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-b-0"
             >
               <NumberBall num={item.number} />
-              <span className="text-sm text-gray-600 dark:text-dark-text-secondary">
+              <span className="text-sm text-[var(--text-secondary)]">
                 <span className="font-semibold text-blue-600 dark:text-blue-400">{item.rounds}회</span> 연속 미출현
               </span>
             </div>
@@ -168,7 +168,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xl">⚡</span>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+            <h3 className="text-lg font-bold text-[var(--text)]">
               연속 출현 번호
             </h3>
           </div>
@@ -176,10 +176,10 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
             {weeklyChanges.hottestStreak.map((item) => (
               <div
                 key={item.number}
-                className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-dark-border last:border-b-0"
+                className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-b-0"
               >
                 <NumberBall num={item.number} />
-                <span className="text-sm text-gray-600 dark:text-dark-text-secondary">
+                <span className="text-sm text-[var(--text-secondary)]">
                   <span className="font-semibold text-red-600 dark:text-red-400">{item.consecutiveAppearances}회</span> 연속 출현
                 </span>
               </div>
@@ -193,11 +193,11 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xl">📊</span>
-            <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
+            <h3 className="text-lg font-bold text-[var(--text)]">
               출현 예상 번호
             </h3>
           </div>
-          <p className="text-xs text-gray-500 dark:text-dark-text-tertiary mb-3">
+          <p className="text-xs text-[var(--text-tertiary)] mb-3">
             평균 출현 주기 대비 1.5배 이상 미출현된 번호
           </p>
           <div className="flex flex-wrap gap-2">

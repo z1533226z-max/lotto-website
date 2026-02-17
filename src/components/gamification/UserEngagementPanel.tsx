@@ -181,7 +181,7 @@ const UserEngagementPanel: React.FC = () => {
   if (isLoading) {
     return (
       <Card className="animate-pulse">
-        <div className="h-32 bg-gray-200 rounded"></div>
+        <div className="h-32 rounded" style={{ backgroundColor: 'var(--surface-hover)' }}></div>
       </Card>
     );
   }
@@ -189,7 +189,7 @@ const UserEngagementPanel: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 사용자 레벨 및 점수 */}
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200 dark:from-purple-900/20 dark:to-indigo-900/20 dark:border-purple-800">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
@@ -197,24 +197,24 @@ const UserEngagementPanel: React.FC = () => {
                 {userLevel.level}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-800">레벨 {userLevel.level} 예측 마스터</h3>
-                <p className="text-sm text-gray-600">총 {userStats.totalScore.toLocaleString()}점</p>
+                <h3 className="text-lg font-bold text-[var(--text)]">레벨 {userLevel.level} 예측 마스터</h3>
+                <p className="text-sm text-[var(--text-secondary)]">총 {userStats.totalScore.toLocaleString()}점</p>
               </div>
             </div>
             
             <div className="text-right">
-              <div className="text-sm text-gray-600">주간 랭킹</div>
+              <div className="text-sm text-[var(--text-secondary)]">주간 랭킹</div>
               <div className="text-xl font-bold text-purple-600">#{weeklyRanking.toLocaleString()}</div>
             </div>
           </div>
           
           {/* 레벨 진행도 */}
           <div className="space-y-2">
-            <div className="flex justify-between text-sm text-gray-600">
+            <div className="flex justify-between text-sm text-[var(--text-secondary)]">
               <span>레벨 {userLevel.level} 진행도</span>
               <span>{userLevel.currentLevelXP}/{userLevel.nextLevelXP} XP</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
               <motion.div
                 className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full"
                 initial={{ width: 0 }}
@@ -227,10 +227,10 @@ const UserEngagementPanel: React.FC = () => {
       </Card>
 
       {/* 주간 도전과제 */}
-      <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
+      <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200 dark:from-orange-900/20 dark:to-red-900/20 dark:border-orange-800">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800 flex items-center">
+            <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
               <span className="mr-2">🏆</span>
               주간 도전과제
             </h3>
@@ -243,16 +243,16 @@ const UserEngagementPanel: React.FC = () => {
           
           <div className="space-y-3">
             <div>
-              <h4 className="font-medium text-gray-800">{weeklyChallenge.title}</h4>
-              <p className="text-sm text-gray-600">{weeklyChallenge.description}</p>
+              <h4 className="font-medium text-[var(--text)]">{weeklyChallenge.title}</h4>
+              <p className="text-sm text-[var(--text-secondary)]">{weeklyChallenge.description}</p>
             </div>
             
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">진행도</span>
+                <span className="text-[var(--text-secondary)]">진행도</span>
                 <span className="font-medium">{weeklyChallenge.progress}/{weeklyChallenge.target}</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
                 <motion.div
                   className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full"
                   initial={{ width: 0 }}
@@ -263,7 +263,7 @@ const UserEngagementPanel: React.FC = () => {
             </div>
             
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">보상</span>
+              <span className="text-[var(--text-secondary)]">보상</span>
               <span className="font-medium text-orange-600">+{weeklyChallenge.reward} XP</span>
             </div>
           </div>
@@ -273,27 +273,27 @@ const UserEngagementPanel: React.FC = () => {
       {/* 활동 통계 */}
       <Card>
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+          <h3 className="text-lg font-bold text-[var(--text)] mb-4 flex items-center">
             <span className="mr-2">📊</span>
             활동 통계
           </h3>
           
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">{userStats.predictionsGenerated}</div>
-              <div className="text-sm text-gray-600">번호 생성</div>
+              <div className="text-sm text-[var(--text-secondary)]">번호 생성</div>
             </div>
-            <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{userStats.currentStreak}</div>
-              <div className="text-sm text-gray-600">연속 방문</div>
+              <div className="text-sm text-[var(--text-secondary)]">연속 방문</div>
             </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">{userStats.weeklyScore}</div>
-              <div className="text-sm text-gray-600">주간 점수</div>
+              <div className="text-sm text-[var(--text-secondary)]">주간 점수</div>
             </div>
-            <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{userStats.longestStreak}</div>
-              <div className="text-sm text-gray-600">최고 연속</div>
+              <div className="text-sm text-[var(--text-secondary)]">최고 연속</div>
             </div>
           </div>
         </div>

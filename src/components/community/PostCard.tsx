@@ -48,8 +48,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
     <div
       className={cn(
         'flex items-center gap-3 px-4 py-3.5 cursor-pointer',
-        'border-b border-gray-100 dark:border-dark-border',
-        'hover:bg-gray-50 dark:hover:bg-dark-surface-hover',
+        'border-b border-[var(--border)]',
+        'hover:bg-[var(--surface-hover)]',
         'transition-colors duration-150'
       )}
       onClick={onClick}
@@ -85,7 +85,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
         <div className="flex items-center gap-1.5">
           <span className={cn(
             'text-sm font-medium truncate',
-            'text-gray-900 dark:text-dark-text',
+            'text-[var(--text)]',
             post.is_pinned && 'font-bold'
           )}>
             {post.title}
@@ -99,7 +99,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
       </div>
 
       {/* 메타 정보 */}
-      <div className="flex items-center gap-3 flex-shrink-0 text-xs text-gray-500 dark:text-dark-text-tertiary">
+      <div className="flex items-center gap-3 flex-shrink-0 text-xs text-[var(--text-tertiary)]">
         <span className="hidden sm:inline">{post.nickname}</span>
         <span className="flex items-center gap-0.5" title="조회수">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">

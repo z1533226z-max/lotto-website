@@ -98,10 +98,10 @@ export default function CommunityWritePage() {
     <div className="max-w-2xl mx-auto">
       {/* 페이지 제목 */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text">
+        <h1 className="text-2xl font-bold text-[var(--text)]">
           글쓰기
         </h1>
-        <p className="text-sm text-gray-500 dark:text-dark-text-tertiary mt-1">
+        <p className="text-sm text-[var(--text-tertiary)] mt-1">
           커뮤니티에 새 글을 작성합니다
         </p>
       </div>
@@ -111,7 +111,7 @@ export default function CommunityWritePage() {
           {/* 닉네임 & 비밀번호 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
                 닉네임
               </label>
               <input
@@ -120,19 +120,18 @@ export default function CommunityWritePage() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 maxLength={20}
+                style={{ backgroundColor: 'var(--surface)' }}
                 className={cn(
                   'w-full px-3 py-2.5 text-sm rounded-lg',
-                  'bg-white dark:bg-dark-surface',
-                  'border border-gray-200 dark:border-dark-border',
-                  'text-gray-900 dark:text-dark-text',
-                  'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+                  'border border-[var(--border)]',
+                  'text-[var(--text)]',
                   'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                   'transition-colors duration-200'
                 )}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
                 비밀번호
               </label>
               <input
@@ -141,12 +140,11 @@ export default function CommunityWritePage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 maxLength={30}
+                style={{ backgroundColor: 'var(--surface)' }}
                 className={cn(
                   'w-full px-3 py-2.5 text-sm rounded-lg',
-                  'bg-white dark:bg-dark-surface',
-                  'border border-gray-200 dark:border-dark-border',
-                  'text-gray-900 dark:text-dark-text',
-                  'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+                  'border border-[var(--border)]',
+                  'text-[var(--text)]',
                   'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                   'transition-colors duration-200'
                 )}
@@ -156,7 +154,7 @@ export default function CommunityWritePage() {
 
           {/* 카테고리 선택 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               카테고리
             </label>
             <div className="flex flex-wrap gap-2">
@@ -165,15 +163,15 @@ export default function CommunityWritePage() {
                   key={cat.id}
                   type="button"
                   onClick={() => setCategory(cat.id)}
+                  style={category !== cat.id ? { backgroundColor: 'var(--surface)' } : undefined}
                   className={cn(
                     'px-4 py-2 text-sm rounded-lg transition-all duration-200',
                     'border',
                     category === cat.id
                       ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
                       : cn(
-                          'bg-white dark:bg-dark-surface',
-                          'border-gray-200 dark:border-dark-border',
-                          'text-gray-600 dark:text-dark-text-secondary',
+                          'border-[var(--border)]',
+                          'text-[var(--text-secondary)]',
                           'hover:border-primary/50 hover:text-primary dark:hover:text-primary-400'
                         )
                   )}
@@ -183,7 +181,7 @@ export default function CommunityWritePage() {
                     'block text-xs mt-0.5',
                     category === cat.id
                       ? 'text-white/80'
-                      : 'text-gray-400 dark:text-dark-text-tertiary'
+                      : 'text-[var(--text-tertiary)]'
                   )}>
                     {cat.description}
                   </span>
@@ -194,7 +192,7 @@ export default function CommunityWritePage() {
 
           {/* 제목 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               제목
             </label>
             <input
@@ -203,12 +201,11 @@ export default function CommunityWritePage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={100}
+              style={{ backgroundColor: 'var(--surface)' }}
               className={cn(
                 'w-full px-3 py-2.5 text-sm rounded-lg',
-                'bg-white dark:bg-dark-surface',
-                'border border-gray-200 dark:border-dark-border',
-                'text-gray-900 dark:text-dark-text',
-                'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+                'border border-[var(--border)]',
+                'text-[var(--text)]',
                 'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 'transition-colors duration-200'
               )}
@@ -217,7 +214,7 @@ export default function CommunityWritePage() {
 
           {/* 내용 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               내용
             </label>
             <textarea
@@ -226,12 +223,11 @@ export default function CommunityWritePage() {
               onChange={(e) => setContent(e.target.value)}
               maxLength={MAX_CONTENT_LENGTH}
               rows={12}
+              style={{ backgroundColor: 'var(--surface)' }}
               className={cn(
                 'w-full px-3 py-2.5 text-sm rounded-lg resize-y',
-                'bg-white dark:bg-dark-surface',
-                'border border-gray-200 dark:border-dark-border',
-                'text-gray-900 dark:text-dark-text',
-                'placeholder-gray-400 dark:placeholder-dark-text-tertiary',
+                'border border-[var(--border)]',
+                'text-[var(--text)]',
                 'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 'transition-colors duration-200'
               )}
@@ -241,7 +237,7 @@ export default function CommunityWritePage() {
                 'text-xs',
                 content.length > MAX_CONTENT_LENGTH * 0.9
                   ? 'text-red-500 dark:text-red-400'
-                  : 'text-gray-400 dark:text-dark-text-tertiary'
+                  : 'text-[var(--text-tertiary)]'
               )}>
                 {content.length} / {MAX_CONTENT_LENGTH}
               </span>

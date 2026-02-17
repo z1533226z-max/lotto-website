@@ -50,8 +50,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: hotNumbers[0].frequency > avgFrequency * 1.5 ? 'high' : 'medium',
         icon: '🔥',
         color: 'text-red-600',
-        bgColor: 'bg-red-50',
-        borderColor: 'border-red-200'
+        bgColor: 'bg-red-50 dark:bg-red-900/20',
+        borderColor: 'border-red-200 dark:border-red-800'
       });
     }
 
@@ -67,8 +67,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: coldNumbers[0].frequency < avgFrequency * 0.6 ? 'high' : 'medium',
         icon: '❄️',
         color: 'text-blue-600',
-        bgColor: 'bg-blue-50',
-        borderColor: 'border-blue-200'
+        bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+        borderColor: 'border-blue-200 dark:border-blue-800'
       });
     }
 
@@ -88,8 +88,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: recentlyAppeared[0].consecutiveCount >= 3 ? 'high' : 'medium',
         icon: '⚡',
         color: 'text-yellow-600',
-        bgColor: 'bg-yellow-50',
-        borderColor: 'border-yellow-200'
+        bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+        borderColor: 'border-yellow-200 dark:border-yellow-800'
       });
     }
 
@@ -108,8 +108,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: (maxRound - topAbsent[0].lastAppeared) > 20 ? 'high' : 'medium',
         icon: '⏰',
         color: 'text-purple-600',
-        bgColor: 'bg-purple-50',
-        borderColor: 'border-purple-200'
+        bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+        borderColor: 'border-purple-200 dark:border-purple-800'
       });
     }
 
@@ -142,8 +142,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: dominantSection.avgFreq > avgFrequency * 1.5 ? 'high' : 'medium',
         icon: '📊',
         color: 'text-green-600',
-        bgColor: 'bg-green-50',
-        borderColor: 'border-green-200'
+        bgColor: 'bg-green-50 dark:bg-green-900/20',
+        borderColor: 'border-green-200 dark:border-green-800'
       });
     }
 
@@ -168,8 +168,8 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
         severity: imbalanceRatio > 0.3 ? 'high' : 'medium',
         icon: '⚖️',
         color: 'text-indigo-600',
-        bgColor: 'bg-indigo-50',
-        borderColor: 'border-indigo-200'
+        bgColor: 'bg-indigo-50 dark:bg-indigo-900/20',
+        borderColor: 'border-indigo-200 dark:border-indigo-800'
       });
     }
 
@@ -178,23 +178,23 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
 
   if (!statistics || statistics.length === 0) {
     return (
-      <div className={`p-4 bg-gray-50 rounded-lg border border-gray-200 ${className}`}>
-        <p className="text-gray-500 text-center">트렌드 분석을 위한 데이터를 로딩 중...</p>
+      <div className={`p-4 rounded-lg border ${className}`} style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <p className="text-[var(--text-tertiary)] text-center">트렌드 분석을 위한 데이터를 로딩 중...</p>
       </div>
     );
   }
 
   if (trendAlerts.length === 0) {
     return (
-      <div className={`p-4 bg-gray-50 rounded-lg border border-gray-200 ${className}`}>
-        <p className="text-gray-500 text-center">현재 특별한 트렌드가 감지되지 않았습니다.</p>
+      <div className={`p-4 rounded-lg border ${className}`} style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <p className="text-[var(--text-tertiary)] text-center">현재 특별한 트렌드가 감지되지 않았습니다.</p>
       </div>
     );
   }
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <h3 className="text-lg font-bold text-gray-800 flex items-center mb-4">
+      <h3 className="text-lg font-bold text-[var(--text)] flex items-center mb-4">
         <span className="mr-2">🚨</span>
         실시간 트렌드 알림
       </h3>
@@ -225,20 +225,21 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-700 mb-3">{alert.description}</p>
+                <p className="text-sm text-[var(--text-secondary)] mb-3">{alert.description}</p>
                 
                 {/* 관련 번호 표시 */}
                 <div className="flex flex-wrap gap-1">
                   {alert.numbers.slice(0, 6).map(number => (
                     <span
                       key={number}
-                      className="inline-flex items-center justify-center w-8 h-8 bg-white border border-gray-300 rounded-full text-sm font-medium shadow-sm"
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium shadow-sm"
+                      style={{ backgroundColor: 'var(--surface)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border)', color: 'var(--text)' }}
                     >
                       {number}
                     </span>
                   ))}
                   {alert.numbers.length > 6 && (
-                    <span className="inline-flex items-center justify-center px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
+                    <span className="inline-flex items-center justify-center px-2 py-1 rounded-full text-xs" style={{ backgroundColor: 'var(--surface-hover)', color: 'var(--text-secondary)' }}>
                       +{alert.numbers.length - 6}
                     </span>
                   )}
@@ -260,7 +261,7 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       </AnimatePresence>
       
       {/* 업데이트 시간 표시 */}
-      <div className="text-center text-xs text-gray-500 mt-4">
+      <div className="text-center text-xs text-[var(--text-tertiary)] mt-4">
         마지막 업데이트: {new Date().toLocaleString('ko-KR')}
       </div>
     </div>
