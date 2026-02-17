@@ -88,8 +88,8 @@ export class LottoStatisticsAnalyzer {
     const lastAppeared = this.calculateLastAppeared(number, lottoData);
     const latestRound = Math.max(...lottoData.map(r => r.round));
     
-    // 전체 평균 출현율 계산
-    const averageFrequency = totalRounds / 45; // 이론적으로 각 번호당 평균 출현 횟수
+    // 전체 평균 출현율 계산 (본번호 6 + 보너스 1 = 7개/회차)
+    const averageFrequency = (totalRounds * 7) / 45;
     
     // 빈도 점수 (-50 ~ 50)
     const frequencyScore = ((frequency / averageFrequency) - 1) * 50;

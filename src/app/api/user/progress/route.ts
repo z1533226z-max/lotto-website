@@ -90,30 +90,27 @@ export async function PUT(request: NextRequest) {
       longestStreak || 0
     );
 
-    // 머지: actions 숫자 필드는 Math.max
-    const existingActions = existing?.actions || {};
-    const mergedActions = {
-      aiGenerations: Math.max(
-        existingActions.aiGenerations || 0,
-        actions?.aiGenerations || 0
-      ),
-      simulatorRuns: Math.max(
-        existingActions.simulatorRuns || 0,
-        actions?.simulatorRuns || 0
-      ),
-      dreamGenerations: Math.max(
-        existingActions.dreamGenerations || 0,
-        actions?.dreamGenerations || 0
-      ),
-      fortuneGenerations: Math.max(
-        existingActions.fortuneGenerations || 0,
-        actions?.fortuneGenerations || 0
-      ),
-      pageViews: Math.max(
-        existingActions.pageViews || 0,
-        actions?.pageViews || 0
-      ),
-    };
+    // 머지: actions 숫자 필드는 Math.max (플랫 컬럼 기준)
+    const mergedAiGenerations = Math.max(
+      existing?.ai_generations || 0,
+      actions?.aiGenerations || 0
+    );
+    const mergedSimulatorRuns = Math.max(
+      existing?.simulator_runs || 0,
+      actions?.simulatorRuns || 0
+    );
+    const mergedDreamGenerations = Math.max(
+      existing?.dream_generations || 0,
+      actions?.dreamGenerations || 0
+    );
+    const mergedFortuneGenerations = Math.max(
+      existing?.fortune_generations || 0,
+      actions?.fortuneGenerations || 0
+    );
+    const mergedPageViews = Math.max(
+      existing?.page_views || 0,
+      actions?.pageViews || 0
+    );
 
     // 머지: 배열(뱃지)은 유니크 병합
     const existingBadges: string[] = existing?.unlocked_badges || [];
@@ -134,16 +131,37 @@ export async function PUT(request: NextRequest) {
       dailyChallengeCompleted
     );
 
-    // UPSERT
+    // 저장번호 수, 매칭 확인 수, 다중세트 수 머지
+    const mergedSavedNumbersCount = Math.max(
+      existing?.saved_numbers_count || 0,
+      body.savedNumbersCount || 0
+    );
+    const mergedMatchChecksCount = Math.max(
+      existing?.match_checks_count || 0,
+      body.matchChecksCount || 0
+    );
+    const mergedMultiSetGenerations = Math.max(
+      existing?.multi_set_generations || 0,
+      body.multiSetGenerations || 0
+    );
+
+    // UPSERT (플랫 컬럼으로 저장)
     const upsertData = {
       user_id: auth.userId,
       visit_streak: mergedVisitStreak,
       longest_streak: mergedLongestStreak,
       last_visit_date: mergedLastVisitDate,
       first_visit_date: mergedFirstVisitDate,
-      actions: mergedActions,
+      ai_generations: mergedAiGenerations,
+      simulator_runs: mergedSimulatorRuns,
+      dream_generations: mergedDreamGenerations,
+      fortune_generations: mergedFortuneGenerations,
+      page_views: mergedPageViews,
       unlocked_badges: mergedBadges,
       daily_challenge_completed: mergedDailyChallenge,
+      saved_numbers_count: mergedSavedNumbersCount,
+      match_checks_count: mergedMatchChecksCount,
+      multi_set_generations: mergedMultiSetGenerations,
       updated_at: new Date().toISOString(),
     };
 

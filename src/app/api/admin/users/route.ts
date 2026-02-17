@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     if (userIds.length > 0) {
       const { data: progressData } = await (supabase.from('user_progress') as any)
-        .select('user_id, ai_generations, simulator_runs, dream_generations, fortune_generations, saved_numbers_count, visit_streak, longest_streak')
+        .select('user_id, ai_generations, simulator_runs, dream_generations, fortune_generations, page_views, saved_numbers_count, match_checks_count, multi_set_generations, visit_streak, longest_streak, last_visit_date, first_visit_date, unlocked_badges, updated_at')
         .in('user_id', userIds);
 
       if (progressData) {
