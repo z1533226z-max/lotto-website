@@ -3,10 +3,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
-import { getSampleStatistics, getDefaultHotNumber, getDefaultColdNumber, getDefaultAIPerformance } from '@/data/sampleLottoData';
-import type { NumberStatistics, AIPerformanceMetrics } from '@/types/lotto';
+import { getSampleStatistics, getDefaultHotNumber, getDefaultColdNumber } from '@/data/sampleLottoData';
+import type { NumberStatistics } from '@/types/lotto';
 
 interface StatisticsCardsProps {
   className?: string;
@@ -31,199 +30,139 @@ const ErrorCard = ({ onRetry, error }: { onRetry: () => void; error: string }) =
   <Card className="col-span-full text-center py-8 border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
     <div className="space-y-4">
       <div>
-        <p className="text-red-600 dark:text-red-400 font-semibold mb-2">⚠️ 통계 데이터 로딩 실패</p>
+        <p className="text-red-600 dark:text-red-400 font-semibold mb-2">통계 데이터 로딩 실패</p>
         <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
-      <div className="flex gap-2 justify-center">
-        <button 
-          onClick={onRetry}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
-        >
-          🔄 다시 시도
-        </button>
-        <button 
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-        >
-          🔃 페이지 새로고침
-        </button>
-      </div>
+      <button
+        onClick={onRetry}
+        className="px-4 py-2 text-white rounded-lg transition-colors text-sm"
+        style={{ background: '#D36135' }}
+      >
+        다시 시도
+      </button>
     </div>
   </Card>
 );
 
+interface AIHitStats {
+  avgMatch: number;
+  maxMatch: number;
+  totalPredictions: number;
+  threeOrMore: number;
+}
+
 const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
-  // 통계 데이터 상태 (NumberGenerator와 동일한 패턴)
   const [statistics, setStatistics] = useState<NumberStatistics[] | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
-  const [aiStatus, setAiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
+  const [aiHitStats, setAiHitStats] = useState<AIHitStats | null>(null);
 
-  // 통계 데이터 로딩 최적화 (메모화된 fetch 함수)
+  // 통계 + AI적중 데이터 로딩
   const fetchStatistics = useCallback(async () => {
-    const loadStartTime = Date.now();
-    console.time('Statistics Cards Loading');
-    
     try {
       setIsLoadingStats(true);
       setStatsError(null);
-      
-      console.log('StatisticsCards: 최적화된 통계 데이터 로딩 시작...');
-      
-      // 타임아웃과 함께 fetch 실행 (향상된 오류 처리)
+
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8초로 단축
-      
-      const response = await fetch('/api/lotto/statistics', {
-        signal: controller.signal,
-        headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'public, max-age=300' // 5분 캐시
-        }
-      });
-      
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      const [statsRes, aiRes] = await Promise.allSettled([
+        fetch('/api/lotto/statistics', {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' },
+        }),
+        fetch('/api/ai-predictions', {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' },
+        }),
+      ]);
+
       clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+      // 통계 데이터 처리
+      if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
+        const result = await statsRes.value.json();
+        if (result.success) {
+          const { statistics: statsData } = result.data;
+          if (Array.isArray(statsData) && statsData.length === 45) {
+            setStatistics(statsData);
+          }
+        }
       }
-      
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.error || 'API 응답 오류');
+
+      // AI 적중 데이터 처리
+      if (aiRes.status === 'fulfilled' && aiRes.value.ok) {
+        const aiData = await aiRes.value.json();
+        if (aiData.success && aiData.stats) {
+          setAiHitStats(aiData.stats);
+        }
       }
-      
-      const { statistics: statsData } = result.data;
-      
-      // 데이터 유효성 확인
-      if (!Array.isArray(statsData) || statsData.length !== 45) {
-        throw new Error('통계 데이터가 유효하지 않습니다');
-      }
-      
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
-      setStatistics(statsData);
-      setAiStatus('ready');
-      
-      console.log(`StatisticsCards: 데이터 로딩 성공 (${loadTime}ms) - 소스: ${result.source}`);
-      
     } catch (error) {
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
       if (error instanceof Error && error.name === 'AbortError') {
-        console.error(`StatisticsCards: 로딩 타임아웃 (${loadTime}ms)`);
-        setStatsError('요청 시간이 초과되었습니다. 서버가 응답하지 않습니다.');
+        setStatsError('요청 시간이 초과되었습니다.');
       } else {
-        console.error(`StatisticsCards: 로딩 실패 (${loadTime}ms):`, error);
-        setStatsError(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다');
+        setStatsError(error instanceof Error ? error.message : '알 수 없는 오류');
       }
-      
-      setAiStatus('fallback');
       setStatistics(null);
-      
     } finally {
       setIsLoadingStats(false);
-      console.timeEnd('Statistics Cards Loading');
     }
-  }, []); // 의존성 없음 - 재생성 방지
+  }, []);
 
-  // 초기 데이터 로딩
   useEffect(() => {
     fetchStatistics();
   }, [fetchStatistics]);
 
-  // 데이터 검증 및 Fallback 처리 함수 (메모화)
+  // 데이터 검증 및 Fallback
   const validateAndFallback = useCallback((inputStatistics: NumberStatistics[] | null): NumberStatistics[] => {
-    // 1차 검증: null이나 빈 배열 확인
-    if (!inputStatistics || inputStatistics.length === 0) {
-      console.warn('StatisticsCards: 통계 데이터가 비어있어 샘플 데이터를 사용합니다');
-      return getSampleStatistics();
-    }
-    
-    // 2차 검증: 배열 길이 확인
-    if (inputStatistics.length !== 45) {
-      console.warn(`StatisticsCards: 통계 데이터 길이 오류 (${inputStatistics.length}/45), 샘플 데이터를 사용합니다`);
-      return getSampleStatistics();
-    }
-    
-    // 3차 검증: 데이터 품질 확인
+    if (!inputStatistics || inputStatistics.length === 0) return getSampleStatistics();
+    if (inputStatistics.length !== 45) return getSampleStatistics();
     const isValid = LottoStatisticsAnalyzer.validateStatistics(inputStatistics);
-    if (!isValid) {
-      console.warn('StatisticsCards: 통계 데이터 검증 실패, 샘플 데이터를 사용합니다');
-      return getSampleStatistics();
-    }
-    
+    if (!isValid) return getSampleStatistics();
     return inputStatistics;
   }, []);
 
-  // 최적화된 실시간 데이터 계산 (useMemo + 의존성 최소화)
   const analysisData = useMemo(() => {
-    console.time('StatisticsCards Analysis');
-    
     try {
-      // 데이터 검증 및 Fallback 처리
       const validatedStatistics = validateAndFallback(statistics);
-      
-      // 핫/콜드 번호 계산 (캐시된 계산)
       const hotNumbers = LottoStatisticsAnalyzer.getHotNumbers(validatedStatistics, 3);
       const coldNumbers = LottoStatisticsAnalyzer.getColdNumbers(validatedStatistics, 3);
-      
-      // 안전한 번호 선택 (undefined 방지)
-      const hotNumber = hotNumbers && hotNumbers.length > 0 ? hotNumbers[0] : getDefaultHotNumber();
-      const coldNumber = coldNumbers && coldNumbers.length > 0 ? coldNumbers[0] : getDefaultColdNumber();
-      
-      // 핫넘버와 콜드넘버가 같은 번호인지 확인 (추가 안전장치)
-      const finalColdNumber = coldNumber.number === hotNumber.number ? 
-        (coldNumbers.length > 1 ? coldNumbers[1] : getDefaultColdNumber()) : coldNumber;
-      
-      // AI 성능 데이터 계산 (조건부 계산으로 성능 최적화)
-      const aiPerformance: AIPerformanceMetrics = statistics && statistics.length > 0 ? {
-        predictionAccuracy: Math.min(72 + Math.floor(validatedStatistics.length / 10), 85),
-        patternDetectionRate: Math.min(75 + Math.floor(validatedStatistics.length / 8), 88),
-        confidenceLevel: Math.min(70 + Math.floor(validatedStatistics.length / 5), 82),
-        lastUpdated: new Date().toISOString(),
-        totalAnalyzedRounds: validatedStatistics.length > 0 ? validatedStatistics.length * 10 : 0
-      } : getDefaultAIPerformance();
+      const hotNumber = hotNumbers.length > 0 ? hotNumbers[0] : getDefaultHotNumber();
+      const coldNumber = coldNumbers.length > 0 ? coldNumbers[0] : getDefaultColdNumber();
+      const finalColdNumber = coldNumber.number === hotNumber.number
+        ? (coldNumbers.length > 1 ? coldNumbers[1] : getDefaultColdNumber())
+        : coldNumber;
 
-      const result = {
+      // 총 분석 회차 계산
+      const totalFrequency = validatedStatistics.reduce((sum, stat) => sum + stat.frequency, 0);
+      const totalRounds = Math.round(totalFrequency / 6);
+
+      return {
         hotNumber,
         coldNumber: finalColdNumber,
-        aiPerformance,
-        dataSource: statistics === null ? 'fallback' : 'api'
+        totalRounds,
+        dataSource: statistics === null ? 'fallback' : 'api',
       };
-      
-      console.timeEnd('StatisticsCards Analysis');
-      return result;
-      
-    } catch (error) {
-      console.error('StatisticsCards: 데이터 분석 실패:', error);
-      console.timeEnd('StatisticsCards Analysis');
-      
-      // 완전한 Fallback
+    } catch {
       return {
         hotNumber: getDefaultHotNumber(),
         coldNumber: getDefaultColdNumber(),
-        aiPerformance: getDefaultAIPerformance(),
-        dataSource: 'error-fallback'
+        totalRounds: 0,
+        dataSource: 'error-fallback',
       };
     }
   }, [statistics, validateAndFallback]);
 
-  // 스켈레톤 로딩 상태 (개선된 UX)
   if (isLoadingStats) {
     return (
       <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${className}`}>
         <SkeletonCard icon="🔥" title="핫넘버" />
         <SkeletonCard icon="❄️" title="콜드넘버" />
-        <SkeletonCard icon="⚡" title="AI 신뢰도" />
+        <SkeletonCard icon="🎯" title="AI 적중" />
       </div>
     );
   }
 
-  // 향상된 에러 상태 (재시도 기능 포함)
   if (statsError) {
     return (
       <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${className}`}>
@@ -240,7 +179,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+        <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-xl p-6 border border-red-200 dark:border-red-800 h-full">
           <div className="flex items-center mb-3">
             <span className="text-2xl mr-2">🔥</span>
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>핫넘버</h3>
@@ -250,14 +189,11 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
               {analysisData.hotNumber ? `${analysisData.hotNumber.number}번` : '--'}
             </div>
             <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {analysisData.hotNumber 
-                ? `점수: ${Math.round(analysisData.hotNumber.hotColdScore)}, 빈도: ${analysisData.hotNumber.frequency}회`
-                : '데이터 분석 중...'
+              {analysisData.hotNumber
+                ? `출현 ${analysisData.hotNumber.frequency}회 · 점수 ${Math.round(analysisData.hotNumber.hotColdScore)}`
+                : '분석 중...'
               }
             </div>
-            {analysisData.dataSource === 'fallback' && (
-              <div className="text-xs text-orange-500">* 샘플 데이터 사용</div>
-            )}
           </div>
         </div>
       </motion.div>
@@ -268,7 +204,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 h-full">
           <div className="flex items-center mb-3">
             <span className="text-2xl mr-2">❄️</span>
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>콜드넘버</h3>
@@ -280,53 +216,48 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
             <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {analysisData.coldNumber
                 ? `마지막 출현: ${analysisData.coldNumber.lastAppeared}회차`
-                : '데이터 분석 중...'
+                : '분석 중...'
               }
             </div>
-            {analysisData.dataSource === 'fallback' && (
-              <div className="text-xs text-orange-500">* 샘플 데이터 사용</div>
-            )}
           </div>
         </div>
       </motion.div>
 
-      {/* AI 신뢰도 카드 */}
+      {/* AI 적중 실적 카드 (실제 데이터) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded-xl p-6 border border-yellow-200 dark:border-yellow-800">
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800 h-full">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-2">⚡</span>
-            <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 신뢰도</h3>
+            <span className="text-2xl mr-2">🎯</span>
+            <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 적중 실적</h3>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
-              {analysisData.aiPerformance ? `${analysisData.aiPerformance.confidenceLevel}%` : '--'}
-            </div>
-            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {analysisData.aiPerformance 
-                ? `${analysisData.aiPerformance.totalAnalyzedRounds}회차 학습 완료`
-                : '고급 패턴 분석 모드'
-              }
-            </div>
-            {analysisData.dataSource === 'fallback' && (
-              <div className="text-xs text-orange-500">* 샘플 데이터 사용</div>
+            {aiHitStats ? (
+              <>
+                <div className="text-3xl font-bold" style={{ color: '#D36135' }}>
+                  최대 {aiHitStats.maxMatch}개
+                </div>
+                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  평균 {aiHitStats.avgMatch.toFixed(1)}개 · 3개+ {aiHitStats.threeOrMore}회
+                </div>
+                <div className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                  총 {aiHitStats.totalPredictions}회 예측 검증 완료
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-3xl font-bold" style={{ color: '#D36135' }}>
+                  {analysisData.totalRounds.toLocaleString()}회차
+                </div>
+                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  전체 데이터 분석 완료
+                </div>
+              </>
             )}
           </div>
-          
-          {/* 신뢰도 프로그레스 바 */}
-          {analysisData.aiPerformance && (
-            <div className="mt-3">
-              <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--surface-hover)' }}>
-                <div 
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full transition-all duration-1000"
-                  style={{ width: `${analysisData.aiPerformance.confidenceLevel}%` }}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </motion.div>
     </div>

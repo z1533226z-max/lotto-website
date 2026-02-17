@@ -2,17 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Tabs from '@/components/ui/Tabs';
 import StatisticsCards from './StatisticsCards';
-import AIPerformancePanel from './AIPerformancePanel';
 import NumberPatternChart from './NumberPatternChart';
 import WeeklyChanges from './WeeklyChanges';
 import TrendChart from './TrendChart';
 import HeatmapChart from './HeatmapChart';
-import UserEngagementPanel from '@/components/gamification/UserEngagementPanel';
 import TrendAlerts from '@/components/gamification/TrendAlerts';
-import PersonalizedInsights from '@/components/gamification/PersonalizedInsights';
 import type { NumberStatistics, LottoResult } from '@/types/lotto';
 
 interface AnalyticsDashboardProps {
@@ -26,6 +24,260 @@ const TABS = [
   { id: 'overview', label: '전체 통계', icon: <span>📊</span> },
 ];
 
+// 데이터 기반 요약 카드
+const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoResult[] }> = ({
+  statistics,
+  lottoData,
+}) => {
+  if (!statistics || statistics.length === 0) return null;
+
+  const totalFrequency = statistics.reduce((sum, s) => sum + s.frequency, 0);
+  const totalRounds = Math.round(totalFrequency / 6);
+  const maxRound = Math.max(...statistics.map((s) => s.lastAppeared));
+  const avgFrequency = totalFrequency / statistics.length;
+
+  // 가장 핫한 번호 5개
+  const hotTop5 = [...statistics].sort((a, b) => b.frequency - a.frequency).slice(0, 5);
+  // 가장 콜드한 번호 5개
+  const coldTop5 = [...statistics].sort((a, b) => a.frequency - b.frequency).slice(0, 5);
+  // 장기 미출현 (10회차+)
+  const longAbsent = statistics
+    .filter((s) => maxRound - s.lastAppeared >= 10)
+    .sort((a, b) => (maxRound - b.lastAppeared) - (maxRound - a.lastAppeared));
+
+  // 홀짝 비율
+  const oddFreq = statistics.filter((s) => s.number % 2 === 1).reduce((sum, s) => sum + s.frequency, 0);
+  const oddPct = Math.round((oddFreq / totalFrequency) * 100);
+
+  // 최근 회차 (rawData에서)
+  const latestRound = lottoData.length > 0 ? lottoData[0] : null;
+
+  return (
+    <div className="space-y-4">
+      {/* 데이터 기반 요약 */}
+      <div
+        className="rounded-xl p-5 border"
+        style={{
+          backgroundColor: 'var(--surface)',
+          borderColor: 'var(--border)',
+        }}
+      >
+        <h3 className="text-base font-bold mb-4 flex items-center" style={{ color: 'var(--text)' }}>
+          <span className="mr-2">📋</span>
+          데이터 요약
+        </h3>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{ color: '#D36135' }}>
+              {totalRounds.toLocaleString()}
+            </div>
+            <div className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              분석 회차
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{ color: '#3E5641' }}>
+              {maxRound.toLocaleString()}
+            </div>
+            <div className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              최신 회차
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
+              {oddPct}:{100 - oddPct}
+            </div>
+            <div className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              홀짝 비율
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
+              {Math.round(avgFrequency)}
+            </div>
+            <div className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+              번호당 평균 출현
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 핫 / 콜드 / 장기미출현 */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* 핫넘버 TOP 5 */}
+        <div
+          className="rounded-xl p-4 border"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+        >
+          <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
+            🔥 핫넘버 TOP 5
+          </h4>
+          <div className="space-y-2">
+            {hotTop5.map((s, i) => (
+              <div key={s.number} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-xs font-bold w-5 text-center"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold text-white"
+                    style={{ backgroundColor: '#D36135' }}
+                  >
+                    {s.number}
+                  </span>
+                </div>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  {s.frequency}회
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 콜드넘버 TOP 5 */}
+        <div
+          className="rounded-xl p-4 border"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+        >
+          <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
+            ❄️ 콜드넘버 TOP 5
+          </h4>
+          <div className="space-y-2">
+            {coldTop5.map((s, i) => (
+              <div key={s.number} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-xs font-bold w-5 text-center"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold text-white"
+                    style={{ backgroundColor: '#3B82F6' }}
+                  >
+                    {s.number}
+                  </span>
+                </div>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  {s.frequency}회
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 장기 미출현 */}
+        <div
+          className="rounded-xl p-4 border"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+        >
+          <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
+            ⏰ 장기 미출현
+          </h4>
+          {longAbsent.length > 0 ? (
+            <div className="space-y-2">
+              {longAbsent.slice(0, 5).map((s, i) => (
+                <div key={s.number} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="text-xs font-bold w-5 text-center"
+                      style={{ color: 'var(--text-tertiary)' }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold border"
+                      style={{
+                        color: 'var(--text)',
+                        borderColor: 'var(--border)',
+                        backgroundColor: 'var(--surface-hover)',
+                      }}
+                    >
+                      {s.number}
+                    </span>
+                  </div>
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    {maxRound - s.lastAppeared}회차 전
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+              10회차 이상 미출현 번호 없음
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* 최근 당첨번호 */}
+      {latestRound && (
+        <div
+          className="rounded-xl p-4 border"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+        >
+          <div className="flex items-center justify-between">
+            <h4 className="text-sm font-bold flex items-center" style={{ color: 'var(--text)' }}>
+              🎱 {latestRound.round}회 당첨번호
+              <span className="ml-2 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>
+                {latestRound.drawDate}
+              </span>
+            </h4>
+            <Link
+              href="/lotto/recent"
+              className="text-xs font-medium transition-opacity hover:opacity-80"
+              style={{ color: '#D36135' }}
+            >
+              전체 보기 →
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 mt-3">
+            {latestRound.numbers.map((n: number) => {
+              const bgColor =
+                n <= 10
+                  ? '#FFC107'
+                  : n <= 20
+                    ? '#2196F3'
+                    : n <= 30
+                      ? '#FF5722'
+                      : n <= 40
+                        ? '#9E9E9E'
+                        : '#4CAF50';
+              return (
+                <span
+                  key={n}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                  style={{ backgroundColor: bgColor }}
+                >
+                  {n}
+                </span>
+              );
+            })}
+            <span className="text-sm mx-1" style={{ color: 'var(--text-tertiary)' }}>
+              +
+            </span>
+            <span
+              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border-2"
+              style={{
+                color: 'var(--text)',
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--surface-hover)',
+              }}
+            >
+              {latestRound.bonusNumber}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) => {
   const [statistics, setStatistics] = useState<NumberStatistics[] | null>(null);
   const [lottoData, setLottoData] = useState<LottoResult[] | null>(null);
@@ -38,13 +290,10 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
   useEffect(() => {
     const initializeDashboard = async () => {
       const loadStartTime = Date.now();
-      console.time('Analytics Dashboard Loading');
 
       try {
         setIsLoadingStats(true);
         setStatsError(null);
-
-        console.log('AnalyticsDashboard: 대시보드 초기화 시작...');
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -52,7 +301,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         const response = await fetch('/api/lotto/statistics', {
           signal: controller.signal,
           headers: {
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Cache-Control': 'no-cache',
           },
         });
@@ -71,40 +320,29 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
 
         const { statistics: statsData, rawData } = result.data;
 
-        // Validate statistics
         if (!Array.isArray(statsData) || statsData.length !== 45) {
           throw new Error('통계 데이터가 유효하지 않습니다');
         }
 
         setStatistics(statsData);
 
-        // Set raw lotto data for windowed analysis
         if (Array.isArray(rawData) && rawData.length > 0) {
           setLottoData(rawData);
         }
 
+        setTimeout(() => setDashboardReady(true), 200);
+
         const loadTime = Date.now() - loadStartTime;
-
-        setTimeout(() => {
-          setDashboardReady(true);
-        }, 200);
-
-        console.log(`AnalyticsDashboard: 초기화 완료 (${loadTime}ms), ${rawData?.length || 0}회차 데이터`);
+        console.log(`AnalyticsDashboard: 초기화 완료 (${loadTime}ms), ${rawData?.length || 0}회차`);
       } catch (error) {
-        const loadTime = Date.now() - loadStartTime;
-
         if (error instanceof Error && error.name === 'AbortError') {
-          console.error(`AnalyticsDashboard: 초기화 타임아웃 (${loadTime}ms)`);
           setStatsError('대시보드 로딩 시간이 초과되었습니다');
         } else {
-          console.error(`AnalyticsDashboard: 초기화 실패 (${loadTime}ms):`, error);
           setStatsError(error instanceof Error ? error.message : '알 수 없는 오류');
         }
-
         setDashboardReady(true);
       } finally {
         setIsLoadingStats(false);
-        console.timeEnd('Analytics Dashboard Loading');
       }
     };
 
@@ -114,30 +352,21 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
   // Loading state
   if (isLoadingStats || !dashboardReady) {
     return (
-      <div className={`min-h-screen flex flex-col items-center justify-center ${className}`}>
+      <div className={`min-h-[50vh] flex flex-col items-center justify-center ${className}`}>
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-6"
+          transition={{ duration: 0.4 }}
+          className="text-center space-y-4"
         >
-          <div className="relative">
-            <LoadingSpinner size="lg" />
-            <motion.div
-              className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold" style={{ color: 'var(--text)' }}>AI 분석 대시보드 준비 중</h3>
-            <p style={{ color: 'var(--text-secondary)' }}>전체 회차 데이터를 종합 분석하고 있습니다...</p>
-            <div className="flex justify-center space-x-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
-              <span>이번 주 변화</span>
-              <span>트렌드 분석</span>
-              <span>히트맵</span>
-              <span>전체 통계</span>
-            </div>
+          <LoadingSpinner size="lg" />
+          <div className="space-y-1">
+            <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
+              분석 대시보드 준비 중
+            </h3>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              전체 회차 데이터를 분석하고 있습니다...
+            </p>
           </div>
         </motion.div>
       </div>
@@ -155,7 +384,9 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+        <h2
+          className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2"
+        >
           AI 분석 대시보드
         </h2>
         <p className="mb-2" style={{ color: 'var(--text-secondary)' }}>
@@ -166,12 +397,12 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
           <div className="flex items-center space-x-1">
             <div className={`w-2 h-2 rounded-full ${hasError ? 'bg-orange-500' : 'bg-green-500'}`} />
             <span className={hasError ? 'text-orange-600' : 'text-green-600 dark:text-green-400'}>
-              {hasError ? '일부 기능 제한' : '모든 시스템 정상'}
+              {hasError ? '일부 기능 제한' : '정상'}
             </span>
           </div>
           <div className="text-[var(--text-tertiary)]">|</div>
           <div className="text-[var(--text-tertiary)]">
-            마지막 업데이트: {new Date().toLocaleDateString('ko-KR')}
+            {new Date().toLocaleDateString('ko-KR')} 기준
           </div>
         </div>
       </motion.div>
@@ -181,16 +412,15 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
           className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mx-auto max-w-2xl"
         >
           <div className="flex items-center">
-            <span className="text-orange-500 mr-2">!</span>
+            <span className="text-orange-500 mr-2">⚠</span>
             <div>
-              <p className="text-orange-800 dark:text-orange-300 font-medium">일부 데이터 로딩 지연</p>
-              <p className="text-orange-600 dark:text-orange-400 text-sm mt-1">
-                {statsError} - 각 분석 모듈이 개별적으로 데이터를 처리 중입니다.
+              <p className="text-orange-800 dark:text-orange-300 font-medium text-sm">
+                데이터 로딩 지연
               </p>
+              <p className="text-orange-600 dark:text-orange-400 text-xs mt-1">{statsError}</p>
             </div>
           </div>
         </motion.div>
@@ -202,13 +432,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5 }}
       >
-        <Tabs
-          tabs={TABS}
-          activeTab={activeTab}
-          onChange={setActiveTab}
-          variant="default"
-          fullWidth
-        />
+        <Tabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} variant="default" fullWidth />
       </motion.div>
 
       {/* Tab Content */}
@@ -257,94 +481,48 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
           </div>
         )}
 
-        {/* Tab 4: Full Statistics (existing content) */}
+        {/* Tab 4: Full Statistics - REBUILT */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            {/* Statistics Cards */}
+            {/* 핵심 지표 카드 (핫넘버/콜드넘버/AI적중 실적) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
             >
               <StatisticsCards />
             </motion.div>
 
-            {/* AI Performance + Number Pattern */}
+            {/* 번호 출현 패턴 차트 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="grid grid-cols-1 xl:grid-cols-2 gap-8"
+              transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <AIPerformancePanel />
               <NumberPatternChart />
             </motion.div>
 
-            {/* Gamification Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-            >
-              <div className="lg:col-span-1">
-                <UserEngagementPanel />
-              </div>
-              <div className="lg:col-span-1">
-                <TrendAlerts statistics={statistics || []} />
-              </div>
-              <div className="lg:col-span-1">
-                <PersonalizedInsights statistics={statistics || []} />
-              </div>
-            </motion.div>
+            {/* 트렌드 알림 */}
+            {statistics && statistics.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <TrendAlerts statistics={statistics} />
+              </motion.div>
+            )}
 
-            {/* Insights Summary */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-indigo-200 dark:border-indigo-800"
-            >
-              <h3 className="text-lg font-bold text-indigo-800 dark:text-indigo-300 mb-4 flex items-center">
-                <span className="mr-2">🎯</span>
-                종합 분석 인사이트
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-indigo-700 dark:text-indigo-400">실시간 통계</h4>
-                  <ul className="text-indigo-600 dark:text-indigo-300/80 space-y-1">
-                    <li>핫/콜드 번호 실시간 추적</li>
-                    <li>AI 신뢰도 지수 모니터링</li>
-                    <li>전체 회차 완전 분석</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-indigo-700 dark:text-indigo-400">패턴 분석</h4>
-                  <ul className="text-indigo-600 dark:text-indigo-300/80 space-y-1">
-                    <li>구간별 출현 분포 분석</li>
-                    <li>홀짝 비율 모니터링</li>
-                    <li>Top 10 빈도 순위</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-indigo-700 dark:text-indigo-400">AI 성능</h4>
-                  <ul className="text-indigo-600 dark:text-indigo-300/80 space-y-1">
-                    <li>예측 적중률 투명 공개</li>
-                    <li>패턴 감지 정확도</li>
-                    <li>실제 데이터 기반 검증</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-indigo-200 dark:border-indigo-700">
-                <p className="text-indigo-700 dark:text-indigo-300 font-medium text-center">
-                  모든 분석은 실제 로또 데이터를 기반으로 하며, 투명하고 신뢰할 수 있는 정보를 제공합니다
-                </p>
-              </div>
-            </motion.div>
+            {/* 데이터 기반 요약 (핫/콜드 TOP5, 장기미출현, 최근 당첨번호) */}
+            {statistics && statistics.length > 0 && lottoData && lottoData.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                <DataSummary statistics={statistics} lottoData={lottoData} />
+              </motion.div>
+            )}
           </div>
         )}
       </motion.div>
@@ -357,7 +535,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         className="text-center py-4"
       >
         <p className="text-xs text-[var(--text-tertiary)]">
-          대시보드는 매주 새 회차 데이터가 추가될 때마다 자동으로 업데이트됩니다
+          매주 토요일 추첨 후 자동 업데이트 · 1회~최신 회차 전체 데이터 분석
         </p>
       </motion.div>
     </div>
