@@ -5,50 +5,24 @@ import { cn } from '@/lib/utils';
 import type { CardProps } from '@/types/lotto';
 
 const variantStyles: Record<string, string> = {
-  default: cn(
-    'bg-white dark:bg-[var(--surface)]',
-    'border border-gray-100 dark:border-[var(--border)]',
-    'shadow-card dark:shadow-none'
-  ),
+  default: 'border shadow-sm',
   glass: cn(
-    'backdrop-blur-xl',
-    'bg-white/60 dark:bg-[var(--surface)]/60',
-    'border border-white/20 dark:border-white/[0.08]',
-    'shadow-glass dark:shadow-glass-dark'
+    'backdrop-blur-xl border',
+    'shadow-sm'
   ),
-  elevated: cn(
-    'bg-white dark:bg-[var(--surface)]',
-    'border border-gray-100 dark:border-[var(--border)]',
-    'shadow-elevated dark:shadow-elevated-dark'
-  ),
+  elevated: 'border shadow-lg',
   gradient: cn(
-    'bg-gradient-to-br from-primary/5 via-white to-secondary/5',
-    'dark:from-primary/10 dark:via-[var(--surface)] dark:to-secondary/10',
-    'border border-primary/10 dark:border-primary/20'
+    'bg-gradient-to-br from-primary/5 via-transparent to-secondary/5',
+    'border border-primary/10'
   ),
-  outlined: cn(
-    'bg-transparent',
-    'border-2 border-gray-200 dark:border-[var(--border)]',
-    'shadow-none'
-  ),
+  outlined: 'bg-transparent border-2 shadow-none',
 };
 
 const hoverStyles: Record<string, string> = {
   none: '',
-  lift: cn(
-    'transition-all duration-300 ease-out',
-    'hover:-translate-y-1.5',
-    'hover:shadow-xl dark:hover:shadow-2xl'
-  ),
-  glow: cn(
-    'transition-all duration-300 ease-out',
-    'hover:shadow-glow dark:hover:shadow-glow'
-  ),
-  scale: cn(
-    'transition-all duration-300 ease-out',
-    'hover:scale-[1.02]',
-    'hover:shadow-lg dark:hover:shadow-xl'
-  ),
+  lift: 'transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg',
+  glow: 'transition-all duration-300 ease-out hover:shadow-glow',
+  scale: 'transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg',
 };
 
 const paddingStyles: Record<string, string> = {
@@ -70,19 +44,25 @@ const Card: React.FC<CardProps> = ({
     <div
       className={cn(
         'rounded-xl',
-        'transition-colors duration-200',
         variantStyles[variant],
         hoverStyles[hover],
         paddingStyles[padding],
         className
       )}
+      style={{
+        backgroundColor: variant === 'outlined' ? 'transparent' : 'var(--surface)',
+        borderColor: 'var(--border)',
+        color: 'var(--text)',
+      }}
     >
       {title && (
-        <h3 className={cn(
-          'text-lg font-bold mb-4 pb-2',
-          'text-gray-800 dark:text-[var(--text)]',
-          'border-b border-gray-100 dark:border-[var(--border)]'
-        )}>
+        <h3
+          className="text-lg font-bold mb-4 pb-2"
+          style={{
+            color: 'var(--text)',
+            borderBottom: '1px solid var(--border)',
+          }}
+        >
           {title}
         </h3>
       )}

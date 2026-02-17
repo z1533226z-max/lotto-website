@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 interface BannerStats {
   avgMatch: number;
@@ -50,64 +49,36 @@ const AIHitsBanner: React.FC = () => {
   return (
     <Link href="/lotto/ai-hits" className="block group">
       <div
-        className={cn(
-          'relative overflow-hidden',
-          'rounded-2xl p-5',
-          'transition-all duration-300',
-          'hover:shadow-glow hover:-translate-y-0.5',
-          'cursor-pointer'
-        )}
+        className="relative overflow-hidden rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
         style={{
-          background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
+          backgroundColor: 'var(--surface)',
+          border: '1px solid var(--border)',
         }}
       >
-        {/* Animated shimmer overlay */}
+        {/* Left accent bar */}
         <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background:
-              'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
-            backgroundSize: '200% 100%',
-            animation: 'shimmer 3s linear infinite',
-          }}
-        />
-
-        {/* Glow circles */}
-        <div
-          className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%)',
-          }}
-        />
-        <div
-          className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full opacity-15"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)',
-          }}
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
+          style={{ background: 'linear-gradient(180deg, #D36135, #3E5641)' }}
         />
 
         {/* Content */}
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            {/* Animated target icon */}
+        <div className="flex items-center justify-between gap-3 pl-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div
-              className={cn(
-                'w-10 h-10 rounded-xl flex items-center justify-center',
-                'bg-white/20 backdrop-blur-sm',
-                'transition-transform duration-300 group-hover:scale-110'
-              )}
+              className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: 'rgba(211, 97, 53, 0.1)' }}
             >
-              <span className="text-xl">🎯</span>
+              <span className="text-lg">🎯</span>
             </div>
 
-            <div>
-              <p className="font-bold text-sm md:text-base text-white">
+            <div className="min-w-0">
+              <p className="font-bold text-sm truncate" style={{ color: 'var(--text)' }}>
                 AI가 {latestHit.round}회에서{' '}
-                <span className="text-yellow-100 drop-shadow-sm">
+                <span style={{ color: '#D36135' }}>
                   {latestHit.matchCount}개 적중!
                 </span>
               </p>
-              <p className="text-xs text-white/80 mt-0.5">
+              <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-tertiary)' }}>
                 역대 최고 {stats.maxMatch}개 적중 | 평균{' '}
                 {stats.avgMatch}개 | 3개 이상 {stats.threeOrMore}회
               </p>
@@ -116,13 +87,11 @@ const AIHitsBanner: React.FC = () => {
 
           {/* CTA */}
           <span
-            className={cn(
-              'text-xs font-medium',
-              'px-4 py-1.5 rounded-full',
-              'bg-white/20 backdrop-blur-sm text-white',
-              'transition-all duration-300',
-              'group-hover:bg-white/30 group-hover:px-5'
-            )}
+            className="text-xs font-medium px-3 py-1.5 rounded-full flex-shrink-0 transition-colors duration-200 group-hover:opacity-80"
+            style={{
+              backgroundColor: 'rgba(211, 97, 53, 0.08)',
+              color: '#D36135',
+            }}
           >
             적중 기록 보기 →
           </span>
