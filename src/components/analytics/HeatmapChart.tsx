@@ -19,39 +19,34 @@ const WINDOW_OPTIONS = [
   { label: '전체', value: 0 },
 ];
 
-/** Interpolate between colors based on a 0-1 value */
-const getHeatColor = (ratio: number): string => {
-  // cold (blue) -> warm (yellow) -> hot (red)
-  if (ratio <= 0.5) {
-    // blue to yellow
-    const t = ratio * 2;
-    const r = Math.round(59 + (250 - 59) * t);
-    const g = Math.round(130 + (204 - 130) * t);
-    const b = Math.round(246 + (21 - 246) * t);
-    return `rgb(${r}, ${g}, ${b})`;
+// ─── Treemap Color Scale (Stock market style) ────────────
+// Green = high frequency ("gaining"), Red = low frequency ("losing")
+const getTreemapColor = (ratio: number): string => {
+  if (ratio >= 0.75) {
+    // Hot: deep green
+    const t = (ratio - 0.75) / 0.25;
+    return `rgb(${Math.round(38 - 8 * t)}, ${Math.round(135 + 30 * t)}, ${Math.round(80 - 15 * t)})`;
+  } else if (ratio >= 0.5) {
+    // Warm: muted green
+    const t = (ratio - 0.5) / 0.25;
+    return `rgb(${Math.round(90 - 52 * t)}, ${Math.round(115 + 20 * t)}, ${Math.round(90 - 10 * t)})`;
+  } else if (ratio >= 0.25) {
+    // Cool: muted / neutral
+    const t = (ratio - 0.25) / 0.25;
+    return `rgb(${Math.round(170 - 80 * t)}, ${Math.round(95 + 20 * t)}, ${Math.round(80 + 10 * t)})`;
   } else {
-    // yellow to red
-    const t = (ratio - 0.5) * 2;
-    const r = Math.round(250 + (239 - 250) * t);
-    const g = Math.round(204 + (68 - 204) * t);
-    const b = Math.round(21 + (68 - 21) * t);
-    return `rgb(${r}, ${g}, ${b})`;
+    // Cold: red
+    const t = ratio / 0.25;
+    return `rgb(${Math.round(190 - 20 * t)}, ${Math.round(55 + 40 * t)}, ${Math.round(55 + 25 * t)})`;
   }
 };
 
-/** Get text color for contrast on heatmap cells */
-const getHeatTextColor = (ratio: number): string => {
-  // Dark text for lighter middle range, white for extremes
-  if (ratio > 0.3 && ratio < 0.7) return '#1a1a1a';
-  return '#ffffff';
-};
-
-interface HeatmapCell {
+interface TreemapCell {
   number: number;
   frequency: number;
   lastAppeared: number;
   percentage: number;
-  ratio: number; // 0-1 normalized
+  ratio: number;
 }
 
 const HeatmapChart: React.FC<HeatmapChartProps> = ({
@@ -60,18 +55,16 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
   className,
 }) => {
   const [windowSize, setWindowSize] = useState(initialWindowSize || 50);
-  const [hoveredCell, setHoveredCell] = useState<HeatmapCell | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<TreemapCell | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-  const cells = useMemo((): HeatmapCell[] => {
+  const cells = useMemo((): TreemapCell[] => {
     if (!data || data.length === 0) return [];
 
     const effectiveWindow = windowSize === 0 ? data.length : windowSize;
     const stats = LottoStatisticsAnalyzer.generateTimeWindowedStats(data, effectiveWindow);
     const sortedData = [...data].sort((a, b) => b.round - a.round);
-    const latestRound = sortedData[0]?.round || 0;
 
-    // Find min/max frequency for normalization
     const frequencies = stats.map((s) => s.frequency);
     const minFreq = Math.min(...frequencies);
     const maxFreq = Math.max(...frequencies);
@@ -79,7 +72,7 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
 
     return stats.map((stat) => {
       const windowData = sortedData.slice(0, Math.min(effectiveWindow, sortedData.length));
-      const totalNumbers = windowData.length * 7; // 6 main + 1 bonus per round
+      const totalNumbers = windowData.length * 7;
       const percentage = totalNumbers > 0 ? (stat.frequency / totalNumbers) * 100 : 0;
 
       return {
@@ -97,7 +90,12 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
     return Math.max(...data.map((d) => d.round));
   }, [data]);
 
-  const handleMouseEnter = (cell: HeatmapCell, e: React.MouseEvent) => {
+  // Sort by frequency descending for treemap (biggest = most frequent)
+  const sortedCells = useMemo(() => {
+    return [...cells].sort((a, b) => b.frequency - a.frequency);
+  }, [cells]);
+
+  const handleMouseEnter = (cell: TreemapCell, e: React.MouseEvent) => {
     setHoveredCell(cell);
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     const containerRect = (e.currentTarget as HTMLElement).closest('[data-heatmap-container]')?.getBoundingClientRect();
@@ -109,31 +107,41 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
     }
   };
 
-  // 9 columns x 5 rows grid
-  const COLS = 9;
+  // Treemap sizing: frequency determines relative area
+  const getFlexBasis = (cell: TreemapCell): string => {
+    const minBasis = 6;
+    const maxBasis = 13;
+    const basis = minBasis + (cell.ratio * (maxBasis - minBasis));
+    return `${basis}%`;
+  };
+
+  const getHeight = (cell: TreemapCell): string => {
+    const minH = 60;
+    const maxH = 100;
+    const h = minH + (cell.ratio * (maxH - minH));
+    return `${h}px`;
+  };
 
   return (
-    <Card variant="glass" className={className}>
+    <Card variant="default" className={className}>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🗺️</span>
-          <h3 className="text-lg font-bold text-gray-800 dark:text-dark-text">
-            번호 히트맵
+          <span className="text-lg">📊</span>
+          <h3 className="text-base font-bold" style={{ color: 'var(--text)' }}>
+            번호 트리맵
           </h3>
         </div>
 
-        {/* Window Selector */}
         <div className="flex gap-1">
           {WINDOW_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setWindowSize(opt.value)}
-              className={cn(
-                'px-3 py-1 text-xs rounded-full font-medium transition-all duration-200',
-                windowSize === opt.value
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-dark-text-secondary hover:bg-gray-200 dark:hover:bg-dark-surface-hover'
-              )}
+              className="px-3 py-1 text-xs rounded-full font-medium transition-all duration-200"
+              style={{
+                backgroundColor: windowSize === opt.value ? 'var(--primary)' : 'var(--surface-hover)',
+                color: windowSize === opt.value ? '#fff' : 'var(--text-secondary)',
+              }}
             >
               {opt.label}
             </button>
@@ -141,43 +149,55 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 dark:text-dark-text-tertiary mb-4">
-        색상이 진할수록 해당 구간에서 자주 출현한 번호입니다
+      <p className="text-xs mb-4" style={{ color: 'var(--text-tertiary)' }}>
+        크기가 클수록 자주 출현 · 초록=고빈도(HOT), 빨강=저빈도(COLD)
       </p>
 
-      {/* Heatmap Grid */}
+      {/* Treemap */}
       <div className="relative" data-heatmap-container>
-        <div
-          className="grid gap-1.5 sm:gap-2"
-          style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
-        >
-          {cells.map((cell) => {
-            const bgColor = getHeatColor(cell.ratio);
-            const textColor = getHeatTextColor(cell.ratio);
-            const roundsAbsent = latestRound - cell.lastAppeared;
+        <div className="flex flex-wrap gap-1">
+          {sortedCells.map((cell) => {
+            const bgColor = getTreemapColor(cell.ratio);
+            const isHovered = hoveredCell?.number === cell.number;
 
             return (
               <button
                 key={cell.number}
                 className={cn(
-                  'aspect-square rounded-lg flex flex-col items-center justify-center',
-                  'text-xs sm:text-sm font-bold',
-                  'transition-all duration-200',
-                  'hover:scale-110 hover:z-10 hover:shadow-lg',
-                  'cursor-default',
-                  hoveredCell?.number === cell.number && 'ring-2 ring-white ring-offset-2 ring-offset-gray-100 dark:ring-offset-dark-bg scale-110 z-10'
+                  'rounded-lg flex flex-col items-center justify-center',
+                  'font-bold transition-all duration-200',
+                  'cursor-default relative overflow-hidden',
+                  isHovered && 'ring-2 ring-white shadow-lg z-10',
                 )}
                 style={{
                   backgroundColor: bgColor,
-                  color: textColor,
+                  color: '#fff',
+                  flexBasis: getFlexBasis(cell),
+                  flexGrow: 1,
+                  height: getHeight(cell),
+                  minWidth: '38px',
+                  textShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  transform: isHovered ? 'scale(1.06)' : undefined,
                 }}
                 onMouseEnter={(e) => handleMouseEnter(cell, e)}
                 onMouseLeave={() => setHoveredCell(null)}
               >
-                <span className="font-bold leading-none">{cell.number}</span>
-                <span className="text-[8px] sm:text-[9px] opacity-80 leading-none mt-0.5">
+                <span className="text-sm sm:text-base font-extrabold leading-none">
+                  {cell.number}
+                </span>
+                <span className="text-[9px] sm:text-[10px] opacity-80 leading-none mt-1">
                   {cell.frequency}회
                 </span>
+                {cell.ratio >= 0.85 && (
+                  <span className="text-[7px] opacity-60 leading-none mt-0.5 tracking-wider">
+                    ▲ HOT
+                  </span>
+                )}
+                {cell.ratio <= 0.15 && (
+                  <span className="text-[7px] opacity-60 leading-none mt-0.5 tracking-wider">
+                    ▼ COLD
+                  </span>
+                )}
               </button>
             );
           })}
@@ -186,73 +206,79 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
         {/* Tooltip */}
         {hoveredCell && (
           <div
-            className={cn(
-              'absolute z-50 pointer-events-none',
-              'bg-white dark:bg-dark-surface',
-              'border border-gray-200 dark:border-dark-border',
-              'rounded-lg shadow-xl p-3',
-              'text-xs min-w-[160px]',
-              'transform -translate-x-1/2 -translate-y-full'
-            )}
-            style={{ left: tooltipPos.x, top: tooltipPos.y }}
+            className="absolute z-50 pointer-events-none rounded-lg shadow-xl p-3 text-xs min-w-[160px] transform -translate-x-1/2 -translate-y-full"
+            style={{
+              left: tooltipPos.x,
+              top: tooltipPos.y,
+              backgroundColor: 'var(--surface)',
+              border: '1px solid var(--border)',
+              color: 'var(--text)',
+            }}
           >
             <div className="flex items-center gap-2 mb-2">
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm"
+                className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm text-white"
                 style={{
-                  backgroundColor: getHeatColor(hoveredCell.ratio),
-                  color: getHeatTextColor(hoveredCell.ratio),
+                  backgroundColor: getTreemapColor(hoveredCell.ratio),
+                  textShadow: '0 1px 2px rgba(0,0,0,0.3)',
                 }}
               >
                 {hoveredCell.number}
               </div>
-              <span className="font-bold text-gray-800 dark:text-dark-text">
+              <span className="font-bold" style={{ color: 'var(--text)' }}>
                 {hoveredCell.number}번
               </span>
             </div>
-            <div className="space-y-1 text-gray-600 dark:text-dark-text-secondary">
-              <div className="flex justify-between">
+            <div className="space-y-1" style={{ color: 'var(--text-secondary)' }}>
+              <div className="flex justify-between gap-4">
                 <span>출현 횟수</span>
-                <span className="font-semibold text-gray-800 dark:text-dark-text">{hoveredCell.frequency}회</span>
+                <span className="font-semibold" style={{ color: 'var(--text)' }}>{hoveredCell.frequency}회</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span>출현율</span>
-                <span className="font-semibold text-gray-800 dark:text-dark-text">{hoveredCell.percentage.toFixed(1)}%</span>
+                <span className="font-semibold" style={{ color: 'var(--text)' }}>{hoveredCell.percentage.toFixed(1)}%</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span>마지막 출현</span>
-                <span className="font-semibold text-gray-800 dark:text-dark-text">{hoveredCell.lastAppeared}회차</span>
+                <span className="font-semibold" style={{ color: 'var(--text)' }}>{hoveredCell.lastAppeared}회차</span>
               </div>
-              <div className="flex justify-between">
-                <span>미출현 기간</span>
-                <span className="font-semibold text-gray-800 dark:text-dark-text">
+              <div className="flex justify-between gap-4">
+                <span>미출현</span>
+                <span className="font-semibold" style={{ color: 'var(--text)' }}>
                   {latestRound - hoveredCell.lastAppeared}회
                 </span>
               </div>
             </div>
-            {/* Tooltip arrow */}
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45 bg-white dark:bg-dark-surface border-r border-b border-gray-200 dark:border-dark-border" />
+            <div
+              className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 rotate-45"
+              style={{
+                backgroundColor: 'var(--surface)',
+                borderRight: '1px solid var(--border)',
+                borderBottom: '1px solid var(--border)',
+              }}
+            />
           </div>
         )}
       </div>
 
-      {/* Color Scale Legend */}
-      <div className="mt-4 flex items-center justify-center gap-3 text-[10px] text-gray-500 dark:text-dark-text-tertiary">
-        <span>저빈도</span>
-        <div className="flex h-3 rounded-full overflow-hidden w-32">
-          {Array.from({ length: 20 }, (_, i) => (
-            <div
-              key={i}
-              className="flex-1"
-              style={{ backgroundColor: getHeatColor(i / 19) }}
-            />
-          ))}
+      {/* Legend */}
+      <div className="mt-4 flex items-center justify-center gap-4 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: getTreemapColor(0.1) }} />
+          <span>저빈도 (COLD)</span>
         </div>
-        <span>고빈도</span>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: getTreemapColor(0.5) }} />
+          <span>보통</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: getTreemapColor(0.9) }} />
+          <span>고빈도 (HOT)</span>
+        </div>
       </div>
 
-      <div className="mt-2 text-[10px] text-center text-gray-400 dark:text-dark-text-tertiary">
-        {windowSize === 0 ? '전체 회차' : `최근 ${windowSize}회차`} 기준 | 번호 위에 마우스를 올려 상세 정보 확인
+      <div className="mt-2 text-[10px] text-center" style={{ color: 'var(--text-tertiary)' }}>
+        {windowSize === 0 ? '전체 회차' : `최근 ${windowSize}회차`} 기준 · 크기=빈도순 · 마우스 올려서 상세 확인
       </div>
     </Card>
   );

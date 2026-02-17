@@ -130,9 +130,9 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
             />
           </div>
           <div className="space-y-2">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-dark-text">AI 분석 대시보드 준비 중</h3>
-            <p className="text-gray-600 dark:text-dark-text-secondary">전체 회차 데이터를 종합 분석하고 있습니다...</p>
-            <div className="flex justify-center space-x-2 text-sm text-gray-500 dark:text-dark-text-tertiary">
+            <h3 className="text-xl font-bold" style={{ color: 'var(--text)' }}>AI 분석 대시보드 준비 중</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>전체 회차 데이터를 종합 분석하고 있습니다...</p>
+            <div className="flex justify-center space-x-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
               <span>이번 주 변화</span>
               <span>트렌드 분석</span>
               <span>히트맵</span>
@@ -158,7 +158,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
           AI 분석 대시보드
         </h2>
-        <p className="text-gray-600 dark:text-dark-text-secondary mb-2">
+        <p className="mb-2" style={{ color: 'var(--text-secondary)' }}>
           매주 업데이트되는 동적 통계 분석
         </p>
 
@@ -169,8 +169,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
               {hasError ? '일부 기능 제한' : '모든 시스템 정상'}
             </span>
           </div>
-          <div className="text-gray-400 dark:text-dark-text-tertiary">|</div>
-          <div className="text-gray-500 dark:text-dark-text-tertiary">
+          <div className="text-[var(--text-tertiary)]">|</div>
+          <div className="text-[var(--text-tertiary)]">
             마지막 업데이트: {new Date().toLocaleDateString('ko-KR')}
           </div>
         </div>
@@ -224,7 +224,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
             {lottoData && lottoData.length > 0 ? (
               <WeeklyChanges data={lottoData} />
             ) : (
-              <div className="text-center py-12 text-gray-500 dark:text-dark-text-secondary">
+              <div className="text-center py-12 text-[var(--text-secondary)]">
                 데이터를 불러오는 중입니다...
               </div>
             )}
@@ -237,7 +237,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
             {lottoData && lottoData.length > 0 ? (
               <TrendChart data={lottoData} />
             ) : (
-              <div className="text-center py-12 text-gray-500 dark:text-dark-text-secondary">
+              <div className="text-center py-12 text-[var(--text-secondary)]">
                 데이터를 불러오는 중입니다...
               </div>
             )}
@@ -250,7 +250,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
             {lottoData && lottoData.length > 0 ? (
               <HeatmapChart data={lottoData} />
             ) : (
-              <div className="text-center py-12 text-gray-500 dark:text-dark-text-secondary">
+              <div className="text-center py-12 text-[var(--text-secondary)]">
                 데이터를 불러오는 중입니다...
               </div>
             )}
@@ -356,7 +356,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         transition={{ delay: 0.5, duration: 0.6 }}
         className="text-center py-4"
       >
-        <p className="text-xs text-gray-500 dark:text-dark-text-tertiary">
+        <p className="text-xs text-[var(--text-tertiary)]">
           대시보드는 매주 새 회차 데이터가 추가될 때마다 자동으로 업데이트됩니다
         </p>
       </motion.div>
