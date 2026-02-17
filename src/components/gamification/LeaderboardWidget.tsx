@@ -99,11 +99,11 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({ className }) => {
                   )}
                   style={{
                     background: isMe
-                      ? 'rgba(255, 107, 53, 0.08)'
+                      ? 'rgba(211, 97, 53, 0.08)'
                       : entry.rank <= 3
                         ? 'var(--surface, #f9fafb)'
                         : 'transparent',
-                    border: isMe ? '1px solid rgba(255, 107, 53, 0.3)' : undefined,
+                    border: isMe ? '1px solid rgba(211, 97, 53, 0.3)' : undefined,
                   }}
                 >
                   {/* Rank */}
@@ -159,7 +159,7 @@ const LeaderboardWidget: React.FC<LeaderboardWidgetProps> = ({ className }) => {
               'transition-all duration-200 hover:opacity-90',
             )}
             style={{
-              background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+              background: 'linear-gradient(135deg, #D36135, #E88A6A)',
               color: '#fff',
             }}
           >

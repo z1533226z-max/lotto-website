@@ -31,8 +31,8 @@ const WINDOW_OPTIONS = [
 ];
 
 const LINE_COLORS = [
-  '#FF6B35', // orange
-  '#004E98', // blue
+  '#D36135', // orange
+  '#3E5641', // blue
   '#10B981', // emerald
   '#8B5CF6', // purple
   '#EC4899', // pink

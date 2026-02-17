@@ -13,33 +13,29 @@ const sizeStyles: Record<string, string> = {
 
 const variantStyles: Record<string, string> = {
   primary: cn(
-    'bg-gradient-to-r from-primary to-primary-500 text-white',
-    'hover:from-primary-500 hover:to-primary-600',
+    'bg-primary text-white',
+    'hover:bg-primary-500',
     'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-    'shadow-lg hover:shadow-xl',
-    'transform hover:-translate-y-0.5 active:translate-y-0',
-    'dark:from-primary-400 dark:to-primary dark:shadow-glow/20'
+    'shadow-md hover:shadow-lg',
+    'transform hover:-translate-y-0.5 active:translate-y-0'
   ),
   secondary: cn(
-    'bg-gradient-to-r from-secondary to-secondary-600 text-white',
-    'hover:from-secondary-600 hover:to-secondary-700',
+    'bg-secondary text-white',
+    'hover:bg-secondary-700',
     'focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2',
-    'shadow-lg hover:shadow-xl',
-    'transform hover:-translate-y-0.5 active:translate-y-0',
-    'dark:from-secondary-400 dark:to-secondary dark:shadow-glow-secondary/20'
+    'shadow-md hover:shadow-lg',
+    'transform hover:-translate-y-0.5 active:translate-y-0'
   ),
   outline: cn(
     'border-2 border-primary text-primary bg-transparent',
     'hover:bg-primary hover:text-white',
-    'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-    'dark:border-primary-400 dark:text-primary-300',
-    'dark:hover:bg-primary-400 dark:hover:text-white'
+    'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'
   ),
   ghost: cn(
     'text-gray-700 bg-transparent',
     'hover:bg-gray-100',
     'focus-visible:ring-2 focus-visible:ring-gray-400/50',
-    'dark:text-gray-300 dark:hover:bg-dark-surface-hover'
+    'dark:text-gray-300 dark:hover:bg-gray-800'
   ),
   glass: cn(
     'backdrop-blur-lg',
@@ -51,12 +47,11 @@ const variantStyles: Record<string, string> = {
     'focus-visible:ring-2 focus-visible:ring-white/50'
   ),
   gradient: cn(
-    'bg-gradient-to-r from-primary via-primary-500 to-secondary text-white',
+    'bg-gradient-to-r from-primary to-secondary text-white',
     'hover:brightness-110',
-    'shadow-lg hover:shadow-xl',
+    'shadow-md hover:shadow-lg',
     'transform hover:-translate-y-0.5 active:translate-y-0',
-    'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-    'bg-[length:200%_100%] hover:bg-right transition-[background-position] duration-500'
+    'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'
   ),
 };
 
@@ -106,20 +101,13 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       className={cn(
-        // Base styles
         'inline-flex items-center justify-center font-medium',
         'transition-all duration-200 ease-out',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none',
         'active:scale-[0.98]',
-        // Dark mode ring offset
-        'dark:focus-visible:ring-offset-dark-bg',
-        // Size
         sizeStyles[size],
-        // Variant
         variantStyles[variant],
-        // Full width
         fullWidth && 'w-full',
-        // Loading cursor
         loading && 'cursor-wait',
         className
       )}

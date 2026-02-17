@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Noto_Sans_KR } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import Script from 'next/script';
 import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider';
@@ -12,6 +13,13 @@ const notoSansKR = Noto_Sans_KR({
   weight: ['300', '400', '500', '700', '900'],
   display: 'swap',
   variable: '--font-noto-sans-kr',
+});
+
+const pretendard = localFont({
+  src: '../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2',
+  display: 'swap',
+  variable: '--font-pretendard',
+  weight: '100 900',
 });
 
 export const metadata: Metadata = {
@@ -100,7 +108,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={notoSansKR.variable} suppressHydrationWarning>
+    <html lang="ko" className={`${pretendard.variable} ${notoSansKR.variable}`} suppressHydrationWarning>
       <head>
         {/* Theme initialization script - prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -125,8 +133,8 @@ export default function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-7479840445702290" />
 
         {/* 추가 메타태그 */}
-        <meta name="theme-color" content="#FF6B35" />
-        <meta name="msapplication-TileColor" content="#FF6B35" />
+        <meta name="theme-color" content="#D36135" />
+        <meta name="msapplication-TileColor" content="#D36135" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
       <body className={notoSansKR.className}>

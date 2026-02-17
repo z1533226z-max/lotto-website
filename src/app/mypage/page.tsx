@@ -53,7 +53,7 @@ function getNextDrawDateLabel(): string {
 }
 
 const SOURCE_LABELS: Record<NumberSource, { emoji: string; label: string; bg: string }> = {
-  ai: { emoji: '\uD83E\uDD16', label: 'AI', bg: '#FF6B35' },
+  ai: { emoji: '\uD83E\uDD16', label: 'AI', bg: '#D36135' },
   dream: { emoji: '\uD83C\uDF19', label: '\uAFC8', bg: '#8B5CF6' },
   fortune: { emoji: '\uD83C\uDF40', label: '\uD589\uC6B4', bg: '#10B981' },
 };
@@ -76,7 +76,7 @@ function Spinner({ size = 40 }: { size?: number }) {
           width: size,
           height: size,
           border: '3px solid var(--border)',
-          borderTopColor: '#FF6B35',
+          borderTopColor: '#D36135',
           animation: 'mypage-spin 0.8s linear infinite',
         }}
       />
@@ -105,7 +105,7 @@ function CircularProgress({ value, size = 80 }: { value: number; size?: number }
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="#FF6B35"
+        stroke="#D36135"
         strokeWidth={strokeWidth}
         strokeDasharray={circumference}
         strokeDashoffset={offset}
@@ -261,7 +261,7 @@ export default function MyPage() {
         >
           <div
             className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl"
-            style={{ background: 'linear-gradient(135deg, #FF6B35, #FF8C42)' }}
+            style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }}
           >
             {'\uD83D\uDD12'}
           </div>
@@ -276,7 +276,7 @@ export default function MyPage() {
           <button
             onClick={() => auth.openAuthModal()}
             className="px-6 py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #FF6B35, #FF8C42)' }}
+            style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }}
           >
             {'\uB85C\uADF8\uC778 / \uD68C\uC6D0\uAC00\uC785'}
           </button>
@@ -297,12 +297,12 @@ export default function MyPage() {
         className="rounded-2xl overflow-hidden"
         style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
       >
-        <div className="h-1.5" style={{ background: 'linear-gradient(135deg, #FF6B35, #FF8C42)' }} />
+        <div className="h-1.5" style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }} />
         <div className="p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex items-center gap-4">
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0"
-              style={{ background: 'linear-gradient(135deg, #FF6B35, #FF8C42)' }}
+              style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }}
             >
               {'\uD83D\uDC64'}
             </div>
@@ -313,7 +313,7 @@ export default function MyPage() {
                 </h1>
                 <span
                   className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
-                  style={{ backgroundColor: auth.user.isAdmin ? '#EF4444' : '#FF6B35' }}
+                  style={{ backgroundColor: auth.user.isAdmin ? '#EF4444' : '#D36135' }}
                 >
                   {auth.user.isAdmin ? '\u26A1 \uAD00\uB9AC\uC790' : '\uD68C\uC6D0'}
                 </span>
@@ -325,7 +325,7 @@ export default function MyPage() {
           </div>
           <div className="flex gap-5 sm:ml-auto">
             <div className="text-center">
-              <p className="text-2xl font-bold" style={{ color: '#FF6B35' }}>
+              <p className="text-2xl font-bold" style={{ color: '#D36135' }}>
                 {progress.visitStreak}
                 <span className="text-xs font-normal ml-0.5" style={{ color: 'var(--text-secondary)' }}>{'\uC77C'}</span>
               </p>
@@ -356,7 +356,7 @@ export default function MyPage() {
             </h2>
             <span
               className="text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ backgroundColor: 'rgba(255, 107, 53, 0.15)', color: '#FF6B35' }}
+              style={{ backgroundColor: 'rgba(211, 97, 53, 0.15)', color: '#D36135' }}
             >
               {totalNumbers}{'\uAC1C'}
             </span>
@@ -366,7 +366,7 @@ export default function MyPage() {
             disabled={checking}
             className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 sm:ml-auto shrink-0"
             style={{
-              background: checking ? 'var(--text-tertiary)' : 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+              background: checking ? 'var(--text-tertiary)' : 'linear-gradient(135deg, #D36135, #E88A6A)',
             }}
           >
             {checking ? (
@@ -392,9 +392,9 @@ export default function MyPage() {
           <div
             className="mx-5 sm:mx-6 mb-3 p-3 rounded-lg text-sm"
             style={{
-              backgroundColor: checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 107, 53, 0.1)',
-              color: checkResult.checked > 0 ? '#10B981' : '#FF6B35',
-              border: `1px solid ${checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 107, 53, 0.2)'}`,
+              backgroundColor: checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(211, 97, 53, 0.1)',
+              color: checkResult.checked > 0 ? '#10B981' : '#D36135',
+              border: `1px solid ${checkResult.checked > 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(211, 97, 53, 0.2)'}`,
             }}
           >
             {checkResult.checked > 0 && (
@@ -428,9 +428,9 @@ export default function MyPage() {
                 onClick={() => setSourceFilter(tab.key)}
                 className="px-3.5 py-1.5 rounded-full text-sm font-medium transition-all shrink-0 whitespace-nowrap"
                 style={{
-                  backgroundColor: isActive ? '#FF6B35' : 'var(--surface-hover)',
+                  backgroundColor: isActive ? '#D36135' : 'var(--surface-hover)',
                   color: isActive ? '#fff' : 'var(--text-secondary)',
-                  border: `1px solid ${isActive ? '#FF6B35' : 'var(--border)'}`,
+                  border: `1px solid ${isActive ? '#D36135' : 'var(--border)'}`,
                 }}
               >
                 {tab.label}
@@ -486,7 +486,7 @@ export default function MyPage() {
               <Link
                 href="/"
                 className="inline-block px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #FF6B35, #FF8C42)' }}
+                style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }}
               >
                 {'\uBC88\uD638 \uC0DD\uC131\uD558\uB7EC \uAC00\uAE30'}
               </Link>
@@ -554,9 +554,9 @@ export default function MyPage() {
                           <span
                             className="px-2.5 py-1 rounded flex items-center gap-1"
                             style={{
-                              backgroundColor: 'rgba(255, 107, 53, 0.15)',
-                              color: '#FF6B35',
-                              border: '1px solid rgba(255, 107, 53, 0.3)',
+                              backgroundColor: 'rgba(211, 97, 53, 0.15)',
+                              color: '#D36135',
+                              border: '1px solid rgba(211, 97, 53, 0.3)',
                             }}
                           >
                             <span>{'\u23F3'}</span>
@@ -597,7 +597,7 @@ export default function MyPage() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {[
-              { label: '\uCD1D \uC800\uC7A5 \uBC88\uD638', value: stats ? `${stats.totalSaved}\uAC1C` : '-', icon: '\uD83D\uDCBE', accent: '#FF6B35' },
+              { label: '\uCD1D \uC800\uC7A5 \uBC88\uD638', value: stats ? `${stats.totalSaved}\uAC1C` : '-', icon: '\uD83D\uDCBE', accent: '#D36135' },
               { label: '\uCD5C\uACE0 \uB9E4\uCE58', value: stats ? `${stats.bestMatch}\uAC1C \uC77C\uCE58` : '-', icon: '\uD83C\uDFAF', accent: '#10B981' },
               { label: '\uB2F9\uCCA8 \uD655\uC778', value: stats ? `${stats.totalChecked}\uD68C` : '-', icon: '\u2705', accent: '#3B82F6' },
               { label: 'AI \uC0DD\uC131', value: `${progress.actions.aiGenerations}\uD68C`, icon: '\uD83E\uDD16', accent: '#8B5CF6' },
@@ -652,7 +652,7 @@ export default function MyPage() {
             <div className="flex justify-center py-4">
               <div
                 className="rounded-full"
-                style={{ width: 24, height: 24, border: '2px solid var(--border)', borderTopColor: '#FF6B35', animation: 'mypage-spin 0.8s linear infinite' }}
+                style={{ width: 24, height: 24, border: '2px solid var(--border)', borderTopColor: '#D36135', animation: 'mypage-spin 0.8s linear infinite' }}
               />
             </div>
           )}
@@ -674,7 +674,7 @@ export default function MyPage() {
                 <CircularProgress value={badgeStats.ratio} size={52} />
                 <div
                   className="absolute inset-0 flex items-center justify-center text-xs font-bold"
-                  style={{ color: '#FF6B35' }}
+                  style={{ color: '#D36135' }}
                 >
                   {Math.round(badgeStats.ratio * 100)}%
                 </div>
@@ -698,8 +698,8 @@ export default function MyPage() {
                   key={badge.id}
                   className="rounded-xl p-4 relative overflow-hidden transition-all"
                   style={{
-                    backgroundColor: badge.unlocked ? 'rgba(255, 107, 53, 0.06)' : 'var(--surface-hover)',
-                    border: `1px solid ${badge.unlocked ? 'rgba(255, 107, 53, 0.25)' : 'var(--border)'}`,
+                    backgroundColor: badge.unlocked ? 'rgba(211, 97, 53, 0.06)' : 'var(--surface-hover)',
+                    border: `1px solid ${badge.unlocked ? 'rgba(211, 97, 53, 0.25)' : 'var(--border)'}`,
                   }}
                 >
                   {badge.unlocked && (
@@ -730,7 +730,7 @@ export default function MyPage() {
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${progressPct}%`,
-                        background: badge.unlocked ? 'linear-gradient(135deg, #FF6B35, #FF8C42)' : 'var(--text-tertiary)',
+                        background: badge.unlocked ? 'linear-gradient(135deg, #D36135, #E88A6A)' : 'var(--text-tertiary)',
                       }}
                     />
                   </div>

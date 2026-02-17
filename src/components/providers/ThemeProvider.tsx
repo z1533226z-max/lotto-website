@@ -41,7 +41,7 @@ function applyTheme(theme: ThemeMode) {
   // Update meta theme-color for mobile browsers
   const metaThemeColor = document.querySelector('meta[name="theme-color"]');
   if (metaThemeColor) {
-    metaThemeColor.setAttribute('content', theme === 'dark' ? '#0F1117' : '#FF6B35');
+    metaThemeColor.setAttribute('content', theme === 'dark' ? '#0F1117' : '#D36135');
   }
 }
 

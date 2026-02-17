@@ -105,7 +105,7 @@ export default function HomePage() {
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div
               className="absolute top-10 left-[10%] w-20 h-20 rounded-full opacity-20 animate-float"
-              style={{ background: 'radial-gradient(circle, #FFC107 0%, transparent 70%)', animationDelay: '0s' }}
+              style={{ background: 'radial-gradient(circle, #83BCA9 0%, transparent 70%)', animationDelay: '0s' }}
             />
             <div
               className="absolute top-20 right-[15%] w-16 h-16 rounded-full opacity-15 animate-float"
@@ -136,7 +136,7 @@ export default function HomePage() {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
                 AI가 분석한
                 <br />
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #FFD23F, #FF6B35)' }}>
+                <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #E88A6A, #D36135)' }}>
                   이번주 로또번호
                 </span>
               </h1>

@@ -129,7 +129,7 @@ const AuthModal: React.FC = () => {
         <div className="relative px-6 pt-6 pb-4">
           <button
             onClick={closeAuthModal}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+            className="absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-black/5 dark:hover:bg-white/10"
             aria-label="닫기"
           >
             <span className="text-lg" style={{ opacity: 0.5 }}>{'✕'}</span>
@@ -155,7 +155,7 @@ const AuthModal: React.FC = () => {
               )}
               style={{
                 background: tab === 'login'
-                  ? 'linear-gradient(135deg, #FF6B35, #FF8C42)'
+                  ? 'linear-gradient(135deg, #D36135, #E88A6A)'
                   : 'transparent',
                 color: tab === 'login' ? '#fff' : 'var(--text, #1f2937)',
                 opacity: tab === 'login' ? 1 : 0.6,
@@ -170,7 +170,7 @@ const AuthModal: React.FC = () => {
               )}
               style={{
                 background: tab === 'register'
-                  ? 'linear-gradient(135deg, #FF6B35, #FF8C42)'
+                  ? 'linear-gradient(135deg, #D36135, #E88A6A)'
                   : 'transparent',
                 color: tab === 'register' ? '#fff' : 'var(--text, #1f2937)',
                 opacity: tab === 'register' ? 1 : 0.6,
@@ -217,7 +217,7 @@ const AuthModal: React.FC = () => {
               className={cn(
                 'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
                 'transition-all duration-200',
-                'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
+                'focus:ring-2 focus:ring-primary/30 focus:border-primary',
               )}
               style={{
                 background: 'var(--surface-hover, #f3f4f6)',
@@ -247,7 +247,7 @@ const AuthModal: React.FC = () => {
               className={cn(
                 'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
                 'transition-all duration-200',
-                'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
+                'focus:ring-2 focus:ring-primary/30 focus:border-primary',
               )}
               style={{
                 background: 'var(--surface-hover, #f3f4f6)',
@@ -278,7 +278,7 @@ const AuthModal: React.FC = () => {
                 className={cn(
                   'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
                   'transition-all duration-200',
-                  'focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400',
+                  'focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 )}
                 style={{
                   background: 'var(--surface-hover, #f3f4f6)',

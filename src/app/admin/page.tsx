@@ -247,7 +247,7 @@ export default function AdminPage() {
           <div style={{ fontSize: '12px', color: 'var(--text-secondary, #6b7280)', marginBottom: '4px' }}>
             총 회원
           </div>
-          <div style={{ fontSize: '24px', fontWeight: 800, color: '#FF6B35' }}>
+          <div style={{ fontSize: '24px', fontWeight: 800, color: '#D36135' }}>
             {userStats.totalUsers}
           </div>
         </div>
@@ -299,7 +299,7 @@ export default function AdminPage() {
               border: 'none',
               cursor: 'pointer',
               color: activeTab === tab ? '#fff' : 'var(--text-secondary, #6b7280)',
-              background: activeTab === tab ? '#FF6B35' : 'transparent',
+              background: activeTab === tab ? '#D36135' : 'transparent',
               transition: 'all 0.15s',
             }}
           >
@@ -434,7 +434,7 @@ export default function AdminPage() {
                     fontWeight: 600,
                     border: 'none',
                     cursor: 'pointer',
-                    background: p === usersPage ? '#FF6B35' : 'var(--bg, #f3f4f6)',
+                    background: p === usersPage ? '#D36135' : 'var(--bg, #f3f4f6)',
                     color: p === usersPage ? '#fff' : 'var(--text-secondary)',
                   }}
                 >
@@ -554,7 +554,7 @@ export default function AdminPage() {
                     fontWeight: 600,
                     border: 'none',
                     cursor: 'pointer',
-                    background: p === postsPage ? '#FF6B35' : 'var(--bg, #f3f4f6)',
+                    background: p === postsPage ? '#D36135' : 'var(--bg, #f3f4f6)',
                     color: p === postsPage ? '#fff' : 'var(--text-secondary)',
                   }}
                 >

@@ -32,7 +32,6 @@ const Tabs: React.FC<TabsProps> = ({
   const activeRef = useRef<HTMLButtonElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
 
-  // Calculate underline indicator position
   useEffect(() => {
     if (variant === 'underline' && activeRef.current && containerRef.current) {
       const container = containerRef.current;
@@ -47,7 +46,6 @@ const Tabs: React.FC<TabsProps> = ({
     }
   }, [activeTab, variant]);
 
-  // Scroll active tab into view on mobile
   useEffect(() => {
     if (activeRef.current) {
       activeRef.current.scrollIntoView({
@@ -60,56 +58,50 @@ const Tabs: React.FC<TabsProps> = ({
 
   const containerStyles: Record<TabVariant, string> = {
     default: cn(
-      'bg-gray-100 dark:bg-dark-surface p-1 rounded-xl',
-      'border border-gray-200 dark:border-dark-border'
+      'bg-gray-100 dark:bg-[var(--surface)] p-1 rounded-xl',
+      'border border-gray-200 dark:border-[var(--border)]'
     ),
     pills: 'gap-2',
     underline: cn(
-      'border-b-2 border-gray-200 dark:border-dark-border',
+      'border-b-2 border-gray-200 dark:border-[var(--border)]',
       'relative'
     ),
   };
 
   const tabBaseStyles: Record<TabVariant, string> = {
-    default: cn(
-      'rounded-lg px-4 py-2 text-sm font-medium',
-      'transition-all duration-200'
-    ),
+    default: 'rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200',
     pills: cn(
       'rounded-full px-4 py-2 text-sm font-medium',
       'transition-all duration-200',
       'border border-transparent'
     ),
-    underline: cn(
-      'px-4 py-2.5 text-sm font-medium relative',
-      'transition-all duration-200'
-    ),
+    underline: 'px-4 py-2.5 text-sm font-medium relative transition-all duration-200',
   };
 
   const tabInactiveStyles: Record<TabVariant, string> = {
     default: cn(
-      'text-gray-600 dark:text-dark-text-secondary',
-      'hover:text-gray-900 dark:hover:text-dark-text',
-      'hover:bg-gray-50 dark:hover:bg-dark-surface-hover'
+      'text-gray-600 dark:text-gray-400',
+      'hover:text-gray-900 dark:hover:text-gray-200',
+      'hover:bg-gray-50 dark:hover:bg-[var(--surface-hover)]'
     ),
     pills: cn(
-      'text-gray-600 dark:text-dark-text-secondary',
-      'hover:text-gray-900 dark:hover:text-dark-text',
-      'hover:bg-gray-100 dark:hover:bg-dark-surface',
-      'hover:border-gray-200 dark:hover:border-dark-border'
+      'text-gray-600 dark:text-gray-400',
+      'hover:text-gray-900 dark:hover:text-gray-200',
+      'hover:bg-gray-100 dark:hover:bg-[var(--surface)]',
+      'hover:border-gray-200 dark:hover:border-[var(--border)]'
     ),
     underline: cn(
-      'text-gray-500 dark:text-dark-text-tertiary',
-      'hover:text-gray-700 dark:hover:text-dark-text-secondary',
-      'hover:border-b-2 hover:border-gray-300 dark:hover:border-dark-surface-active',
+      'text-gray-500 dark:text-gray-500',
+      'hover:text-gray-700 dark:hover:text-gray-300',
+      'hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600',
       '-mb-[2px]'
     ),
   };
 
   const tabActiveStyles: Record<TabVariant, string> = {
     default: cn(
-      'bg-white dark:bg-dark-surface-hover',
-      'text-gray-900 dark:text-dark-text',
+      'bg-white dark:bg-[var(--surface-hover)]',
+      'text-gray-900 dark:text-[var(--text)]',
       'shadow-sm'
     ),
     pills: cn(
@@ -118,7 +110,7 @@ const Tabs: React.FC<TabsProps> = ({
       'border-primary'
     ),
     underline: cn(
-      'text-primary dark:text-primary-400',
+      'text-primary dark:text-primary-300',
       '-mb-[2px]'
     ),
   };
@@ -128,7 +120,7 @@ const Tabs: React.FC<TabsProps> = ({
       ref={containerRef}
       className={cn(
         'flex overflow-x-auto scrollbar-none',
-        '-mx-4 px-4 sm:mx-0 sm:px-0', // Mobile horizontal scroll with padding
+        '-mx-4 px-4 sm:mx-0 sm:px-0',
         containerStyles[variant],
         fullWidth && 'w-full',
         className
@@ -159,12 +151,11 @@ const Tabs: React.FC<TabsProps> = ({
         );
       })}
 
-      {/* Animated underline indicator */}
       {variant === 'underline' && (
         <div
           className={cn(
             'absolute bottom-0 h-0.5 rounded-full',
-            'bg-primary dark:bg-primary-400',
+            'bg-primary dark:bg-primary-300',
             'transition-all duration-300 ease-out'
           )}
           style={indicatorStyle}

@@ -178,7 +178,7 @@ export default async function LottoListPage({ searchParams }: Props) {
                 ? {
                     background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                     color: 'white',
-                    boxShadow: '0 4px 12px rgba(255, 107, 53, 0.3)',
+                    boxShadow: '0 4px 12px rgba(211, 97, 53, 0.3)',
                   }
                 : {
                     backgroundColor: 'var(--surface)',

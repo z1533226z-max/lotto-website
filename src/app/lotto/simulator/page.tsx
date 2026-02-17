@@ -358,7 +358,7 @@ export default function SimulatorPage() {
             className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
             style={{
               background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              boxShadow: '0 8px 24px rgba(255, 107, 53, 0.3)',
+              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
             <span className="text-3xl">🎰</span>
@@ -570,7 +570,7 @@ export default function SimulatorPage() {
               className="rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden"
               style={{
                 background: result.bestRank >= 1 && result.bestRank <= 3
-                  ? 'linear-gradient(135deg, #FFD700, #FF6B35)'
+                  ? 'linear-gradient(135deg, #FFD700, #D36135)'
                   : 'linear-gradient(135deg, var(--primary), var(--secondary))',
               }}
             >

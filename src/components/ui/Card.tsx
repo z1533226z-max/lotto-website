@@ -6,29 +6,29 @@ import type { CardProps } from '@/types/lotto';
 
 const variantStyles: Record<string, string> = {
   default: cn(
-    'bg-white dark:bg-dark-surface',
-    'border border-gray-100 dark:border-dark-border',
+    'bg-white dark:bg-[var(--surface)]',
+    'border border-gray-100 dark:border-[var(--border)]',
     'shadow-card dark:shadow-none'
   ),
   glass: cn(
     'backdrop-blur-xl',
-    'bg-white/60 dark:bg-dark-surface/60',
+    'bg-white/60 dark:bg-[var(--surface)]/60',
     'border border-white/20 dark:border-white/[0.08]',
     'shadow-glass dark:shadow-glass-dark'
   ),
   elevated: cn(
-    'bg-white dark:bg-dark-surface',
-    'border border-gray-100 dark:border-dark-border',
+    'bg-white dark:bg-[var(--surface)]',
+    'border border-gray-100 dark:border-[var(--border)]',
     'shadow-elevated dark:shadow-elevated-dark'
   ),
   gradient: cn(
     'bg-gradient-to-br from-primary/5 via-white to-secondary/5',
-    'dark:from-primary/10 dark:via-dark-surface dark:to-secondary/10',
+    'dark:from-primary/10 dark:via-[var(--surface)] dark:to-secondary/10',
     'border border-primary/10 dark:border-primary/20'
   ),
   outlined: cn(
     'bg-transparent',
-    'border-2 border-gray-200 dark:border-dark-border',
+    'border-2 border-gray-200 dark:border-[var(--border)]',
     'shadow-none'
   ),
 };
@@ -80,8 +80,8 @@ const Card: React.FC<CardProps> = ({
       {title && (
         <h3 className={cn(
           'text-lg font-bold mb-4 pb-2',
-          'text-gray-800 dark:text-dark-text',
-          'border-b border-gray-100 dark:border-dark-border'
+          'text-gray-800 dark:text-[var(--text)]',
+          'border-b border-gray-100 dark:border-[var(--border)]'
         )}>
           {title}
         </h3>

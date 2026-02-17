@@ -160,13 +160,13 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
           >
             {isMember ? (
               <>
-                <strong style={{ color: '#FF6B35' }}>{name}</strong> 주간 이용 횟수가 초기화됩니다.
+                <strong style={{ color: '#D36135' }}>{name}</strong> 주간 이용 횟수가 초기화됩니다.
                 <br />
                 <span style={{ fontSize: '12px' }}>매주 월요일 자동 초기화</span>
               </>
             ) : (
               <>
-                회원가입하면 <strong style={{ color: '#FF6B35' }}>{name}</strong>을
+                회원가입하면 <strong style={{ color: '#D36135' }}>{name}</strong>을
                 주 10회까지 이용할 수 있습니다.
               </>
             )}
@@ -217,7 +217,7 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
                   fontSize: '15px',
                   fontWeight: 700,
                   color: '#ffffff',
-                  background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+                  background: 'linear-gradient(135deg, #D36135, #E88A6A)',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'opacity 0.15s, transform 0.1s',
@@ -247,7 +247,7 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
                 fontSize: '14px',
                 fontWeight: 600,
                 color: isMember ? '#ffffff' : 'var(--text-secondary, #6b7280)',
-                background: isMember ? 'linear-gradient(135deg, #FF6B35, #FF8C42)' : 'transparent',
+                background: isMember ? 'linear-gradient(135deg, #D36135, #E88A6A)' : 'transparent',
                 border: isMember ? 'none' : '1px solid var(--border, #e5e7eb)',
                 cursor: 'pointer',
                 transition: 'background 0.15s, border-color 0.15s',

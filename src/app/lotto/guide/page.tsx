@@ -204,7 +204,7 @@ export default function GuidePage() {
             className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
             style={{
               background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              boxShadow: '0 8px 24px rgba(255, 107, 53, 0.3)',
+              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
             <span className="text-3xl">&#x1F4D6;</span>

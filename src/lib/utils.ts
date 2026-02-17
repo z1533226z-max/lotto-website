@@ -1,5 +1,7 @@
 // 유틸리티 함수들
 
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { LOTTO_CONFIG, LOTTO_COLORS, LOTTO_TEXT_COLORS, MARKETING_MESSAGES, VIRTUAL_STATS_CONFIG } from './constants';
 import type { NumberColorType, LottoResult } from '@/types/lotto';
 
@@ -225,11 +227,11 @@ export const countConsecutiveNumbers = (numbers: number[]): number => {
 };
 
 /**
- * CSS 클래스 이름 합치기
+ * CSS 클래스 이름 합치기 (shadcn/ui 호환)
  */
-export const cn = (...classes: (string | undefined | null | false)[]): string => {
-  return classes.filter(Boolean).join(' ');
-};
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 /**
  * 당첨 등수 계산

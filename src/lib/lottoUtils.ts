@@ -91,7 +91,7 @@ export function getRankLabel(rank: number): string {
  */
 export function getRankColor(rank: number): string {
   switch (rank) {
-    case 1: return '#FF6B35'; // orange
+    case 1: return '#D36135'; // orange
     case 2: return '#FFD700'; // gold
     case 3: return '#C0C0C0'; // silver
     case 4: return '#CD7F32'; // bronze

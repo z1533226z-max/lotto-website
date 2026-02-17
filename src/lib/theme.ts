@@ -3,40 +3,30 @@
 
 export const colors = {
   primary: {
-    50: '#FFF3ED',
-    100: '#FFE4D4',
-    200: '#FFC5A8',
-    300: '#FF9E71',
-    400: '#FF6B35', // Main primary
-    500: '#F54D10',
-    600: '#E63A06',
-    700: '#BA2B07',
-    800: '#95240C',
-    900: '#7A200E',
+    50: '#FDF2ED',
+    100: '#FBDFD3',
+    200: '#F7BFA7',
+    300: '#F09A76',
+    400: '#D36135', // Main primary
+    DEFAULT: '#D36135',
+    500: '#C05430',
+    600: '#A64729',
+    700: '#8C3B22',
+    800: '#73301C',
+    900: '#5A2516',
   },
   secondary: {
-    50: '#E8F1FB',
-    100: '#CDDFF5',
-    200: '#A2C4EB',
-    300: '#6BA0DC',
-    400: '#3B7CC9',
-    500: '#004E98', // Main secondary
-    600: '#004080',
-    700: '#003366',
-    800: '#00264D',
-    900: '#001933',
-  },
-  accent: {
-    50: '#FFFBEB',
-    100: '#FFF3C4',
-    200: '#FFE68A',
-    300: '#FFD23F', // Main accent / gold
-    400: '#FFC107',
-    500: '#E6A800',
-    600: '#CC9500',
-    700: '#A67A00',
-    800: '#806000',
-    900: '#664D00',
+    50: '#EDF5F0',
+    100: '#D4E8DB',
+    200: '#B0D4BE',
+    300: '#84BC9B',
+    400: '#5A9E77',
+    DEFAULT: '#3E5641',
+    500: '#3E5641',
+    600: '#354A38',
+    700: '#2C3E2F',
+    800: '#233226',
+    900: '#1A261D',
   },
   // Semantic colors
   success: {
@@ -88,14 +78,14 @@ export const colors = {
 } as const;
 
 export const gradients = {
-  primary: 'linear-gradient(135deg, #FF6B35 0%, #FF8F5E 100%)',
-  secondary: 'linear-gradient(135deg, #004E98 0%, #0066CC 100%)',
-  accent: 'linear-gradient(135deg, #FFD23F 0%, #FFE066 100%)',
-  hero: 'linear-gradient(135deg, #FF6B35 0%, #004E98 100%)',
-  heroReverse: 'linear-gradient(135deg, #004E98 0%, #FF6B35 100%)',
-  sunset: 'linear-gradient(135deg, #FF6B35 0%, #FFD23F 100%)',
-  ocean: 'linear-gradient(135deg, #004E98 0%, #3B82F6 100%)',
-  gold: 'linear-gradient(135deg, #FFD23F 0%, #FF6B35 100%)',
+  primary: 'linear-gradient(135deg, #D36135 0%, #E88A6A 100%)',
+  secondary: 'linear-gradient(135deg, #3E5641 0%, #5A7D5F 100%)',
+  accent: 'linear-gradient(135deg, #83BCA9 0%, #B0D4BE 100%)',
+  hero: 'linear-gradient(135deg, #D36135 0%, #3E5641 100%)',
+  heroReverse: 'linear-gradient(135deg, #3E5641 0%, #D36135 100%)',
+  sunset: 'linear-gradient(135deg, #D36135 0%, #E88A6A 100%)',
+  ocean: 'linear-gradient(135deg, #3E5641 0%, #83BCA9 100%)',
+  gold: 'linear-gradient(135deg, #E88A6A 0%, #D36135 100%)',
   dark: 'linear-gradient(135deg, #1E2030 0%, #0F1117 100%)',
   darkSurface: 'linear-gradient(135deg, #282A3A 0%, #1E2030 100%)',
   // Glass overlays
@@ -118,9 +108,9 @@ export const shadows = {
   elevated: '0 12px 40px -8px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.08)',
   elevatedDark: '0 12px 40px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -2px rgba(0, 0, 0, 0.2)',
   // Glow
-  glowPrimary: '0 0 20px rgba(255, 107, 53, 0.3), 0 0 60px rgba(255, 107, 53, 0.1)',
-  glowSecondary: '0 0 20px rgba(0, 78, 152, 0.3), 0 0 60px rgba(0, 78, 152, 0.1)',
-  glowAccent: '0 0 20px rgba(255, 210, 63, 0.3), 0 0 60px rgba(255, 210, 63, 0.1)',
+  glowPrimary: '0 0 20px rgba(211, 97, 53, 0.3), 0 0 60px rgba(211, 97, 53, 0.1)',
+  glowSecondary: '0 0 20px rgba(62, 86, 65, 0.3), 0 0 60px rgba(62, 86, 65, 0.1)',
+  glowAccent: '0 0 20px rgba(131, 188, 169, 0.3), 0 0 60px rgba(131, 188, 169, 0.1)',
 } as const;
 
 export const borderRadius = {
@@ -157,7 +147,7 @@ export const spacing = {
 
 export const typography = {
   fontFamily: {
-    sans: ['Noto Sans KR', 'sans-serif'],
+    sans: ['Pretendard Variable', 'Noto Sans KR', 'sans-serif'],
     mono: ['Roboto Mono', 'monospace'],
   },
   fontSize: {

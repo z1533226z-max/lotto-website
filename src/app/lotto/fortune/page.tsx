@@ -668,7 +668,7 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
             className="rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden"
             style={{
               background:
-                'linear-gradient(135deg, #FF6B35, #FF4081)',
+                'linear-gradient(135deg, #D36135, #FF4081)',
             }}
           >
             <div
@@ -780,8 +780,8 @@ export default function FortunePage() {
           <div
             className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
             style={{
-              background: 'linear-gradient(135deg, #FFD23F, #FF6B35)',
-              boxShadow: '0 8px 24px rgba(255, 210, 63, 0.3)',
+              background: 'linear-gradient(135deg, #E88A6A, #D36135)',
+              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
             <span className="text-3xl">&#x1F52E;</span>

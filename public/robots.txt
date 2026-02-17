@@ -4,5 +4,6 @@ Allow: /lotto/
 Allow: /community/
 Disallow: /_next/
 Disallow: /api/
+Disallow: /admin
 
 Sitemap: https://lotto.gon.ai.kr/sitemap.xml

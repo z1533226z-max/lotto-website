@@ -31,8 +31,8 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
           padding: '8px 14px',
           borderRadius: '10px',
           fontSize: '13px',
-          background: 'rgba(255, 107, 53, 0.06)',
-          border: '1px solid rgba(255, 107, 53, 0.15)',
+          background: 'rgba(211, 97, 53, 0.06)',
+          border: '1px solid rgba(211, 97, 53, 0.15)',
           color: 'var(--text-secondary, #6b7280)',
           fontWeight: 500,
         }}
@@ -41,7 +41,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
         <span>이번 주 남은 이용:</span>
         <span
           style={{
-            color: remainingCount > 0 ? '#FF6B35' : '#EF4444',
+            color: remainingCount > 0 ? '#D36135' : '#EF4444',
             fontWeight: 700,
             fontSize: '14px',
           }}
@@ -98,7 +98,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
             fontSize: '12px',
             fontWeight: 700,
             color: '#fff',
-            background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+            background: 'linear-gradient(135deg, #D36135, #E88A6A)',
             border: 'none',
             cursor: 'pointer',
             whiteSpace: 'nowrap',
@@ -133,7 +133,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
       <span>이번 주 남은 무료 이용:</span>
       <span
         style={{
-          color: '#FF6B35',
+          color: '#D36135',
           fontWeight: 700,
           fontSize: '14px',
         }}

@@ -91,15 +91,15 @@ export const VIRTUAL_STATS_CONFIG = {
 } as const;
 
 export const CHART_COLORS = {
-  primary: '#FF6B35',
-  secondary: '#004E98', 
-  accent: '#FFD23F',
+  primary: '#D36135',
+  secondary: '#3E5641',
+  accent: '#83BCA9',
   success: '#10B981',
   warning: '#F59E0B',
   danger: '#EF4444',
   info: '#3B82F6',
   gray: '#6B7280',
   // 차트용 색상 배열
-  sections: ['#FF6B35', '#004E98', '#FFD23F', '#10B981', '#F59E0B'],
-  bars: ['#FF6B35', '#004E98', '#FFD23F', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6', '#EC4899', '#14B8A6']
+  sections: ['#D36135', '#3E5641', '#83BCA9', '#10B981', '#F59E0B'],
+  bars: ['#D36135', '#3E5641', '#83BCA9', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6', '#EC4899', '#14B8A6']
 } as const;

@@ -38,7 +38,7 @@ export default function MemberGate({
           width: 48,
           height: 48,
           border: '3px solid var(--border)',
-          borderTop: '3px solid #FF6B35',
+          borderTop: '3px solid #D36135',
           borderRadius: '50%',
           animation: 'spin 0.8s linear infinite',
         }} />
@@ -118,7 +118,7 @@ export default function MemberGate({
               lineHeight: 1.5,
             }}
           >
-            <strong style={{ color: '#FF6B35' }}>{featureName}</strong>
+            <strong style={{ color: '#D36135' }}>{featureName}</strong>
             {featureDesc
               ? ` - ${featureDesc}`
               : '은(는) 회원만 이용할 수 있어요'}
@@ -170,18 +170,18 @@ export default function MemberGate({
               fontSize: 16,
               fontWeight: 700,
               color: '#fff',
-              background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+              background: 'linear-gradient(135deg, #D36135, #E88A6A)',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              boxShadow: '0 4px 15px rgba(255, 107, 53, 0.4)',
+              boxShadow: '0 4px 15px rgba(211, 97, 53, 0.4)',
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.5)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(211, 97, 53, 0.5)';
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = '';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.4)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(211, 97, 53, 0.4)';
             }}
           >
             무료 회원가입하기

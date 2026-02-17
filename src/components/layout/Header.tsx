@@ -163,7 +163,7 @@ const Header: React.FC = () => {
                   }}
                 >
                   도구
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                   {toolLinks.some(l => isActive(l.path)) && (
@@ -223,7 +223,7 @@ const Header: React.FC = () => {
                     >
                       <span className="text-base">{'👤'}</span>
                       <span className="hidden sm:inline max-w-[80px] truncate">{auth.user.nickname}</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
@@ -298,7 +298,7 @@ const Header: React.FC = () => {
                       'hover:opacity-90 active:scale-95',
                     )}
                     style={{
-                      background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+                      background: 'linear-gradient(135deg, #D36135, #E88A6A)',
                       color: '#fff',
                     }}
                   >
@@ -326,6 +326,7 @@ const Header: React.FC = () => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                   style={{ color: 'var(--text)' }}
+                  aria-hidden="true"
                 >
                   {mobileMenuOpen ? (
                     <path
@@ -440,7 +441,7 @@ const Header: React.FC = () => {
                       'transition-all duration-200',
                     )}
                     style={{
-                      background: 'linear-gradient(135deg, #FF6B35, #FF8C42)',
+                      background: 'linear-gradient(135deg, #D36135, #E88A6A)',
                       color: '#fff',
                     }}
                     onClick={() => {
@@ -474,7 +475,7 @@ const Header: React.FC = () => {
                         href="/mypage"
                         onClick={() => setMobileMenuOpen(false)}
                         className="text-xs font-medium px-2 py-1 rounded-lg"
-                        style={{ color: '#FF6B35' }}
+                        style={{ color: '#D36135' }}
                       >
                         마이페이지
                       </Link>
