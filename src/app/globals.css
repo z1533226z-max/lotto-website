@@ -278,6 +278,35 @@ a {
   50% { transform: translateY(-10px); }
 }
 
+/* Dialog/Modal animations (Radix UI) */
+@keyframes dialogFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dialogContentIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Mobile menu slide down */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes slideInRight {
   from {
     opacity: 0;
@@ -310,6 +339,10 @@ a {
 
 .animate-slideInRight {
   animation: slideInRight 0.5s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.2s ease-out;
 }
 
 /* Staggered animation delays */

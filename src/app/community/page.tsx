@@ -77,10 +77,10 @@ export default function CommunityPage() {
       {/* 페이지 제목 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text">
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
             커뮤니티
           </h1>
-          <p className="text-sm text-gray-500 dark:text-dark-text-tertiary mt-1">
+          <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
             로또에 대한 이야기를 나눠보세요
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function CommunityPage() {
 
       {/* 정렬 옵션 */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500 dark:text-dark-text-tertiary">
+        <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
           총 {total}개의 글
         </span>
         <div className="flex gap-1">
@@ -119,12 +119,12 @@ export default function CommunityPage() {
             <button
               key={option.id}
               onClick={() => setSort(option.id)}
-              className={cn(
-                'px-3 py-1 text-xs rounded-full transition-colors duration-200',
-                sort === option.id
-                  ? 'bg-gray-900 dark:bg-dark-text text-white dark:text-dark-bg font-medium'
-                  : 'text-gray-500 dark:text-dark-text-tertiary hover:bg-gray-100 dark:hover:bg-dark-surface-hover'
-              )}
+              className="px-3 py-1 text-xs rounded-full transition-colors duration-200"
+              style={{
+                backgroundColor: sort === option.id ? 'var(--text)' : 'transparent',
+                color: sort === option.id ? 'var(--bg)' : 'var(--text-tertiary)',
+                fontWeight: sort === option.id ? 600 : 400,
+              }}
             >
               {option.label}
             </button>
@@ -141,7 +141,7 @@ export default function CommunityPage() {
                 'w-8 h-8 border-3 border-primary/30 border-t-primary',
                 'rounded-full animate-spin'
               )} />
-              <span className="text-sm text-gray-500 dark:text-dark-text-tertiary">
+              <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
                 로딩 중...
               </span>
             </div>
@@ -159,7 +159,7 @@ export default function CommunityPage() {
 
             {/* 일반 게시글 */}
             {posts.length === 0 && pinnedPosts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-dark-text-tertiary">
+              <div className="flex flex-col items-center justify-center py-20" style={{ color: 'var(--text-tertiary)' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mb-3 opacity-50">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                 </svg>
@@ -208,12 +208,12 @@ export default function CommunityPage() {
               <button
                 key={pageNum}
                 onClick={() => setPage(pageNum)}
-                className={cn(
-                  'w-8 h-8 text-sm rounded-lg transition-colors duration-200',
-                  page === pageNum
-                    ? 'bg-primary text-white font-bold'
-                    : 'text-gray-600 dark:text-dark-text-secondary hover:bg-gray-100 dark:hover:bg-dark-surface-hover'
-                )}
+                className="w-8 h-8 text-sm rounded-lg transition-colors duration-200"
+                style={{
+                  backgroundColor: page === pageNum ? 'var(--primary)' : 'transparent',
+                  color: page === pageNum ? '#fff' : 'var(--text-secondary)',
+                  fontWeight: page === pageNum ? 700 : 400,
+                }}
               >
                 {pageNum}
               </button>

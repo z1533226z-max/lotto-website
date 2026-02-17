@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/components/providers/AuthProvider';
-import Button from '@/components/ui/Button';
-
-// ─── Component ──────────────────────────────────────────────
 
 const AuthModal: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, login, register } = useAuth();
@@ -15,7 +13,6 @@ const AuthModal: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
   const nicknameRef = useRef<HTMLInputElement>(null);
 
   // Reset form when modal opens
@@ -26,61 +23,36 @@ const AuthModal: React.FC = () => {
       setConfirmPassword('');
       setError('');
       setTab('login');
-      // Focus nickname input after animation
       setTimeout(() => nicknameRef.current?.focus(), 100);
     }
   }, [isAuthModalOpen]);
-
-  // Close on escape
-  useEffect(() => {
-    if (!isAuthModalOpen) return;
-
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeAuthModal();
-    };
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [isAuthModalOpen, closeAuthModal]);
-
-  // Close on outside click
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      closeAuthModal();
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (!nickname.trim()) {
       setError('닉네임을 입력해주세요.');
       return;
     }
-
     if (nickname.trim().length < 2 || nickname.trim().length > 15) {
       setError('닉네임은 2~15자로 입력해주세요.');
       return;
     }
-
     if (!password) {
       setError('비밀번호를 입력해주세요.');
       return;
     }
-
     if (password.length < 4 || password.length > 30) {
       setError('비밀번호는 4~30자로 입력해주세요.');
       return;
     }
-
     if (tab === 'register' && password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     setLoading(true);
-
     try {
       const result = tab === 'login'
         ? await login(nickname.trim(), password)
@@ -96,184 +68,133 @@ const AuthModal: React.FC = () => {
     }
   };
 
-  if (!isAuthModalOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-label={tab === 'login' ? '로그인' : '회원가입'}
-    >
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        style={{ animation: 'fadeIn 0.2s ease-out' }}
-      />
-
-      {/* Modal */}
-      <div
-        ref={modalRef}
-        className={cn(
-          'relative w-full max-w-sm rounded-2xl shadow-2xl border overflow-hidden',
-        )}
-        style={{
-          background: 'var(--surface, #ffffff)',
-          borderColor: 'var(--border, #e5e7eb)',
-          color: 'var(--text, #1f2937)',
-          animation: 'scaleIn 0.2s ease-out',
-        }}
-      >
-        {/* Header */}
-        <div className="relative px-6 pt-6 pb-4">
-          <button
-            onClick={closeAuthModal}
-            className="absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+    <Dialog.Root open={isAuthModalOpen} onOpenChange={(open) => !open && closeAuthModal()}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          className="fixed inset-0 z-[100]"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            animation: 'dialogFadeIn 0.15s ease-out',
+          }}
+        />
+        <Dialog.Content
+          className="fixed z-[101] top-1/2 left-1/2 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl shadow-2xl overflow-hidden outline-none"
+          style={{
+            background: 'var(--surface, #ffffff)',
+            border: '1px solid var(--border, #e5e7eb)',
+            color: 'var(--text, #1f2937)',
+            animation: 'dialogContentIn 0.2s ease-out',
+          }}
+        >
+          {/* Close button */}
+          <Dialog.Close
+            className="absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-black/5 dark:hover:bg-white/10 outline-none"
             aria-label="닫기"
           >
-            <span className="text-lg" style={{ opacity: 0.5 }}>{'✕'}</span>
-          </button>
+            <span className="text-lg" style={{ opacity: 0.4 }}>✕</span>
+          </Dialog.Close>
 
-          <div className="text-center mb-4">
-            <span className="text-3xl">{'🎰'}</span>
-            <h2 className="text-lg font-bold mt-2">로또킹</h2>
-            <p className="text-xs mt-1" style={{ opacity: 0.5 }}>
-              가입하면 진행상황이 저장됩니다
-            </p>
-          </div>
-
-          {/* Tab Switcher */}
-          <div
-            className="flex rounded-lg overflow-hidden border"
-            style={{ borderColor: 'var(--border, #e5e7eb)' }}
-          >
-            <button
-              onClick={() => { setTab('login'); setError(''); }}
-              className={cn(
-                'flex-1 py-2 text-sm font-semibold transition-all duration-200',
-              )}
-              style={{
-                background: tab === 'login'
-                  ? 'linear-gradient(135deg, #D36135, #E88A6A)'
-                  : 'transparent',
-                color: tab === 'login' ? '#fff' : 'var(--text, #1f2937)',
-                opacity: tab === 'login' ? 1 : 0.6,
-              }}
-            >
-              로그인
-            </button>
-            <button
-              onClick={() => { setTab('register'); setError(''); }}
-              className={cn(
-                'flex-1 py-2 text-sm font-semibold transition-all duration-200',
-              )}
-              style={{
-                background: tab === 'register'
-                  ? 'linear-gradient(135deg, #D36135, #E88A6A)'
-                  : 'transparent',
-                color: tab === 'register' ? '#fff' : 'var(--text, #1f2937)',
-                opacity: tab === 'register' ? 1 : 0.6,
-              }}
-            >
-              회원가입
-            </button>
-          </div>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="px-6 pb-6">
-          {/* Error Message */}
-          {error && (
-            <div
-              className="mb-4 px-3 py-2 rounded-lg text-sm font-medium"
-              style={{
-                background: 'rgba(239, 68, 68, 0.1)',
-                color: '#ef4444',
-                border: '1px solid rgba(239, 68, 68, 0.2)',
-              }}
-            >
-              {error}
+          {/* Header */}
+          <div className="px-6 pt-6 pb-4">
+            <div className="text-center mb-5">
+              <span className="text-3xl">🎲</span>
+              <Dialog.Title className="text-lg font-bold mt-2">
+                로또킹
+              </Dialog.Title>
+              <Dialog.Description className="text-xs mt-1" style={{ opacity: 0.5 }}>
+                가입하면 진행상황이 저장됩니다
+              </Dialog.Description>
             </div>
-          )}
 
-          {/* Nickname Input */}
-          <div className="mb-3">
-            <label
-              htmlFor="auth-nickname"
-              className="block text-xs font-semibold mb-1.5"
-              style={{ opacity: 0.7 }}
+            {/* Tab Switcher */}
+            <div
+              className="flex rounded-lg overflow-hidden"
+              style={{ border: '1px solid var(--border, #e5e7eb)' }}
             >
-              닉네임
-            </label>
-            <input
-              ref={nicknameRef}
-              id="auth-nickname"
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              placeholder="2~15자 닉네임"
-              maxLength={15}
-              className={cn(
-                'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
-                'transition-all duration-200',
-                'focus:ring-2 focus:ring-primary/30 focus:border-primary',
-              )}
-              style={{
-                background: 'var(--surface-hover, #f3f4f6)',
-                borderColor: 'var(--border, #e5e7eb)',
-                color: 'var(--text, #1f2937)',
-              }}
-              disabled={loading}
-            />
+              {(['login', 'register'] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => { setTab(t); setError(''); }}
+                  className="flex-1 py-2.5 text-sm font-semibold transition-all duration-200"
+                  style={{
+                    background: tab === t
+                      ? 'linear-gradient(135deg, #D36135, #E88A6A)'
+                      : 'transparent',
+                    color: tab === t ? '#fff' : 'var(--text, #1f2937)',
+                    opacity: tab === t ? 1 : 0.5,
+                  }}
+                >
+                  {t === 'login' ? '로그인' : '회원가입'}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Password Input */}
-          <div className="mb-3">
-            <label
-              htmlFor="auth-password"
-              className="block text-xs font-semibold mb-1.5"
-              style={{ opacity: 0.7 }}
-            >
-              비밀번호
-            </label>
-            <input
-              id="auth-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="4~30자 비밀번호"
-              maxLength={30}
-              className={cn(
-                'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
-                'transition-all duration-200',
-                'focus:ring-2 focus:ring-primary/30 focus:border-primary',
-              )}
-              style={{
-                background: 'var(--surface-hover, #f3f4f6)',
-                borderColor: 'var(--border, #e5e7eb)',
-                color: 'var(--text, #1f2937)',
-              }}
-              disabled={loading}
-            />
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="px-6 pb-6">
+            {/* Error */}
+            {error && (
+              <div
+                className="mb-4 px-3 py-2.5 rounded-lg text-sm font-medium"
+                style={{
+                  background: 'rgba(239, 68, 68, 0.08)',
+                  color: '#ef4444',
+                  border: '1px solid rgba(239, 68, 68, 0.15)',
+                }}
+              >
+                {error}
+              </div>
+            )}
 
-          {/* Confirm Password (register only) */}
-          {tab === 'register' && (
+            {/* Nickname */}
             <div className="mb-3">
               <label
-                htmlFor="auth-confirm-password"
+                htmlFor="auth-nickname"
                 className="block text-xs font-semibold mb-1.5"
-                style={{ opacity: 0.7 }}
+                style={{ color: 'var(--text-secondary)' }}
               >
-                비밀번호 확인
+                닉네임
               </label>
               <input
-                id="auth-confirm-password"
+                ref={nicknameRef}
+                id="auth-nickname"
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="2~15자 닉네임"
+                maxLength={15}
+                className={cn(
+                  'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
+                  'transition-all duration-200',
+                  'focus:ring-2 focus:ring-primary/30 focus:border-primary',
+                )}
+                style={{
+                  background: 'var(--bg, #f9fafb)',
+                  borderColor: 'var(--border, #e5e7eb)',
+                  color: 'var(--text, #1f2937)',
+                }}
+                disabled={loading}
+              />
+            </div>
+
+            {/* Password */}
+            <div className="mb-3">
+              <label
+                htmlFor="auth-password"
+                className="block text-xs font-semibold mb-1.5"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                비밀번호
+              </label>
+              <input
+                id="auth-password"
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="비밀번호를 다시 입력해주세요"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="4~30자 비밀번호"
                 maxLength={30}
                 className={cn(
                   'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
@@ -281,47 +202,69 @@ const AuthModal: React.FC = () => {
                   'focus:ring-2 focus:ring-primary/30 focus:border-primary',
                 )}
                 style={{
-                  background: 'var(--surface-hover, #f3f4f6)',
+                  background: 'var(--bg, #f9fafb)',
                   borderColor: 'var(--border, #e5e7eb)',
                   color: 'var(--text, #1f2937)',
                 }}
                 disabled={loading}
               />
             </div>
-          )}
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="primary"
-            fullWidth
-            loading={loading}
-            className="mt-4"
-          >
-            {tab === 'login' ? '로그인' : '회원가입'}
-          </Button>
+            {/* Confirm Password */}
+            {tab === 'register' && (
+              <div className="mb-3">
+                <label
+                  htmlFor="auth-confirm-password"
+                  className="block text-xs font-semibold mb-1.5"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  비밀번호 확인
+                </label>
+                <input
+                  id="auth-confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="비밀번호를 다시 입력해주세요"
+                  maxLength={30}
+                  className={cn(
+                    'w-full px-3 py-2.5 rounded-lg text-sm border outline-none',
+                    'transition-all duration-200',
+                    'focus:ring-2 focus:ring-primary/30 focus:border-primary',
+                  )}
+                  style={{
+                    background: 'var(--bg, #f9fafb)',
+                    borderColor: 'var(--border, #e5e7eb)',
+                    color: 'var(--text, #1f2937)',
+                  }}
+                  disabled={loading}
+                />
+              </div>
+            )}
 
-        </form>
-      </div>
-
-      {/* Keyframe styles */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-          from {
-            transform: scale(0.9);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-      `}</style>
-    </div>
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 py-3 rounded-xl text-sm font-bold text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 active:scale-[0.98]"
+              style={{ background: 'linear-gradient(135deg, #D36135, #C05430)' }}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  처리 중...
+                </span>
+              ) : (
+                tab === 'login' ? '로그인' : '회원가입'
+              )}
+            </button>
+          </form>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 };
 

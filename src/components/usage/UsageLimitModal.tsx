@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { useUsageLimit, type LimitedFeature } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 
@@ -29,254 +30,118 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
 }) => {
   const { featureName, isMember } = useUsageLimit();
   const auth = useAuthSafe();
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const [animating, setAnimating] = useState(false);
 
-  // Enter / Exit animation
-  useEffect(() => {
-    if (isOpen) {
-      setVisible(true);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setAnimating(true);
-        });
-      });
-    } else {
-      setAnimating(false);
-      const timeout = setTimeout(() => setVisible(false), 200);
-      return () => clearTimeout(timeout);
-    }
-  }, [isOpen]);
-
-  // Close on Escape
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [isOpen, onClose]);
-
-  // Close on backdrop click
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
-  // Sign up handler
   const handleSignUp = useCallback(() => {
     auth?.openAuthModal();
     onClose();
   }, [auth, onClose]);
 
-  if (!visible) return null;
-
   const name = featureName(feature);
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-label="이용 제한 안내"
-      style={{
-        opacity: animating ? 1 : 0,
-        transition: 'opacity 0.2s ease-out',
-      }}
-    >
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'rgba(0, 0, 0, 0.5)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-        }}
-      />
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          className="fixed inset-0 z-[100]"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            animation: 'dialogFadeIn 0.15s ease-out',
+          }}
+        />
+        <Dialog.Content
+          className="fixed z-[101] top-1/2 left-1/2 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl shadow-2xl overflow-hidden outline-none"
+          style={{
+            background: 'var(--surface, #ffffff)',
+            border: '1px solid var(--border, #e5e7eb)',
+            color: 'var(--text, #1f2937)',
+            animation: 'dialogContentIn 0.2s ease-out',
+          }}
+        >
+          <div style={{ padding: '28px 24px 24px' }}>
+            {/* Icon */}
+            <div className="text-center mb-4">
+              <span className="text-5xl leading-none">🔒</span>
+            </div>
 
-      {/* Modal */}
-      <div
-        ref={modalRef}
-        className="relative w-full max-w-sm overflow-hidden"
-        style={{
-          background: 'var(--surface, #ffffff)',
-          borderRadius: '16px',
-          border: '1px solid var(--border, #e5e7eb)',
-          color: 'var(--text, #1f2937)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          transform: animating ? 'scale(1)' : 'scale(0.92)',
-          opacity: animating ? 1 : 0,
-          transition: 'transform 0.2s ease-out, opacity 0.2s ease-out',
-        }}
-      >
-        {/* Content */}
-        <div style={{ padding: '28px 24px 24px' }}>
-          {/* Icon */}
-          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: '48px',
-                lineHeight: 1,
-              }}
+            {/* Title */}
+            <Dialog.Title
+              className="text-center text-base font-extrabold leading-snug mb-2"
+              style={{ color: 'var(--text, #1f2937)' }}
             >
-              {'🔒'}
-            </span>
-          </div>
+              이번 주 이용 횟수를
+              <br />
+              모두 사용했어요!
+            </Dialog.Title>
 
-          {/* Title */}
-          <h2
-            style={{
-              textAlign: 'center',
-              fontSize: '17px',
-              fontWeight: 800,
-              lineHeight: 1.4,
-              marginBottom: '8px',
-              color: 'var(--text, #1f2937)',
-            }}
-          >
-            이번 주 이용 횟수를
-            <br />
-            모두 사용했어요!
-          </h2>
+            {/* Description */}
+            <Dialog.Description
+              className="text-center text-xs mb-5 leading-relaxed"
+              style={{ color: 'var(--text-secondary, #6b7280)' }}
+            >
+              {isMember ? (
+                <>
+                  <strong style={{ color: '#D36135' }}>{name}</strong> 주간 이용 횟수가 초기화됩니다.
+                  <br />
+                  <span className="text-[11px]">매주 월요일 자동 초기화</span>
+                </>
+              ) : (
+                <>
+                  회원가입하면 <strong style={{ color: '#D36135' }}>{name}</strong>을
+                  주 10회까지 이용할 수 있습니다.
+                </>
+              )}
+            </Dialog.Description>
 
-          {/* Subtitle */}
-          <p
-            style={{
-              textAlign: 'center',
-              fontSize: '13px',
-              color: 'var(--text-secondary, #6b7280)',
-              lineHeight: 1.5,
-              marginBottom: '20px',
-            }}
-          >
-            {isMember ? (
-              <>
-                <strong style={{ color: '#D36135' }}>{name}</strong> 주간 이용 횟수가 초기화됩니다.
-                <br />
-                <span style={{ fontSize: '12px' }}>매주 월요일 자동 초기화</span>
-              </>
-            ) : (
-              <>
-                회원가입하면 <strong style={{ color: '#D36135' }}>{name}</strong>을
-                주 10회까지 이용할 수 있습니다.
-              </>
+            {/* Benefits list (non-member only) */}
+            {!isMember && (
+              <div className="flex flex-col gap-2 mb-5">
+                {BENEFITS_GUEST.map(({ icon, text }) => (
+                  <div
+                    key={text}
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-medium"
+                    style={{
+                      background: 'var(--bg, #f9fafb)',
+                      color: 'var(--text, #1f2937)',
+                    }}
+                  >
+                    <span className="text-base flex-shrink-0">{icon}</span>
+                    <span>{text}</span>
+                  </div>
+                ))}
+              </div>
             )}
-          </p>
 
-          {/* Benefits list (non-member only) */}
-          {!isMember && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column' as const,
-                gap: '8px',
-                marginBottom: '24px',
-              }}
-            >
-              {BENEFITS_GUEST.map(({ icon, text }) => (
-                <div
-                  key={text}
+            {/* Buttons */}
+            <div className="flex flex-col gap-2.5">
+              {!isMember && (
+                <button
+                  onClick={handleSignUp}
+                  className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                  style={{ background: 'linear-gradient(135deg, #D36135, #C05430)' }}
+                >
+                  무료 회원가입
+                </button>
+              )}
+
+              <Dialog.Close asChild>
+                <button
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'var(--bg, #f9fafb)',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    color: 'var(--text, #1f2937)',
+                    color: isMember ? '#fff' : 'var(--text-secondary, #6b7280)',
+                    background: isMember ? 'linear-gradient(135deg, #D36135, #C05430)' : 'transparent',
+                    border: isMember ? 'none' : '1px solid var(--border, #e5e7eb)',
                   }}
                 >
-                  <span style={{ fontSize: '16px', flexShrink: 0 }}>{icon}</span>
-                  <span>{text}</span>
-                </div>
-              ))}
+                  {isMember ? '확인' : '닫기'}
+                </button>
+              </Dialog.Close>
             </div>
-          )}
-
-          {/* Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
-            {/* Primary: sign up (non-member) or close (member) */}
-            {!isMember ? (
-              <button
-                onClick={handleSignUp}
-                style={{
-                  width: '100%',
-                  padding: '12px 0',
-                  borderRadius: '12px',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  color: '#ffffff',
-                  background: 'linear-gradient(135deg, #D36135, #E88A6A)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'opacity 0.15s, transform 0.1s',
-                }}
-                onMouseEnter={(e) => {
-                  const btn = e.currentTarget;
-                  btn.style.opacity = '0.9';
-                  btn.style.transform = 'scale(0.98)';
-                }}
-                onMouseLeave={(e) => {
-                  const btn = e.currentTarget;
-                  btn.style.opacity = '1';
-                  btn.style.transform = 'scale(1)';
-                }}
-              >
-                무료 회원가입
-              </button>
-            ) : null}
-
-            {/* Secondary: close */}
-            <button
-              onClick={onClose}
-              style={{
-                width: '100%',
-                padding: '11px 0',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: 600,
-                color: isMember ? '#ffffff' : 'var(--text-secondary, #6b7280)',
-                background: isMember ? 'linear-gradient(135deg, #D36135, #E88A6A)' : 'transparent',
-                border: isMember ? 'none' : '1px solid var(--border, #e5e7eb)',
-                cursor: 'pointer',
-                transition: 'background 0.15s, border-color 0.15s',
-              }}
-              onMouseEnter={(e) => {
-                const btn = e.currentTarget;
-                if (!isMember) {
-                  btn.style.background = 'var(--surface-hover, #f3f4f6)';
-                  btn.style.borderColor = 'var(--text-secondary, #9ca3af)';
-                } else {
-                  btn.style.opacity = '0.9';
-                }
-              }}
-              onMouseLeave={(e) => {
-                const btn = e.currentTarget;
-                if (!isMember) {
-                  btn.style.background = 'transparent';
-                  btn.style.borderColor = 'var(--border, #e5e7eb)';
-                } else {
-                  btn.style.opacity = '1';
-                }
-              }}
-            >
-              {isMember ? '확인' : '닫기'}
-            </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 };
 

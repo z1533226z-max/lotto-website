@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 const serviceLinks = [
   { name: 'AI 번호 추천', path: '/#generator' },
@@ -9,73 +8,61 @@ const serviceLinks = [
   { name: 'AI 적중 기록', path: '/lotto/ai-hits' },
   { name: '통계 분석', path: '/lotto/statistics' },
   { name: '세금 계산기', path: '/lotto/calculator' },
-  { name: '역대 당첨금 순위', path: '/lotto/rankings' },
+];
+
+const toolLinks = [
+  { name: '시뮬레이터', path: '/lotto/simulator' },
+  { name: '꿈번호 해몽', path: '/lotto/dream' },
+  { name: '행운번호', path: '/lotto/fortune' },
+  { name: '로또 가이드', path: '/lotto/guide' },
 ];
 
 const infoLinks = [
   { name: '이용약관', path: '/terms' },
   { name: '개인정보처리방침', path: '/privacy' },
+  { name: '커뮤니티', path: '/community' },
 ];
 
 const Footer: React.FC = () => {
   return (
-    <footer className="mt-16 relative">
-      {/* Gradient top border */}
-      <div
-        className="h-px w-full"
-        style={{
-          background: 'linear-gradient(90deg, transparent, var(--primary), var(--accent), var(--secondary), transparent)',
-        }}
-      />
-
-      <div
-        style={{
-          backgroundColor: 'var(--surface)',
-          color: 'var(--text)',
-        }}
-      >
-        <div className="container mx-auto px-4 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Brand section */}
-            <div>
-              <Link href="/" className="inline-flex items-center gap-2 group mb-4">
-                <span className="text-2xl transition-transform duration-300 group-hover:scale-110">
-                  🎲
-                </span>
-                <span className="text-xl font-bold gradient-text">
-                  로또킹
-                </span>
+    <footer
+      className="mt-12"
+      style={{ borderTop: '1px solid var(--border)' }}
+    >
+      <div style={{ backgroundColor: 'var(--surface)' }}>
+        <div className="container mx-auto px-4 lg:px-8 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1">
+              <Link href="/" className="inline-flex items-center gap-2 mb-3">
+                <span className="text-xl">🎲</span>
+                <span className="text-lg font-bold gradient-text">로또킹</span>
               </Link>
               <p
-                className="text-sm leading-relaxed mt-3"
-                style={{ color: 'var(--text-secondary)' }}
+                className="text-xs leading-relaxed"
+                style={{ color: 'var(--text-tertiary)' }}
               >
-                AI 기반 로또번호 추천 서비스
+                AI 기반 로또번호 분석 서비스.
                 <br />
-                역대 전체 회차 데이터를 분석하여
-                <br />
-                행운의 번호를 찾아드립니다.
+                역대 전체 데이터를 분석합니다.
               </p>
             </div>
 
-            {/* Service links */}
+            {/* Service */}
             <div>
               <h4
-                className="font-semibold mb-4 text-sm uppercase tracking-wider"
-                style={{ color: 'var(--text)' }}
+                className="text-xs font-bold uppercase tracking-wider mb-3"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 서비스
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {serviceLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       href={link.path}
-                      className={cn(
-                        'text-sm transition-colors duration-200',
-                        'hover:text-primary'
-                      )}
-                      style={{ color: 'var(--text-secondary)' }}
+                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      style={{ color: 'var(--text-tertiary)' }}
                     >
                       {link.name}
                     </Link>
@@ -84,24 +71,44 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* Info links */}
+            {/* Tools */}
             <div>
               <h4
-                className="font-semibold mb-4 text-sm uppercase tracking-wider"
-                style={{ color: 'var(--text)' }}
+                className="text-xs font-bold uppercase tracking-wider mb-3"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                도구
+              </h4>
+              <ul className="space-y-2">
+                {toolLinks.map((link) => (
+                  <li key={link.path}>
+                    <Link
+                      href={link.path}
+                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      style={{ color: 'var(--text-tertiary)' }}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Info */}
+            <div>
+              <h4
+                className="text-xs font-bold uppercase tracking-wider mb-3"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 정보
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {infoLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       href={link.path}
-                      className={cn(
-                        'text-sm transition-colors duration-200',
-                        'hover:text-primary'
-                      )}
-                      style={{ color: 'var(--text-secondary)' }}
+                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      style={{ color: 'var(--text-tertiary)' }}
                     >
                       {link.name}
                     </Link>
@@ -111,19 +118,16 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom section */}
+          {/* Bottom */}
           <div
-            className="mt-10 pt-8 text-center text-sm"
-            style={{
-              borderTop: '1px solid var(--border)',
-              color: 'var(--text-tertiary)',
-            }}
+            className="mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+            style={{ borderTop: '1px solid var(--border)' }}
           >
-            <p>&copy; {new Date().getFullYear()} 로또킹. All rights reserved.</p>
-            <p className="mt-2 max-w-lg mx-auto leading-relaxed">
-              이 서비스는 로또 당첨을 보장하지 않습니다.
-              본 서비스는 오락 목적으로 제공되며, 모든 번호 추천은 참고용입니다.
-              로또 구매는 본인의 판단과 책임 하에 이루어져야 합니다.
+            <p className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
+              &copy; {new Date().getFullYear()} 로또킹. All rights reserved.
+            </p>
+            <p className="text-[11px] text-center sm:text-right max-w-sm" style={{ color: 'var(--text-tertiary)' }}>
+              로또 당첨을 보장하지 않습니다. 오락 목적 서비스이며, 모든 추천은 참고용입니다.
             </p>
           </div>
         </div>
