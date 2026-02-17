@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { Dices } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/components/providers/AuthProvider';
 
@@ -100,7 +101,7 @@ const AuthModal: React.FC = () => {
           {/* Header */}
           <div className="px-6 pt-6 pb-4">
             <div className="text-center mb-5">
-              <span className="text-3xl">🎲</span>
+              <Dices className="w-8 h-8 text-[#D36135] mx-auto" />
               <Dialog.Title className="text-lg font-bold mt-2">
                 로또킹
               </Dialog.Title>

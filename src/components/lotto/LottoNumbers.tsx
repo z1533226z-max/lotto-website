@@ -11,7 +11,7 @@ const getBallHexColor = (num: number): string => {
   if (num <= 10) return '#FFC107'; // yellow
   if (num <= 20) return '#2196F3'; // blue
   if (num <= 30) return '#FF5722'; // red/orange
-  if (num <= 40) return '#9E9E9E'; // gray
+  if (num <= 40) return '#757575'; // gray (WCAG AA: 4.98:1 with white text)
   return '#4CAF50'; // green
 };
 

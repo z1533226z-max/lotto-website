@@ -101,7 +101,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center font-medium',
+        'inline-flex items-center justify-center font-medium cursor-pointer',
         'transition-all duration-200 ease-out',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none',
         'active:scale-[0.98]',

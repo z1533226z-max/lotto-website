@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { AlertTriangle, RefreshCw, RotateCw, Bot } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
@@ -35,7 +36,7 @@ const PerformanceErrorCard = ({ onRetry, error }: { onRetry: () => void; error: 
   <Card className="p-6 border-red-200 bg-red-50">
     <div className="text-center space-y-4">
       <div>
-        <h3 className="font-bold text-red-600 mb-2">⚠️ AI 성능 데이터 로딩 실패</h3>
+        <h3 className="font-bold text-red-600 mb-2 flex items-center justify-center"><AlertTriangle className="w-5 h-5 inline-block mr-1" /> AI 성능 데이터 로딩 실패</h3>
         <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
       <div className="flex gap-2 justify-center">
@@ -43,13 +44,13 @@ const PerformanceErrorCard = ({ onRetry, error }: { onRetry: () => void; error: 
           onClick={onRetry}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
         >
-          🔄 다시 시도
+          <RefreshCw className="w-4 h-4 inline-block mr-1" /> 다시 시도
         </button>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
         >
-          🔃 새로고침
+          <RotateCw className="w-4 h-4 inline-block mr-1" /> 새로고침
         </button>
       </div>
     </div>
@@ -238,7 +239,7 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
       >
         <Card className="p-6">
           <div className="flex items-center mb-4">
-            <span className="text-2xl mr-3">🤖</span>
+            <Bot className="w-7 h-7 mr-3" />
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 성능 검증</h3>
             <div className={`ml-auto px-3 py-1 rounded-full text-sm font-bold ${grade.color} ${grade.bgColor}`}>
               {grade.grade}등급

@@ -2,6 +2,7 @@
 
 import React, { useCallback } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { Lock, TrendingUp, BarChart3, Target } from 'lucide-react';
 import { useUsageLimit, type LimitedFeature } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 
@@ -16,10 +17,10 @@ interface UsageLimitModalProps {
 // --- Benefits -----------------------------------------------------
 
 const BENEFITS_GUEST = [
-  { icon: '📈', text: '주 10회로 이용 확대 (비회원 3회)' },
-  { icon: '📊', text: '번호 히스토리 & 당첨 확인' },
-  { icon: '🎯', text: '5세트 동시 생성' },
-] as const;
+  { icon: <TrendingUp className="w-4 h-4" />, text: '주 10회로 이용 확대 (비회원 3회)' },
+  { icon: <BarChart3 className="w-4 h-4" />, text: '번호 히스토리 & 당첨 확인' },
+  { icon: <Target className="w-4 h-4" />, text: '5세트 동시 생성' },
+];
 
 // --- Component ----------------------------------------------------
 
@@ -61,8 +62,8 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
         >
           <div style={{ padding: '28px 24px 24px' }}>
             {/* Icon */}
-            <div className="text-center mb-4">
-              <span className="text-5xl leading-none">🔒</span>
+            <div className="flex justify-center mb-4">
+              <Lock className="w-12 h-12 text-[var(--text-secondary)]" />
             </div>
 
             {/* Title */}
@@ -106,7 +107,7 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
                       color: 'var(--text, #1f2937)',
                     }}
                   >
-                    <span className="text-base flex-shrink-0">{icon}</span>
+                    <span className="flex-shrink-0">{icon}</span>
                     <span>{text}</span>
                   </div>
                 ))}

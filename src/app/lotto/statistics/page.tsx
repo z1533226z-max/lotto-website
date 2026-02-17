@@ -1,6 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { BarChart3 } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export default function LottoStatisticsPage() {
               background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
             }}
           >
-            <span className="text-lg">📊</span>
+            <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--text)' }}>
             로또 번호 통계 분석

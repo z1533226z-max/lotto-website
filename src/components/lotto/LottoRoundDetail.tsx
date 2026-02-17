@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Trophy } from 'lucide-react';
 import LottoNumbers from './LottoNumbers';
 import Card from '@/components/ui/Card';
 import { formatDate, formatCurrency } from '@/lib/utils';
@@ -18,8 +19,8 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound }) => {
       <Card className="bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-              🏆 {data.round}회 로또 당첨번호
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2">
+              <Trophy className="w-7 h-7 text-yellow-500" /> {data.round}회 로또 당첨번호
             </h1>
             <p className="text-gray-600">
               {formatDate(data.drawDate)} 추첨

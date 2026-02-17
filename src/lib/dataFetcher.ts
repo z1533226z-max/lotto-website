@@ -11,7 +11,7 @@ const ALL_DATA_CACHE_TTL = 30 * 60 * 1000; // 30분
 
 // 현재 예상 최신 회차 계산
 export function getEstimatedLatestRound(): number {
-  const startDate = new Date('2002-12-07');
+  const startDate = new Date(2002, 11, 7); // 2002-12-07 (로컬 타임존, aiPredictionGenerator와 통일)
   const now = new Date();
   const diffTime = now.getTime() - startDate.getTime();
   const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));

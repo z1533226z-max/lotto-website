@@ -69,10 +69,12 @@ function selectWeightedNumbers(
   const seed = Math.floor(random() * 100000);
 
   // 가중치 계산 (numberGenerator.ts 로직 재사용)
+  const latestRound = Math.max(...statistics.map(s => s.lastAppeared));
   const weighted = statistics.map(stat => {
-    const averageFrequency = 25;
+    const averageFrequency = Math.max(1, latestRound * 7 / 45);
     const frequencyWeight = (stat.frequency / averageFrequency) * 0.3;
-    const recentnessWeight = Math.max(0, (50 - stat.lastAppeared) / 50) * 0.2;
+    const roundsSinceLastAppear = latestRound - stat.lastAppeared;
+    const recentnessWeight = Math.max(0, (50 - roundsSinceLastAppear) / 50) * 0.2;
     const hotColdWeight = (stat.hotColdScore + 100) / 200 * 0.3;
     const seedFactor = (Math.sin(seed * stat.number * 0.1) + 1) / 2 * 0.2;
     const weight = Math.max(0.1, 1.0 + frequencyWeight + recentnessWeight + hotColdWeight + seedFactor);
@@ -258,8 +260,9 @@ function selectWeightedNumbersWithStrategy(
 ): number[] {
   const seed = Math.floor(random() * 100000);
 
+  const latestRound = Math.max(...statistics.map(s => s.lastAppeared));
   const weighted = statistics.map(stat => {
-    const averageFrequency = 25;
+    const averageFrequency = Math.max(1, latestRound * 7 / 45);
     let frequencyW: number, recentnessW: number, hotColdW: number, seedW: number;
 
     switch (strategy) {
@@ -296,7 +299,8 @@ function selectWeightedNumbersWithStrategy(
     }
 
     const frequencyWeight = (stat.frequency / averageFrequency) * frequencyW;
-    const recentnessWeight = Math.max(0, (50 - stat.lastAppeared) / 50) * recentnessW;
+    const roundsSinceLastAppear = latestRound - stat.lastAppeared;
+    const recentnessWeight = Math.max(0, (50 - roundsSinceLastAppear) / 50) * recentnessW;
     const hotColdWeight = (stat.hotColdScore + 100) / 200 * hotColdW;
     const seedFactor = (Math.sin(seed * stat.number * 0.1) + 1) / 2 * seedW;
     const weight = Math.max(0.1, 1.0 + frequencyWeight + recentnessWeight + hotColdWeight + seedFactor);

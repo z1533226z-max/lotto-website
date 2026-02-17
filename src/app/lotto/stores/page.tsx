@@ -9,6 +9,7 @@ import StoreCard from '@/components/stores/StoreCard';
 import StoreRanking from '@/components/stores/StoreRanking';
 import RegionStats from '@/components/stores/RegionStats';
 import type { WinningStore, RegionStats as RegionStatsType } from '@/types/database';
+import { Store, Trophy, ClipboardList, BarChart3, Medal } from 'lucide-react';
 
 // 지역 목록
 const REGIONS = [
@@ -125,7 +126,7 @@ export default function StoresPage() {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-3">
-            🏪 1등 당첨 판매점
+            <Store className="w-7 h-7 inline-block mr-2" /> 1등 당첨 판매점
           </h1>
           <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
             로또 1등 당첨 판매점 정보를 확인하세요.
@@ -140,21 +141,21 @@ export default function StoresPage() {
             size="sm"
             onClick={() => setViewMode('ranking')}
           >
-            🏆 당첨 랭킹
+            <Trophy className="w-4 h-4 inline-block mr-1" /> 당첨 랭킹
           </Button>
           <Button
             variant={viewMode === 'list' ? 'primary' : 'ghost'}
             size="sm"
             onClick={() => setViewMode('list')}
           >
-            📋 회차별 목록
+            <ClipboardList className="w-4 h-4 inline-block mr-1" /> 회차별 목록
           </Button>
           <Button
             variant={viewMode === 'stats' ? 'primary' : 'ghost'}
             size="sm"
             onClick={() => setViewMode('stats')}
           >
-            📊 지역 통계
+            <BarChart3 className="w-4 h-4 inline-block mr-1" /> 지역 통계
           </Button>
         </div>
 
@@ -194,7 +195,7 @@ export default function StoresPage() {
                 {/* 결과 건수 */}
                 <div className="flex items-center gap-3">
                   <Badge variant="warning">
-                    {viewMode === 'ranking' ? '🏆 당첨 랭킹' : '🥇 1등 판매점'}
+                    {viewMode === 'ranking' ? <><Trophy className="w-3.5 h-3.5 inline-block mr-1" /> 당첨 랭킹</> : <><Medal className="w-3.5 h-3.5 inline-block mr-1" /> 1등 판매점</>}
                   </Badge>
                   <div className="ml-auto">
                     <Badge variant="info">
@@ -219,7 +220,7 @@ export default function StoresPage() {
               /* 랭킹 뷰 */
               rankingStores.length === 0 ? (
                 <Card variant="default" className="text-center py-12">
-                  <p className="text-4xl mb-4">🏆</p>
+                  <p className="mb-4"><Trophy className="w-10 h-10 mx-auto" /></p>
                   <p className="text-lg font-medium text-[var(--text)]">
                     랭킹 데이터가 없습니다
                   </p>
@@ -238,7 +239,7 @@ export default function StoresPage() {
               /* 회차별 목록 뷰 */
               stores.length === 0 ? (
                 <Card variant="default" className="text-center py-12">
-                  <p className="text-4xl mb-4">🏪</p>
+                  <p className="mb-4"><Store className="w-10 h-10 mx-auto" /></p>
                   <p className="text-lg font-medium text-[var(--text)]">
                     판매점 정보가 없습니다
                   </p>

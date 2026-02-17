@@ -683,7 +683,7 @@ export class LottoStatisticsAnalyzer {
         type: `${oddStr}:${evenStr}`,
         count: data.count,
         numbers: parseInt(oddStr) + parseInt(evenStr),
-        percentage: Math.round((data.count / patterns.size) * 100),
+        percentage: Math.round((data.count / lottoData.length) * 100),
         oddCount: parseInt(oddStr),
         evenCount: parseInt(evenStr),
         ratio,

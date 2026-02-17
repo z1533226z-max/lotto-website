@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { AlertTriangle, RefreshCw, BarChart3, Flame, Zap } from 'lucide-react';
 import { 
   BarChart, 
   Bar, 
@@ -47,7 +48,7 @@ const ChartErrorCard = ({ onRetry, error }: { onRetry: () => void; error: string
   <Card className="p-6 border-red-200 bg-red-50">
     <div className="text-center space-y-4">
       <div>
-        <h3 className="font-bold text-red-600 mb-2">⚠️ 패턴 차트 로딩 실패</h3>
+        <h3 className="font-bold text-red-600 mb-2 flex items-center justify-center"><AlertTriangle className="w-5 h-5 inline-block mr-1" /> 패턴 차트 로딩 실패</h3>
         <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{error}</p>
       </div>
       <div className="flex gap-2 justify-center">
@@ -55,7 +56,7 @@ const ChartErrorCard = ({ onRetry, error }: { onRetry: () => void; error: string
           onClick={onRetry}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
         >
-          🔄 다시 시도
+          <RefreshCw className="w-4 h-4 inline-block mr-1" /> 다시 시도
         </button>
       </div>
     </div>
@@ -262,7 +263,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
       >
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="font-bold" style={{ color: 'var(--text)' }}>📊 번호별 출현 패턴</h3>
+            <h3 className="font-bold flex items-center" style={{ color: 'var(--text)' }}><BarChart3 className="w-5 h-5 inline-block mr-1" /> 번호별 출현 패턴</h3>
             {chartData.dataSource === 'fallback' && (
               <span className="text-xs text-orange-500">* 샘플 데이터</span>
             )}
@@ -270,7 +271,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
           
           {/* 상위 10개 번호 막대 차트 */}
           <div className="mb-8">
-            <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>🔥 빈도 TOP 10</h4>
+            <h4 className="font-semibold mb-4 flex items-center" style={{ color: 'var(--text-secondary)' }}><Flame className="w-4 h-4 inline-block mr-1" /> 빈도 TOP 10</h4>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chartData.top10Data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -290,7 +291,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* 구간별 분포 파이 차트 */}
             <div>
-              <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>📊 구간별 분포</h4>
+              <h4 className="font-semibold mb-4 flex items-center" style={{ color: 'var(--text-secondary)' }}><BarChart3 className="w-4 h-4 inline-block mr-1" /> 구간별 분포</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -315,7 +316,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
 
             {/* 홀짝 분포 파이 차트 */}
             <div>
-              <h4 className="font-semibold mb-4" style={{ color: 'var(--text-secondary)' }}>⚡ 홀짝 분포</h4>
+              <h4 className="font-semibold mb-4 flex items-center" style={{ color: 'var(--text-secondary)' }}><Zap className="w-4 h-4 inline-block mr-1" /> 홀짝 분포</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie

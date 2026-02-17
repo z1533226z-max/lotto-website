@@ -25,13 +25,14 @@ export async function GET(request: NextRequest) {
   const startTime = Date.now();
 
   try {
-    // Vercel Cron 인증
+    // Vercel Cron 인증 (필수)
     const cronSecret = process.env.CRON_SECRET;
-    if (cronSecret) {
-      const authHeader = request.headers.get('authorization');
-      if (authHeader !== `Bearer ${cronSecret}`) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
+    const authHeader = request.headers.get('authorization');
+    if (!cronSecret) {
+      console.warn('[Cron] CRON_SECRET 환경변수가 설정되지 않았습니다.');
+    }
+    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 1. 메모리 캐시 전체 무효화

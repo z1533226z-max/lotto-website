@@ -28,10 +28,10 @@
   --border-light: #F3F4F6;
   --border-focus: #D36135;
 
-  /* Text */
+  /* Text - WCAG AA compliant (4.5:1+ against white) */
   --text: #111827;
-  --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF;
+  --text-secondary: #4B5563;
+  --text-tertiary: #6B7280;
   --text-inverse: #FFFFFF;
 
   /* Foreground RGB */
@@ -44,9 +44,9 @@
   --shadow-lg: 0 10px 15px -3px rgba(var(--shadow-color), 0.1), 0 4px 6px -2px rgba(var(--shadow-color), 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(var(--shadow-color), 0.1), 0 10px 10px -5px rgba(var(--shadow-color), 0.04);
 
-  /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  /* Glass - visible border on light backgrounds */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
   /* Scrollbar */
@@ -74,10 +74,10 @@
   --border-light: #252738;
   --border-focus: #D36135;
 
-  /* Text */
+  /* Text - WCAG AA compliant (4.5:1+ against dark surfaces) */
   --text: #F9FAFB;
   --text-secondary: #9CA3AF;
-  --text-tertiary: #6B7280;
+  --text-tertiary: #8B949F;
   --text-inverse: #111827;
 
   /* Foreground RGB */
@@ -128,6 +128,11 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
 }
 
 /* ============================================

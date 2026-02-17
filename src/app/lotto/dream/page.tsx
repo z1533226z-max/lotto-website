@@ -19,6 +19,7 @@ import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
 import MemberGate from '@/components/auth/MemberGate';
 import { getNextDrawRound } from '@/lib/lottoUtils';
+import { Eye, PawPrint, Leaf, Gem, PersonStanding, Heart, User, Palette, Search, Moon } from 'lucide-react';
 
 const MAX_KEYWORDS = 6;
 const LOTTO_COUNT = 6;
@@ -96,15 +97,15 @@ const LottoBall: React.FC<{
 /**
  * Category icon mapping
  */
-const categoryIcons: Record<string, string> = {
-  '전체': '🔮',
-  '동물': '🐾',
-  '자연': '🌿',
-  '사물': '💎',
-  '행동': '🏃',
-  '감정': '💖',
-  '사람': '👤',
-  '색깔': '🎨',
+const categoryIcons: Record<string, React.ReactNode> = {
+  '전체': <Eye className="w-4 h-4 inline-block" />,
+  '동물': <PawPrint className="w-4 h-4 inline-block" />,
+  '자연': <Leaf className="w-4 h-4 inline-block" />,
+  '사물': <Gem className="w-4 h-4 inline-block" />,
+  '행동': <PersonStanding className="w-4 h-4 inline-block" />,
+  '감정': <Heart className="w-4 h-4 inline-block" />,
+  '사람': <User className="w-4 h-4 inline-block" />,
+  '색깔': <Palette className="w-4 h-4 inline-block" />,
 };
 
 export default function DreamNumberPage() {
@@ -303,7 +304,7 @@ export default function DreamNumberPage() {
   }, []);
 
   return (
-    <MemberGate featureName="꿈번호 해몽" featureIcon="🌙" featureDesc="꿈 키워드로 행운 번호를 뽑아봐요">
+    <MemberGate featureName="꿈번호 해몽" featureIcon={<Moon className="w-10 h-10 mx-auto" />} featureDesc="꿈 키워드로 행운 번호를 뽑아봐요">
       <Breadcrumb
         items={[
           { label: '홈', href: '/' },
@@ -321,7 +322,7 @@ export default function DreamNumberPage() {
               boxShadow: '0 8px 24px rgba(124, 58, 237, 0.35)',
             }}
           >
-            <span className="text-3xl">🔮</span>
+            <Eye className="w-8 h-8 text-white" />
           </div>
           <h1
             className="text-2xl md:text-3xl font-bold mb-2"
@@ -348,8 +349,8 @@ export default function DreamNumberPage() {
                 꿈 키워드 검색
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg pointer-events-none">
-                  🔍
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <Search className="w-5 h-5" style={{ color: 'var(--text-tertiary)' }} />
                 </span>
                 <input
                   ref={inputRef}
@@ -397,7 +398,7 @@ export default function DreamNumberPage() {
                       style={{ color: 'var(--text)' }}
                       onClick={() => addKeyword(kw)}
                     >
-                      <span className="text-lg">{categoryIcons[kw.category] || '🔮'}</span>
+                      <span>{categoryIcons[kw.category] || <Eye className="w-4 h-4 inline-block" />}</span>
                       <div className="flex-1 min-w-0">
                         <span className="font-semibold">{kw.keyword}</span>
                         <span
@@ -547,7 +548,7 @@ export default function DreamNumberPage() {
                     border: '1px solid var(--border-light)',
                   }}
                 >
-                  <span className="text-xl mt-0.5">{categoryIcons[kw.category]}</span>
+                  <span className="mt-0.5">{categoryIcons[kw.category]}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span
@@ -710,7 +711,7 @@ export default function DreamNumberPage() {
               className="text-sm font-semibold mb-4 flex items-center gap-2"
               style={{ color: 'var(--text)' }}
             >
-              <span>🌙</span> 꿈 해몽 해석
+              <Moon className="w-4 h-4 inline-block" /> 꿈 해몽 해석
             </h3>
             <div className="space-y-3">
               {selectedKeywords.map((kw, idx) => (
@@ -784,7 +785,7 @@ export default function DreamNumberPage() {
                     }}
                   >
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-base">{categoryIcons[kw.category]}</span>
+                      <span>{categoryIcons[kw.category]}</span>
                       <span
                         className="font-semibold text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors"
                         style={{ color: 'var(--text)' }}
@@ -817,7 +818,7 @@ export default function DreamNumberPage() {
         {selectedKeywords.length === 0 && filteredKeywords.length === 0 && (
           <Card variant="glass" className="text-center py-12">
             <div className="space-y-3">
-              <span className="text-5xl block">🌙</span>
+              <span className="block"><Moon className="w-12 h-12 mx-auto" /></span>
               <p
                 className="text-lg font-medium"
                 style={{ color: 'var(--text-secondary)' }}

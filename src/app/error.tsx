@@ -1,5 +1,7 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 export default function Error({
   error,
   reset,
@@ -10,7 +12,7 @@ export default function Error({
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="text-center space-y-6 max-w-md">
-        <div className="text-6xl">⚠️</div>
+        <div><AlertTriangle className="w-16 h-16 mx-auto text-yellow-500" /></div>
         <h1 className="text-2xl font-bold text-gray-800">오류가 발생했습니다</h1>
         <p className="text-gray-600">
           {error.message || '페이지를 불러오는 중 문제가 발생했습니다.'}

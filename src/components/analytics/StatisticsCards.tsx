@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { Flame, Snowflake, Target } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import { getSampleStatistics, getDefaultHotNumber, getDefaultColdNumber } from '@/data/sampleLottoData';
@@ -12,10 +13,10 @@ interface StatisticsCardsProps {
 }
 
 // 스켈레톤 로더 컴포넌트
-const SkeletonCard = ({ icon, title }: { icon: string; title: string }) => (
+const SkeletonCard = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
   <div className="rounded-xl p-6 animate-pulse" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
     <div className="flex items-center mb-3">
-      <span className="text-2xl mr-2">{icon}</span>
+      <span className="mr-2">{icon}</span>
       <h3 className="font-bold" style={{ color: 'var(--text)' }}>{title}</h3>
     </div>
     <div className="space-y-2">
@@ -156,9 +157,9 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
   if (isLoadingStats) {
     return (
       <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${className}`}>
-        <SkeletonCard icon="🔥" title="핫넘버" />
-        <SkeletonCard icon="❄️" title="콜드넘버" />
-        <SkeletonCard icon="🎯" title="AI 적중" />
+        <SkeletonCard icon={<Flame className="w-6 h-6" />} title="핫넘버" />
+        <SkeletonCard icon={<Snowflake className="w-6 h-6" />} title="콜드넘버" />
+        <SkeletonCard icon={<Target className="w-6 h-6" />} title="AI 적중" />
       </div>
     );
   }
@@ -181,7 +182,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       >
         <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-xl p-6 border border-red-200 dark:border-red-800 h-full">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-2">🔥</span>
+            <Flame className="w-6 h-6 mr-2" />
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>핫넘버</h3>
           </div>
           <div className="space-y-2">
@@ -206,7 +207,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       >
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 h-full">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-2">❄️</span>
+            <Snowflake className="w-6 h-6 mr-2" />
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>콜드넘버</h3>
           </div>
           <div className="space-y-2">
@@ -231,7 +232,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       >
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800 h-full">
           <div className="flex items-center mb-3">
-            <span className="text-2xl mr-2">🎯</span>
+            <Target className="w-6 h-6 mr-2" />
             <h3 className="font-bold" style={{ color: 'var(--text)' }}>AI 적중 실적</h3>
           </div>
           <div className="space-y-2">

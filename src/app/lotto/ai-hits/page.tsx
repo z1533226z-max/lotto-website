@@ -8,6 +8,7 @@ import Skeleton from '@/components/ui/Skeleton';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import { cn } from '@/lib/utils';
 import type { AIMultiSetResult } from '@/data/aiPredictionHistory';
+import { Eye, Flame, Trophy, CheckCircle2, Inbox } from 'lucide-react';
 
 interface AIMultiSetStats {
   avgMatch: number;
@@ -139,7 +140,7 @@ export default function AIHitsPage() {
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #7C3AED, #3B82F6)' }}
               >
-                <span className="text-xl">🔮</span>
+                <Eye className="w-5 h-5 text-white" />
               </div>
               <div>
                 <span className="font-bold text-lg" style={{ color: 'var(--text)' }}>
@@ -261,7 +262,7 @@ export default function AIHitsPage() {
                     <span className="font-bold text-lg" style={{ color: 'var(--text)' }}>
                       {item.round}회
                     </span>
-                    {item.bestMatchCount >= 3 && <span className="text-sm">🔥</span>}
+                    {item.bestMatchCount >= 3 && <Flame className="w-4 h-4 inline-block text-orange-500" />}
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge
@@ -280,7 +281,7 @@ export default function AIHitsPage() {
                   style={{ backgroundColor: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.2)' }}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm">🏆</span>
+                    <Trophy className="w-4 h-4 inline-block text-yellow-500" />
                     <span
                       className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
                       style={{ backgroundColor: STRATEGY_COLORS[item.bestSetIndex] }}
@@ -327,7 +328,7 @@ export default function AIHitsPage() {
                   </div>
                   {bestSet.matchedNumbers.length > 0 && (
                     <p className="text-xs font-medium mt-2" style={{ color: '#059669' }}>
-                      ✅ 적중: {bestSet.matchedNumbers.join(', ')}
+                      <CheckCircle2 className="w-3.5 h-3.5 inline-block mr-1" /> 적중: {bestSet.matchedNumbers.join(', ')}
                       {bestSet.bonusMatch && ' + 보너스'}
                     </p>
                   )}
@@ -405,7 +406,7 @@ export default function AIHitsPage() {
                             {set.matchCount}개{set.bonusMatch ? ' +보너스' : ''}
                           </Badge>
                           {idx === item.bestSetIndex && (
-                            <span className="text-xs">🏆</span>
+                            <Trophy className="w-3 h-3 inline-block text-yellow-500" />
                           )}
                         </div>
                         <div className="flex gap-1.5 flex-wrap">
@@ -454,7 +455,7 @@ export default function AIHitsPage() {
       {!loading && multiSetResults.length === 0 && (
         <Card variant="glass" className="text-center py-16">
           <div className="space-y-3">
-            <span className="text-4xl">📭</span>
+            <Inbox className="w-10 h-10 mx-auto" />
             <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>
               아직 적중 기록이 없습니다.
             </p>

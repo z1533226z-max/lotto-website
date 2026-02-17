@@ -34,7 +34,7 @@ interface UseStatisticsCacheReturn {
 
 const CACHE_VERSION = 'v1.2';
 const CACHE_KEY = 'lotto-statistics-v1';
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24시간
+const CACHE_DURATION = 60 * 60 * 1000; // 1시간
 
 export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): UseStatisticsCacheReturn {
   const {

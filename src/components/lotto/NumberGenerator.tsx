@@ -14,6 +14,7 @@ import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import { Bot, Target, Lock, Sparkles, Cloud, BarChart3, Brain, Copy, Save, Lightbulb, AlertTriangle, Zap } from 'lucide-react';
 import type { NumberStatistics } from '@/types/lotto';
 
 const NumberGenerator: React.FC = () => {
@@ -232,7 +233,7 @@ const NumberGenerator: React.FC = () => {
         {/* 헤더 */}
         <div className="space-y-2">
           <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            🤖 AI 추천번호
+            <Bot className="w-6 h-6 inline-block mr-1 align-text-bottom" /> AI 추천번호
           </h2>
           <p className="text-sm md:text-base" style={{ color: 'var(--text-secondary)' }}>
             {marketingText || getRandomMarketingText()}
@@ -287,7 +288,7 @@ const NumberGenerator: React.FC = () => {
                 border: multiSetMode ? 'none' : '1px solid var(--border)',
               }}
             >
-              🎯 5세트 한번에
+              <Target className="w-4 h-4 inline-block mr-1" /> 5세트 한번에
             </button>
           </div>
         ) : (
@@ -300,7 +301,7 @@ const NumberGenerator: React.FC = () => {
               border: '1px dashed var(--border)',
             }}
           >
-            🔒 회원가입하면 5세트 한번에 생성 가능
+            <Lock className="w-3.5 h-3.5 inline-block mr-1" /> 회원가입하면 5세트 한번에 생성 가능
           </button>
         )}
 
@@ -349,10 +350,10 @@ const NumberGenerator: React.FC = () => {
                       >
                         <p className="font-medium text-green-600">
                           {aiStatus === 'ready'
-                            ? '✨ AI 통계 분석이 완료되었습니다!'
-                            : '✨ AI 패턴 분석이 완료되었습니다!'
+                            ? <><Sparkles className="w-4 h-4 inline-block mr-1" /> AI 통계 분석이 완료되었습니다!</>
+                            : <><Sparkles className="w-4 h-4 inline-block mr-1" /> AI 패턴 분석이 완료되었습니다!</>
                           }
-                          {savedToServer && ' (서버에 자동 저장됨 ☁️)'}
+                          {savedToServer && <> (서버에 자동 저장됨 <Cloud className="w-4 h-4 inline-block" />)</>}
                         </p>
                       </motion.div>
                     )}
@@ -368,7 +369,7 @@ const NumberGenerator: React.FC = () => {
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm font-bold" style={{ color: 'var(--text)' }}>
                           {generatedSets.length > 1 ? `세트 ${idx + 1}` : (
-                            aiStatus === 'ready' ? '📊 AI 통계 분석 결과' : '🧠 AI 패턴 분석 결과'
+                            aiStatus === 'ready' ? <><BarChart3 className="w-4 h-4 inline-block mr-1" /> AI 통계 분석 결과</> : <><Brain className="w-4 h-4 inline-block mr-1" /> AI 패턴 분석 결과</>
                           )}
                         </h3>
                         <button
@@ -376,7 +377,7 @@ const NumberGenerator: React.FC = () => {
                           className="text-xs px-2 py-1 rounded transition-colors hover:opacity-70"
                           style={{ color: 'var(--text-secondary)' }}
                         >
-                          📋 복사
+                          <Copy className="w-3.5 h-3.5 inline-block mr-0.5" /> 복사
                         </button>
                       </div>
                       <LottoNumbers
@@ -396,7 +397,7 @@ const NumberGenerator: React.FC = () => {
                       onClick={handleSaveNumbers}
                       className="min-w-[100px]"
                     >
-                      💾 {auth?.user ? '서버에 저장됨' : '저장'}
+                      <Save className="w-4 h-4 inline-block mr-1" /> {auth?.user ? '서버에 저장됨' : '저장'}
                     </Button>
                   </div>
                 </div>
@@ -405,7 +406,7 @@ const NumberGenerator: React.FC = () => {
                   {/* 빈 번호 슬롯 */}
                   <div className="rounded-xl p-6" style={{ background: 'var(--surface)' }}>
                     <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>
-                      🎯 AI가 선택할 번호
+                      <Target className="w-5 h-5 inline-block mr-1" /> AI가 선택할 번호
                     </h3>
                     <div className="flex justify-center gap-2 flex-wrap">
                       {[...Array(6)].map((_, i) => (
@@ -422,14 +423,14 @@ const NumberGenerator: React.FC = () => {
 
                   <div className="space-y-3">
                     <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                      💡 Tip: {aiStatus === 'ready'
+                      <Lightbulb className="w-3.5 h-3.5 inline-block mr-1" /> Tip: {aiStatus === 'ready'
                         ? `${totalRounds.toLocaleString()}회차 실제 데이터를 기반으로 AI가 분석합니다`
                         : '고급 수학적 패턴을 통해 번호를 추천합니다'
                       }
                     </p>
                     {statsError && (
                       <p className="text-xs text-orange-500">
-                        ⚠️ 통계 데이터 로딩 실패: {statsError}
+                        <AlertTriangle className="w-3.5 h-3.5 inline-block mr-1" /> 통계 데이터 로딩 실패: {statsError}
                       </p>
                     )}
                   </div>
@@ -443,7 +444,7 @@ const NumberGenerator: React.FC = () => {
                 className="w-full md:w-auto min-w-[200px] text-lg py-4"
                 disabled={isGenerating}
               >
-                🎯 AI 번호 {isMember && multiSetMode ? '5세트 ' : ''}생성하기
+                <Target className="w-5 h-5 inline-block mr-1" /> AI 번호 {isMember && multiSetMode ? '5세트 ' : ''}생성하기
               </Button>
             </motion.div>
           )}
@@ -458,7 +459,7 @@ const NumberGenerator: React.FC = () => {
           transition={{ delay: 0.5 }}
         >
           <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-            ⚡ 지금 <span className="font-bold text-primary">{virtualUsers}명</span>이 AI 분석번호를 확인했습니다!
+            <Zap className="w-3.5 h-3.5 inline-block mr-1" /> 지금 <span className="font-bold text-primary">{virtualUsers}명</span>이 AI 분석번호를 확인했습니다!
           </p>
         </motion.div>
       </div>

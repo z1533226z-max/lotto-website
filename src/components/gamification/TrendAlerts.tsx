@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Flame, Snowflake, Zap, Clock, BarChart3, Scale, Bell, TrendingUp, TrendingDown, ArrowUp, ArrowDown, RefreshCw } from 'lucide-react';
 import type { NumberStatistics } from '@/types/lotto';
 
 interface TrendAlert {
@@ -11,7 +12,7 @@ interface TrendAlert {
   description: string;
   numbers: number[];
   severity: 'low' | 'medium' | 'high';
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   bgColor: string;
   borderColor: string;
@@ -44,11 +45,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'hot-numbers',
         type: 'hot',
-        title: '🔥 핫넘버 감지',
+        title: '핫넘버 감지',
         description: `${hotNumbers.map(n => n.number).join(', ')}번이 평균보다 ${Math.round(((hotNumbers[0].frequency / avgFrequency) - 1) * 100)}% 더 자주 출현`,
         numbers: hotNumbers.map(n => n.number),
         severity: hotNumbers[0].frequency > avgFrequency * 1.5 ? 'high' : 'medium',
-        icon: '🔥',
+        icon: <Flame className="w-5 h-5" />,
         color: 'text-red-600',
         bgColor: 'bg-red-50 dark:bg-red-900/20',
         borderColor: 'border-red-200 dark:border-red-800'
@@ -61,11 +62,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'cold-numbers',
         type: 'cold',
-        title: '❄️ 콜드넘버 주의',
+        title: '콜드넘버 주의',
         description: `${coldNumbers.map(n => n.number).join(', ')}번이 평균보다 ${Math.round((1 - (coldNumbers[0].frequency / avgFrequency)) * 100)}% 적게 출현`,
         numbers: coldNumbers.map(n => n.number),
         severity: coldNumbers[0].frequency < avgFrequency * 0.6 ? 'high' : 'medium',
-        icon: '❄️',
+        icon: <Snowflake className="w-5 h-5" />,
         color: 'text-blue-600',
         bgColor: 'bg-blue-50 dark:bg-blue-900/20',
         borderColor: 'border-blue-200 dark:border-blue-800'
@@ -82,11 +83,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'recent-streak',
         type: 'streak',
-        title: '⚡ 연속 출현 감지',
+        title: '연속 출현 감지',
         description: `${recentlyAppeared.map(n => n.number).join(', ')}번이 최근 ${recentlyAppeared[0].consecutiveCount}회 연속 출현`,
         numbers: recentlyAppeared.map(n => n.number),
         severity: recentlyAppeared[0].consecutiveCount >= 3 ? 'high' : 'medium',
-        icon: '⚡',
+        icon: <Zap className="w-5 h-5" />,
         color: 'text-yellow-600',
         bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
         borderColor: 'border-yellow-200 dark:border-yellow-800'
@@ -102,11 +103,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'long-absent',
         type: 'rising',
-        title: '⏰ 장기 미출현',
+        title: '장기 미출현',
         description: `${topAbsent.map(n => n.number).join(', ')}번이 ${maxRound - topAbsent[0].lastAppeared}회차 동안 미출현`,
         numbers: topAbsent.map(n => n.number),
         severity: (maxRound - topAbsent[0].lastAppeared) > 20 ? 'high' : 'medium',
-        icon: '⏰',
+        icon: <Clock className="w-5 h-5" />,
         color: 'text-purple-600',
         bgColor: 'bg-purple-50 dark:bg-purple-900/20',
         borderColor: 'border-purple-200 dark:border-purple-800'
@@ -136,11 +137,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'section-dominance',
         type: 'pattern',
-        title: '📊 구간 편중 패턴',
+        title: '구간 편중 패턴',
         description: `${dominantSection.range} 구간이 다른 구간보다 ${Math.round(((dominantSection.avgFreq / avgFrequency) - 1) * 100)}% 더 활발`,
         numbers: sections[dominantSection.range as keyof typeof sections].map(n => n.number),
         severity: dominantSection.avgFreq > avgFrequency * 1.5 ? 'high' : 'medium',
-        icon: '📊',
+        icon: <BarChart3 className="w-5 h-5" />,
         color: 'text-green-600',
         bgColor: 'bg-green-50 dark:bg-green-900/20',
         borderColor: 'border-green-200 dark:border-green-800'
@@ -162,11 +163,11 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
       alerts.push({
         id: 'odd-even-imbalance',
         type: 'pattern',
-        title: '⚖️ 홀짝 불균형',
+        title: '홀짝 불균형',
         description: `${dominant} 번호가 ${dominantPercent}% 더 자주 출현하는 패턴 감지`,
         numbers: dominant === '홀수' ? oddNumbers.map(n => n.number) : evenNumbers.map(n => n.number),
         severity: imbalanceRatio > 0.3 ? 'high' : 'medium',
-        icon: '⚖️',
+        icon: <Scale className="w-5 h-5" />,
         color: 'text-indigo-600',
         bgColor: 'bg-indigo-50 dark:bg-indigo-900/20',
         borderColor: 'border-indigo-200 dark:border-indigo-800'
@@ -195,7 +196,7 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
   return (
     <div className={`space-y-3 ${className}`}>
       <h3 className="text-lg font-bold text-[var(--text)] flex items-center mb-4">
-        <span className="mr-2">🚨</span>
+        <Bell className="w-5 h-5 mr-2 text-red-500" />
         실시간 트렌드 알림
       </h3>
       
@@ -212,7 +213,7 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className="text-lg">{alert.icon}</span>
+                  <span className="flex-shrink-0">{alert.icon}</span>
                   <h4 className="font-bold text-sm">{alert.title}</h4>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     alert.severity === 'high' 
@@ -248,12 +249,12 @@ const TrendAlerts: React.FC<TrendAlertsProps> = ({ statistics, className }) => {
               
               {/* 트렌드 화살표 */}
               <div className="ml-4">
-                {alert.type === 'hot' && <span className="text-2xl">📈</span>}
-                {alert.type === 'cold' && <span className="text-2xl">📉</span>}
-                {alert.type === 'rising' && <span className="text-2xl">⬆️</span>}
-                {alert.type === 'falling' && <span className="text-2xl">⬇️</span>}
-                {alert.type === 'pattern' && <span className="text-2xl">🔄</span>}
-                {alert.type === 'streak' && <span className="text-2xl">⚡</span>}
+                {alert.type === 'hot' && <TrendingUp className="w-6 h-6" />}
+                {alert.type === 'cold' && <TrendingDown className="w-6 h-6" />}
+                {alert.type === 'rising' && <ArrowUp className="w-6 h-6" />}
+                {alert.type === 'falling' && <ArrowDown className="w-6 h-6" />}
+                {alert.type === 'pattern' && <RefreshCw className="w-6 h-6" />}
+                {alert.type === 'streak' && <Zap className="w-6 h-6" />}
               </div>
             </div>
           </motion.div>

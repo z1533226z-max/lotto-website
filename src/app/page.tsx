@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
+import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
 import type { Metadata } from 'next';
 
 const LatestResult = dynamic(
@@ -73,12 +74,12 @@ export const metadata: Metadata = {
 };
 
 const quickLinks = [
-  { href: '/lotto/list', icon: '📋', label: '당첨번호 전체 조회', desc: '1회부터 최신 회차까지' },
-  { href: '/lotto/recent', icon: '🕐', label: '최근 당첨번호', desc: '최근 회차 결과 확인' },
-  { href: '/lotto/statistics', icon: '📊', label: '번호 통계 분석', desc: '빈도, 패턴, 트렌드' },
-  { href: '/lotto/calculator', icon: '🧮', label: '세금 계산기', desc: '실수령액 즉시 계산' },
-  { href: '/lotto/rankings', icon: '🏆', label: '당첨금 순위', desc: '역대 최고 당첨금' },
-  { href: '/lotto/ai-hits', icon: '🎯', label: 'AI 적중 기록', desc: 'AI 예측 성과 확인' },
+  { href: '/lotto/list', icon: <ClipboardList className="w-5 h-5" />, label: '당첨번호 전체 조회', desc: '1회부터 최신 회차까지' },
+  { href: '/lotto/recent', icon: <Clock className="w-5 h-5" />, label: '최근 당첨번호', desc: '최근 회차 결과 확인' },
+  { href: '/lotto/statistics', icon: <BarChart3 className="w-5 h-5" />, label: '번호 통계 분석', desc: '빈도, 패턴, 트렌드' },
+  { href: '/lotto/calculator', icon: <Calculator className="w-5 h-5" />, label: '세금 계산기', desc: '실수령액 즉시 계산' },
+  { href: '/lotto/rankings', icon: <Trophy className="w-5 h-5" />, label: '당첨금 순위', desc: '역대 최고 당첨금' },
+  { href: '/lotto/ai-hits', icon: <Target className="w-5 h-5" />, label: 'AI 적중 기록', desc: 'AI 예측 성과 확인' },
 ];
 
 export default function HomePage() {
@@ -187,7 +188,7 @@ export default function HomePage() {
                   {/* Placeholder balls */}
                   <div className="flex justify-center gap-2.5">
                     {[3, 12, 24, 33, 39, 42].map((n, i) => {
-                      const colors = ['#FFC107', '#2196F3', '#FF5722', '#9E9E9E', '#9E9E9E', '#4CAF50'];
+                      const colors = ['#FFC107', '#2196F3', '#FF5722', '#757575', '#757575', '#4CAF50'];
                       return (
                         <div
                           key={i}
@@ -219,12 +220,12 @@ export default function HomePage() {
                     style={{ borderTop: '1px solid var(--border)' }}
                   >
                     {[
-                      { icon: '🎯', label: 'AI 적중', value: '활성' },
-                      { icon: '📊', label: '통계', value: '실시간' },
-                      { icon: '💾', label: '저장', value: '자동' },
+                      { icon: <Target className="w-5 h-5 text-primary" />, label: 'AI 적중', value: '활성' },
+                      { icon: <BarChart3 className="w-5 h-5 text-primary" />, label: '통계', value: '실시간' },
+                      { icon: <Save className="w-5 h-5 text-primary" />, label: '저장', value: '자동' },
                     ].map((item) => (
                       <div key={item.label} className="text-center">
-                        <span className="text-lg">{item.icon}</span>
+                        <span className="flex justify-center">{item.icon}</span>
                         <p className="text-[10px] font-medium mt-1" style={{ color: 'var(--text-secondary)' }}>{item.label}</p>
                       </div>
                     ))}
@@ -256,7 +257,7 @@ export default function HomePage() {
                     border: '1px solid var(--border)',
                   }}
                 >
-                  <span className="text-base">{link.icon}</span>
+                  <span className="flex-shrink-0">{link.icon}</span>
                   {link.label}
                 </Link>
               ))}
@@ -314,7 +315,7 @@ export default function HomePage() {
                           className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group"
                           style={{ color: 'var(--text-secondary)' }}
                         >
-                          <span className="text-base flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                          <span className="flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                             {link.icon}
                           </span>
                           <div className="min-w-0 flex-1">

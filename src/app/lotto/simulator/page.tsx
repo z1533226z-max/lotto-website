@@ -13,6 +13,7 @@ import { useUsageLimit } from '@/hooks/useUsageLimit';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
 import MemberGate from '@/components/auth/MemberGate';
+import { Dices, Trash2, Rocket, Coins, Gem, BarChart3, Trophy, Frown, RefreshCw, Target } from 'lucide-react';
 
 // ============================================================
 // Types
@@ -345,7 +346,7 @@ export default function SimulatorPage() {
   // JSX
   // ----------------------------------------------------------
   return (
-    <MemberGate featureName="당첨 시뮬레이터" featureIcon="🎰" featureDesc="내 번호로 역대 당첨을 시뮬레이션해요">
+    <MemberGate featureName="당첨 시뮬레이터" featureIcon={<Dices className="w-10 h-10 mx-auto" />} featureDesc="내 번호로 역대 당첨을 시뮬레이션해요">
       <Breadcrumb items={[
         { label: '홈', href: '/' },
         { label: '당첨 시뮬레이터' },
@@ -361,7 +362,7 @@ export default function SimulatorPage() {
               boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
-            <span className="text-3xl">🎰</span>
+            <Dices className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
             로또 당첨 시뮬레이터
@@ -432,7 +433,7 @@ export default function SimulatorPage() {
                 size="md"
                 onClick={handleRandom}
                 className="flex-1"
-                icon={<span>🎲</span>}
+                icon={<Dices className="w-4 h-4" />}
               >
                 랜덤 생성
               </Button>
@@ -441,7 +442,7 @@ export default function SimulatorPage() {
                 size="md"
                 onClick={handleClear}
                 className="flex-1"
-                icon={<span>🗑️</span>}
+                icon={<Trash2 className="w-4 h-4" />}
               >
                 초기화
               </Button>
@@ -555,7 +556,7 @@ export default function SimulatorPage() {
             disabled={!isValid || dataLoading}
             loading={loading}
             onClick={runSimulation}
-            icon={!loading ? <span>🚀</span> : undefined}
+            icon={!loading ? <Rocket className="w-4 h-4" /> : undefined}
             className="text-base"
           >
             {loading ? '시뮬레이션 분석 중...' : '시뮬레이션 시작'}
@@ -620,7 +621,7 @@ export default function SimulatorPage() {
               {/* Total investment */}
               <Card variant="glass" padding="sm">
                 <div className="text-center space-y-1 py-1">
-                  <p className="text-2xl">💰</p>
+                  <p className="text-2xl"><Coins className="w-6 h-6 mx-auto" /></p>
                   <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     총 투자금
                   </p>
@@ -636,7 +637,7 @@ export default function SimulatorPage() {
               {/* Total prize */}
               <Card variant="glass" padding="sm">
                 <div className="text-center space-y-1 py-1">
-                  <p className="text-2xl">💎</p>
+                  <p className="text-2xl"><Gem className="w-6 h-6 mx-auto" /></p>
                   <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     예상 당첨금
                   </p>
@@ -651,7 +652,7 @@ export default function SimulatorPage() {
               {/* Return rate */}
               <Card variant="glass" padding="sm">
                 <div className="text-center space-y-1 py-1">
-                  <p className="text-2xl">📊</p>
+                  <p className="text-2xl"><BarChart3 className="w-6 h-6 mx-auto" /></p>
                   <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     수익률
                   </p>
@@ -666,7 +667,7 @@ export default function SimulatorPage() {
               {/* Total wins */}
               <Card variant="glass" padding="sm">
                 <div className="text-center space-y-1 py-1">
-                  <p className="text-2xl">🏆</p>
+                  <p className="text-2xl"><Trophy className="w-6 h-6 mx-auto" /></p>
                   <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     총 당첨 횟수
                   </p>
@@ -841,7 +842,7 @@ export default function SimulatorPage() {
             {result.matches.length === 0 && (
               <Card variant="glass" className="text-center py-10">
                 <div className="space-y-3">
-                  <span className="text-5xl block">😢</span>
+                  <span className="block"><Frown className="w-12 h-12 mx-auto" /></span>
                   <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>
                     {result.totalRounds.toLocaleString()}회차 동안 3개 이상 일치한 적이 없습니다
                   </p>
@@ -872,7 +873,7 @@ export default function SimulatorPage() {
                   setShowAllResults(false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                icon={<span>🔄</span>}
+                icon={<RefreshCw className="w-4 h-4" />}
               >
                 다른 번호로 다시 시도
               </Button>
@@ -884,7 +885,7 @@ export default function SimulatorPage() {
         {!result && !loading && (
           <Card variant="glass" className="text-center py-12">
             <div className="space-y-3">
-              <span className="text-5xl block">🎯</span>
+              <span className="block"><Target className="w-12 h-12 mx-auto" /></span>
               <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>
                 번호 6개를 선택하고 시뮬레이션을 시작하세요
               </p>

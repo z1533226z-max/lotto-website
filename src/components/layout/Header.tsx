@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
+import { Dices, Gamepad2, Moon, Clover, Calculator, BookOpen, User, ShieldCheck, ClipboardList, LogOut, Zap } from 'lucide-react';
 
 const mainNavLinks = [
   { name: '홈', path: '/' },
@@ -19,11 +20,11 @@ const mainNavLinks = [
 ];
 
 const toolLinks = [
-  { name: '🎰 시뮬레이터', path: '/lotto/simulator', desc: '매주 이 번호를 샀다면?' },
-  { name: '🌙 꿈번호', path: '/lotto/dream', desc: '꿈해몽 기반 번호 생성' },
-  { name: '🍀 행운번호', path: '/lotto/fortune', desc: '생년월일 행운번호' },
-  { name: '🧮 계산기', path: '/lotto/calculator', desc: '당첨금 세금 계산' },
-  { name: '📖 가이드', path: '/lotto/guide', desc: '로또 완전 가이드' },
+  { name: '시뮬레이터', path: '/lotto/simulator', desc: '매주 이 번호를 샀다면?', Icon: Gamepad2 },
+  { name: '꿈번호', path: '/lotto/dream', desc: '꿈해몽 기반 번호 생성', Icon: Moon },
+  { name: '행운번호', path: '/lotto/fortune', desc: '생년월일 행운번호', Icon: Clover },
+  { name: '계산기', path: '/lotto/calculator', desc: '당첨금 세금 계산', Icon: Calculator },
+  { name: '가이드', path: '/lotto/guide', desc: '로또 완전 가이드', Icon: BookOpen },
 ];
 
 // 모바일 메뉴용 전체 목록
@@ -118,9 +119,7 @@ const Header: React.FC = () => {
               href="/"
               className="flex items-center gap-2 group"
             >
-              <span className="text-2xl transition-transform duration-300 group-hover:scale-110">
-                🎲
-              </span>
+              <Dices className="w-7 h-7 text-primary transition-transform duration-300 group-hover:scale-110" />
               <div>
                 <span className="text-xl font-bold gradient-text">
                   로또킹
@@ -202,6 +201,7 @@ const Header: React.FC = () => {
                         }}
                         onClick={() => setToolsOpen(false)}
                       >
+                        <link.Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <div>
                           <div className="text-sm font-medium">{link.name}</div>
                           <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
@@ -234,7 +234,7 @@ const Header: React.FC = () => {
                         color: 'var(--text)',
                       }}
                     >
-                      <span className="text-base">{'👤'}</span>
+                      <User className="w-4 h-4" />
                       <span className="hidden sm:inline max-w-[80px] truncate">{auth.user.nickname}</span>
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -251,7 +251,7 @@ const Header: React.FC = () => {
                             {auth.user.nickname}
                           </p>
                           <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                            {auth.user.isAdmin ? '⚡ 관리자' : '회원'}
+                            {auth.user.isAdmin ? <span className="inline-flex items-center gap-1"><Zap className="w-3 h-3" /> 관리자</span> : '회원'}
                           </p>
                         </div>
                         <div className="p-1">
@@ -266,7 +266,7 @@ const Header: React.FC = () => {
                               )}
                               style={{ color: '#EF4444' }}
                             >
-                              <span>{'🛡️'}</span>
+                              <ShieldCheck className="w-4 h-4" />
                               관리자 페이지
                             </Link>
                           )}
@@ -280,7 +280,7 @@ const Header: React.FC = () => {
                             )}
                             style={{ color: 'var(--text)' }}
                           >
-                            <span>{'📋'}</span>
+                            <ClipboardList className="w-4 h-4" />
                             마이페이지
                           </Link>
                           <button
@@ -295,7 +295,7 @@ const Header: React.FC = () => {
                             )}
                             style={{ color: 'var(--text)' }}
                           >
-                            <span>{'🚪'}</span>
+                            <LogOut className="w-4 h-4" />
                             로그아웃
                           </button>
                         </div>
@@ -462,7 +462,7 @@ const Header: React.FC = () => {
                       auth.openAuthModal();
                     }}
                   >
-                    {'👤'} 로그인 / 회원가입
+                    <User className="w-4 h-4" /> 로그인 / 회원가입
                   </button>
                 </>
               )}
@@ -478,7 +478,7 @@ const Header: React.FC = () => {
                     style={{ background: 'var(--surface-hover)' }}
                   >
                     <div className="flex items-center gap-2">
-                      <span>{'👤'}</span>
+                      <User className="w-4 h-4" />
                       <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>
                         {auth.user.nickname}
                       </span>
@@ -487,7 +487,7 @@ const Header: React.FC = () => {
                       <Link
                         href="/mypage"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="text-xs font-medium px-2 py-1 rounded-lg"
+                        className="text-sm font-medium px-3 py-2 rounded-lg"
                         style={{ color: '#D36135' }}
                       >
                         마이페이지
@@ -497,7 +497,7 @@ const Header: React.FC = () => {
                           auth.logout();
                           setMobileMenuOpen(false);
                         }}
-                        className="text-xs font-medium px-2 py-1 rounded-lg"
+                        className="text-sm font-medium px-3 py-2 rounded-lg"
                         style={{ color: 'var(--text-secondary)' }}
                       >
                         로그아웃

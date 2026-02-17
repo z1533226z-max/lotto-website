@@ -22,9 +22,12 @@ export class NumberGenerator {
     const today = new Date();
     const seed = today.getDate() + today.getMonth() + today.getFullYear();
     
+    // 최신 회차 추정 (통계의 lastAppeared 최대값으로)
+    const latestRound = Math.max(...statistics.map(s => s.lastAppeared));
+
     const weightedNumbers = statistics.map(stat => ({
       number: stat.number,
-      weight: this.calculateWeight(stat, seed)
+      weight: this.calculateWeight(stat, seed, latestRound)
     }));
     
     return this.selectRandomWeighted(weightedNumbers, LOTTO_CONFIG.NUMBERS_COUNT);
@@ -33,16 +36,17 @@ export class NumberGenerator {
   /**
    * 가중치 계산
    */
-  private static calculateWeight(stat: NumberStatistics, seed: number): number {
+  private static calculateWeight(stat: NumberStatistics, seed: number, latestRound?: number): number {
     // 기본 가중치 (모든 번호 동일한 기준점)
     const baseWeight = 1.0;
-    
-    // 출현 빈도 가중치 (30%)
-    const averageFrequency = 25; // 평균 출현 빈도 가정
+
+    // 출현 빈도 가중치 (30%) - 동적 평균 계산
+    const averageFrequency = Math.max(1, (latestRound || 1200) * 7 / 45);
     const frequencyWeight = (stat.frequency / averageFrequency) * 0.3;
-    
+
     // 최근성 가중치 (20%) - 너무 오래 안나온 번호 우대
-    const recentnessWeight = Math.max(0, (50 - stat.lastAppeared) / 50) * 0.2;
+    const roundsSinceLastAppear = (latestRound || 1200) - stat.lastAppeared;
+    const recentnessWeight = Math.max(0, (50 - roundsSinceLastAppear) / 50) * 0.2;
     
     // 핫/콜드 점수 가중치 (30%)
     const hotColdWeight = (stat.hotColdScore + 100) / 200 * 0.3; // -100~100을 0~1로 정규화

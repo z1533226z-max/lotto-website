@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { RefreshCw, TrendingUp, Map, BarChart3, ClipboardList, Flame, Snowflake, Clock, CircleDot, AlertTriangle } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Tabs from '@/components/ui/Tabs';
 import StatisticsCards from './StatisticsCards';
@@ -18,10 +19,10 @@ interface AnalyticsDashboardProps {
 }
 
 const TABS = [
-  { id: 'weekly', label: '이번 주 변화', icon: <span>🔄</span> },
-  { id: 'trend', label: '트렌드 분석', icon: <span>📈</span> },
-  { id: 'heatmap', label: '히트맵', icon: <span>🗺️</span> },
-  { id: 'overview', label: '전체 통계', icon: <span>📊</span> },
+  { id: 'weekly', label: '이번 주 변화', icon: <RefreshCw className="w-4 h-4" /> },
+  { id: 'trend', label: '트렌드 분석', icon: <TrendingUp className="w-4 h-4" /> },
+  { id: 'heatmap', label: '히트맵', icon: <Map className="w-4 h-4" /> },
+  { id: 'overview', label: '전체 통계', icon: <BarChart3 className="w-4 h-4" /> },
 ];
 
 // 데이터 기반 요약 카드
@@ -63,7 +64,7 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
         }}
       >
         <h3 className="text-base font-bold mb-4 flex items-center" style={{ color: 'var(--text)' }}>
-          <span className="mr-2">📋</span>
+          <ClipboardList className="w-5 h-5 inline-block mr-2" />
           데이터 요약
         </h3>
 
@@ -111,7 +112,7 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
         >
           <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
-            🔥 핫넘버 TOP 5
+            <Flame className="w-4 h-4 inline-block mr-1" /> 핫넘버 TOP 5
           </h4>
           <div className="space-y-2">
             {hotTop5.map((s, i) => (
@@ -144,7 +145,7 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
         >
           <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
-            ❄️ 콜드넘버 TOP 5
+            <Snowflake className="w-4 h-4 inline-block mr-1" /> 콜드넘버 TOP 5
           </h4>
           <div className="space-y-2">
             {coldTop5.map((s, i) => (
@@ -177,7 +178,7 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
         >
           <h4 className="text-sm font-bold mb-3 flex items-center" style={{ color: 'var(--text)' }}>
-            ⏰ 장기 미출현
+            <Clock className="w-4 h-4 inline-block mr-1" /> 장기 미출현
           </h4>
           {longAbsent.length > 0 ? (
             <div className="space-y-2">
@@ -223,7 +224,7 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
         >
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-bold flex items-center" style={{ color: 'var(--text)' }}>
-              🎱 {latestRound.round}회 당첨번호
+              <CircleDot className="w-4 h-4 inline-block mr-1" /> {latestRound.round}회 당첨번호
               <span className="ml-2 text-xs font-normal" style={{ color: 'var(--text-tertiary)' }}>
                 {latestRound.drawDate}
               </span>
@@ -415,7 +416,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
           className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4 mx-auto max-w-2xl"
         >
           <div className="flex items-center">
-            <span className="text-orange-500 mr-2">⚠</span>
+            <AlertTriangle className="w-5 h-5 text-orange-500 mr-2" />
             <div>
               <p className="text-orange-800 dark:text-orange-300 font-medium text-sm">
                 데이터 로딩 지연

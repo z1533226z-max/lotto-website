@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { Trophy, BarChart3, Target, Calendar } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import { safeLocalStorage } from '@/lib/utils';
 
@@ -45,21 +46,21 @@ const UserEngagementPanel: React.FC = () => {
     const challenges = [
       {
         id: 'weekly_generations',
-        title: '🎯 주간 번호 생성',
+        title: '주간 번호 생성',
         description: '이번 주에 AI 번호를 10번 생성하세요',
         target: 10,
         reward: 100
       },
       {
         id: 'pattern_explorer',
-        title: '📊 패턴 탐험가',
+        title: '패턴 탐험가',
         description: '다양한 분석 차트를 5번 확인하세요',
         target: 5,
         reward: 75
       },
       {
         id: 'daily_visitor',
-        title: '🗓️ 매일 방문',
+        title: '매일 방문',
         description: '연속 3일 방문하여 AI 분석을 확인하세요',
         target: 3,
         reward: 150
@@ -231,7 +232,7 @@ const UserEngagementPanel: React.FC = () => {
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
-              <span className="mr-2">🏆</span>
+              <Trophy className="w-5 h-5 mr-2 text-orange-500" />
               주간 도전과제
             </h3>
             {weeklyChallenge.completed && (
@@ -274,7 +275,7 @@ const UserEngagementPanel: React.FC = () => {
       <Card>
         <div className="p-6">
           <h3 className="text-lg font-bold text-[var(--text)] mb-4 flex items-center">
-            <span className="mr-2">📊</span>
+            <BarChart3 className="w-5 h-5 mr-2" />
             활동 통계
           </h3>
           

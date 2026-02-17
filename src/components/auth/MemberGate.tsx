@@ -1,19 +1,20 @@
 'use client';
 
 import React from 'react';
+import { Lock } from 'lucide-react';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 
 interface MemberGateProps {
   children: React.ReactNode;
   featureName: string;
-  featureIcon?: string;
+  featureIcon?: React.ReactNode;
   featureDesc?: string;
 }
 
 export default function MemberGate({
   children,
   featureName,
-  featureIcon = '🔒',
+  featureIcon = <Lock className="w-10 h-10 mx-auto" />,
   featureDesc,
 }: MemberGateProps) {
   const auth = useAuthSafe();
@@ -74,7 +75,7 @@ export default function MemberGate({
             textAlign: 'center',
           }}
         >
-          <div style={{ fontSize: 48, marginBottom: 12, lineHeight: 1 }}>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
             {featureIcon}
           </div>
 

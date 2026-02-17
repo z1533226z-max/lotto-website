@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Target } from 'lucide-react';
 import Link from 'next/link';
 
 interface BannerStats {
@@ -68,7 +69,7 @@ const AIHitsBanner: React.FC = () => {
               className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: 'rgba(211, 97, 53, 0.1)' }}
             >
-              <span className="text-lg">🎯</span>
+              <Target className="w-5 h-5 text-[#D36135]" />
             </div>
 
             <div className="min-w-0">

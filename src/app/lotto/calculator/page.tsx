@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
+import { Calculator, Trophy, Coins, Banknote, CreditCard, Target, DollarSign } from 'lucide-react';
 
 // 로또 세금 계산
 function calculateTax(amount: number) {
@@ -76,13 +77,13 @@ export default function LottoCalculatorPage() {
   const amount = parseInt(inputValue.replace(/[^0-9]/g, '')) || 0;
   const result = calculateTax(amount);
 
-  const presets = [
-    { label: '1등 평균 (20억)', value: 2_000_000_000, icon: '🏆' },
-    { label: '10억', value: 1_000_000_000, icon: '💰' },
-    { label: '5억', value: 500_000_000, icon: '💵' },
-    { label: '3억', value: 300_000_000, icon: '💴' },
-    { label: '1억', value: 100_000_000, icon: '💳' },
-    { label: '2등 평균', value: 50_000_000, icon: '🎯' },
+  const presets: { label: string; value: number; icon: React.ReactNode }[] = [
+    { label: '1등 평균 (20억)', value: 2_000_000_000, icon: <Trophy className="w-5 h-5 mx-auto" /> },
+    { label: '10억', value: 1_000_000_000, icon: <Coins className="w-5 h-5 mx-auto" /> },
+    { label: '5억', value: 500_000_000, icon: <Banknote className="w-5 h-5 mx-auto" /> },
+    { label: '3억', value: 300_000_000, icon: <Banknote className="w-5 h-5 mx-auto" /> },
+    { label: '1억', value: 100_000_000, icon: <CreditCard className="w-5 h-5 mx-auto" /> },
+    { label: '2등 평균', value: 50_000_000, icon: <Target className="w-5 h-5 mx-auto" /> },
   ];
 
   return (
@@ -102,7 +103,7 @@ export default function LottoCalculatorPage() {
               boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
-            <span className="text-3xl">🧮</span>
+            <Calculator className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
             로또 당첨금 세금 계산기
@@ -166,7 +167,7 @@ export default function LottoCalculatorPage() {
                       border: amount === preset.value ? 'none' : '1px solid var(--border)',
                     }}
                   >
-                    <span className="block text-base mb-0.5">{preset.icon}</span>
+                    <span className="block mb-0.5">{preset.icon}</span>
                     {preset.label}
                   </button>
                 ))}
@@ -289,7 +290,7 @@ export default function LottoCalculatorPage() {
         {amount === 0 && (
           <Card variant="glass" className="text-center py-12">
             <div className="space-y-3">
-              <span className="text-5xl block">💸</span>
+              <span className="block"><DollarSign className="w-12 h-12 mx-auto" /></span>
               <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>
                 당첨금액을 입력하면 세후 실수령액을 계산합니다
               </p>

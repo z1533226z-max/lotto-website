@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Card from '@/components/ui/Card';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
@@ -126,7 +127,7 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
     <Card variant="default" className={className}>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-lg">📊</span>
+          <BarChart3 className="w-5 h-5" />
           <h3 className="text-base font-bold" style={{ color: 'var(--text)' }}>
             번호 트리맵
           </h3>

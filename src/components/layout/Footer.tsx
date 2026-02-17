@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Dices } from 'lucide-react';
 
 const serviceLinks = [
   { name: 'AI 번호 추천', path: '/#generator' },
@@ -35,7 +36,7 @@ const Footer: React.FC = () => {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="inline-flex items-center gap-2 mb-3">
-                <span className="text-xl">🎲</span>
+                <Dices className="w-5 h-5 text-primary" />
                 <span className="text-lg font-bold gradient-text">로또킹</span>
               </Link>
               <p
@@ -56,12 +57,12 @@ const Footer: React.FC = () => {
               >
                 서비스
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {serviceLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       href={link.path}
-                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      className="text-xs py-1.5 inline-block transition-colors duration-200 hover:text-primary"
                       style={{ color: 'var(--text-tertiary)' }}
                     >
                       {link.name}
@@ -79,12 +80,12 @@ const Footer: React.FC = () => {
               >
                 도구
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {toolLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       href={link.path}
-                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      className="text-xs py-1.5 inline-block transition-colors duration-200 hover:text-primary"
                       style={{ color: 'var(--text-tertiary)' }}
                     >
                       {link.name}
@@ -102,12 +103,12 @@ const Footer: React.FC = () => {
               >
                 정보
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {infoLinks.map((link) => (
                   <li key={link.path}>
                     <Link
                       href={link.path}
-                      className="text-xs transition-colors duration-200 hover:text-primary"
+                      className="text-xs py-1.5 inline-block transition-colors duration-200 hover:text-primary"
                       style={{ color: 'var(--text-tertiary)' }}
                     >
                       {link.name}

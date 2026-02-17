@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Target, Settings } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import { safeLocalStorage } from '@/lib/utils';
 import type { NumberStatistics } from '@/types/lotto';
@@ -238,7 +239,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
-              <span className="mr-2">🎯</span>
+              <Target className="w-5 h-5 mr-2 text-green-500" />
               {personalizedStrategy.name}
             </h3>
             
@@ -303,7 +304,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[var(--text)] flex items-center">
-              <span className="mr-2">⚙️</span>
+              <Settings className="w-5 h-5 mr-2" />
               개인 설정
             </h3>
             <button

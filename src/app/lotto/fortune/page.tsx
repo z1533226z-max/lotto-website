@@ -13,6 +13,7 @@ import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
 import MemberGate from '@/components/auth/MemberGate';
 import { getNextDrawRound } from '@/lib/lottoUtils';
+import { Sparkles, Compass, Clock, Heart, Cake, Star, Eye, Clover } from 'lucide-react';
 
 // ============================================
 // Seeded random number generator (deterministic)
@@ -301,7 +302,7 @@ function BirthdayTab({ canUse, recordUsage, auth, onShowLimitModal }: { canUse: 
             fullWidth
             onClick={handleGenerate}
             disabled={!birthday}
-            icon={<span>&#x2728;</span>}
+            icon={<Sparkles className="w-4 h-4" />}
           >
             행운번호 생성
           </Button>
@@ -452,7 +453,7 @@ function TodayTab() {
           >
             행운의 방향
           </p>
-          <div className="text-xl mb-1">&#x1F9ED;</div>
+          <div className="text-xl mb-1"><Compass className="w-5 h-5 mx-auto" /></div>
           <p
             className="text-sm font-bold"
             style={{ color: 'var(--text)' }}
@@ -467,7 +468,7 @@ function TodayTab() {
           >
             행운의 시간
           </p>
-          <div className="text-xl mb-1">&#x23F0;</div>
+          <div className="text-xl mb-1"><Clock className="w-5 h-5 mx-auto" /></div>
           <p
             className="text-sm font-bold"
             style={{ color: 'var(--text)' }}
@@ -619,7 +620,7 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
                 color: 'white',
               }}
             >
-              &#x2764;
+              <Heart className="w-5 h-5" />
             </div>
           </div>
 
@@ -654,7 +655,7 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
             fullWidth
             onClick={handleGenerate}
             disabled={!myBirthday || !partnerBirthday}
-            icon={<span>&#x1F496;</span>}
+            icon={<Heart className="w-4 h-4" />}
           >
             궁합번호 생성
           </Button>
@@ -732,9 +733,9 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
 // Main Fortune Page
 // ============================================
 const TABS = [
-  { id: 'birthday', label: '생년월일 행운번호', icon: <span>&#x1F382;</span> },
-  { id: 'today', label: '오늘의 운세번호', icon: <span>&#x2B50;</span> },
-  { id: 'compatibility', label: '궁합번호', icon: <span>&#x1F495;</span> },
+  { id: 'birthday', label: '생년월일 행운번호', icon: <Cake className="w-4 h-4" /> },
+  { id: 'today', label: '오늘의 운세번호', icon: <Star className="w-4 h-4" /> },
+  { id: 'compatibility', label: '궁합번호', icon: <Heart className="w-4 h-4" /> },
 ];
 
 export default function FortunePage() {
@@ -744,7 +745,7 @@ export default function FortunePage() {
   const auth = useAuthSafe();
 
   return (
-    <MemberGate featureName="행운번호 생성기" featureIcon="🍀" featureDesc="생년월일로 나만의 행운 번호를 확인해요">
+    <MemberGate featureName="행운번호 생성기" featureIcon={<Clover className="w-5 h-5" />} featureDesc="생년월일로 나만의 행운 번호를 확인해요">
       <style jsx global>{`
         @keyframes fortuneBallPop {
           0% {
@@ -784,7 +785,7 @@ export default function FortunePage() {
               boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
             }}
           >
-            <span className="text-3xl">&#x1F52E;</span>
+            <Eye className="w-8 h-8 text-white" />
           </div>
           <h1
             className="text-2xl md:text-3xl font-bold mb-2"

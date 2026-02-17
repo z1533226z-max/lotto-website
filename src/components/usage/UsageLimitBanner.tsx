@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Ticket, AlertTriangle } from 'lucide-react';
 import { useUsageLimit, type LimitedFeature } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 
@@ -37,7 +38,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
           fontWeight: 500,
         }}
       >
-        <span style={{ fontSize: '14px' }}>🎫</span>
+        <Ticket style={{ width: '14px', height: '14px', flexShrink: 0 }} />
         <span>이번 주 남은 이용:</span>
         <span
           style={{
@@ -83,7 +84,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
               flexShrink: 0,
             }}
           >
-            ⚠️
+            <AlertTriangle style={{ width: '11px', height: '11px' }} />
           </span>
           <span style={{ fontWeight: 500 }}>
             이번 주 무료 이용을 모두 사용했어요
@@ -129,7 +130,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
         fontWeight: 500,
       }}
     >
-      <span style={{ fontSize: '14px' }}>🎟️</span>
+      <Ticket style={{ width: '14px', height: '14px', flexShrink: 0 }} />
       <span>이번 주 남은 무료 이용:</span>
       <span
         style={{

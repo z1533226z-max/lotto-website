@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { MapPin, Medal, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { RegionStats as RegionStatsType } from '@/types/database';
 
@@ -24,8 +25,8 @@ const RegionStats: React.FC<RegionStatsProps> = ({ stats, className }) => {
 
   return (
     <div className={cn('space-y-3', className)}>
-      <h3 className="text-lg font-bold text-[var(--text)] mb-4">
-        🗺️ 지역별 당첨 통계
+      <h3 className="text-lg font-bold text-[var(--text)] mb-4 flex items-center gap-2">
+        <MapPin className="w-5 h-5" /> 지역별 당첨 통계
       </h3>
 
       {stats.map((stat) => {
@@ -38,11 +39,11 @@ const RegionStats: React.FC<RegionStatsProps> = ({ stats, className }) => {
                 {stat.region}
               </span>
               <div className="flex items-center gap-3 text-[var(--text-secondary)]">
-                <span className="text-xs">
-                  🥇 {stat.firstPrizeCount}
+                <span className="text-xs inline-flex items-center gap-0.5">
+                  <Medal className="w-3 h-3 text-yellow-500" /> {stat.firstPrizeCount}
                 </span>
-                <span className="text-xs">
-                  🥈 {stat.secondPrizeCount}
+                <span className="text-xs inline-flex items-center gap-0.5">
+                  <Award className="w-3 h-3 text-gray-400" /> {stat.secondPrizeCount}
                 </span>
                 <span className="font-semibold text-[var(--text)]">
                   {stat.count}건

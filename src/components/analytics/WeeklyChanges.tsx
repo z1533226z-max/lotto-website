@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { CircleDot, Flame, Snowflake, Zap, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -68,7 +69,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       {/* Latest Round Info */}
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">🎱</span>
+          <CircleDot className="w-5 h-5" />
           <h3 className="text-lg font-bold text-[var(--text)]">
             {weeklyChanges.latestRound}회차 당첨번호
           </h3>
@@ -91,7 +92,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       {windowComparison && (
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">🔥</span>
+            <Flame className="w-5 h-5" />
             <h3 className="text-lg font-bold text-[var(--text)]">
               이번 주 핫넘버 / 콜드넘버
             </h3>
@@ -143,7 +144,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       {/* Longest Absent Numbers */}
       <Card variant="glass">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">❄️</span>
+          <Snowflake className="w-5 h-5" />
           <h3 className="text-lg font-bold text-[var(--text)]">
             최장 미출현 번호
           </h3>
@@ -167,7 +168,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       {weeklyChanges.hottestStreak.length > 0 && (
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">⚡</span>
+            <Zap className="w-5 h-5" />
             <h3 className="text-lg font-bold text-[var(--text)]">
               연속 출현 번호
             </h3>
@@ -192,7 +193,7 @@ const WeeklyChanges: React.FC<WeeklyChangesProps> = ({ data, className }) => {
       {weeklyChanges.overduePredictions.length > 0 && (
         <Card variant="glass">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xl">📊</span>
+            <BarChart3 className="w-5 h-5" />
             <h3 className="text-lg font-bold text-[var(--text)]">
               출현 예상 번호
             </h3>
