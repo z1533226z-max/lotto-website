@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
+import SajuBanner from '@/components/promotion/SajuBanner';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -284,6 +285,11 @@ export default function HomePage() {
                 <NumberGenerator />
               </section>
 
+              {/* Saju Banner - Mobile only */}
+              <div className="lg:hidden">
+                <SajuBanner />
+              </div>
+
               {/* Statistics Dashboard */}
               <section id="statistics">
                 <AnalyticsDashboard />
@@ -293,6 +299,9 @@ export default function HomePage() {
             {/* Sidebar */}
             <aside className="hidden lg:block lg:col-span-4">
               <div className="sticky top-24 space-y-6">
+                {/* Saju Promotion Banner */}
+                <SajuBanner />
+
                 {/* Daily Challenge */}
                 <DailyChallengeWidget />
 
