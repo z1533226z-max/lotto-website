@@ -102,6 +102,45 @@ const jsonLd = {
   ]
 };
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '로또 6/45란 무엇인가요?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: '로또 6/45는 1부터 45까지의 숫자 중 6개를 선택하여 당첨번호와 일치하면 당첨금을 받는 복권입니다. 매주 토요일 저녁 8시 45분에 추첨합니다.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'AI 로또번호 추천은 어떻게 작동하나요?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: '과거 당첨번호의 출현 빈도, 연속 번호 패턴, 홀짝 비율, 고저 분포 등 다양한 통계 데이터를 AI가 분석하여 최적의 번호 조합을 추천합니다.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: '로또 당첨 확률은 얼마인가요?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: '로또 1등 당첨 확률은 약 1/8,145,060(약 814만분의 1)입니다. 2등은 약 1/1,357,510, 3등은 약 1/35,724입니다.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: '로또 당첨금은 어떻게 계산되나요?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: '총 판매액의 50%가 당첨금으로 배분됩니다. 1등(6개 일치)은 당첨금의 75%, 2등(5개+보너스)은 12.5%, 3등(5개 일치)은 12.5%를 나눠 갖습니다. 4등(4개)은 고정 5만원, 5등(3개)은 고정 5천원입니다.'
+      }
+    }
+  ]
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -117,6 +156,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
 
         {/* Preconnect for performance */}
