@@ -3,6 +3,14 @@ const nextConfig = {
   images: {
     formats: ['image/webp', 'image/avif'],
   },
+  // 오래된 URL을 새 경로로 리디렉션 (Google Search Console 404 해결)
+  async redirects() {
+    return [
+      { source: '/prediction', destination: '/lotto/numbers', permanent: true },
+      { source: '/results', destination: '/lotto/list', permanent: true },
+      { source: '/statistics', destination: '/lotto/statistics', permanent: true },
+    ];
+  },
   // AdSense 도메인 허용을 위한 CSP 설정
   async headers() {
     return [
