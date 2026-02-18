@@ -27,10 +27,10 @@ export default function SajuBanner() {
         style={{
           position: 'absolute',
           top: 0,
-          left: '20px',
-          right: '20px',
-          height: '2px',
-          background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
+          left: 0,
+          right: 0,
+          height: '3px',
+          background: 'linear-gradient(90deg, #D4AF37, #F0D78C, #D4AF37)',
           borderRadius: '0 0 4px 4px',
         }}
       />
@@ -67,7 +67,7 @@ export default function SajuBanner() {
               textTransform: 'uppercase',
             }}
           >
-            자매 서비스
+            사주명리
           </span>
         </div>
       </div>
@@ -123,12 +123,32 @@ export default function SajuBanner() {
         </svg>
       </div>
 
-      {/* Hover style injected via global CSS */}
+      {/* Glow + shine animation */}
       <style>{`
+        @keyframes saju-glow {
+          0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.15), 0 0 30px rgba(212, 175, 55, 0.08), 0 4px 20px rgba(0,0,0,0.3); }
+          50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.3), 0 0 50px rgba(212, 175, 55, 0.12), 0 4px 20px rgba(0,0,0,0.3); }
+        }
+        @keyframes saju-shine {
+          0% { transform: translateX(-100%) skewX(-15deg); }
+          100% { transform: translateX(300%) skewX(-15deg); }
+        }
+        .saju-banner-link {
+          animation: saju-glow 3s ease-in-out infinite;
+        }
         .saju-banner-link:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15), 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-          border-color: rgba(212, 175, 55, 0.4) !important;
+          transform: translateY(-3px);
+          box-shadow: 0 0 35px rgba(212, 175, 55, 0.35), 0 0 60px rgba(212, 175, 55, 0.15), 0 8px 32px rgba(0,0,0,0.4) !important;
+          border-color: rgba(212, 175, 55, 0.5) !important;
+        }
+        .saju-banner-link::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+          animation: saju-shine 4s ease-in-out infinite;
+          pointer-events: none;
+          border-radius: 16px;
         }
       `}</style>
     </a>
