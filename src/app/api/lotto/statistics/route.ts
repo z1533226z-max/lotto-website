@@ -126,6 +126,7 @@ export async function GET(request: NextRequest) {
           rawData: allLottoData,
           statistics: cachedStats.statistics,
           summary: cachedStats.summary,
+          maxRound: cachedStats.maxRound,
         },
         stats: {
           totalRequested: maxRound,
@@ -165,6 +166,7 @@ export async function GET(request: NextRequest) {
         rawData: lottoData,
         statistics,
         summary,
+        maxRound: lottoData[lottoData.length - 1].round,
       },
       stats: {
         totalRequested: maxRound,
