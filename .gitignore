@@ -53,3 +53,10 @@ temp/
 .next/
 .turbo/
 tsconfig.tsbuildinfo
+
+# Claude Code
+.claude/
+nul
+
+# Supabase
+supabase/.temp/
