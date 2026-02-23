@@ -55,7 +55,8 @@ export async function GET(request: NextRequest) {
       const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
       // 다중 세트 결과
-      const multiSetResults = calculateMultiSetMatches(multiSetPredictions, allLottoData);
+      const multiSetResults = calculateMultiSetMatches(multiSetPredictions, allLottoData)
+        .sort((a, b) => b.round - a.round);
       const multiSetStats = calculateMultiSetStats(multiSetResults);
       const nextMultiSetPrediction = multiSetPredictions.find(p => p.round > latestDataRound);
 
@@ -109,7 +110,8 @@ export async function GET(request: NextRequest) {
     const stats = calculateStats(results);
     const nextPrediction = allPredictions.find(p => p.round > latestDataRound);
 
-    const multiSetResults = calculateMultiSetMatches(allMultiSetPredictions, allLottoData);
+    const multiSetResults = calculateMultiSetMatches(allMultiSetPredictions, allLottoData)
+      .sort((a, b) => b.round - a.round);
     const multiSetStats = calculateMultiSetStats(multiSetResults);
     const nextMultiSetPrediction = allMultiSetPredictions.find(p => p.round > latestDataRound);
 

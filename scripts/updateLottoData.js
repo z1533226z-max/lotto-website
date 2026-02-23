@@ -124,7 +124,7 @@ async function updateAIPredictionHistory(newRounds) {
   });
 
   // 배열 시작 부분 찾기: "AI_PREDICTION_HISTORY: AIPrediction[] = [" 다음 줄
-  const arrayStartPattern = /AI_PREDICTION_HISTORY:\s*AIPrediction\[\]\s*=\s*\[\n/;
+  const arrayStartPattern = /AI_PREDICTION_HISTORY:\s*AIPrediction\[\]\s*=\s*\[\r?\n/;
   const arrayStartMatch = content.match(arrayStartPattern);
 
   if (!arrayStartMatch) {
