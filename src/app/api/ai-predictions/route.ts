@@ -136,13 +136,14 @@ export async function GET(request: NextRequest) {
     const stats = calculateStats(results);
 
     return NextResponse.json({
-      success: true,
+      success: false,
       predictions: AI_PREDICTION_HISTORY,
       matchResults: results,
       stats,
       multiSetResults: [],
       multiSetStats: { avgMatch: 0, maxMatch: 0, totalPredictions: 0, threeOrMore: 0, totalSets: 0 },
       source: 'static_fallback',
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 }

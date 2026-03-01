@@ -1,8 +1,22 @@
 import type { LottoResult } from '@/types/lotto';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 
-// gon-services 백엔드 URL
-const GON_SERVICES_URL = process.env.NEXT_PUBLIC_GON_SERVICES_URL || '';
+// gon-services 백엔드 URL (서버 전용 — NEXT_PUBLIC_ 제거하여 클라이언트 노출 방지)
+const GON_SERVICES_URL = process.env.GON_SERVICES_URL || '';
+
+// gon-services API 응답 타입
+interface GonServicesResult {
+  round: number;
+  drawDate: string;
+  numbers: number[];
+  bonusNumber: number;
+  prizeMoney: {
+    first: number | null;
+    firstWinners: number | null;
+    second: number | null;
+    secondWinners: number | null;
+  };
+}
 
 // 메모리 캐시 (Vercel Serverless 인스턴스 내 지속)
 const roundCache = new Map<number, { data: LottoResult; fetchedAt: number }>();
@@ -27,30 +41,13 @@ async function fetchAllFromGonServices(): Promise<LottoResult[] | null> {
   try {
     const response = await fetch(`${GON_SERVICES_URL}/api/v1/lotto/results`, {
       signal: AbortSignal.timeout(10000),
-      next: { revalidate: 1800 },
+      cache: 'no-store', // 메모리 캐시(allDataCache)로 제어, Next.js 이중 캐싱 방지
     });
     if (!response.ok) return null;
-    const data: Array<{
-      round: number;
-      drawDate: string;
-      numbers: number[];
-      bonusNumber: number;
-      prizeMoney: { first: number | null; firstWinners: number | null };
-    }> = await response.json();
+    const data: GonServicesResult[] = await response.json();
     if (!Array.isArray(data) || data.length === 0) return null;
 
-    return data.map((item) => ({
-      round: item.round,
-      drawDate: item.drawDate ?? '',
-      numbers: [...item.numbers].sort((a, b) => a - b),
-      bonusNumber: item.bonusNumber,
-      prizeMoney: {
-        first: item.prizeMoney?.first ?? 0,
-        firstWinners: item.prizeMoney?.firstWinners ?? 0,
-        second: 0,
-        secondWinners: 0,
-      },
-    }));
+    return data.map((item) => _mapGonResult(item));
   } catch (e) {
     if (typeof window === 'undefined') {
       console.error('[dataFetcher] gon-services 전체 조회 실패:', e instanceof Error ? e.message : e);
@@ -68,27 +65,32 @@ async function fetchFromGonServices(round: number): Promise<LottoResult | null> 
       next: { revalidate: 3600 },
     });
     if (!response.ok) return null;
-    const data = await response.json();
+    const data: GonServicesResult = await response.json();
     if (!data.round || !data.numbers) return null;
 
-    return {
-      round: data.round,
-      drawDate: data.drawDate ?? '',
-      numbers: [...data.numbers].sort((a: number, b: number) => a - b),
-      bonusNumber: data.bonusNumber,
-      prizeMoney: {
-        first: data.prizeMoney?.first ?? 0,
-        firstWinners: data.prizeMoney?.firstWinners ?? 0,
-        second: 0,
-        secondWinners: 0,
-      },
-    };
+    return _mapGonResult(data);
   } catch (e) {
     if (typeof window === 'undefined') {
       console.error('[dataFetcher] gon-services 단건 조회 실패:', e instanceof Error ? e.message : e);
     }
     return null;
   }
+}
+
+// gon-services API 응답 -> LottoResult 변환
+function _mapGonResult(item: GonServicesResult): LottoResult {
+  return {
+    round: item.round,
+    drawDate: item.drawDate ?? '',
+    numbers: [...item.numbers].sort((a, b) => a - b),
+    bonusNumber: item.bonusNumber,
+    prizeMoney: {
+      first: item.prizeMoney?.first ?? 0,
+      firstWinners: item.prizeMoney?.firstWinners ?? 0,
+      second: item.prizeMoney?.second ?? 0,
+      secondWinners: item.prizeMoney?.secondWinners ?? 0,
+    },
+  };
 }
 
 // smok95 GitHub Pages API에서 데이터 fetch
@@ -109,10 +111,10 @@ async function fetchFromSmok95(round: number): Promise<LottoResult | null> {
       numbers: [...data.numbers].sort((a: number, b: number) => a - b),
       bonusNumber: data.bonus_no,
       prizeMoney: {
-        first: data.divisions?.[0]?.prize || 0,
-        firstWinners: data.divisions?.[0]?.winners || 0,
-        second: data.divisions?.[1]?.prize || 0,
-        secondWinners: data.divisions?.[1]?.winners || 0,
+        first: data.divisions?.[0]?.prize ?? 0,
+        firstWinners: data.divisions?.[0]?.winners ?? 0,
+        second: data.divisions?.[1]?.prize ?? 0,
+        secondWinners: data.divisions?.[1]?.winners ?? 0,
       },
     };
   } catch {

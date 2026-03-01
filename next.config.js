@@ -43,7 +43,8 @@ const nextConfig = {
               *.googlesyndication.com
               *.google.com
               *.doubleclick.net
-              *.googleadservices.com;
+              *.googleadservices.com
+              *.up.railway.app;
             `.replace(/\s+/g, ' ').trim(),
           },
         ],

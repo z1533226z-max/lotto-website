@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getServiceSupabase } from '@/lib/supabase';
 import type { WinningStore } from '@/types/database';
 
 export const revalidate = 3600; // 1시간 캐시
@@ -22,7 +22,7 @@ export async function GET(
       );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await getServiceSupabase()
       .from('winning_stores')
       .select('*')
       .eq('round', round)

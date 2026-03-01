@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 // ─── Constants ─────────────────────────────────────────────
@@ -86,7 +86,9 @@ export function verifyToken(token: string): TokenPayload | null {
       .replace(/\//g, '_')
       .replace(/=+$/, '');
 
-    if (signature !== expectedSig) return null;
+    const sigBuf = Buffer.from(signature);
+    const expectedBuf = Buffer.from(expectedSig);
+    if (sigBuf.length !== expectedBuf.length || !timingSafeEqual(sigBuf, expectedBuf)) return null;
 
     // 페이로드 파싱
     const payload: TokenPayload = JSON.parse(base64UrlDecode(payloadStr));

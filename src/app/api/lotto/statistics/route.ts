@@ -6,7 +6,7 @@ import { getAllLottoData, registerCacheInvalidationCallback } from '@/lib/dataFe
 // 인메모리 캐시
 let cachedStats: {
   statistics: NumberStatistics[];
-  summary: any;
+  summary: ReturnType<typeof LottoStatisticsAnalyzer.generateSummary>;
   maxRound: number;
   timestamp: number;
 } | null = null;
