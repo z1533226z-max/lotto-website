@@ -14,11 +14,15 @@ interface PerformanceTestResult {
 }
 
 export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get('authorization');
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const testType = searchParams.get('test') || 'all';
   const iterations = parseInt(searchParams.get('iterations') || '10');
-  
-  console.log(`성능 테스트 시작: ${testType}, 반복횟수: ${iterations}`);
   
   const results: PerformanceTestResult[] = [];
   const startTime = Date.now();

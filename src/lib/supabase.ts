@@ -1,8 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const _url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const _anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!_url || !_anonKey) {
+  throw new Error('NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set');
+}
+
+const supabaseUrl: string = _url;
+const supabaseAnonKey: string = _anonKey;
 
 /**
  * 브라우저/클라이언트용 Supabase 클라이언트

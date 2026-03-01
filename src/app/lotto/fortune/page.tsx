@@ -230,8 +230,8 @@ function BirthdayTab({ canUse, recordUsage, auth, onShowLimitModal }: { canUse: 
             roundTarget: getNextDrawRound(),
           }),
         });
-      } catch (e) {
-        console.error('번호 저장 실패:', e);
+      } catch {
+        // 번호 저장 실패 시 무시
       }
     }
   }, [birthday, name, canUse, recordUsage, auth, onShowLimitModal]);
@@ -577,8 +577,8 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
             roundTarget: getNextDrawRound(),
           }),
         });
-      } catch (e) {
-        console.error('번호 저장 실패:', e);
+      } catch {
+        // 번호 저장 실패 시 무시
       }
     }
   }, [myBirthday, partnerBirthday, canUse, recordUsage, auth, onShowLimitModal]);

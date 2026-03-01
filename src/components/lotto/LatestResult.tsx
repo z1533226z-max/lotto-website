@@ -30,7 +30,6 @@ const LatestResult: React.FC = () => {
 
         setResult(data.data);
       } catch (err) {
-        console.error('최신 로또 데이터 로드 실패:', err);
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
@@ -82,7 +81,6 @@ const LatestResult: React.FC = () => {
         alert('해당 회차의 실제 데이터가 없어 임시 데이터를 표시합니다.');
       }
     } catch (err) {
-      console.error('회차 검색 실패:', err);
       setError(err instanceof Error ? err.message : '회차 검색에 실패했습니다.');
     } finally {
       setIsSearching(false);

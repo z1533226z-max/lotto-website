@@ -62,40 +62,34 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       
       // 버전 확인
       if (cacheData.version !== CACHE_VERSION) {
-        console.log('클라이언트 캐시 버전 불일치, 삭제');
         safeLocalStorage.removeItem(CACHE_KEY);
         return null;
       }
-      
+
       // 만료 시간 확인
       const cacheTime = new Date(cacheData.timestamp).getTime();
       const now = Date.now();
       const isExpired = (now - cacheTime) > CACHE_DURATION;
-      
+
       if (isExpired) {
-        console.log('클라이언트 캐시 만료, 삭제');
         safeLocalStorage.removeItem(CACHE_KEY);
         return null;
       }
-      
+
       // 요청된 회차 이상인지 확인
       if (maxRound && cacheData.maxRound < maxRound) {
-        console.log(`캐시된 회차(${cacheData.maxRound})가 요청 회차(${maxRound})보다 적음`);
         return null;
       }
-      
+
       // 데이터 유효성 확인
       if (!Array.isArray(cacheData.data) || cacheData.data.length !== 45) {
-        console.log('클라이언트 캐시 데이터 무효, 삭제');
         safeLocalStorage.removeItem(CACHE_KEY);
         return null;
       }
-      
-      console.log(`클라이언트 캐시 로드 성공: ${cacheData.totalRounds}회차`);
+
       return cacheData;
-      
-    } catch (error) {
-      console.error('클라이언트 캐시 로드 실패:', error);
+
+    } catch {
       safeLocalStorage.removeItem(CACHE_KEY);
       return null;
     }
@@ -116,14 +110,9 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       };
       
       const jsonData = JSON.stringify(cacheData);
-      const success = safeLocalStorage.setItem(CACHE_KEY, jsonData);
-      
-      if (success) {
-        console.log(`클라이언트 캐시 저장 완료: ${(jsonData.length / 1024).toFixed(1)}KB`);
-      }
-      
-    } catch (error) {
-      console.error('클라이언트 캐시 저장 실패:', error);
+      safeLocalStorage.setItem(CACHE_KEY, jsonData);
+    } catch {
+      // 캐시 저장 실패 시 무시
     }
   }, [enableClientCache]);
   
@@ -134,7 +123,6 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
       setError(null);
       
       const url = `/api/lotto/statistics${maxRound ? `?maxRound=${maxRound}` : ''}${refresh ? (maxRound ? '&' : '?') + 'refresh=true' : ''}`;
-      console.log(`API 호출: ${url}`);
       
       const response = await fetch(url);
       if (!response.ok) {
@@ -165,11 +153,8 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
         saveToCache(statsData, summaryData, maxRound || result.data?.maxRound || 0);
       }
       
-      console.log(`통계 데이터 로드 완료: ${statsData.length}개 번호, 소스: ${result.source}`);
-      
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다';
-      console.error('통계 데이터 로드 실패:', errorMessage);
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -180,7 +165,6 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
   const clearCache = useCallback(() => {
     if (enableClientCache) {
       safeLocalStorage.removeItem(CACHE_KEY);
-      console.log('클라이언트 캐시 삭제 완료');
     }
   }, [enableClientCache]);
   
@@ -203,7 +187,6 @@ export function useStatisticsCache(options: UseStatisticsCacheOptions = {}): Use
           setFromCache(true);
           setLastUpdated(cachedData.timestamp);
           setLoading(false);
-          console.log('클라이언트 캐시 데이터 사용');
           return;
         }
       }

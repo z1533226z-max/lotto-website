@@ -130,13 +130,11 @@ export async function fetchAndSaveWinningStores(round: number): Promise<{
       });
 
     if (error) {
-      console.error(`[StoreFetcher] DB 저장 오류 (${round}회):`, error.message);
       return { success: false, count: 0 };
     }
 
     return { success: true, count: stores.length };
-  } catch (error) {
-    console.error(`[StoreFetcher] ${round}회 수집 오류:`, error);
+  } catch {
     return { success: false, count: 0 };
   }
 }

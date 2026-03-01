@@ -332,9 +332,6 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         }
 
         setTimeout(() => setDashboardReady(true), 200);
-
-        const loadTime = Date.now() - loadStartTime;
-        console.log(`AnalyticsDashboard: 초기화 완료 (${loadTime}ms), ${rawData?.length || 0}회차`);
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
           setStatsError('대시보드 로딩 시간이 초과되었습니다');

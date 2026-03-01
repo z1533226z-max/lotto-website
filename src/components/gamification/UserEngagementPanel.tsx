@@ -105,8 +105,8 @@ const UserEngagementPanel: React.FC = () => {
         const weeklyRank = Math.floor(Math.random() * 2000) + 500;
         setWeeklyRanking(weeklyRank);
         
-      } catch (error) {
-        console.error('사용자 데이터 로드 실패:', error);
+      } catch {
+        // 사용자 데이터 로드 실패 시 기본값 사용
       } finally {
         setIsLoading(false);
       }
@@ -158,8 +158,8 @@ const UserEngagementPanel: React.FC = () => {
     // localStorage에 저장
     try {
       safeLocalStorage.setItem('lotto-user-stats', JSON.stringify(newStats));
-    } catch (error) {
-      console.error('사용자 데이터 저장 실패:', error);
+    } catch {
+      // 사용자 데이터 저장 실패 시 무시
     }
   }, [userStats]);
 

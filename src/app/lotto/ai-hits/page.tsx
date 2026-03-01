@@ -56,7 +56,7 @@ export default function AIHitsPage() {
           setNextPrediction(data.nextMultiSetPrediction || null);
         }
       })
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 

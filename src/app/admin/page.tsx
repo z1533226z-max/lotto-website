@@ -173,8 +173,8 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/stats', { credentials: 'include' });
       const data = await res.json();
       if (data.success) setSiteStats(data.stats);
-    } catch (err) {
-      console.error('Failed to fetch stats:', err);
+    } catch {
+      // 통계 조회 실패
     } finally {
       setStatsLoading(false);
     }
@@ -199,8 +199,8 @@ export default function AdminPage() {
         setUsersTotalPages(data.pagination.totalPages);
         setUsersTotal(data.pagination.total);
       }
-    } catch (err) {
-      console.error('Failed to fetch users:', err);
+    } catch {
+      // 회원 조회 실패
     } finally {
       setUsersLoading(false);
     }
@@ -223,8 +223,8 @@ export default function AdminPage() {
         setPosts(data.posts);
         setPostsTotalPages(data.pagination.totalPages);
       }
-    } catch (err) {
-      console.error('Failed to fetch posts:', err);
+    } catch {
+      // 게시글 조회 실패
     } finally {
       setPostsLoading(false);
     }
@@ -248,8 +248,8 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) { fetchUsers(); fetchStats(); }
-    } catch (err) {
-      console.error('Ban toggle failed:', err);
+    } catch {
+      // 차단 토글 실패
     } finally {
       setActionLoading(null);
     }
@@ -265,8 +265,8 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) { fetchUsers(); fetchStats(); }
-    } catch (err) {
-      console.error('User delete failed:', err);
+    } catch {
+      // 회원 삭제 실패
     } finally {
       setActionLoading(null);
     }
@@ -283,8 +283,8 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) fetchPosts();
-    } catch (err) {
-      console.error('Pin toggle failed:', err);
+    } catch {
+      // 고정 토글 실패
     } finally {
       setActionLoading(null);
     }
@@ -300,8 +300,8 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.success) { fetchPosts(); fetchStats(); }
-    } catch (err) {
-      console.error('Post delete failed:', err);
+    } catch {
+      // 게시글 삭제 실패
     } finally {
       setActionLoading(null);
     }

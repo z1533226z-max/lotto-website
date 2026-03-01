@@ -133,8 +133,8 @@ export default function SimulatorPage() {
         setLottoData(sorted);
         setDataLoaded(true);
       }
-    } catch (err) {
-      console.error('데이터 로딩 실패:', err);
+    } catch {
+      // 데이터 로딩 실패
     } finally {
       setDataLoading(false);
     }

@@ -5,8 +5,8 @@ export const LOTTO_CONFIG = {
   MAX_NUMBER: 45,
   NUMBERS_COUNT: 6,
   DRAW_DAY: 6, // 토요일 (0=일요일, 6=토요일)
-  DRAW_HOUR: 21, // 21시
-  DRAW_MINUTE: 0,
+  DRAW_HOUR: 20, // 20시 45분 (실제 추첨 시간)
+  DRAW_MINUTE: 45,
 } as const;
 
 export const LOTTO_COLORS = {

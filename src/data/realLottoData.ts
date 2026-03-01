@@ -1,6 +1,6 @@
 // 실제 로또 데이터 (smok95/lotto GitHub에서 수집)
 // 자동 생성된 파일 - 수동 편집 금지
-// 생성 일시: 2026-02-23T11:05:27.803Z
+// 생성 일시: 2026-03-01T01:21:50.467Z
 
 import type { LottoResult } from '@/types/lotto';
 
@@ -23031,6 +23031,25 @@ export const REAL_LOTTO_DATA: LottoResult[] = [
       "firstWinners": 12,
       "second": 67192128,
       "secondWinners": 79
+    }
+  },
+  {
+    "round": 1213,
+    "drawDate": "2026-02-28",
+    "numbers": [
+      5,
+      11,
+      25,
+      27,
+      36,
+      38
+    ],
+    "bonusNumber": 2,
+    "prizeMoney": {
+      "first": 1740011646,
+      "firstWinners": 18,
+      "second": 47454864,
+      "secondWinners": 110
     }
   }
 ];

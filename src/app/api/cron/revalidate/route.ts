@@ -70,7 +70,6 @@ export async function GET(request: NextRequest) {
     let storeResult = { success: false, count: 0 };
     if (latestRound > 0) {
       storeResult = await fetchAndSaveWinningStores(latestRound);
-      console.log(`[Cron] Store data: round=${latestRound}, count=${storeResult.count}`);
     }
 
     // 5. 저장된 번호 자동 당첨 확인
@@ -101,7 +100,6 @@ export async function GET(request: NextRequest) {
                 .eq('id', saved.id);
             }
             matchCheckResult.checked = unchecked.length;
-            console.log(`[Cron] Match check: ${unchecked.length} numbers checked for round ${latestRound}`);
           }
         }
       } catch (e) {
@@ -134,8 +132,6 @@ export async function GET(request: NextRequest) {
     );
 
     const elapsed = Date.now() - startTime;
-
-    console.log(`[Cron] Revalidation complete: round=${latestRound}, total=${allData.length}, stores=${storeResult.count}, elapsed=${elapsed}ms`);
 
     return NextResponse.json({
       success: true,

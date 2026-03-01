@@ -58,8 +58,8 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
         const parsedPrefs = JSON.parse(savedPrefs);
         setUserPreferences(prev => ({ ...prev, ...parsedPrefs }));
       }
-    } catch (error) {
-      console.error('사용자 선호도 로드 실패:', error);
+    } catch {
+      // 사용자 선호도 로드 실패 시 기본값 사용
     }
   }, []);
 
@@ -218,8 +218,8 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
     
     try {
       safeLocalStorage.setItem('lotto-user-preferences', JSON.stringify(updatedPrefs));
-    } catch (error) {
-      console.error('사용자 선호도 저장 실패:', error);
+    } catch {
+      // 사용자 선호도 저장 실패 시 무시
     }
   };
 

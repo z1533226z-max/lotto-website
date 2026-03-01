@@ -72,18 +72,13 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
 
   // 최적화된 패턴 데이터 로딩
   const fetchPatternData = useCallback(async () => {
-    const loadStartTime = Date.now();
-    console.time('Number Pattern Chart Loading');
-    
     try {
       setIsLoadingStats(true);
       setStatsError(null);
-      
-      console.log('NumberPatternChart: 최적화된 패턴 데이터 로딩 시작...');
-      
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000);
-      
+
       const response = await fetch('/api/lotto/statistics', {
         signal: controller.signal,
         headers: {
@@ -91,52 +86,41 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
           'Cache-Control': 'public, max-age=600'
         }
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'API 응답 오류');
       }
-      
+
       const { statistics: statsData, rawData } = result.data;
-      
+
       if (!Array.isArray(statsData) || statsData.length !== 45) {
         throw new Error('패턴 분석을 위한 통계 데이터가 유효하지 않습니다');
       }
-      
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
+
       setStatistics(statsData);
       setRawData(rawData || SAMPLE_LOTTO_DATA);
-      
-      console.log(`NumberPatternChart: 데이터 로딩 성공 (${loadTime}ms) - 소스: ${result.source}`);
-      
+
     } catch (error) {
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
       if (error instanceof Error && error.name === 'AbortError') {
-        console.error(`NumberPatternChart: 로딩 타임아웃 (${loadTime}ms)`);
         setStatsError('패턴 차트 데이터 로딩 시간이 초과되었습니다.');
       } else {
-        console.error(`NumberPatternChart: 로딩 실패 (${loadTime}ms):`, error);
         setStatsError(error instanceof Error ? error.message : '패턴 분석 중 알 수 없는 오류가 발생했습니다');
       }
-      
+
       // Fallback 데이터 설정
       setStatistics(getSampleStatistics());
       setRawData(SAMPLE_LOTTO_DATA);
-      
+
     } finally {
       setIsLoadingStats(false);
-      console.timeEnd('Number Pattern Chart Loading');
     }
   }, []);
 
@@ -211,25 +195,17 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
 
   // 최적화된 차트 데이터 계산
   const chartData = useMemo(() => {
-    console.time('Chart Data Calculation');
-    
     try {
       if (!statistics || statistics.length === 0) {
-        console.warn('NumberPatternChart: 통계 데이터 없음, Fallback 사용');
         const fallbackStats = getSampleStatistics();
         const result = calculateChartData(fallbackStats, SAMPLE_LOTTO_DATA);
-        console.timeEnd('Chart Data Calculation');
         return { ...result, dataSource: 'fallback' };
       }
 
       const result = calculateChartData(statistics, rawData);
-      console.timeEnd('Chart Data Calculation');
       return { ...result, dataSource: 'api' };
-      
-    } catch (error) {
-      console.error('NumberPatternChart: 차트 데이터 계산 실패:', error);
-      console.timeEnd('Chart Data Calculation');
-      
+
+    } catch {
       const fallbackStats = getSampleStatistics();
       const result = calculateChartData(fallbackStats, SAMPLE_LOTTO_DATA);
       return { ...result, dataSource: 'error-fallback' };

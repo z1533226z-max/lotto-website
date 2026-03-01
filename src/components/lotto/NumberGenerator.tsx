@@ -81,9 +81,6 @@ const NumberGenerator: React.FC = () => {
         setStatistics(statsData);
         setTotalRounds(result.data?.maxRound || 0);
         setAiStatus('ready');
-
-        console.log(`통계 데이터 로딩 완료: ${statsData.length}개 번호, ${loadTime}ms`);
-
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
           setStatsError('요청 시간이 초과되었습니다 (10초)');
@@ -118,8 +115,8 @@ const NumberGenerator: React.FC = () => {
         setSavedToServer(true);
         setTimeout(() => setSavedToServer(false), 3000);
       }
-    } catch (e) {
-      console.error('서버 저장 실패:', e);
+    } catch {
+      // 서버 저장 실패 시 무시 (로컬에는 이미 저장됨)
     }
   };
 
@@ -184,8 +181,7 @@ const NumberGenerator: React.FC = () => {
         });
       }
 
-    } catch (error) {
-      console.error('번호 생성 중 오류:', error);
+    } catch {
       const fallbackNumbers = NumberGen.generateRandomNumbers();
       setGeneratedSets([fallbackNumbers]);
     } finally {

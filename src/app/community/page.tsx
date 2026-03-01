@@ -52,8 +52,8 @@ export default function CommunityPage() {
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);
       }
-    } catch (error) {
-      console.error('게시글 조회 오류:', error);
+    } catch {
+      // 게시글 조회 실패
     } finally {
       setLoading(false);
     }

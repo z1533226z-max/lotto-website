@@ -157,8 +157,8 @@ export default function MyPage() {
           setCurrentPage(data.page);
           setTotalPages(data.totalPages);
         }
-      } catch (err) {
-        console.error('Failed to fetch numbers:', err);
+      } catch {
+        // 번호 조회 실패
       } finally {
         setNumbersLoading(false);
         setNumbersInitialized(true);
@@ -175,8 +175,8 @@ export default function MyPage() {
       if (!res.ok) throw new Error('fetch failed');
       const data = await res.json();
       if (data.success) setStats(data.stats);
-    } catch (err) {
-      console.error('Failed to fetch stats:', err);
+    } catch {
+      // 통계 조회 실패
     } finally {
       setStatsLoading(false);
     }
@@ -210,8 +210,8 @@ export default function MyPage() {
         fetchNumbers(1, false);
         fetchStats();
       }
-    } catch (err) {
-      console.error('Failed to check numbers:', err);
+    } catch {
+      // 번호 확인 실패
     } finally {
       setChecking(false);
     }

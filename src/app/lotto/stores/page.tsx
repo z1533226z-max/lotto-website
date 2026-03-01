@@ -59,8 +59,8 @@ export default function StoresPage() {
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);
       }
-    } catch (error) {
-      console.error('판매점 조회 오류:', error);
+    } catch {
+      // 판매점 조회 실패
     } finally {
       setLoading(false);
     }
@@ -83,8 +83,8 @@ export default function StoresPage() {
         setTotalPages(data.pagination.totalPages);
         setTotal(data.pagination.total);
       }
-    } catch (error) {
-      console.error('판매점 랭킹 조회 오류:', error);
+    } catch {
+      // 판매점 랭킹 조회 실패
     } finally {
       setLoading(false);
     }
@@ -97,8 +97,8 @@ export default function StoresPage() {
       if (data.success) {
         setRegionStats(data.stats);
       }
-    } catch (error) {
-      console.error('지역 통계 조회 오류:', error);
+    } catch {
+      // 지역 통계 조회 실패
     }
   }, []);
 

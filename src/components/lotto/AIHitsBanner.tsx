@@ -42,7 +42,7 @@ const AIHitsBanner: React.FC = () => {
           }
         }
       })
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   if (!latestHit) return null;

@@ -13,9 +13,7 @@ let _cachedSampleStatistics: NumberStatistics[] | null = null;
 
 export function getSampleStatistics(): NumberStatistics[] {
   if (_cachedSampleStatistics === null) {
-    console.log('실제 로또 데이터 기반 통계 생성 중...');
     _cachedSampleStatistics = LottoStatisticsAnalyzer.generateStatistics(SAMPLE_LOTTO_DATA);
-    console.log(`실제 데이터 통계 생성 완료: ${_cachedSampleStatistics.length}개 번호, ${SAMPLE_LOTTO_DATA.length}회차 기반`);
   }
   return _cachedSampleStatistics;
 }

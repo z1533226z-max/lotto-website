@@ -241,8 +241,8 @@ export default function DreamNumberPage() {
               roundTarget: getNextDrawRound(),
             }),
           });
-        } catch (e) {
-          console.error('번호 저장 실패:', e);
+        } catch {
+          // 번호 저장 실패 시 무시
         }
       }
     },

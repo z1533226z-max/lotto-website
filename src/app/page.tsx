@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
 import SajuBanner from '@/components/promotion/SajuBanner';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
+import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 import type { Metadata } from 'next';
 
 const LatestResult = dynamic(
@@ -153,7 +154,7 @@ export default function HomePage() {
                 {/* Trust indicators */}
                 <div className="flex items-center gap-6 pt-2">
                   {[
-                    { value: '1,200+', label: '분석 회차' },
+                    { value: `${REAL_LOTTO_DATA.length.toLocaleString()}+`, label: '분석 회차' },
                     { value: '무료', label: '이용 비용' },
                     { value: '매주', label: '자동 업데이트' },
                   ].map((stat) => (

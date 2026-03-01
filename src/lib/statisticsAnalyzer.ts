@@ -9,22 +9,18 @@ export class LottoStatisticsAnalyzer {
    * 전체 통계 생성 (메인 엔트리 포인트)
    */
   static generateStatistics(lottoData: LottoResult[]): NumberStatistics[] {
-    console.log(`통계 분석 시작: ${lottoData.length}개 회차 데이터`);
-    
     if (lottoData.length === 0) {
-      console.warn('로또 데이터가 없어서 기본 통계를 반환합니다.');
       return this.getDefaultStatistics();
     }
-    
+
     // 1~45번 모든 번호에 대한 통계 계산
     const statistics: NumberStatistics[] = [];
-    
+
     for (let number = LOTTO_CONFIG.MIN_NUMBER; number <= LOTTO_CONFIG.MAX_NUMBER; number++) {
       const numberStats = this.calculateNumberStatistics(number, lottoData);
       statistics.push(numberStats);
     }
-    
-    console.log(`통계 분석 완료: ${statistics.length}개 번호 통계 생성`);
+
     return statistics;
   }
   
@@ -79,7 +75,6 @@ export class LottoStatisticsAnalyzer {
    */
   static calculateHotColdScore(number: number, lottoData: LottoResult[]): number {
     if (lottoData.length === 0) {
-      console.warn('로또 데이터가 없어서 hotColdScore를 0으로 반환합니다.');
       return 0;
     }
     
@@ -454,29 +449,25 @@ export class LottoStatisticsAnalyzer {
    */
   static validateStatistics(statistics: NumberStatistics[]): boolean {
     if (!Array.isArray(statistics) || statistics.length !== 45) {
-      console.error(`통계 배열 길이 오류: 예상 45개, 실제 ${statistics.length}개`);
       return false;
     }
-    
+
     for (const stat of statistics) {
-      if (!stat || typeof stat.number !== 'number' || 
+      if (!stat || typeof stat.number !== 'number' ||
           stat.number < 1 || stat.number > 45) {
-        console.error(`잘못된 번호: ${stat?.number}`);
         return false;
       }
-      
+
       if (typeof stat.frequency !== 'number' || stat.frequency < 0) {
-        console.error(`잘못된 빈도: ${stat.frequency}`);
         return false;
       }
-      
-      if (typeof stat.hotColdScore !== 'number' || 
+
+      if (typeof stat.hotColdScore !== 'number' ||
           stat.hotColdScore < -100 || stat.hotColdScore > 100) {
-        console.error(`잘못된 핫콜드점수: ${stat.hotColdScore}`);
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -484,10 +475,7 @@ export class LottoStatisticsAnalyzer {
    * 확장된 번호 통계 생성 (분석 대시보드용)
    */
   static generateExtendedStatistics(lottoData: LottoResult[]): ExtendedNumberStatistics[] {
-    console.log(`확장 통계 분석 시작: ${lottoData.length}개 회차 데이터`);
-    
     if (lottoData.length === 0) {
-      console.warn('로또 데이터가 없어서 기본 확장 통계를 반환합니다.');
       return this.getDefaultExtendedStatistics();
     }
     
@@ -506,7 +494,6 @@ export class LottoStatisticsAnalyzer {
       extendedStatistics.push(extendedStat);
     }
     
-    console.log(`확장 통계 분석 완료: ${extendedStatistics.length}개 번호 확장 통계 생성`);
     return extendedStatistics;
   }
 

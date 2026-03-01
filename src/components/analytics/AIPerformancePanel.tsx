@@ -65,18 +65,13 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
 
   // 최적화된 AI 성능 데이터 로딩
   const fetchAIPerformanceData = useCallback(async () => {
-    const loadStartTime = Date.now();
-    console.time('AI Performance Panel Loading');
-    
     try {
       setIsLoadingStats(true);
       setStatsError(null);
-      
-      console.log('AIPerformancePanel: 최적화된 AI 성능 데이터 로딩 시작...');
-      
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 7000);
-      
+
       const response = await fetch('/api/lotto/statistics', {
         signal: controller.signal,
         headers: {
@@ -84,49 +79,38 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
           'Cache-Control': 'public, max-age=300'
         }
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'API 응답 오류');
       }
-      
+
       const { statistics: statsData } = result.data;
-      
+
       if (!Array.isArray(statsData) || statsData.length !== 45) {
         throw new Error('AI 성능 분석을 위한 통계 데이터가 유효하지 않습니다');
       }
-      
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
+
       setStatistics(statsData);
-      
-      console.log(`AIPerformancePanel: 데이터 로딩 성공 (${loadTime}ms) - 소스: ${result.source}`);
-      
+
     } catch (error) {
-      const loadEndTime = Date.now();
-      const loadTime = loadEndTime - loadStartTime;
-      
       if (error instanceof Error && error.name === 'AbortError') {
-        console.error(`AIPerformancePanel: 로딩 타임아웃 (${loadTime}ms)`);
         setStatsError('AI 성능 데이터 로딩 시간이 초과되었습니다.');
       } else {
-        console.error(`AIPerformancePanel: 로딩 실패 (${loadTime}ms):`, error);
         setStatsError(error instanceof Error ? error.message : 'AI 성능 분석 중 알 수 없는 오류가 발생했습니다');
       }
-      
+
       setStatistics(null);
-      
+
     } finally {
       setIsLoadingStats(false);
-      console.timeEnd('AI Performance Panel Loading');
     }
   }, []);
 
@@ -137,13 +121,9 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
 
   // 최적화된 AI 성능 메트릭 계산
   const performanceMetrics = useMemo(() => {
-    console.time('AI Performance Calculation');
-    
     try {
       if (!statistics || statistics.length === 0) {
-        console.warn('AIPerformancePanel: 통계 데이터 없음, 기본값 사용');
         const defaultMetrics = getDefaultAIPerformance();
-        console.timeEnd('AI Performance Calculation');
         return {
           ...defaultMetrics,
           dataSource: 'fallback'
@@ -153,9 +133,7 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
       // 데이터 품질 검증
       const isValidData = LottoStatisticsAnalyzer.validateStatistics(statistics);
       if (!isValidData) {
-        console.warn('AIPerformancePanel: 통계 데이터 검증 실패, 기본값 사용');
         const defaultMetrics = getDefaultAIPerformance();
-        console.timeEnd('AI Performance Calculation');
         return {
           ...defaultMetrics,
           dataSource: 'validation-failed'
@@ -187,13 +165,9 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
         dataSource: 'real-time-calculation'
       };
       
-      console.timeEnd('AI Performance Calculation');
       return result;
-      
-    } catch (error) {
-      console.error('AIPerformancePanel: AI 성능 계산 실패:', error);
-      console.timeEnd('AI Performance Calculation');
-      
+
+    } catch {
       const fallbackMetrics = getDefaultAIPerformance();
       return {
         ...fallbackMetrics,

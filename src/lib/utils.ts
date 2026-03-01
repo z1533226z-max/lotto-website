@@ -176,8 +176,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
       document.body.removeChild(textArea);
       return true;
     }
-  } catch (error) {
-    console.error('클립보드 복사 실패:', error);
+  } catch {
     return false;
   }
 };

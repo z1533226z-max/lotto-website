@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getServiceSupabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 기본 쿼리 (온라인 판매점 제외)
-    let query = supabase
+    let query = getServiceSupabase()
       .from('winning_stores')
       .select('*', { count: 'exact' })
       .not('store_name', 'like', '%인터넷%')
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
  */
 async function getRegionStats() {
   try {
-    const { data, error } = await (supabase.rpc as Function)('get_region_stats');
+    const { data, error } = await (getServiceSupabase().rpc as Function)('get_region_stats');
 
     if (error) {
       console.error('Region stats RPC error:', error);
@@ -140,7 +140,7 @@ async function getStoreRanking(page: number, limit: number, region: string | nul
     const offset = (page - 1) * limit;
 
     // 랭킹 데이터
-    const { data, error } = await (supabase.rpc as Function)('get_store_ranking', {
+    const { data, error } = await (getServiceSupabase().rpc as Function)('get_store_ranking', {
       p_limit: limit,
       p_offset: offset,
       p_region: region || null,
@@ -160,7 +160,7 @@ async function getStoreRanking(page: number, limit: number, region: string | nul
     );
 
     // 전체 개수
-    const { data: countData, error: countError } = await (supabase.rpc as Function)('get_store_ranking_count', {
+    const { data: countData, error: countError } = await (getServiceSupabase().rpc as Function)('get_store_ranking_count', {
       p_region: region || null,
     });
 
