@@ -325,7 +325,7 @@ function computeBadges(progress: UserProgress, isLoggedIn: boolean = false): Bad
         description: '50개 이상 번호를 저장했습니다',
         icon: '\uD83D\uDCDA', // 📚
         requirement: 50,
-        current: (progress as any).savedNumbersCount || 0,
+        current: progress.savedNumbersCount || 0,
       },
       {
         id: 'lucky_checker',
@@ -333,7 +333,7 @@ function computeBadges(progress: UserProgress, isLoggedIn: boolean = false): Bad
         description: '당첨 확인을 10회 이상 했습니다',
         icon: '\uD83D\uDD0D', // 🔍
         requirement: 10,
-        current: (progress as any).matchChecksCount || 0,
+        current: progress.matchChecksCount || 0,
       },
       {
         id: 'multi_set_user',
@@ -341,7 +341,7 @@ function computeBadges(progress: UserProgress, isLoggedIn: boolean = false): Bad
         description: '5세트 생성을 10회 이상 했습니다',
         icon: '\uD83C\uDFAF', // 🎯
         requirement: 10,
-        current: (progress as any).multiSetGenerations || 0,
+        current: progress.multiSetGenerations || 0,
       },
     );
   }

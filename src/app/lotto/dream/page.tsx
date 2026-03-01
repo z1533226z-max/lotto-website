@@ -225,8 +225,8 @@ export default function DreamNumberPage() {
       recordUsage('dream');
 
       // 게임화 배지 카운터
-      if (typeof window !== 'undefined' && (window as any).__trackAction) {
-        (window as any).__trackAction('dreamGeneration');
+      if (typeof window !== 'undefined' && window.__trackAction) {
+        window.__trackAction('dreamGeneration');
       }
 
       // Server save for members

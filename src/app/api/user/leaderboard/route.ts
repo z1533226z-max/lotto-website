@@ -12,8 +12,8 @@ export async function GET() {
     const supabase = getServiceSupabase();
 
     // user_progress와 user_profiles 조인하여 상위 20명 조회
-    const { data: progressData, error: progressError } = await (supabase
-      .from('user_progress') as any)
+    const { data: progressData, error: progressError } = await supabase
+      .from('user_progress')
       .select(`
         user_id,
         longest_streak,
@@ -32,8 +32,8 @@ export async function GET() {
 
     if (!progressData || progressData.length === 0) {
       // 전체 사용자 수도 조회
-      const { count: totalUsers } = await (supabase
-        .from('user_progress') as any)
+      const { count: totalUsers } = await supabase
+        .from('user_progress')
         .select('*', { count: 'exact', head: true });
 
       return NextResponse.json({
@@ -44,9 +44,9 @@ export async function GET() {
     }
 
     // user_id 목록으로 프로필(닉네임) 조회
-    const userIds = progressData.map((p: any) => p.user_id);
-    const { data: profilesData, error: profilesError } = await (supabase
-      .from('user_profiles') as any)
+    const userIds = progressData.map((p) => p.user_id);
+    const { data: profilesData, error: profilesError } = await supabase
+      .from('user_profiles')
       .select('id, nickname')
       .in('id', userIds);
 
@@ -61,13 +61,13 @@ export async function GET() {
     // 닉네임 매핑
     const nicknameMap: Record<string, string> = {};
     if (profilesData) {
-      profilesData.forEach((profile: any) => {
+      profilesData.forEach((profile) => {
         nicknameMap[profile.id] = profile.nickname;
       });
     }
 
     // 리더보드 구성
-    const leaderboard = progressData.map((entry: any, index: number) => ({
+    const leaderboard = progressData.map((entry, index) => ({
       nickname: nicknameMap[entry.user_id] || '익명',
       longest_streak: entry.longest_streak || 0,
       badge_count: Array.isArray(entry.unlocked_badges)
@@ -77,8 +77,8 @@ export async function GET() {
     }));
 
     // 전체 사용자 수 조회
-    const { count: totalUsers } = await (supabase
-      .from('user_progress') as any)
+    const { count: totalUsers } = await supabase
+      .from('user_progress')
       .select('*', { count: 'exact', head: true });
 
     return NextResponse.json({

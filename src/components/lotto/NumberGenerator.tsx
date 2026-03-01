@@ -159,8 +159,8 @@ const NumberGenerator: React.FC = () => {
       recordUsage('ai');
 
       // 사용자 활동 기록 (게임화 배지 카운터)
-      if (typeof window !== 'undefined' && (window as any).__trackAction) {
-        (window as any).__trackAction('aiGeneration');
+      if (typeof window !== 'undefined' && window.__trackAction) {
+        window.__trackAction('aiGeneration');
       }
 
       // 회원이면 서버에 자동 저장
@@ -172,8 +172,8 @@ const NumberGenerator: React.FC = () => {
       setTimeout(() => setShowSuccess(false), 2000);
 
       // GA4 이벤트
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'ai_numbers_generated', {
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'ai_numbers_generated', {
           numbers: sets.map(s => s.join(',')).join(' | '),
           ai_mode: aiStatus === 'ready' ? 'statistical' : 'fallback',
           set_count: setCount,
@@ -192,8 +192,8 @@ const NumberGenerator: React.FC = () => {
   const handleCopyNumbers = async (numbers: number[]) => {
     const numbersText = numbers.join(', ');
     const success = await copyToClipboard(numbersText);
-    if (success && typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'numbers_copied', { numbers: numbersText });
+    if (success && typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'numbers_copied', { numbers: numbersText });
     }
     alert(success ? '번호가 클립보드에 복사되었습니다!' : '복사에 실패했습니다.');
   };

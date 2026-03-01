@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     const to = from + limit - 1;
 
     // 쿼리 빌더
-    let query = (supabase.from('saved_numbers') as any)
+    let query = supabase.from('saved_numbers')
       .select('*', { count: 'exact' })
       .eq('user_id', auth.userId)
       .order('created_at', { ascending: false })
@@ -145,8 +145,8 @@ export async function POST(request: NextRequest) {
       round_target: roundTarget,
     }));
 
-    const { error: insertError } = await (supabase
-      .from('saved_numbers') as any)
+    const { error: insertError } = await supabase
+      .from('saved_numbers')
       .insert(insertRows);
 
     if (insertError) {
@@ -158,33 +158,33 @@ export async function POST(request: NextRequest) {
     }
 
     // 총 저장 개수 확인 후 초과분 삭제 (FIFO)
-    const { count: totalCount } = await (supabase
-      .from('saved_numbers') as any)
+    const { count: totalCount } = await supabase
+      .from('saved_numbers')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', auth.userId);
 
     if (totalCount && totalCount > MAX_SAVED_PER_USER) {
       const excessCount = totalCount - MAX_SAVED_PER_USER;
       // 가장 오래된 번호 ID 조회
-      const { data: oldestRows } = await (supabase
-        .from('saved_numbers') as any)
+      const { data: oldestRows } = await supabase
+        .from('saved_numbers')
         .select('id')
         .eq('user_id', auth.userId)
         .order('created_at', { ascending: true })
         .limit(excessCount);
 
       if (oldestRows && oldestRows.length > 0) {
-        const idsToDelete = oldestRows.map((r: any) => r.id);
-        await (supabase
-          .from('saved_numbers') as any)
+        const idsToDelete = oldestRows.map((r) => r.id);
+        await supabase
+          .from('saved_numbers')
           .delete()
           .in('id', idsToDelete);
       }
     }
 
     // user_progress 업데이트: saved_numbers_count 증가
-    const { data: progress } = await (supabase
-      .from('user_progress') as any)
+    const { data: progress } = await supabase
+      .from('user_progress')
       .select('saved_numbers_count, multi_set_generations')
       .eq('user_id', auth.userId)
       .single();
@@ -202,8 +202,8 @@ export async function POST(request: NextRequest) {
       updateData.multi_set_generations = currentMultiSetGen + 1;
     }
 
-    await (supabase
-      .from('user_progress') as any)
+    await supabase
+      .from('user_progress')
       .update(updateData)
       .eq('user_id', auth.userId);
 

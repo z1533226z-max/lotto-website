@@ -165,7 +165,7 @@ const UserEngagementPanel: React.FC = () => {
 
   // 전역에서 사용할 수 있도록 window 객체에 함수 추가
   useEffect(() => {
-    (window as any).recordUserActivity = recordActivity;
+    window.recordUserActivity = (action: string) => recordActivity(action as 'prediction' | 'analysis' | 'visit');
     
     // 방문 기록 (처음 로드시만)
     const hasRecordedVisit = sessionStorage.getItem('visit-recorded');
@@ -175,7 +175,7 @@ const UserEngagementPanel: React.FC = () => {
     }
     
     return () => {
-      delete (window as any).recordUserActivity;
+      delete window.recordUserActivity;
     };
   }, [recordActivity]);
 

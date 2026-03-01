@@ -3,6 +3,7 @@ import { getAllLottoData, invalidateAllDataCache } from '@/lib/dataFetcher';
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { getServiceSupabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import type { SavedNumber } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -77,20 +78,21 @@ export async function GET(request: NextRequest) {
     if (latestRound > 0) {
       try {
         const supabase = getServiceSupabase();
-        const { data: unchecked } = await (supabase as any)
+        const { data: uncheckedRaw } = await supabase
           .from('saved_numbers')
           .select('*')
           .eq('round_target', latestRound)
           .is('checked_at', null);
+        const unchecked = (uncheckedRaw || []) as SavedNumber[];
 
-        if (unchecked && unchecked.length > 0) {
+        if (unchecked.length > 0) {
           const drawData = allData.find(d => d.round === latestRound);
           if (drawData) {
             const winningSet = new Set(drawData.numbers);
-            for (const saved of unchecked as any[]) {
-              const matchedCount = (saved.numbers as number[]).filter((n: number) => winningSet.has(n)).length;
-              const bonusMatched = (saved.numbers as number[]).includes(drawData.bonusNumber);
-              await (supabase as any)
+            for (const saved of unchecked) {
+              const matchedCount = saved.numbers.filter((n) => winningSet.has(n)).length;
+              const bonusMatched = saved.numbers.includes(drawData.bonusNumber);
+              await supabase
                 .from('saved_numbers')
                 .update({
                   matched_count: matchedCount,

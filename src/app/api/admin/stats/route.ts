@@ -51,28 +51,28 @@ export async function GET(request: NextRequest) {
       recentUsersRes,
     ] = await Promise.all([
       // 회원 통계
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }),
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }).gte('created_at', weekAgoISO),
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }).gte('created_at', monthAgoISO),
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }).eq('is_banned', true),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gte('created_at', weekAgoISO),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gte('created_at', monthAgoISO),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }).eq('is_banned', true),
       // 최근 24시간 활동 회원 (last_login_at 기준)
-      (supabase.from('user_profiles') as any).select('*', { count: 'exact', head: true }).gte('last_login_at', todayISO),
+      supabase.from('user_profiles').select('*', { count: 'exact', head: true }).gte('last_login_at', todayISO),
       // 게시글 통계
-      (supabase.from('posts') as any).select('*', { count: 'exact', head: true }),
-      (supabase.from('posts') as any).select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
-      (supabase.from('posts') as any).select('*', { count: 'exact', head: true }).gte('created_at', weekAgoISO),
+      supabase.from('posts').select('*', { count: 'exact', head: true }),
+      supabase.from('posts').select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
+      supabase.from('posts').select('*', { count: 'exact', head: true }).gte('created_at', weekAgoISO),
       // 댓글 통계
-      (supabase.from('comments') as any).select('*', { count: 'exact', head: true }),
-      (supabase.from('comments') as any).select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
+      supabase.from('comments').select('*', { count: 'exact', head: true }),
+      supabase.from('comments').select('*', { count: 'exact', head: true }).gte('created_at', todayISO),
       // 고정 게시글 수
-      (supabase.from('posts') as any).select('*', { count: 'exact', head: true }).eq('is_pinned', true),
+      supabase.from('posts').select('*', { count: 'exact', head: true }).eq('is_pinned', true),
       // user_progress 집계 (전체 AI 생성 수, 시뮬 등)
-      (supabase.from('user_progress') as any).select('ai_generations, simulator_runs, dream_generations, fortune_generations, page_views, saved_numbers_count, visit_streak, longest_streak'),
+      supabase.from('user_progress').select('ai_generations, simulator_runs, dream_generations, fortune_generations, page_views, saved_numbers_count, visit_streak, longest_streak'),
       // 저장된 번호 수
-      (supabase.from('saved_numbers') as any).select('*', { count: 'exact', head: true }),
+      supabase.from('saved_numbers').select('*', { count: 'exact', head: true }),
       // 최근 가입 회원 5명
-      (supabase.from('user_profiles') as any).select('id, nickname, created_at, last_login_at').order('created_at', { ascending: false }).limit(5),
+      supabase.from('user_profiles').select('id, nickname, created_at, last_login_at').order('created_at', { ascending: false }).limit(5),
     ]);
 
     // progress 집계

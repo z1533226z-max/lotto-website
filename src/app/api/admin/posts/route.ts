@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    const { data: posts, error, count } = await (supabase.from('posts') as any)
+    const { data: posts, error, count } = await supabase.from('posts')
       .select('id, nickname, title, category, likes, views, is_pinned, created_at', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -38,12 +38,12 @@ export async function GET(request: NextRequest) {
     }
 
     // 전체 통계
-    const { count: totalPosts } = await (supabase.from('posts') as any)
+    const { count: totalPosts } = await supabase.from('posts')
       .select('*', { count: 'exact', head: true });
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-    const { count: todayPosts } = await (supabase.from('posts') as any)
+    const { count: todayPosts } = await supabase.from('posts')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', todayStart.toISOString());
 
@@ -95,7 +95,7 @@ export async function PATCH(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    const { error } = await (supabase.from('posts') as any)
+    const { error } = await supabase.from('posts')
       .update({ is_pinned })
       .eq('id', postId);
 
@@ -145,7 +145,7 @@ export async function DELETE(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    const { error } = await (supabase.from('posts') as any)
+    const { error } = await supabase.from('posts')
       .delete()
       .eq('id', postId);
 

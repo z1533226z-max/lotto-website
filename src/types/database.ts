@@ -7,6 +7,8 @@
  * - comments: 커뮤니티 댓글 (대댓글 지원)
  * - user_profiles: 회원 프로필
  * - user_progress: 회원 진행상황
+ * - saved_numbers: 저장 번호 히스토리
+ * - rate_limits: IP 기반 요청 제한
  */
 
 export interface Database {
@@ -16,34 +18,51 @@ export interface Database {
         Row: WinningStore;
         Insert: WinningStoreInsert;
         Update: Partial<WinningStoreInsert>;
+        Relationships: [];
       };
       posts: {
         Row: Post;
         Insert: PostInsert;
         Update: Partial<PostInsert>;
+        Relationships: [];
       };
       comments: {
         Row: Comment;
         Insert: CommentInsert;
         Update: Partial<CommentInsert>;
+        Relationships: [];
       };
       user_profiles: {
         Row: UserProfile;
         Insert: UserProfileInsert;
         Update: Partial<UserProfileInsert>;
+        Relationships: [];
       };
       user_progress: {
         Row: UserProgressRow;
         Insert: UserProgressInsert;
         Update: Partial<UserProgressInsert>;
+        Relationships: [];
       };
       saved_numbers: {
         Row: SavedNumber;
         Insert: SavedNumberInsert;
         Update: Partial<SavedNumberInsert>;
+        Relationships: [];
+      };
+      rate_limits: {
+        Row: RateLimit;
+        Insert: RateLimitInsert;
+        Update: Partial<RateLimitInsert>;
+        Relationships: [];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      posts_with_comment_count: {
+        Row: PostWithCommentCount;
+        Relationships: [];
+      };
+    };
     Functions: Record<string, never>;
     Enums: {
       post_category: PostCategory;
@@ -58,7 +77,7 @@ export interface Database {
 
 export type PurchaseType = '자동' | '수동' | '반자동';
 
-export interface WinningStore {
+export type WinningStore = {
   id: number;
   round: number;
   rank: number; // 1등 또는 2등
@@ -68,9 +87,9 @@ export interface WinningStore {
   sub_region: string; // 구/군 (강남구, 수원시 등)
   purchase_type: PurchaseType;
   created_at: string;
-}
+};
 
-export interface WinningStoreInsert {
+export type WinningStoreInsert = {
   round: number;
   rank: number;
   store_name: string;
@@ -79,7 +98,7 @@ export interface WinningStoreInsert {
   sub_region: string;
   purchase_type: PurchaseType;
   created_at?: string;
-}
+};
 
 // ============================================
 // 커뮤니티 게시글 관련 타입
@@ -87,7 +106,7 @@ export interface WinningStoreInsert {
 
 export type PostCategory = '자유' | '예측' | '후기' | '팁';
 
-export interface Post {
+export type Post = {
   id: string; // UUID
   nickname: string;
   password_hash: string;
@@ -99,9 +118,9 @@ export interface Post {
   is_pinned: boolean;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface PostInsert {
+export type PostInsert = {
   nickname: string;
   password_hash: string;
   title: string;
@@ -110,7 +129,7 @@ export interface PostInsert {
   likes?: number;
   views?: number;
   is_pinned?: boolean;
-}
+};
 
 // 클라이언트에서 게시글 작성 시 보내는 데이터 (해시 전)
 export interface PostCreateRequest {
@@ -143,7 +162,7 @@ export interface PostListItem {
 // 커뮤니티 댓글 관련 타입
 // ============================================
 
-export interface Comment {
+export type Comment = {
   id: string; // UUID
   post_id: string; // FK → posts.id
   parent_id: string | null; // FK → comments.id (대댓글)
@@ -153,16 +172,16 @@ export interface Comment {
   likes: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface CommentInsert {
+export type CommentInsert = {
   post_id: string;
   parent_id?: string | null;
   nickname: string;
   password_hash: string;
   content: string;
   likes?: number;
-}
+};
 
 // 클라이언트에서 댓글 작성 시 보내는 데이터
 export interface CommentCreateRequest {
@@ -209,26 +228,30 @@ export interface RegionStats {
 // 회원 프로필 관련 타입
 // ============================================
 
-export interface UserProfile {
+export type UserProfile = {
   id: string; // UUID
   nickname: string;
   password_hash: string;
+  is_banned: boolean;
+  banned_reason: string | null;
   created_at: string;
   last_login_at: string;
-}
+};
 
-export interface UserProfileInsert {
+export type UserProfileInsert = {
   nickname: string;
   password_hash: string;
+  is_banned?: boolean;
+  banned_reason?: string | null;
   created_at?: string;
   last_login_at?: string;
-}
+};
 
 // ============================================
 // 회원 진행상황 관련 타입
 // ============================================
 
-export interface UserProgressRow {
+export type UserProgressRow = {
   user_id: string; // FK → user_profiles.id
   visit_streak: number;
   longest_streak: number;
@@ -245,14 +268,14 @@ export interface UserProgressRow {
   match_checks_count: number;
   multi_set_generations: number;
   updated_at: string;
-}
+};
 
-export interface UserProgressInsert {
+export type UserProgressInsert = {
   user_id: string;
   visit_streak?: number;
   longest_streak?: number;
   last_visit_date?: string | null;
-  first_visit_date?: string;
+  first_visit_date?: string | null;
   ai_generations?: number;
   simulator_runs?: number;
   dream_generations?: number;
@@ -263,7 +286,8 @@ export interface UserProgressInsert {
   saved_numbers_count?: number;
   match_checks_count?: number;
   multi_set_generations?: number;
-}
+  updated_at?: string;
+};
 
 // 리더보드 항목 타입
 export interface LeaderboardEntry {
@@ -279,7 +303,7 @@ export interface LeaderboardEntry {
 
 export type NumberSource = 'ai' | 'dream' | 'fortune';
 
-export interface SavedNumber {
+export type SavedNumber = {
   id: string; // UUID
   user_id: string; // FK → user_profiles.id
   numbers: number[]; // INTEGER[]
@@ -289,14 +313,17 @@ export interface SavedNumber {
   bonus_matched: boolean | null;
   checked_at: string | null; // TIMESTAMPTZ
   created_at: string;
-}
+};
 
-export interface SavedNumberInsert {
+export type SavedNumberInsert = {
   user_id: string;
   numbers: number[];
   source: NumberSource;
   round_target: number;
-}
+  matched_count?: number | null;
+  bonus_matched?: boolean | null;
+  checked_at?: string | null;
+};
 
 // API 요청/응답 타입
 export interface SaveNumberRequest {
@@ -312,3 +339,28 @@ export interface NumberStats {
   totalChecked: number;
   matchDistribution: Record<number, number>; // { 0: 10, 1: 5, 2: 3, ... }
 }
+
+// ============================================
+// Rate Limits 관련 타입
+// ============================================
+
+export type RateLimit = {
+  id: number;
+  ip_address: string;
+  action_type: string; // 'register' | 'post' | 'comment'
+  created_at: string;
+};
+
+export type RateLimitInsert = {
+  ip_address: string;
+  action_type: string;
+  created_at?: string;
+};
+
+// ============================================
+// 뷰 관련 타입
+// ============================================
+
+export type PostWithCommentCount = Post & {
+  comment_count: number;
+};

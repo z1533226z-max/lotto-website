@@ -214,8 +214,8 @@ function BirthdayTab({ canUse, recordUsage, auth, onShowLimitModal }: { canUse: 
     recordUsage('fortune');
 
     // 게임화 배지 카운터
-    if (typeof window !== 'undefined' && (window as any).__trackAction) {
-      (window as any).__trackAction('fortuneGeneration');
+    if (typeof window !== 'undefined' && window.__trackAction) {
+      window.__trackAction('fortuneGeneration');
     }
 
     // Server save for members
@@ -561,8 +561,8 @@ function CompatibilityTab({ canUse, recordUsage, auth, onShowLimitModal }: { can
     recordUsage('fortune');
 
     // 게임화 배지 카운터
-    if (typeof window !== 'undefined' && (window as any).__trackAction) {
-      (window as any).__trackAction('fortuneGeneration');
+    if (typeof window !== 'undefined' && window.__trackAction) {
+      window.__trackAction('fortuneGeneration');
     }
 
     // Server save for members

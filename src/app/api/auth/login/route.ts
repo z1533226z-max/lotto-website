@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 사용자 조회
-    const { data: user, error: queryError } = await (supabase
-      .from('user_profiles') as any)
+    const { data: user, error: queryError } = await supabase
+      .from('user_profiles')
       .select('id, nickname, password_hash')
       .eq('nickname', nickname.trim())
       .maybeSingle();
@@ -55,8 +55,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 마지막 로그인 시간 업데이트
-    const { error: updateError } = await (supabase
-      .from('user_profiles') as any)
+    const { error: updateError } = await supabase
+      .from('user_profiles')
       .update({ last_login_at: new Date().toISOString() })
       .eq('id', user.id);
 

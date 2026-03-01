@@ -34,7 +34,7 @@ async function checkRateLimit(ip: string): Promise<boolean> {
  */
 async function recordRateLimit(ip: string): Promise<void> {
   const supabase = getServiceSupabase();
-  await (supabase.from('rate_limits') as any).insert({
+  await supabase.from('rate_limits').insert({
     ip_address: ip,
     action_type: 'comment',
   });
@@ -139,8 +139,8 @@ export async function POST(request: NextRequest) {
     const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
     // 댓글 저장
-    const { data, error } = await (supabase
-      .from('comments') as any)
+    const { data, error } = await supabase
+      .from('comments')
       .insert({
         post_id,
         parent_id: parent_id || null,

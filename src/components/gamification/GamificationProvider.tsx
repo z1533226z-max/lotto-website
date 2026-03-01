@@ -10,9 +10,8 @@ export default function GamificationProvider() {
 
   // trackAction을 window에 노출하여 다른 컴포넌트에서 호출 가능하게 함
   useEffect(() => {
-    const handler = (action: ActionType) => trackAction(action);
-    (window as any).__trackAction = handler;
-    return () => { delete (window as any).__trackAction; };
+    window.__trackAction = (action: string) => trackAction(action as ActionType);
+    return () => { delete window.__trackAction; };
   }, [trackAction]);
 
   return (

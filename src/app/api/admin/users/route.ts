@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { getAdminFromRequest } from '@/lib/auth';
+import type { UserProfile, UserProgressRow } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 회원 목록 조회 (user_progress JOIN)
-    let query = (supabase.from('user_profiles') as any)
+    let query = supabase.from('user_profiles')
       .select('id, nickname, created_at, last_login_at, is_banned, banned_reason', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -46,33 +47,34 @@ export async function GET(request: NextRequest) {
     }
 
     // user_progress 정보 추가
-    const userIds = (users || []).map((u: any) => u.id);
-    let progressMap: Record<string, any> = {};
+    const userList = users || [];
+    const userIds = userList.map((u) => u.id);
+    const progressMap: Record<string, UserProgressRow> = {};
 
     if (userIds.length > 0) {
-      const { data: progressData } = await (supabase.from('user_progress') as any)
+      const { data: progressData } = await supabase.from('user_progress')
         .select('user_id, ai_generations, simulator_runs, dream_generations, fortune_generations, page_views, saved_numbers_count, match_checks_count, multi_set_generations, visit_streak, longest_streak, last_visit_date, first_visit_date, unlocked_badges, updated_at')
         .in('user_id', userIds);
 
       if (progressData) {
-        progressData.forEach((p: any) => {
-          progressMap[p.user_id] = p;
+        progressData.forEach((p) => {
+          progressMap[p.user_id] = p as UserProgressRow;
         });
       }
     }
 
-    const enrichedUsers = (users || []).map((u: any) => ({
+    const enrichedUsers = userList.map((u) => ({
       ...u,
       progress: progressMap[u.id] || null,
     }));
 
     // 전체 통계
-    const { count: totalUsers } = await (supabase.from('user_profiles') as any)
+    const { count: totalUsers } = await supabase.from('user_profiles')
       .select('*', { count: 'exact', head: true });
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-    const { count: todayUsers } = await (supabase.from('user_profiles') as any)
+    const { count: todayUsers } = await supabase.from('user_profiles')
       .select('*', { count: 'exact', head: true })
       .gte('created_at', todayStart.toISOString());
 
@@ -131,7 +133,7 @@ export async function PATCH(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    const updateData: Record<string, any> = {
+    const updateData: Partial<Pick<UserProfile, 'is_banned' | 'banned_reason'>> = {
       is_banned: action === 'ban',
     };
 
@@ -141,7 +143,7 @@ export async function PATCH(request: NextRequest) {
       updateData.banned_reason = null;
     }
 
-    const { error } = await (supabase.from('user_profiles') as any)
+    const { error } = await supabase.from('user_profiles')
       .update(updateData)
       .eq('id', userId);
 
@@ -199,7 +201,7 @@ export async function DELETE(request: NextRequest) {
 
     const supabase = getServiceSupabase();
 
-    const { error } = await (supabase.from('user_profiles') as any)
+    const { error } = await supabase.from('user_profiles')
       .delete()
       .eq('id', userId);
 

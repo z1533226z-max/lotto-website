@@ -21,8 +21,8 @@ export async function GET(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 사용자 정보 조회
-    const { data: user, error } = await (supabase
-      .from('user_profiles') as any)
+    const { data: user, error } = await supabase
+      .from('user_profiles')
       .select('id, nickname, created_at')
       .eq('id', auth.userId)
       .maybeSingle();

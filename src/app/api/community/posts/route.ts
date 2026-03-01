@@ -36,7 +36,7 @@ async function checkRateLimit(ip: string): Promise<boolean> {
  */
 async function recordRateLimit(ip: string): Promise<void> {
   const supabase = getServiceSupabase();
-  await (supabase.from('rate_limits') as any).insert({
+  await supabase.from('rate_limits').insert({
     ip_address: ip,
     action_type: 'post',
   });
@@ -123,8 +123,8 @@ export async function POST(request: NextRequest) {
 
     // 게시글 저장
     const supabase = getServiceSupabase();
-    const { data, error } = await (supabase
-      .from('posts') as any)
+    const { data, error } = await supabase
+      .from('posts')
       .insert({
         nickname: nickname.trim(),
         password_hash,
@@ -178,12 +178,12 @@ export async function GET(request: NextRequest) {
     const isValidCategory = category && VALID_CATEGORIES.includes(category as PostCategory);
 
     // 고정글 + 일반글 병렬 조회
-    let pinnedQuery = (supabase.from('posts_with_comment_count') as any)
+    let pinnedQuery = supabase.from('posts_with_comment_count')
       .select(viewFields)
       .eq('is_pinned', true)
       .order('created_at', { ascending: false });
 
-    let postsQuery = (supabase.from('posts_with_comment_count') as any)
+    let postsQuery = supabase.from('posts_with_comment_count')
       .select(viewFields, { count: 'exact' })
       .eq('is_pinned', false);
 

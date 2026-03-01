@@ -35,7 +35,7 @@ async function checkRateLimit(ip: string): Promise<boolean> {
  */
 async function recordRateLimit(ip: string): Promise<void> {
   const supabase = getServiceSupabase();
-  await (supabase.from('rate_limits') as any).insert({
+  await supabase.from('rate_limits').insert({
     ip_address: ip,
     action_type: 'register',
   });
@@ -86,8 +86,8 @@ export async function POST(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 닉네임 중복 확인
-    const { data: existing, error: checkError } = await (supabase
-      .from('user_profiles') as any)
+    const { data: existing, error: checkError } = await supabase
+      .from('user_profiles')
       .select('id')
       .eq('nickname', trimmedNickname)
       .maybeSingle();
@@ -111,8 +111,8 @@ export async function POST(request: NextRequest) {
     const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
 
     // user_profiles 테이블에 사용자 생성
-    const { data: user, error: insertError } = await (supabase
-      .from('user_profiles') as any)
+    const { data: user, error: insertError } = await supabase
+      .from('user_profiles')
       .insert({
         nickname: trimmedNickname,
         password_hash,
@@ -129,8 +129,8 @@ export async function POST(request: NextRequest) {
     }
 
     // user_progress 테이블에 초기 데이터 생성
-    const { error: progressError } = await (supabase
-      .from('user_progress') as any)
+    const { error: progressError } = await supabase
+      .from('user_progress')
       .insert({
         user_id: user.id,
       });

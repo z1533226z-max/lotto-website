@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { getAuthFromRequest } from '@/lib/auth';
+import type { UserProgressRow } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,8 +19,8 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = getServiceSupabase();
-    const { data, error } = await (supabase
-      .from('user_progress') as any)
+    const { data, error } = await supabase
+      .from('user_progress')
       .select('*')
       .eq('user_id', auth.userId)
       .single();
@@ -74,11 +75,12 @@ export async function PUT(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 기존 서버 데이터 조회
-    const { data: existing } = await (supabase
-      .from('user_progress') as any)
+    const { data: existingRaw } = await supabase
+      .from('user_progress')
       .select('*')
       .eq('user_id', auth.userId)
       .single();
+    const existing = existingRaw as UserProgressRow | null;
 
     // 머지: 숫자 필드는 Math.max
     const mergedVisitStreak = Math.max(
@@ -165,8 +167,8 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    const { data, error } = await (supabase
-      .from('user_progress') as any)
+    const { data, error } = await supabase
+      .from('user_progress')
       .upsert(upsertData, { onConflict: 'user_id' })
       .select('*')
       .single();

@@ -40,7 +40,7 @@ export async function DELETE(
     }
 
     // 비밀번호 확인
-    const isValid = await bcrypt.compare(password, (comment as any).password_hash);
+    const isValid = await bcrypt.compare(password, comment.password_hash);
     if (!isValid) {
       return NextResponse.json(
         { success: false, error: '비밀번호가 일치하지 않습니다.' },

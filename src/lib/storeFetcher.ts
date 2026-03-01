@@ -123,7 +123,7 @@ export async function fetchAndSaveWinningStores(round: number): Promise<{
     }
 
     const serviceSupabase = getServiceSupabase();
-    const { error } = await (serviceSupabase.from('winning_stores') as ReturnType<typeof serviceSupabase.from>)
+    const { error } = await serviceSupabase.from('winning_stores')
       .upsert(stores, {
         onConflict: 'round,rank,store_name,store_address',
         ignoreDuplicates: true,

@@ -21,8 +21,8 @@ export async function GET(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 사용자의 모든 저장 번호 조회
-    const { data: allNumbers, error } = await (supabase
-      .from('saved_numbers') as any)
+    const { data: allNumbers, error } = await supabase
+      .from('saved_numbers')
       .select('source, matched_count, bonus_matched, checked_at')
       .eq('user_id', auth.userId);
 

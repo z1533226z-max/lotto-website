@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
     const supabase = getServiceSupabase();
 
     // 미확인 번호 조회 (checked_at IS NULL)
-    const { data: uncheckedNumbers, error: fetchError } = await (supabase
-      .from('saved_numbers') as any)
+    const { data: uncheckedNumbers, error: fetchError } = await supabase
+      .from('saved_numbers')
       .select('*')
       .eq('user_id', auth.userId)
       .is('checked_at', null);
@@ -86,8 +86,8 @@ export async function POST(request: NextRequest) {
       const rank = calculateRank(matchedCount, bonusMatched);
 
       // DB 업데이트
-      const { error: updateError } = await (supabase
-        .from('saved_numbers') as any)
+      const { error: updateError } = await supabase
+        .from('saved_numbers')
         .update({
           matched_count: matchedCount,
           bonus_matched: bonusMatched,
@@ -110,16 +110,16 @@ export async function POST(request: NextRequest) {
 
     // user_progress 업데이트: match_checks_count 증가
     if (results.length > 0) {
-      const { data: progress } = await (supabase
-        .from('user_progress') as any)
+      const { data: progress } = await supabase
+        .from('user_progress')
         .select('match_checks_count')
         .eq('user_id', auth.userId)
         .single();
 
       const currentCheckCount = progress?.match_checks_count || 0;
 
-      await (supabase
-        .from('user_progress') as any)
+      await supabase
+        .from('user_progress')
         .update({
           match_checks_count: currentCheckCount + results.length,
           updated_at: new Date().toISOString(),

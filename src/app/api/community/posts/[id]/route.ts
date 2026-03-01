@@ -33,9 +33,9 @@ export async function GET(
     }
 
     // 조회수 증가 (비동기, 에러 무시)
-    (supabase
-      .from('posts') as any)
-      .update({ views: ((post as any).views || 0) + 1 })
+    supabase
+      .from('posts')
+      .update({ views: (post.views || 0) + 1 })
       .eq('id', id)
       .then();
 
@@ -48,7 +48,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      post: { ...(post as any), views: ((post as any).views || 0) + 1 },
+      post: { ...post, views: (post.views || 0) + 1 },
       comments: comments || [],
     });
   } catch (error) {
@@ -96,7 +96,7 @@ export async function PATCH(
     }
 
     // 비밀번호 확인
-    const isValid = await bcrypt.compare(password, (post as any).password_hash);
+    const isValid = await bcrypt.compare(password, post.password_hash);
     if (!isValid) {
       return NextResponse.json(
         { success: false, error: '비밀번호가 일치하지 않습니다.' },
@@ -142,8 +142,8 @@ export async function PATCH(
     }
 
     // 게시글 수정
-    const { data: updated, error: updateError } = await (supabase
-      .from('posts') as any)
+    const { data: updated, error: updateError } = await supabase
+      .from('posts')
       .update(updateData)
       .eq('id', id)
       .select('id, nickname, title, content, category, likes, views, is_pinned, created_at, updated_at')
@@ -206,7 +206,7 @@ export async function DELETE(
     }
 
     // 비밀번호 확인
-    const isValidDel = await bcrypt.compare(password, (post as any).password_hash);
+    const isValidDel = await bcrypt.compare(password, post.password_hash);
     if (!isValidDel) {
       return NextResponse.json(
         { success: false, error: '비밀번호가 일치하지 않습니다.' },
