@@ -14,8 +14,8 @@ const mainNavLinks = [
   { name: '당첨조회', path: '/lotto/list' },
   { name: 'AI적중', path: '/lotto/ai-hits' },
   { name: '통계분석', path: '/lotto/statistics' },
+  { name: '번호분석', path: '/lotto/number/1' },
   { name: '판매점', path: '/lotto/stores' },
-  { name: '순위', path: '/lotto/rankings' },
   { name: '커뮤니티', path: '/community' },
 ];
 
@@ -25,6 +25,7 @@ const toolLinks = [
   { name: '행운번호', path: '/lotto/fortune', desc: '생년월일 행운번호', Icon: Clover },
   { name: '계산기', path: '/lotto/calculator', desc: '당첨금 세금 계산', Icon: Calculator },
   { name: '가이드', path: '/lotto/guide', desc: '로또 완전 가이드', Icon: BookOpen },
+  { name: '연도별분석', path: `/lotto/year/${new Date().getFullYear()}`, desc: '연도별 당첨번호 통계', Icon: ClipboardList },
 ];
 
 // 모바일 메뉴용 전체 목록
@@ -35,6 +36,8 @@ const allNavLinks = [
   { name: '행운번호', path: '/lotto/fortune' },
   { name: '계산기', path: '/lotto/calculator' },
   { name: '가이드', path: '/lotto/guide' },
+  { name: '번호분석', path: '/lotto/number/1' },
+  { name: '연도별분석', path: `/lotto/year/${new Date().getFullYear()}` },
 ];
 
 const Header: React.FC = () => {

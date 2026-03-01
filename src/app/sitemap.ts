@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://lotto.gon.ai.kr';
@@ -26,5 +27,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...roundPages];
+  // 번호별 분석 페이지 (1~45번)
+  const numberPages: MetadataRoute.Sitemap = Array.from({ length: 45 }, (_, i) => ({
+    url: `${baseUrl}/lotto/number/${i + 1}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  // 연도별 분석 페이지 (2002~현재)
+  const currentYear = new Date().getFullYear();
+  const yearPages: MetadataRoute.Sitemap = [];
+  for (let y = 2002; y <= currentYear; y++) {
+    yearPages.push({
+      url: `${baseUrl}/lotto/year/${y}`,
+      lastModified: new Date(),
+      changeFrequency: y === currentYear ? 'weekly' as const : 'yearly' as const,
+      priority: y === currentYear ? 0.8 : 0.6,
+    });
+  }
+
+  // 꿈해몽 개별 페이지
+  const dreamPages: MetadataRoute.Sitemap = DREAM_KEYWORDS.map(d => ({
+    url: `${baseUrl}/lotto/dream/${encodeURIComponent(d.keyword)}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  // 패턴 분석 페이지
+  const patternTypes = ['odd-even', 'high-low', 'sum-range', 'consecutive', 'section', 'ending-number', 'gap', 'ac-value'];
+  const patternPages: MetadataRoute.Sitemap = patternTypes.map(type => ({
+    url: `${baseUrl}/lotto/pattern/${type}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...roundPages];
 }
