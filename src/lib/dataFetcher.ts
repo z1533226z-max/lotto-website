@@ -41,17 +41,20 @@ async function fetchAllFromGonServices(): Promise<LottoResult[] | null> {
 
     return data.map((item) => ({
       round: item.round,
-      drawDate: item.drawDate || '',
+      drawDate: item.drawDate ?? '',
       numbers: [...item.numbers].sort((a, b) => a - b),
       bonusNumber: item.bonusNumber,
       prizeMoney: {
-        first: item.prizeMoney?.first || 0,
-        firstWinners: item.prizeMoney?.firstWinners || 0,
+        first: item.prizeMoney?.first ?? 0,
+        firstWinners: item.prizeMoney?.firstWinners ?? 0,
         second: 0,
         secondWinners: 0,
       },
     }));
-  } catch {
+  } catch (e) {
+    if (typeof window === 'undefined') {
+      console.error('[dataFetcher] gon-services 전체 조회 실패:', e instanceof Error ? e.message : e);
+    }
     return null;
   }
 }
@@ -70,17 +73,20 @@ async function fetchFromGonServices(round: number): Promise<LottoResult | null> 
 
     return {
       round: data.round,
-      drawDate: data.drawDate || '',
+      drawDate: data.drawDate ?? '',
       numbers: [...data.numbers].sort((a: number, b: number) => a - b),
       bonusNumber: data.bonusNumber,
       prizeMoney: {
-        first: data.prizeMoney?.first || 0,
-        firstWinners: data.prizeMoney?.firstWinners || 0,
+        first: data.prizeMoney?.first ?? 0,
+        firstWinners: data.prizeMoney?.firstWinners ?? 0,
         second: 0,
         secondWinners: 0,
       },
     };
-  } catch {
+  } catch (e) {
+    if (typeof window === 'undefined') {
+      console.error('[dataFetcher] gon-services 단건 조회 실패:', e instanceof Error ? e.message : e);
+    }
     return null;
   }
 }
