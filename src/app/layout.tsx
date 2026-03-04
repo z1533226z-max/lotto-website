@@ -40,14 +40,7 @@ export const metadata: Metadata = {
     description: '역대 전체 회차 데이터 분석으로 찾은 패턴으로 번호를 추천합니다. 매주 업데이트되는 AI 분석 결과를 확인해보세요!',
     url: 'https://lotto.gon.ai.kr',
     siteName: '로또킹',
-    images: [
-      {
-        url: '/images/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: '로또킹 - AI 로또번호 추천 서비스',
-      },
-    ],
+    // OG 이미지는 opengraph-image.tsx에서 동적 생성
     locale: 'ko_KR',
     type: 'website',
   },
@@ -55,7 +48,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'AI 로또번호 추천 - 로또킹',
     description: '딥러닝 분석으로 뽑은 이번주 고확률 로또번호를 무료로 확인하세요!',
-    images: ['/images/og-image.png'],
+    // 이미지는 opengraph-image.tsx에서 동적 생성
   },
   robots: {
     index: true,
@@ -165,12 +158,8 @@ export default function RootLayout({
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
 
-        {/* Favicons */}
+        {/* Favicons - icon.tsx, apple-icon.tsx에서 동적 생성 */}
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
 
         {/* Google AdSense Account */}
         <meta name="google-adsense-account" content="ca-pub-7479840445702290" />

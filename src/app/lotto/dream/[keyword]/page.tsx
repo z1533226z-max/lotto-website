@@ -71,7 +71,7 @@ export default function DreamDetailPage({ params }: Props) {
         name: `${dream.keyword} 꿈은 무슨 뜻인가요?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: dream.description,
+          text: dream.interpretation,
         },
       },
       {
@@ -79,7 +79,15 @@ export default function DreamDetailPage({ params }: Props) {
         name: `${dream.keyword} 꿈은 길몽인가요?`,
         acceptedAnswer: {
           '@type': 'Answer',
-          text: `${dream.keyword} 꿈은 ${dream.category} 카테고리에 속하며, ${dream.description}`,
+          text: `${dream.keyword} 꿈의 길흉 판단은 "${dream.fortune}"입니다. ${dream.category} 카테고리에 속하며, ${dream.description}`,
+        },
+      },
+      {
+        '@type': 'Question',
+        name: `${dream.keyword} 꿈에서 추천 번호를 조합하는 방법은?`,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `추천번호 ${dream.numbers.join(', ')}을 기본으로, 같은 ${dream.category} 카테고리의 다른 꿈 번호와 조합하면 효과적입니다. 여러 꿈을 꾸었다면 각 꿈의 번호를 모아 6개를 선택해 보세요.`,
         },
       },
     ],

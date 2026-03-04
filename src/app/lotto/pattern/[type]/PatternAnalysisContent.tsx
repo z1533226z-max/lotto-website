@@ -44,6 +44,30 @@ export default function PatternAnalysisContent({ type, name, desc, totalRounds, 
       {type === 'gap' && <GapResult data={data as { gap: number; count: number }[]} />}
       {type === 'ac-value' && <ACValueResult data={data as { ac: number; count: number; percentage: string }[]} />}
 
+      {/* FAQ */}
+      <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+        <h2 className="text-xl font-bold mb-4">❓ 자주 묻는 질문</h2>
+        <div className="space-y-4">
+          {getFaqItems(type, name, totalRounds).map((faq, i) => (
+            <div key={i} className="border-b pb-3" style={{ borderColor: 'var(--border)' }}>
+              <h3 className="font-semibold mb-1">{faq.q}</h3>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 관련 분석 페이지 */}
+      <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+        <h2 className="text-xl font-bold mb-4">📊 관련 분석</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <LinkCard href="/lotto/statistics" icon="📈" title="번호 통계" />
+          <LinkCard href="/lotto/number/1" icon="🔢" title="번호별 분석" />
+          <LinkCard href="/lotto/dream" icon="🌙" title="꿈번호" />
+          <LinkCard href="/lotto/year/2025" icon="📅" title="연도별 분석" />
+        </div>
+      </div>
+
       {/* 다른 패턴 */}
       <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
         <h2 className="text-xl font-bold mb-4">📋 다른 패턴 분석</h2>
@@ -253,4 +277,66 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
       {sub && <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{sub}</div>}
     </div>
   );
+}
+
+function LinkCard({ href, icon, title }: { href: string; icon: string; title: string }) {
+  return (
+    <Link
+      href={href}
+      className="p-3 rounded-lg text-center text-sm font-medium transition-all hover:opacity-80"
+      style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
+    >
+      <div className="text-xl mb-1">{icon}</div>
+      {title}
+    </Link>
+  );
+}
+
+function getFaqItems(type: string, name: string, totalRounds: number) {
+  const faqMap: Record<string, { q: string; a: string }[]> = {
+    'odd-even': [
+      { q: '로또 홀짝 비율에서 가장 많이 나오는 조합은?', a: `총 ${totalRounds}회 추첨 데이터 분석 결과, 홀수 3개 + 짝수 3개(3:3)가 가장 많이 출현했습니다. 그 다음은 4:2 또는 2:4입니다.` },
+      { q: '홀수나 짝수로만 구성된 번호도 당첨된 적 있나요?', a: '6:0(홀수만) 또는 0:6(짝수만)은 매우 드물게 나타납니다. 통계적으로 전체의 1% 미만이므로 한쪽으로 치우친 번호는 피하는 것이 좋습니다.' },
+      { q: '홀짝 비율을 번호 선택에 어떻게 활용하나요?', a: '3:3 또는 4:2 비율로 번호를 구성하는 것이 통계적으로 가장 유리합니다. 예를 들어 홀수 3개(1,7,15)와 짝수 3개(8,22,34)를 조합하세요.' },
+    ],
+    'high-low': [
+      { q: '로또 번호에서 저번호와 고번호의 기준은?', a: '1~22를 저번호(Low), 23~45를 고번호(High)로 구분합니다. 45개 번호를 거의 절반으로 나눈 기준입니다.' },
+      { q: '저번호와 고번호의 최적 비율은?', a: `${totalRounds}회 데이터 분석 결과, 3:3(저3:고3)이 가장 많이 출현했습니다. 한쪽으로 4개 이상 치우친 조합은 확률이 낮아집니다.` },
+      { q: '고저 비율 분석을 실전에 어떻게 쓰나요?', a: '번호를 선택한 후 저번호(1~22)와 고번호(23~45) 개수를 세어보세요. 3:3이나 2:4가 아니라면 일부 번호를 교체하는 것이 좋습니다.' },
+    ],
+    'sum-range': [
+      { q: '로또 당첨번호 합계의 평균은?', a: `${totalRounds}회 데이터 기준, 당첨번호 6개의 합계 평균은 약 130~140입니다. 이론적 기대값은 138입니다.` },
+      { q: '합계가 너무 낮거나 높으면 불리한가요?', a: '네, 합계 60 이하나 200 이상인 경우는 전체의 5% 미만입니다. 100~170 구간이 가장 자주 당첨되므로 이 범위를 목표로 번호를 선택하세요.' },
+      { q: '번호 합계를 쉽게 계산하는 방법은?', a: '선택한 6개 번호를 모두 더하면 됩니다. 예를 들어 3, 12, 18, 27, 35, 41을 선택하면 합계는 136으로 최적 구간에 해당합니다.' },
+    ],
+    'consecutive': [
+      { q: '연속번호가 포함된 당첨이 실제로 많나요?', a: `네, 전체 ${totalRounds}회 중 절반 이상에서 연속번호(예: 5-6, 23-24)가 1쌍 이상 포함되었습니다. 연속번호를 완전히 배제하면 오히려 불리합니다.` },
+      { q: '3연속번호(예: 10-11-12)는 자주 나오나요?', a: '3연속번호는 2연속에 비해 출현 빈도가 크게 낮습니다. 2연속 1쌍 정도를 포함하는 것이 가장 현실적인 전략입니다.' },
+      { q: '연속번호 전략을 어떻게 활용하나요?', a: '6개 번호 중 2개는 연속되게(예: 15-16), 나머지 4개는 간격을 두고 선택하는 것이 통계적으로 가장 자연스러운 조합입니다.' },
+    ],
+    'section': [
+      { q: '로또 번호의 5개 구간은 어떻게 나누나요?', a: '1~9(1구간), 10~19(2구간), 20~29(3구간), 30~39(4구간), 40~45(5구간)으로 나눕니다. 각 구간에서 고루 번호를 선택하는 것이 좋습니다.' },
+      { q: '한 구간에서 번호를 많이 뽑으면 불리한가요?', a: '한 구간에서 3개 이상 선택하면 당첨 확률이 낮아집니다. 최소 3~4개 구간에 걸쳐 번호를 분산시키세요.' },
+      { q: '구간별로 꼭 1개씩 넣어야 하나요?', a: '꼭 1개씩일 필요는 없지만, 최소 3개 구간 이상에서 번호를 선택하는 것이 통계적으로 유리합니다.' },
+    ],
+    'ending-number': [
+      { q: '끝수 분석이란 무엇인가요?', a: '당첨번호의 일의 자리(끝자리) 숫자를 분석하는 것입니다. 예를 들어 7, 17, 27, 37은 모두 끝수 7입니다.' },
+      { q: '같은 끝수 번호를 여러 개 넣으면 불리한가요?', a: '같은 끝수의 번호를 3개 이상 선택하면 당첨 확률이 크게 떨어집니다. 다양한 끝수를 골고루 배분하세요.' },
+      { q: '가장 자주 나오는 끝수는?', a: `${totalRounds}회 데이터에서 끝수 0~9의 출현 빈도는 비교적 균등하지만, 미세한 차이가 있습니다. 위 차트에서 상위 끝수를 참고하세요.` },
+    ],
+    'gap': [
+      { q: '번호 간격 분석이란?', a: '당첨번호를 오름차순 정렬한 후 인접한 두 번호의 차이를 분석하는 것입니다. 예를 들어 3, 8, 15면 간격은 5, 7입니다.' },
+      { q: '적절한 번호 간격은?', a: '간격 1~8이 가장 자주 나타납니다. 모든 번호가 10 이상 떨어져 있거나, 모두 붙어있는 경우는 드뭅니다.' },
+      { q: '간격 분석을 실전에 어떻게 활용하나요?', a: '선택한 6개 번호를 정렬한 후 간격을 확인하세요. 간격이 너무 균일하거나 극단적이면 일부 번호를 조정하는 것이 좋습니다.' },
+    ],
+    'ac-value': [
+      { q: 'AC값이란 무엇인가요?', a: '번호 조합 복잡도(Arithmetic Complexity)입니다. 6개 번호에서 만들 수 있는 15개 차이값 중 서로 다른 값의 개수에서 5를 뺀 값입니다. 0~10 범위입니다.' },
+      { q: 'AC값이 높으면 좋은 건가요?', a: 'AC값이 높을수록 번호가 골고루 분포되어 있다는 뜻입니다. AC값 7~10이 당첨 번호에서 가장 자주 나타나므로, 이 범위를 목표로 하세요.' },
+      { q: 'AC값이 낮은 번호 예시는?', a: '1, 2, 3, 4, 5, 6 같은 연속번호는 AC값이 매우 낮습니다(AC=1). 이런 패턴은 당첨 확률이 극히 낮으므로 피해야 합니다.' },
+    ],
+  };
+  return faqMap[type] || [
+    { q: `${name}은 무엇인가요?`, a: `${name}은 로또 당첨번호의 패턴을 분석하여 번호 선택에 도움을 주는 통계 분석입니다.` },
+    { q: `이 분석을 어떻게 활용하나요?`, a: `과거 ${totalRounds}회의 데이터를 기반으로 한 통계이므로, 번호 선택 시 참고 자료로 활용하세요.` },
+  ];
 }

@@ -1,0 +1,16 @@
+{
+  "name": "로또킹 - AI 로또번호 추천",
+  "short_name": "로또킹",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "theme_color": "#D36135",
+  "background_color": "#1a1a2e",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}
