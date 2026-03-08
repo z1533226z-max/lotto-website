@@ -42,8 +42,11 @@ const nextConfig = {
               connect-src 'self'
               *.googlesyndication.com
               *.google.com
+              *.google-analytics.com
+              *.googletagmanager.com
               *.doubleclick.net
               *.googleadservices.com
+              *.adtrafficquality.google
               *.up.railway.app;
             `.replace(/\s+/g, ' ').trim(),
           },
