@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLottoData, invalidateAllDataCache } from '@/lib/dataFetcher';
+import { getAllLottoData, invalidateAllDataCache, getEstimatedLatestRound } from '@/lib/dataFetcher';
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { getServiceSupabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
@@ -37,8 +37,19 @@ export async function GET(request: NextRequest) {
     invalidateAllDataCache();
 
     // 2. 최신 데이터 fetch (정적 데이터 이후 → API에서 새 회차 가져옴)
-    const allData = await getAllLottoData();
-    const latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
+    // 여러 번 시도하여 안정성 확보
+    let allData = await getAllLottoData();
+    let latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
+    const expectedRound = getEstimatedLatestRound();
+
+    // 최신 회차를 못 가져왔으면 재시도 (API 지연 대비)
+    if (latestRound < expectedRound) {
+      console.log(`[Cron] 예상 회차(${expectedRound}) > 실제 회차(${latestRound}), 5초 후 재시도`);
+      await new Promise(r => setTimeout(r, 5000));
+      invalidateAllDataCache();
+      allData = await getAllLottoData();
+      latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
+    }
 
     // 3. ISR 캐시 무효화 - 모든 주요 페이지
     const pathsToRevalidate = [
@@ -135,9 +146,13 @@ export async function GET(request: NextRequest) {
 
     const elapsed = Date.now() - startTime;
 
+    const dataUpToDate = latestRound >= expectedRound;
+
     return NextResponse.json({
       success: true,
       latestRound,
+      expectedRound,
+      dataUpToDate,
       totalRounds: allData.length,
       revalidatedPaths: pathsToRevalidate.length + 2,
       storeData: storeResult,
