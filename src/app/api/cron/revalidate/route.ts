@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
       '/lotto/calculator',
       '/lotto/stores',
       '/community',
+      '/lotto/daily-fortune',
     ];
 
     for (const path of pathsToRevalidate) {

@@ -64,5 +64,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...roundPages];
+  // 띠별 행운번호 페이지 (최근 30일 + 오늘)
+  const dailyFortunePages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/lotto/daily-fortune`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+  ];
+  const today = new Date();
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    dailyFortunePages.push({
+      url: `${baseUrl}/lotto/daily-fortune/${dateStr}`,
+      lastModified: i === 0 ? new Date() : d,
+      changeFrequency: i === 0 ? 'daily' as const : 'never' as const,
+      priority: i === 0 ? 0.9 : 0.6,
+    });
+  }
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...roundPages];
 }

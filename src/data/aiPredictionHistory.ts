@@ -40,11 +40,12 @@ export interface AIMultiSetResult {
 
 // 정적 데이터의 마지막 회차 (이후는 동적 생성)
 // 새 회차 데이터 추가 시 이 값도 함께 업데이트 (scripts/updateLottoData.js에서 자동 처리)
-export const LATEST_STATIC_PREDICTION_ROUND = 1214;
+export const LATEST_STATIC_PREDICTION_ROUND = 1215;
 
-// AI 추천 기록 (정적 데이터 - 1201~1214회)
+// AI 추천 기록 (정적 데이터 - 1201~1215회)
 // 각 회차의 예측번호는 해당 회차 추첨 전(금요일)에 시드 기반으로 결정론적 생성됨
 export const AI_PREDICTION_HISTORY: AIPrediction[] = [
+  { round: 1215, predictedNumbers: [5, 15, 18, 20, 35, 38], predictedAt: '2026-03-12' },
   { round: 1214, predictedNumbers: [9, 20, 22, 26, 27, 30], predictedAt: '2026-03-05' },
   { round: 1213, predictedNumbers: [9, 17, 21, 25, 27, 35], predictedAt: '2026-02-26' },
   { round: 1212, predictedNumbers: [2, 16, 30, 34, 43, 44], predictedAt: '2026-02-19' },

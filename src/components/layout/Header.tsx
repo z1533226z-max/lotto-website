@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
-import { Dices, Gamepad2, Moon, Clover, Calculator, BookOpen, User, ShieldCheck, ClipboardList, LogOut, Zap } from 'lucide-react';
+import { Dices, Gamepad2, Moon, Clover, Calculator, BookOpen, User, ShieldCheck, ClipboardList, LogOut, Zap, Sparkles } from 'lucide-react';
 
 const mainNavLinks = [
   { name: '홈', path: '/' },
@@ -20,6 +20,7 @@ const mainNavLinks = [
 ];
 
 const toolLinks = [
+  { name: '띠별행운', path: '/lotto/daily-fortune', desc: '매일 띠별 행운번호', Icon: Sparkles },
   { name: '시뮬레이터', path: '/lotto/simulator', desc: '매주 이 번호를 샀다면?', Icon: Gamepad2 },
   { name: '꿈번호', path: '/lotto/dream', desc: '꿈해몽 기반 번호 생성', Icon: Moon },
   { name: '행운번호', path: '/lotto/fortune', desc: '생년월일 행운번호', Icon: Clover },
@@ -31,6 +32,7 @@ const toolLinks = [
 // 모바일 메뉴용 전체 목록
 const allNavLinks = [
   ...mainNavLinks,
+  { name: '띠별행운', path: '/lotto/daily-fortune' },
   { name: '시뮬레이터', path: '/lotto/simulator' },
   { name: '꿈번호', path: '/lotto/dream' },
   { name: '행운번호', path: '/lotto/fortune' },
