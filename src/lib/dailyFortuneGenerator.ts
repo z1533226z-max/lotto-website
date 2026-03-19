@@ -117,8 +117,8 @@ function generateNumbers(seed: number, elementFavorites?: number[]): number[] {
 
 // 띠 판별 (생년 기준)
 export function getZodiacAnimal(birthYear: number): typeof ZODIAC_ANIMALS[number] {
-  const index = (birthYear - 4) % 12;
-  return ZODIAC_ANIMALS[index >= 0 ? index : index + 12];
+  const index = ((birthYear - 4) % 12 + 12) % 12;
+  return ZODIAC_ANIMALS[index];
 }
 
 export interface DailyFortuneItem {

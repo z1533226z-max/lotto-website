@@ -138,11 +138,16 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
     notFound();
   }
 
+  // 날짜 이동 헬퍼
+  const shiftDate = (d: string, offset: number) => {
+    const dt = new Date(d + 'T00:00:00+09:00');
+    dt.setDate(dt.getDate() + offset);
+    return dt.toISOString().split('T')[0];
+  };
+
   // 미래 날짜는 내일까지만 허용
   const today = getTodayKST();
-  const tomorrow = new Date(today + 'T00:00:00+09:00');
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+  const tomorrowStr = shiftDate(today, 1);
 
   if (date > tomorrowStr) {
     notFound();
@@ -153,14 +158,8 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
   const formatted = formatDateKorean(date);
 
   // 이전/다음 날짜 계산
-  const currentDate = new Date(date + 'T00:00:00+09:00');
-  const prevDate = new Date(currentDate);
-  prevDate.setDate(prevDate.getDate() - 1);
-  const prevStr = prevDate.toISOString().split('T')[0];
-
-  const nextDate = new Date(currentDate);
-  nextDate.setDate(nextDate.getDate() + 1);
-  const nextStr = nextDate.toISOString().split('T')[0];
+  const prevStr = shiftDate(date, -1);
+  const nextStr = shiftDate(date, 1);
   const canGoNext = nextStr <= tomorrowStr;
 
   // 생년별 띠 빠른 참조표 (최근 년도들)
