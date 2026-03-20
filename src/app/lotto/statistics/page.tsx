@@ -6,11 +6,11 @@ import { BarChart3, TrendingUp, Hash, BookOpen, Calendar } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '로또 번호 통계 분석 - 로또킹',
-  description: '역대 전체 회차 데이터 기반 로또번호 출현 빈도, 핫/콜드 번호, 구간별 분포, 홀짝 패턴 등 종합 통계 분석.',
+  title: '로또 번호 통계 분석 - 출현 빈도, 핫/콜드 번호 | 로또킹',
+  description: '1,200회+ 로또 데이터 기반 번호 출현 빈도, 핫/콜드 번호, 구간별 분포, 홀짝 비율, 연속번호 패턴 종합 통계. 데이터 기반 당첨번호 예측에 활용하세요!',
   openGraph: {
-    title: '로또 번호 통계 분석 - 로또킹',
-    description: '역대 전체 회차 데이터 기반 로또번호 종합 통계 분석',
+    title: '로또 번호 통계 분석 - 출현 빈도, 핫/콜드 번호 | 로또킹',
+    description: '1,200회+ 로또 데이터 기반 종합 통계 분석. 핫/콜드 번호, 구간별 분포, 패턴 확인!',
   },
 };
 
