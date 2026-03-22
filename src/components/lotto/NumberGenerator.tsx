@@ -452,7 +452,7 @@ const NumberGenerator: React.FC = () => {
           style={{ borderColor: 'var(--border)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
             <Zap className="w-3.5 h-3.5 inline-block mr-1" /> 지금 <span className="font-bold text-primary">{virtualUsers}명</span>이 AI 분석번호를 확인했습니다!

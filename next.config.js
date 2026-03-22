@@ -27,8 +27,7 @@ const nextConfig = {
               *.gstatic.com
               *.doubleclick.net
               *.googleadservices.com
-              *.adtrafficquality.google
-              code.iconify.design;
+              *.adtrafficquality.google;
               frame-src 'self' 
               *.googlesyndication.com 
               *.google.com

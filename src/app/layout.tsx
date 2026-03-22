@@ -150,9 +150,6 @@ export default function RootLayout({
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
 
-        {/* Iconify — Solar icon set */}
-        <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js" defer />
-
         {/* Favicons - icon.tsx, apple-icon.tsx에서 동적 생성 */}
         <link rel="icon" href="/favicon.ico" />
 

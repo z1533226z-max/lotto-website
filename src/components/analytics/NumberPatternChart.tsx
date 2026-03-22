@@ -235,7 +235,7 @@ const NumberPatternChart: React.FC<NumberPatternChartProps> = ({ className }) =>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">

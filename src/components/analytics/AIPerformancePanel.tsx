@@ -209,7 +209,7 @@ const AIPerformancePanel: React.FC<AIPerformancePanelProps> = ({ className }) =>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         <Card className="p-6">
           <div className="flex items-center mb-4">

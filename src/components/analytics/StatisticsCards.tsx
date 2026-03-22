@@ -178,7 +178,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-xl p-6 border border-red-200 dark:border-red-800 h-full">
           <div className="flex items-center mb-3">
@@ -203,7 +203,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 h-full">
           <div className="flex items-center mb-3">
@@ -228,7 +228,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({ className }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800 h-full">
           <div className="flex items-center mb-3">
