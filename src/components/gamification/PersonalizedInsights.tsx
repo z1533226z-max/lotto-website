@@ -251,7 +251,7 @@ const PersonalizedInsights: React.FC<PersonalizedInsightsProps> = ({
                     className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${personalizedStrategy.confidence}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
+                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </div>
                 <span className="text-sm font-medium text-green-600">

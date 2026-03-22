@@ -77,7 +77,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({
             'animate-slide-in-right'
           )}
           style={{
-            animation: 'slideInRight 0.4s ease-out, fadeOut 0.4s ease-in 3.5s forwards',
+            animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1), fadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) 3.5s forwards',
           }}
         >
           <div
@@ -151,7 +151,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({
               background: 'var(--surface, #ffffff)',
               borderColor: 'var(--border, #e5e7eb)',
               color: 'var(--text, #1f2937)',
-              animation: 'scaleIn 0.2s ease-out',
+              animation: 'scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             {/* Header */}

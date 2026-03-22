@@ -29,19 +29,6 @@ const toolLinks = [
   { name: '연도별분석', path: `/lotto/year/${new Date().getFullYear()}`, desc: '연도별 당첨번호 통계', Icon: ClipboardList },
 ];
 
-// 모바일 메뉴용 전체 목록
-const allNavLinks = [
-  ...mainNavLinks,
-  { name: '띠별행운', path: '/lotto/daily-fortune' },
-  { name: '시뮬레이터', path: '/lotto/simulator' },
-  { name: '꿈번호', path: '/lotto/dream' },
-  { name: '행운번호', path: '/lotto/fortune' },
-  { name: '계산기', path: '/lotto/calculator' },
-  { name: '가이드', path: '/lotto/guide' },
-  { name: '번호분석', path: '/lotto/number/1' },
-  { name: '연도별분석', path: `/lotto/year/${new Date().getFullYear()}` },
-];
-
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
@@ -52,51 +39,36 @@ const Header: React.FC = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const toolsRef = useRef<HTMLDivElement>(null);
 
-  // Track scroll position for header background enhancement
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
+  useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [mobileMenuOpen]);
 
-  // Close user menu on outside click
   useEffect(() => {
     if (!userMenuOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setUserMenuOpen(false);
-      }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [userMenuOpen]);
 
-  // Close tools dropdown on outside click
   useEffect(() => {
     if (!toolsOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) {
-        setToolsOpen(false);
-      }
+      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
     };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
@@ -109,314 +81,325 @@ const Header: React.FC = () => {
 
   return (
     <>
+      {/* Floating Glass Pill Navigation */}
       <header
         className={cn(
-          'sticky top-0 z-50',
-          'glass',
-          'transition-all duration-300',
-          scrolled && 'shadow-lg dark:shadow-2xl'
+          'fixed top-0 left-0 right-0 z-50',
+          'transition-all duration-500',
         )}
+        style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
       >
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center gap-2 group"
-            >
-              <Dices className="w-7 h-7 text-primary transition-transform duration-300 group-hover:scale-110" />
-              <div>
-                <span className="text-xl font-bold gradient-text">
-                  로또킹
-                </span>
-                <p className="text-[10px] hidden sm:block" style={{ color: 'var(--text-secondary)' }}>
-                  AI가 뽑아주는 행운번호
-                </p>
-              </div>
-            </Link>
+        <div className={cn(
+          'mx-auto mt-3 px-4',
+          'max-w-5xl',
+          'transition-all duration-500',
+          scrolled && 'mt-2',
+        )}
+        style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+        >
+          <div
+            className={cn(
+              'rounded-2xl lg:rounded-full',
+              'backdrop-blur-xl',
+              'border',
+              'shadow-[0_8px_32px_rgba(0,0,0,0.08)]',
+              'dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)]',
+              'transition-all duration-500',
+              scrolled
+                ? 'bg-[var(--surface)]/90 dark:bg-[var(--surface)]/80 shadow-lg'
+                : 'bg-white/70 dark:bg-[#1E2030]/70',
+            )}
+            style={{
+              borderColor: 'var(--glass-border)',
+              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
+            <div className="flex items-center justify-between h-14 px-4 lg:px-6">
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2 group shrink-0">
+                <Dices
+                  className="w-6 h-6 text-primary transition-transform duration-500 group-hover:rotate-12"
+                  style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+                />
+                <span className="text-lg font-bold gradient-text">로또킹</span>
+              </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {mainNavLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  className={cn(
-                    'relative px-3 py-2 rounded-lg text-sm font-medium',
-                    'transition-all duration-200',
-                    isActive(link.path)
-                      ? 'text-primary'
-                      : 'hover:bg-[var(--surface-hover)]',
-                  )}
-                  style={{
-                    color: isActive(link.path) ? undefined : 'var(--text-secondary)',
-                  }}
-                >
-                  {link.name}
-                  {isActive(link.path) && (
-                    <span
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary"
-                    />
-                  )}
-                </Link>
-              ))}
+              {/* Desktop Navigation */}
+              <nav className="hidden lg:flex items-center gap-0.5">
+                {mainNavLinks.map((link) => (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    className={cn(
+                      'relative px-3 py-1.5 rounded-full text-[13px] font-medium',
+                      'transition-all duration-300',
+                      isActive(link.path)
+                        ? 'text-primary bg-primary/10'
+                        : 'hover:bg-[var(--surface-hover)]',
+                    )}
+                    style={{
+                      color: isActive(link.path) ? undefined : 'var(--text-secondary)',
+                      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
 
-              {/* Tools dropdown */}
-              <div
-                className="relative"
-                ref={toolsRef}
-              >
-                <button
-                  onClick={() => setToolsOpen(!toolsOpen)}
-                  className={cn(
-                    'relative px-3 py-2 rounded-lg text-sm font-medium',
-                    'transition-all duration-200',
-                    'hover:bg-[var(--surface-hover)]',
-                    'flex items-center gap-1',
-                    toolLinks.some(l => isActive(l.path)) && 'text-primary',
-                  )}
-                  style={{
-                    color: toolLinks.some(l => isActive(l.path)) ? undefined : 'var(--text-secondary)',
-                  }}
-                >
-                  도구
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                  {toolLinks.some(l => isActive(l.path)) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary" />
-                  )}
-                </button>
+                {/* Tools dropdown */}
+                <div className="relative" ref={toolsRef}>
+                  <button
+                    onClick={() => setToolsOpen(!toolsOpen)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-[13px] font-medium',
+                      'transition-all duration-300',
+                      'hover:bg-[var(--surface-hover)]',
+                      'flex items-center gap-1',
+                      toolLinks.some(l => isActive(l.path)) && 'text-primary bg-primary/10',
+                    )}
+                    style={{
+                      color: toolLinks.some(l => isActive(l.path)) ? undefined : 'var(--text-secondary)',
+                      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                  >
+                    도구
+                    <svg
+                      className={cn('w-3 h-3 transition-transform duration-300', toolsOpen && 'rotate-180')}
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
 
-                {toolsOpen && (
-                  <div className="absolute top-full right-0 mt-1 w-56 glass rounded-xl shadow-xl p-2 animate-fade-in z-50">
-                    {toolLinks.map((link) => (
-                      <Link
-                        key={link.path}
-                        href={link.path}
-                        className={cn(
-                          'flex items-start gap-3 px-3 py-2.5 rounded-lg',
-                          'transition-all duration-200',
-                          isActive(link.path)
-                            ? 'bg-primary/10 text-primary'
-                            : 'hover:bg-[var(--surface-hover)]'
-                        )}
-                        style={{
-                          color: isActive(link.path) ? undefined : 'var(--text)',
-                        }}
-                        onClick={() => setToolsOpen(false)}
-                      >
-                        <link.Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <div className="text-sm font-medium">{link.name}</div>
-                          <div className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
-                            {link.desc}
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </nav>
-
-            {/* Right section: Auth + Theme toggle + Mobile menu button */}
-            <div className="flex items-center gap-2">
-              {/* Auth button */}
-              {auth && !auth.isLoading && (
-                auth.user ? (
-                  <div className="relative" ref={userMenuRef}>
-                    <button
-                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  {toolsOpen && (
+                    <div
                       className={cn(
-                        'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium',
-                        'transition-all duration-200',
-                        'hover:bg-[var(--surface-hover)]',
-                        'border',
+                        'absolute top-full right-0 mt-2 w-60',
+                        'rounded-2xl p-1.5',
+                        'backdrop-blur-xl border',
+                        'bg-white/90 dark:bg-[#1E2030]/90',
+                        'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]',
+                        'dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)]',
                       )}
                       style={{
-                        borderColor: 'var(--border)',
-                        color: 'var(--text)',
+                        borderColor: 'var(--glass-border)',
+                        animation: 'fadeInUp 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                       }}
                     >
-                      <User className="w-4 h-4" />
-                      <span className="hidden sm:inline max-w-[80px] truncate">{auth.user.nickname}</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                      <div className="rounded-[calc(1rem-0.375rem)] overflow-hidden">
+                        {toolLinks.map((link) => (
+                          <Link
+                            key={link.path}
+                            href={link.path}
+                            className={cn(
+                              'flex items-start gap-3 px-3 py-2.5 rounded-xl',
+                              'transition-all duration-300',
+                              isActive(link.path)
+                                ? 'bg-primary/10 text-primary'
+                                : 'hover:bg-[var(--surface-hover)]'
+                            )}
+                            style={{
+                              color: isActive(link.path) ? undefined : 'var(--text)',
+                              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            }}
+                            onClick={() => setToolsOpen(false)}
+                          >
+                            <link.Icon className="w-4 h-4 mt-0.5 shrink-0 opacity-60" />
+                            <div>
+                              <div className="text-sm font-medium">{link.name}</div>
+                              <div className="text-[11px] mt-0.5 opacity-50">{link.desc}</div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </nav>
 
-                    {userMenuOpen && (
-                      <div
-                        className="absolute top-full right-0 mt-1 w-48 glass rounded-xl shadow-xl overflow-hidden z-50"
-                        style={{ animation: 'scaleIn 0.15s ease-out' }}
+              {/* Right section */}
+              <div className="flex items-center gap-1.5">
+                {/* Auth */}
+                {auth && !auth.isLoading && (
+                  auth.user ? (
+                    <div className="relative" ref={userMenuRef}>
+                      <button
+                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+                        className={cn(
+                          'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium',
+                          'transition-all duration-300',
+                          'hover:bg-[var(--surface-hover)]',
+                          'ring-1 ring-[var(--border)]',
+                        )}
+                        style={{
+                          color: 'var(--text)',
+                          transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                        }}
                       >
-                        <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
-                          <p className="text-sm font-bold truncate" style={{ color: 'var(--text)' }}>
-                            {auth.user.nickname}
-                          </p>
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                            {auth.user.isAdmin ? <span className="inline-flex items-center gap-1"><Zap className="w-3 h-3" /> 관리자</span> : '회원'}
-                          </p>
-                        </div>
-                        <div className="p-1">
+                        <User className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline max-w-[80px] truncate">{auth.user.nickname}</span>
+                      </button>
+
+                      {userMenuOpen && (
+                        <div
+                          className={cn(
+                            'absolute top-full right-0 mt-2 w-48',
+                            'rounded-2xl p-1.5',
+                            'backdrop-blur-xl border',
+                            'bg-white/90 dark:bg-[#1E2030]/90',
+                            'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]',
+                          )}
+                          style={{
+                            borderColor: 'var(--glass-border)',
+                            animation: 'fadeInUp 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
+                          }}
+                        >
+                          <div className="px-3 py-2.5 mb-1">
+                            <p className="text-sm font-bold truncate" style={{ color: 'var(--text)' }}>
+                              {auth.user.nickname}
+                            </p>
+                            <p className="text-[11px] mt-0.5 opacity-50">
+                              {auth.user.isAdmin ? <span className="inline-flex items-center gap-1"><Zap className="w-3 h-3" /> 관리자</span> : '회원'}
+                            </p>
+                          </div>
+                          <div className="h-px bg-[var(--border)] mx-2 mb-1" />
                           {auth.user.isAdmin && (
                             <Link
                               href="/admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className={cn(
-                                'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
-                                'transition-colors duration-200',
-                                'hover:bg-[var(--surface-hover)]',
-                              )}
+                              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
                               style={{ color: '#EF4444' }}
                             >
-                              <ShieldCheck className="w-4 h-4" />
-                              관리자 페이지
+                              <ShieldCheck className="w-4 h-4" /> 관리자
                             </Link>
                           )}
                           <Link
                             href="/mypage"
                             onClick={() => setUserMenuOpen(false)}
-                            className={cn(
-                              'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
-                              'transition-colors duration-200',
-                              'hover:bg-[var(--surface-hover)]',
-                            )}
+                            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
                             style={{ color: 'var(--text)' }}
                           >
-                            <ClipboardList className="w-4 h-4" />
-                            마이페이지
+                            <ClipboardList className="w-4 h-4" /> 마이페이지
                           </Link>
                           <button
-                            onClick={() => {
-                              auth.logout();
-                              setUserMenuOpen(false);
-                            }}
-                            className={cn(
-                              'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm',
-                              'transition-colors duration-200',
-                              'hover:bg-[var(--surface-hover)]',
-                            )}
+                            onClick={() => { auth.logout(); setUserMenuOpen(false); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
                             style={{ color: 'var(--text)' }}
                           >
-                            <LogOut className="w-4 h-4" />
-                            로그아웃
+                            <LogOut className="w-4 h-4" /> 로그아웃
                           </button>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => auth.openAuthModal()}
-                    className={cn(
-                      'px-3 py-1.5 rounded-lg text-sm font-semibold',
-                      'transition-all duration-200',
-                      'hover:opacity-90 active:scale-95',
-                    )}
-                    style={{
-                      background: 'linear-gradient(135deg, #D36135, #E88A6A)',
-                      color: '#fff',
-                    }}
-                  >
-                    로그인
-                  </button>
-                )
-              )}
-
-              <ThemeToggle size="sm" />
-
-              {/* Mobile menu button */}
-              <button
-                className={cn(
-                  'lg:hidden p-2 rounded-lg',
-                  'transition-colors duration-200',
-                  'hover:bg-[var(--surface-hover)]'
-                )}
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label={mobileMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
-                aria-expanded={mobileMenuOpen}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  style={{ color: 'var(--text)' }}
-                  aria-hidden="true"
-                >
-                  {mobileMenuOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                      )}
+                    </div>
                   ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
+                    <button
+                      onClick={() => auth.openAuthModal()}
+                      className={cn(
+                        'px-4 py-1.5 rounded-full text-[13px] font-semibold text-white',
+                        'bg-primary hover:scale-[1.02] active:scale-[0.98]',
+                        'transition-all duration-300',
+                        'shadow-[0_0_20px_rgba(211,97,53,0.2)]',
+                      )}
+                      style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+                    >
+                      로그인
+                    </button>
+                  )
+                )}
+
+                <ThemeToggle size="sm" />
+
+                {/* Mobile menu button */}
+                <button
+                  className={cn(
+                    'lg:hidden p-2 rounded-full',
+                    'transition-all duration-300',
+                    'hover:bg-[var(--surface-hover)]',
+                    'active:scale-[0.95]',
                   )}
-                </svg>
-              </button>
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  aria-label={mobileMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
+                  aria-expanded={mobileMenuOpen}
+                  style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style={{ color: 'var(--text)' }}
+                    aria-hidden="true"
+                  >
+                    {mobileMenuOpen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    )}
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Spacer for fixed header */}
+      <div className="h-20" />
+
+      {/* Mobile Menu — Full-screen overlay */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         >
-          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+            className="absolute inset-0 bg-black/50 backdrop-blur-md"
+            style={{ animation: 'fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}
           />
 
-          {/* Menu panel */}
           <div
             className={cn(
-              'absolute top-16 left-0 right-0 mx-4 mt-2',
-              'glass rounded-2xl',
-              'animate-slide-down',
-              'max-h-[calc(100vh-5rem)] overflow-y-auto'
+              'absolute top-20 left-4 right-4',
+              'rounded-2xl p-1.5',
+              'backdrop-blur-xl border',
+              'bg-white/90 dark:bg-[#1E2030]/90',
+              'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)]',
+              'max-h-[calc(100dvh-6rem)] overflow-y-auto',
             )}
+            style={{
+              borderColor: 'var(--glass-border)',
+              animation: 'fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <nav className="p-4 space-y-1">
-              {mainNavLinks.map((link) => (
+            <nav className="p-2 space-y-0.5">
+              {mainNavLinks.map((link, i) => (
                 <Link
                   key={link.path}
                   href={link.path}
                   className={cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl',
-                    'text-base font-medium',
-                    'transition-all duration-200',
+                    'text-[15px] font-medium',
+                    'transition-all duration-300',
                     isActive(link.path)
                       ? 'bg-primary/10 text-primary'
                       : 'hover:bg-[var(--surface-hover)]'
                   )}
                   style={{
                     color: isActive(link.path) ? undefined : 'var(--text)',
+                    animationDelay: `${i * 40}ms`,
                   }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {isActive(link.path) && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                   )}
                   {link.name}
                 </Link>
               ))}
 
-              {/* Tools section divider */}
-              <div className="px-4 pt-3 pb-1">
-                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
+              <div className="h-px bg-[var(--border)] mx-3 my-2" />
+
+              <div className="px-4 py-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.15em]" style={{ color: 'var(--text-tertiary)' }}>
                   도구
                 </span>
               </div>
@@ -426,89 +409,58 @@ const Header: React.FC = () => {
                   href={link.path}
                   className={cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl',
-                    'text-base font-medium',
-                    'transition-all duration-200',
+                    'text-[15px] font-medium',
+                    'transition-all duration-300',
                     isActive(link.path)
                       ? 'bg-primary/10 text-primary'
                       : 'hover:bg-[var(--surface-hover)]'
                   )}
-                  style={{
-                    color: isActive(link.path) ? undefined : 'var(--text)',
-                  }}
+                  style={{ color: isActive(link.path) ? undefined : 'var(--text)' }}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {isActive(link.path) && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                   )}
                   {link.name}
                 </Link>
               ))}
 
-              {/* Mobile auth section */}
-              {auth && !auth.isLoading && !auth.user && (
+              {/* Mobile auth */}
+              {auth && !auth.isLoading && (
                 <>
-                  <div className="px-4 pt-3 pb-1">
-                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
-                      계정
-                    </span>
-                  </div>
-                  <button
-                    className={cn(
-                      'w-full flex items-center gap-3 px-4 py-3 rounded-xl',
-                      'text-base font-semibold',
-                      'transition-all duration-200',
-                    )}
-                    style={{
-                      background: 'linear-gradient(135deg, #D36135, #E88A6A)',
-                      color: '#fff',
-                    }}
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      auth.openAuthModal();
-                    }}
-                  >
-                    <User className="w-4 h-4" /> 로그인 / 회원가입
-                  </button>
-                </>
-              )}
-              {auth && auth.user && (
-                <>
-                  <div className="px-4 pt-3 pb-1">
-                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>
-                      계정
-                    </span>
-                  </div>
-                  <div
-                    className="flex items-center justify-between px-4 py-3 rounded-xl"
-                    style={{ background: 'var(--surface-hover)' }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>
-                        {auth.user.nickname}
-                      </span>
+                  <div className="h-px bg-[var(--border)] mx-3 my-2" />
+                  {!auth.user ? (
+                    <button
+                      className={cn(
+                        'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl',
+                        'text-[15px] font-semibold text-white',
+                        'bg-primary hover:scale-[1.01] active:scale-[0.99]',
+                        'transition-all duration-300',
+                      )}
+                      style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+                      onClick={() => { setMobileMenuOpen(false); auth.openAuthModal(); }}
+                    >
+                      <User className="w-4 h-4" /> 로그인 / 회원가입
+                    </button>
+                  ) : (
+                    <div
+                      className="flex items-center justify-between px-4 py-3 rounded-xl"
+                      style={{ background: 'var(--surface-hover)' }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>{auth.user.nickname}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Link href="/mypage" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium px-3 py-2 rounded-lg text-primary">
+                          마이페이지
+                        </Link>
+                        <button onClick={() => { auth.logout(); setMobileMenuOpen(false); }} className="text-sm font-medium px-3 py-2 rounded-lg" style={{ color: 'var(--text-secondary)' }}>
+                          로그아웃
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href="/mypage"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="text-sm font-medium px-3 py-2 rounded-lg"
-                        style={{ color: '#D36135' }}
-                      >
-                        마이페이지
-                      </Link>
-                      <button
-                        onClick={() => {
-                          auth.logout();
-                          setMobileMenuOpen(false);
-                        }}
-                        className="text-sm font-medium px-3 py-2 rounded-lg"
-                        style={{ color: 'var(--text-secondary)' }}
-                      >
-                        로그아웃
-                      </button>
-                    </div>
-                  </div>
+                  )}
                 </>
               )}
             </nav>

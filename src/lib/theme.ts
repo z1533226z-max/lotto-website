@@ -147,7 +147,7 @@ export const spacing = {
 
 export const typography = {
   fontFamily: {
-    sans: ['Pretendard Variable', 'Noto Sans KR', 'sans-serif'],
+    sans: ['Pretendard Variable', 'system-ui', '-apple-system', 'sans-serif'],
     mono: ['Roboto Mono', 'monospace'],
   },
   fontSize: {

@@ -20,9 +20,9 @@ const variantStyles: Record<string, string> = {
 
 const hoverStyles: Record<string, string> = {
   none: '',
-  lift: 'transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg',
-  glow: 'transition-all duration-300 ease-out hover:shadow-glow',
-  scale: 'transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg',
+  lift: 'transition-all duration-500 hover:-translate-y-1 hover:shadow-lg active:scale-[0.98]',
+  glow: 'transition-all duration-500 hover:shadow-glow active:scale-[0.98]',
+  scale: 'transition-all duration-500 hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]',
 };
 
 const paddingStyles: Record<string, string> = {

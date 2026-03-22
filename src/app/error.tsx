@@ -10,7 +10,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-background px-4">
       <div className="text-center space-y-6 max-w-md">
         <div><AlertTriangle className="w-16 h-16 mx-auto text-yellow-500" /></div>
         <h1 className="text-2xl font-bold text-gray-800">오류가 발생했습니다</h1>

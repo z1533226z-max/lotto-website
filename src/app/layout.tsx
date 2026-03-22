@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_KR } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import Script from 'next/script';
@@ -7,13 +6,6 @@ import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider
 import AuthProvider from '@/components/providers/AuthProvider';
 import AuthModal from '@/components/auth/AuthModal';
 import GamificationProvider from '@/components/gamification/GamificationProvider';
-
-const notoSansKR = Noto_Sans_KR({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700', '900'],
-  display: 'swap',
-  variable: '--font-noto-sans-kr',
-});
 
 const pretendard = localFont({
   src: '../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2',
@@ -140,7 +132,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={`${pretendard.variable} ${notoSansKR.variable}`} suppressHydrationWarning>
+    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <head>
         {/* Theme initialization script - prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -158,6 +150,9 @@ export default function RootLayout({
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
 
+        {/* Iconify — Solar icon set */}
+        <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js" defer />
+
         {/* Favicons - icon.tsx, apple-icon.tsx에서 동적 생성 */}
         <link rel="icon" href="/favicon.ico" />
 
@@ -169,7 +164,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#D36135" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
-      <body className={notoSansKR.className}>
+      <body className={pretendard.className}>
         <ThemeProvider>
           <AuthProvider>
             {children}

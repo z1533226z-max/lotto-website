@@ -90,7 +90,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
         buttonSize,
         'relative rounded-xl',
         'flex items-center justify-center',
-        'transition-all duration-300 ease-out',
+        'transition-all duration-500',
         'hover:scale-110 active:scale-95',
         // Light mode
         'bg-gray-100 text-amber-500 hover:bg-gray-200',

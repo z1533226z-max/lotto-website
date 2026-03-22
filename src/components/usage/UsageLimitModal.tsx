@@ -48,7 +48,7 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             backdropFilter: 'blur(4px)',
             WebkitBackdropFilter: 'blur(4px)',
-            animation: 'dialogFadeIn 0.15s ease-out',
+            animation: 'dialogFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         />
         <Dialog.Content
@@ -57,7 +57,7 @@ const UsageLimitModal: React.FC<UsageLimitModalProps> = ({
             background: 'var(--surface, #ffffff)',
             border: '1px solid var(--border, #e5e7eb)',
             color: 'var(--text, #1f2937)',
-            animation: 'dialogContentIn 0.2s ease-out',
+            animation: 'dialogContentIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
           <div style={{ padding: '28px 24px 24px' }}>

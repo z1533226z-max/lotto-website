@@ -45,19 +45,19 @@ module.exports = {
         'lotto-bonus': '#FFD700',
       },
       fontFamily: {
-        sans: ['var(--font-pretendard)', 'var(--font-noto-sans-kr)', 'Noto Sans KR', 'sans-serif'],
+        sans: ['var(--font-pretendard)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
         mono: ['Roboto Mono', 'monospace'],
       },
       animation: {
         'bounce-slow': 'bounce 2s infinite',
         'pulse-slow': 'pulse 3s infinite',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'slide-down': 'slideDown 0.5s ease-out',
+        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-down': 'slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         'shimmer': 'shimmer 2s linear infinite',
-        'float': 'float 3s ease-in-out infinite',
+        'float': 'float 6s ease-in-out infinite',
         'spin-slow': 'spin 3s linear infinite',
-        'fade-in': 'fadeIn 0.4s ease-out forwards',
-        'scale-in': 'scaleIn 0.3s ease-out forwards',
+        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'scale-in': 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
       },
       keyframes: {
         slideUp: {

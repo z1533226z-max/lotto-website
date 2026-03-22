@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import Card from '@/components/ui/Card';
+import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Badge from '@/components/ui/Badge';
 import Skeleton from '@/components/ui/Skeleton';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
@@ -80,12 +82,18 @@ export default function AIHitsPage() {
           { label: '홈', href: '/' },
           { label: 'AI 적중 기록' },
         ]} />
-        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-          AI 추천번호 적중 기록
-        </h1>
-        <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
-          5가지 AI 전략의 실제 적중 현황을 확인하세요
-        </p>
+        <SectionFrame
+          eyebrow="AI 분석 성과"
+          title="AI 추천번호 적중 기록"
+          subtitle="5가지 AI 전략의 실제 적중 현황을 확인하세요"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[...Array(4)].map((_, i) => (
             <Card key={i} variant="glass">
@@ -122,14 +130,18 @@ export default function AIHitsPage() {
       ]} />
 
       {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-          AI 추천번호 적중 기록
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          매 회차 5가지 AI 전략으로 분석한 번호의 실제 적중 현황
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="AI 분석 성과"
+        title="AI 추천번호 적중 기록"
+        subtitle="매 회차 5가지 AI 전략으로 분석한 번호의 실제 적중 현황"
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* Next prediction card */}
       {nextPrediction && (
@@ -203,36 +215,22 @@ export default function AIHitsPage() {
         </div>
       </Card>
 
-      {/* Stats summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <Card variant="glass" hover="lift" className="text-center">
-          <div className="space-y-1">
-            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>총 예측</p>
-            <p className="text-3xl font-black" style={{ color: 'var(--text)' }}>{multiSetStats.totalPredictions}</p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>회 (x5세트)</p>
-          </div>
-        </Card>
-        <Card variant="glass" hover="lift" className="text-center">
-          <div className="space-y-1">
-            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>베스트 평균</p>
-            <p className="text-3xl font-black text-primary">{multiSetStats.avgMatch}</p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>개 적중</p>
-          </div>
-        </Card>
-        <Card variant="glass" hover="lift" className="text-center">
-          <div className="space-y-1">
-            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>최고 적중</p>
-            <p className="text-3xl font-black" style={{ color: 'var(--secondary)' }}>{multiSetStats.maxMatch}</p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>개</p>
-          </div>
-        </Card>
-        <Card variant="glass" hover="lift" className="text-center">
-          <div className="space-y-1">
-            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>3개+ 적중</p>
-            <p className="text-3xl font-black" style={{ color: '#E6A800' }}>{multiSetStats.threeOrMore}</p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>회</p>
-          </div>
-        </Card>
+      {/* Stats summary — Supanova Bento-style grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 stagger-reveal">
+        {[
+          { label: '총 예측', value: multiSetStats.totalPredictions, unit: '회 (x5세트)', color: 'var(--text)' },
+          { label: '베스트 평균', value: multiSetStats.avgMatch, unit: '개 적중', color: 'var(--primary)' },
+          { label: '최고 적중', value: multiSetStats.maxMatch, unit: '개', color: 'var(--secondary)' },
+          { label: '3개+ 적중', value: multiSetStats.threeOrMore, unit: '회', color: '#E6A800' },
+        ].map((stat) => (
+          <DoubleBezelCard key={stat.label}>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{stat.label}</p>
+              <p className="text-3xl font-black" style={{ color: stat.color }}>{stat.value}</p>
+              <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{stat.unit}</p>
+            </div>
+          </DoubleBezelCard>
+        ))}
       </div>
 
       {/* Hit records */}

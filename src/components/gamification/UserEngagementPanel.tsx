@@ -220,7 +220,7 @@ const UserEngagementPanel: React.FC = () => {
                 className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${userLevel.progress}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ const UserEngagementPanel: React.FC = () => {
                   className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${(weeklyChallenge.progress / weeklyChallenge.target) * 100}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
+                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </div>

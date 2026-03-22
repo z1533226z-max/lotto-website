@@ -156,7 +156,7 @@ const Tabs: React.FC<TabsProps> = ({
           className={cn(
             'absolute bottom-0 h-0.5 rounded-full',
             'bg-primary dark:bg-primary-300',
-            'transition-all duration-300 ease-out'
+            'transition-all duration-500'
           )}
           style={indicatorStyle}
         />

@@ -5,6 +5,8 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
 import SajuBanner from '@/components/promotion/SajuBanner';
+import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
+import SectionFrame from '@/components/ui/SectionFrame';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
 import { REAL_LOTTO_DATA, getLatestLottoData } from '@/data/realLottoData';
 import type { Metadata } from 'next';
@@ -32,10 +34,9 @@ function LatestResultSSR() {
       : '미정';
 
   return (
+    <DoubleBezelCard>
     <section
       aria-label={`로또 ${latest.round}회 당첨번호`}
-      className="rounded-2xl p-6 border"
-      style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-5">
@@ -115,6 +116,7 @@ function LatestResultSSR() {
         </div>
       </div>
     </section>
+    </DoubleBezelCard>
   );
 }
 
@@ -195,7 +197,7 @@ const quickLinks = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-[100dvh]" style={{ backgroundColor: 'var(--bg)' }}>
       <Header />
 
       <main>
@@ -230,7 +232,7 @@ export default function HomePage() {
                 </h1>
 
                 <p
-                  className="text-base md:text-lg leading-relaxed max-w-md"
+                  className="text-base md:text-lg leading-relaxed max-w-md break-keep-all"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   역대 전체 회차 데이터를 AI가 분석하여
@@ -277,14 +279,7 @@ export default function HomePage() {
 
               {/* Right: Visual element - Latest result preview */}
               <div className="relative hidden lg:flex justify-center">
-                <div
-                  className="relative w-full max-w-sm rounded-2xl p-8 space-y-5"
-                  style={{
-                    backgroundColor: 'var(--bg)',
-                    border: '1px solid var(--border)',
-                    boxShadow: '0 24px 48px -12px rgba(0,0,0,0.08)',
-                  }}
-                >
+                <DoubleBezelCard className="relative w-full max-w-sm space-y-5">
                   {/* Decorative accent bar */}
                   <div
                     className="absolute top-0 left-6 right-6 h-1 rounded-b-full"
@@ -341,7 +336,7 @@ export default function HomePage() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </DoubleBezelCard>
               </div>
             </div>
           </div>
@@ -404,9 +399,17 @@ export default function HomePage() {
               </div>
 
               {/* Statistics Dashboard */}
-              <section id="statistics">
-                <AnalyticsDashboard />
-              </section>
+              <SectionFrame
+                eyebrow="AI 분석"
+                title="통계 대시보드"
+                subtitle="매주 업데이트되는 동적 통계 분석"
+                size="sm"
+                index={2}
+              >
+                <div id="statistics">
+                  <AnalyticsDashboard />
+                </div>
+              </SectionFrame>
             </div>
 
             {/* Sidebar */}
@@ -419,13 +422,7 @@ export default function HomePage() {
                 <DailyChallengeWidget />
 
                 {/* Quick Links Card */}
-                <div
-                  className="rounded-2xl p-5 border"
-                  style={{
-                    backgroundColor: 'var(--surface)',
-                    borderColor: 'var(--border)',
-                  }}
-                >
+                <DoubleBezelCard>
                   <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--text)' }}>
                     바로가기
                   </h3>
@@ -434,10 +431,10 @@ export default function HomePage() {
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group"
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-500 group"
                           style={{ color: 'var(--text-secondary)' }}
                         >
-                          <span className="flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                          <span className="flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
                             {link.icon}
                           </span>
                           <div className="min-w-0 flex-1">
@@ -450,7 +447,7 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
-                </div>
+                </DoubleBezelCard>
               </div>
             </aside>
           </div>

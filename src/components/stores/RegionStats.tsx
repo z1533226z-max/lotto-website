@@ -54,7 +54,7 @@ const RegionStats: React.FC<RegionStatsProps> = ({ stats, className }) => {
             <div className="w-full h-6 bg-[var(--surface-hover)] rounded-full overflow-hidden dark:bg-dark-surface-hover">
               <div
                 className={cn(
-                  'h-full rounded-full transition-all duration-500 ease-out',
+                  'h-full rounded-full transition-all duration-500',
                   'bg-gradient-to-r from-primary to-primary-300',
                   'group-hover:from-primary-500 group-hover:to-primary-200',
                   'relative'

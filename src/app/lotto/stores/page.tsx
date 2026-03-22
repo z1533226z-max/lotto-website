@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import Card from '@/components/ui/Card';
+import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import StoreCard from '@/components/stores/StoreCard';
@@ -121,18 +123,21 @@ export default function StoresPage() {
   }, [selectedRegion, viewMode]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
+    <div className="min-h-[100dvh] bg-[var(--bg)]">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* 헤더 */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-3">
-            <Store className="w-7 h-7 inline-block mr-2" /> 1등 당첨 판매점
-          </h1>
-          <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
-            로또 1등 당첨 판매점 정보를 확인하세요.
-            당첨 횟수별 랭킹과 지역별 통계를 한눈에 볼 수 있습니다.
-          </p>
-        </div>
+        {/* 헤더 — Supanova SectionFrame */}
+        <SectionFrame
+          eyebrow="판매점 정보"
+          title="1등 당첨 판매점"
+          subtitle="당첨 횟수별 랭킹과 지역별 통계를 한눈에 볼 수 있습니다."
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0 text-center"
+        >
+          <div />
+        </SectionFrame>
 
         {/* 뷰 모드 토글 */}
         <div className="flex items-center justify-center gap-2 mb-6">
@@ -161,9 +166,9 @@ export default function StoresPage() {
 
         {viewMode === 'stats' ? (
           /* 지역별 통계 뷰 */
-          <Card variant="glass" padding="lg">
+          <DoubleBezelCard>
             <RegionStats stats={regionStats} />
-          </Card>
+          </DoubleBezelCard>
         ) : (
           <>
             {/* 필터 */}
