@@ -123,6 +123,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  word-break: keep-all;
   transition: background-color var(--transition-slow), color var(--transition-slow);
 }
 
@@ -286,6 +287,11 @@ button:not(:disabled),
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* Dialog/Modal animations (Radix UI) */

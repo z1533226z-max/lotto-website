@@ -17,8 +17,8 @@ interface BadgeProps {
 const variantStyles: Record<BadgeVariant, string> = {
   default: cn(
     'bg-gray-100 text-gray-700',
-    'dark:bg-dark-surface-hover dark:text-dark-text-secondary',
-    'border border-gray-200 dark:border-dark-border'
+    'dark:bg-[var(--surface-hover)] dark:text-[var(--text-secondary)]',
+    'border border-gray-200 dark:border-[var(--border)]'
   ),
   primary: cn(
     'bg-primary-50 text-primary-700',

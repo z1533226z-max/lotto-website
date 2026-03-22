@@ -75,7 +75,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
         className={cn(
           buttonSize,
           'rounded-xl',
-          'bg-gray-100 dark:bg-dark-surface',
+          'bg-gray-100 dark:bg-[var(--surface)]',
           className
         )}
         aria-label="Toggle theme"
@@ -95,11 +95,11 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
         // Light mode
         'bg-gray-100 text-amber-500 hover:bg-gray-200',
         // Dark mode
-        'dark:bg-dark-surface dark:text-blue-300 dark:hover:bg-dark-surface-hover',
+        'dark:bg-[var(--surface)] dark:text-blue-300 dark:hover:bg-[var(--surface-hover)]',
         // Focus
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-primary/50 focus-visible:ring-offset-2',
-        'dark:focus-visible:ring-offset-dark-bg',
+        'dark:focus-visible:ring-offset-[var(--bg)]',
         className
       )}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -112,7 +112,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             initial={{ rotate: -90, scale: 0, opacity: 0 }}
             animate={{ rotate: 0, scale: 1, opacity: 1 }}
             exit={{ rotate: 90, scale: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <MoonIcon size={iconSize} />
           </motion.div>
@@ -122,7 +122,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             initial={{ rotate: 90, scale: 0, opacity: 0 }}
             animate={{ rotate: 0, scale: 1, opacity: 1 }}
             exit={{ rotate: -90, scale: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <SunIcon size={iconSize} />
           </motion.div>

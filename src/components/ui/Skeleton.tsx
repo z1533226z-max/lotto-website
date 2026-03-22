@@ -15,7 +15,7 @@ interface SkeletonProps {
 
 const shimmerBase = cn(
   'relative overflow-hidden',
-  'bg-gray-200 dark:bg-dark-surface-hover',
+  'bg-gray-200 dark:bg-[var(--surface-hover)]',
   'before:absolute before:inset-0',
   'before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent',
   'dark:before:via-white/5',

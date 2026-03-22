@@ -39,7 +39,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, className }) => {
         'bg-[var(--surface)] border border-[var(--border)]',
         'transition-all duration-300',
         'hover:-translate-y-1 hover:shadow-lg',
-        'dark:bg-dark-surface dark:border-dark-border',
+        'dark:bg-[var(--surface)] dark:border-[var(--border)]',
         store.rank === 1 && 'border-primary/30 dark:border-primary/20',
         className
       )}

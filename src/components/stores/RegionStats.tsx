@@ -51,7 +51,7 @@ const RegionStats: React.FC<RegionStatsProps> = ({ stats, className }) => {
               </div>
             </div>
 
-            <div className="w-full h-6 bg-[var(--surface-hover)] rounded-full overflow-hidden dark:bg-dark-surface-hover">
+            <div className="w-full h-6 bg-[var(--surface-hover)] rounded-full overflow-hidden dark:bg-[var(--surface-hover)]">
               <div
                 className={cn(
                   'h-full rounded-full transition-all duration-500',
