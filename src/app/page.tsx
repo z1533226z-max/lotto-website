@@ -6,8 +6,117 @@ import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
 import SajuBanner from '@/components/promotion/SajuBanner';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { REAL_LOTTO_DATA, getLatestLottoData } from '@/data/realLottoData';
 import type { Metadata } from 'next';
+
+// ── 서버 전용: 볼 색상 (LottoNumbers의 getBallHexColor와 동일)
+function getBallColor(num: number): { bg: string; text: string } {
+  if (num <= 10) return { bg: '#FFC107', text: '#333333' };
+  if (num <= 20) return { bg: '#2196F3', text: '#FFFFFF' };
+  if (num <= 30) return { bg: '#FF5722', text: '#FFFFFF' };
+  if (num <= 40) return { bg: '#757575', text: '#FFFFFF' };
+  return { bg: '#4CAF50', text: '#FFFFFF' };
+}
+
+// ── 서버 렌더링 최신 회차 블록 (SEO용, 인터랙션 없음)
+function LatestResultSSR() {
+  const latest = getLatestLottoData();
+  if (!latest) return null;
+
+  const drawDateFormatted = latest.drawDate.replace(/-/g, '.');
+  const firstPrize = latest.prizeMoney.first;
+  const firstWinners = latest.prizeMoney.firstWinners;
+  const prizeDisplay =
+    firstPrize > 0
+      ? `${Math.floor(firstPrize / 100000000).toLocaleString()}억원`
+      : '미정';
+
+  return (
+    <section
+      aria-label={`로또 ${latest.round}회 당첨번호`}
+      className="rounded-2xl p-6 border"
+      style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+    >
+      {/* 헤더 */}
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <p className="text-xs font-medium mb-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            최신 당첨 결과
+          </p>
+          <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
+            제 {latest.round.toLocaleString()}회 당첨번호
+          </h2>
+        </div>
+        <span
+          className="text-xs font-semibold px-2.5 py-1 rounded-full"
+          style={{ backgroundColor: 'rgba(211, 97, 53, 0.1)', color: '#D36135' }}
+        >
+          {drawDateFormatted}
+        </span>
+      </div>
+
+      {/* 번호 볼 */}
+      <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
+        {latest.numbers.map((num) => {
+          const { bg, text } = getBallColor(num);
+          return (
+            <div
+              key={num}
+              className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold"
+              style={{
+                background: `radial-gradient(circle at 35% 30%, ${bg}CC, ${bg} 50%, ${bg}99 100%)`,
+                color: text,
+                boxShadow: `0 4px 12px ${bg}66`,
+              }}
+            >
+              {num}
+            </div>
+          );
+        })}
+        {/* 구분자 + 보너스 */}
+        <span className="text-lg font-bold mx-1" style={{ color: 'var(--text-tertiary)' }}>+</span>
+        {(() => {
+          const { bg, text } = getBallColor(latest.bonusNumber);
+          return (
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold ring-2 ring-yellow-400 ring-offset-1"
+              style={{
+                background: `radial-gradient(circle at 35% 30%, ${bg}CC, ${bg} 50%, ${bg}99 100%)`,
+                color: text,
+                boxShadow: `0 4px 12px ${bg}66`,
+              }}
+            >
+              {latest.bonusNumber}
+            </div>
+          );
+        })()}
+      </div>
+
+      {/* 당첨 정보 */}
+      <div
+        className="flex items-center justify-center gap-6 pt-4 text-sm"
+        style={{ borderTop: '1px solid var(--border)' }}
+      >
+        <div className="text-center">
+          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>1등 당첨금</p>
+          <p className="font-bold" style={{ color: 'var(--text)' }}>{prizeDisplay}</p>
+        </div>
+        <div className="w-px h-8" style={{ backgroundColor: 'var(--border)' }} />
+        <div className="text-center">
+          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>1등 당첨자</p>
+          <p className="font-bold" style={{ color: 'var(--text)' }}>
+            {firstWinners > 0 ? `${firstWinners.toLocaleString()}명` : '미정'}
+          </p>
+        </div>
+        <div className="w-px h-8" style={{ backgroundColor: 'var(--border)' }} />
+        <div className="text-center">
+          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>추첨일</p>
+          <p className="font-bold" style={{ color: 'var(--text)' }}>{drawDateFormatted}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const LatestResult = dynamic(
   () => import('@/components/lotto/LatestResult'),
@@ -276,7 +385,10 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Main content */}
             <div className="lg:col-span-8 space-y-8">
-              {/* Latest Result */}
+              {/* 최신 회차 서버 렌더링 블록 (SEO — 구글 크롤링용) */}
+              <LatestResultSSR />
+
+              {/* Latest Result (클라이언트 — 실시간 API 연동) */}
               <section id="home">
                 <LatestResult />
               </section>
