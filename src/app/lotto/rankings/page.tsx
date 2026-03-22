@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 
 export const revalidate = 3600; // ISR: 1시간마다 재생성
@@ -39,15 +40,18 @@ export default async function LottoRankingsPage() {
         { label: '역대 당첨금 순위' },
       ]} />
 
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-          역대 로또 최고 당첨금 순위
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          1등 1인당 당첨금 기준 TOP 50
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="당첨금 순위"
+        title="역대 로또 최고 당첨금 순위"
+        subtitle="1등 1인당 당첨금 기준 TOP 50"
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* Top 3 podium cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

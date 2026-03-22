@@ -2,6 +2,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import { BarChart3, TrendingUp, Hash, BookOpen, Calendar } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -54,25 +55,18 @@ export default function LottoStatisticsPage() {
         { label: '통계 분석' },
       ]} />
 
-      {/* Page header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-3">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-            }}
-          >
-            <BarChart3 className="w-5 h-5 text-white" />
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--text)' }}>
-            로또 번호 통계 분석
-          </h1>
-        </div>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          역대 전체 회차 데이터를 기반으로 한 번호별 출현 빈도, 핫/콜드 번호, 패턴 분석
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="통계 분석"
+        title="로또 번호 통계 분석"
+        subtitle="역대 전체 회차 데이터를 기반으로 한 번호별 출현 빈도, 핫/콜드 번호, 패턴 분석"
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       <AnalyticsDashboard />
 

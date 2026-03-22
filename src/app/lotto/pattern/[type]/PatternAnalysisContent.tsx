@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SectionFrame from '@/components/ui/SectionFrame';
 
 interface Props {
   type: string;
@@ -26,13 +27,19 @@ export default function PatternAnalysisContent({ type, name, desc, totalRounds, 
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="mb-8">
-        <div className="text-4xl mb-3">{patternEmoji[type] || '📈'}</div>
-        <h1 className="text-2xl md:text-3xl font-bold">로또 {name}</h1>
-        <p style={{ color: 'var(--text-secondary)' }} className="mt-2">
-          총 {totalRounds}회 데이터 기반 | {desc}
-        </p>
-      </div>
+      <div className="text-4xl mb-3">{patternEmoji[type] || '📈'}</div>
+      <SectionFrame
+        eyebrow="패턴 분석"
+        title={`로또 ${name}`}
+        subtitle={`총 ${totalRounds}회 데이터 기반 | ${desc}`}
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* 분석 결과 */}
       {type === 'odd-even' && <OddEvenResult data={data as { ratio: string; count: number; percentage: string }[]} />}

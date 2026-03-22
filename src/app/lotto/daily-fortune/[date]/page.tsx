@@ -10,6 +10,7 @@ import {
   type DailyFortuneItem,
 } from '@/lib/dailyFortuneGenerator';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 
 // ISR: 1시간 캐시 (오늘 페이지), 과거 페이지는 영구 캐시
 export const revalidate = 3600;
@@ -221,22 +222,18 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
       />
 
       {/* 헤더 */}
-      <div className="text-center mb-8">
-        <h1
-          className="text-2xl sm:text-3xl font-bold mb-2"
-          style={{ color: 'var(--text)' }}
-        >
-          🔮 {isToday ? '오늘의' : formatted} 띠별 행운번호
-        </h1>
-        {isToday && (
-          <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-            {formatted}
-          </p>
-        )}
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          사주 오행 분석 기반 · 매일 자정 자동 업데이트
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="띠별 행운번호"
+        title={`🔮 ${isToday ? '오늘의' : formatted} 띠별 행운번호`}
+        subtitle={`${isToday ? formatted + ' · ' : ''}사주 오행 분석 기반 · 매일 자정 자동 업데이트`}
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* 날짜 네비게이션 */}
       <div className="flex items-center justify-between mb-6">

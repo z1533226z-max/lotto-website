@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 
 const ITEMS_PER_PAGE = 20;
@@ -40,15 +41,18 @@ export default async function LottoListPage({ searchParams }: Props) {
         { label: '당첨번호 전체 조회' },
       ]} />
 
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-          로또 당첨번호 전체 조회
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          1회부터 {latestRound}회까지 역대 전체 당첨번호
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="당첨번호 조회"
+        title="로또 당첨번호 전체 조회"
+        subtitle={`1회부터 ${latestRound}회까지 역대 전체 당첨번호`}
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* Page info bar */}
       <div

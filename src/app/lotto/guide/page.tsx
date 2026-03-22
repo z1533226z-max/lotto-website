@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
@@ -198,27 +199,18 @@ export default function GuidePage() {
       />
 
       <div className="max-w-3xl mx-auto">
-        {/* Page header */}
-        <div className="text-center mb-10">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
-            }}
-          >
-            <span className="text-3xl">&#x1F4D6;</span>
-          </div>
-          <h1
-            className="text-2xl md:text-3xl font-bold mb-2"
-            style={{ color: 'var(--text)' }}
-          >
-            로또 6/45 완전 가이드
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            구매 방법부터 당첨금 수령까지, 로또에 대한 모든 것
-          </p>
-        </div>
+        <SectionFrame
+          eyebrow="로또 가이드"
+          title="로또 6/45 완전 가이드"
+          subtitle="구매 방법부터 당첨금 수령까지, 로또에 대한 모든 것"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
 
         {/* Quick navigation */}
         <Card variant="glass" padding="md" className="mb-8">

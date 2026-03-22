@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -313,27 +314,18 @@ export default function DreamNumberPage() {
       />
 
       <div className="max-w-2xl mx-auto">
-        {/* ─── Page Header ─── */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #7C3AED, #A855F7, #C084FC)',
-              boxShadow: '0 8px 24px rgba(124, 58, 237, 0.35)',
-            }}
-          >
-            <Eye className="w-8 h-8 text-white" />
-          </div>
-          <h1
-            className="text-2xl md:text-3xl font-bold mb-2"
-            style={{ color: 'var(--text)' }}
-          >
-            꿈번호 생성기
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            어젯밤 꿈을 로또 번호로 바꿔보세요
-          </p>
-        </div>
+        <SectionFrame
+          eyebrow="꿈해몽"
+          title="꿈번호 생성기"
+          subtitle="어젯밤 꿈을 로또 번호로 바꿔보세요"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
 
         <UsageLimitBanner feature="dream" />
 

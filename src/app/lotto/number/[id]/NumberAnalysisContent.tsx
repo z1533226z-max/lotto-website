@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import SectionFrame from '@/components/ui/SectionFrame';
 
 interface Props {
   num: number;
@@ -43,17 +44,23 @@ export default function NumberAnalysisContent({
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <div className="inline-flex items-center justify-center mb-4">
           <LottoNumbers numbers={[num]} size="lg" />
         </div>
-        <h1 className="text-2xl md:text-3xl font-bold">
-          로또 {num}번 완전 분석
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }} className="mt-2">
-          총 {totalRounds}회 추첨 기준 | {section} 구간 | {status}
-        </p>
       </div>
+      <SectionFrame
+        eyebrow="번호 분석"
+        title={`로또 ${num}번 완전 분석`}
+        subtitle={`총 ${totalRounds}회 추첨 기준 | ${section} 구간 | ${status}`}
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* 핵심 지표 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

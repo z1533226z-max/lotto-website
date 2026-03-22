@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -94,24 +95,18 @@ export default function LottoCalculatorPage() {
       ]} />
 
       <div className="max-w-2xl mx-auto">
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
-            }}
-          >
-            <Calculator className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-            로또 당첨금 세금 계산기
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            로또 당첨금의 세후 실수령액을 계산해보세요
-          </p>
-        </div>
+        <SectionFrame
+          eyebrow="세금 계산기"
+          title="로또 당첨금 세금 계산기"
+          subtitle="로또 당첨금의 세후 실수령액을 계산해보세요"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
 
         {/* Input Card */}
         <Card variant="glass" padding="lg" className="mb-6">

@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -776,27 +777,18 @@ export default function FortunePage() {
       />
 
       <div className="max-w-2xl mx-auto">
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #E88A6A, #D36135)',
-              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
-            }}
-          >
-            <Eye className="w-8 h-8 text-white" />
-          </div>
-          <h1
-            className="text-2xl md:text-3xl font-bold mb-2"
-            style={{ color: 'var(--text)' }}
-          >
-            행운번호 생성기
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            나만의 특별한 행운번호를 만들어보세요
-          </p>
-        </div>
+        <SectionFrame
+          eyebrow="행운번호"
+          title="행운번호 생성기"
+          subtitle="나만의 특별한 행운번호를 만들어보세요"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
 
         <UsageLimitBanner feature="fortune" />
 

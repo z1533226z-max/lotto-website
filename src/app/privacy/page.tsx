@@ -1,5 +1,6 @@
 // src/app/privacy/page.tsx
 import { Metadata } from 'next';
+import SectionFrame from '@/components/ui/SectionFrame';
 
 export const metadata: Metadata = {
   title: '개인정보처리방침 - 로또 AI 예측',
@@ -19,9 +20,17 @@ export default function PrivacyPolicy() {
     <div className="min-h-[100dvh] bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            개인정보처리방침
-          </h1>
+          <SectionFrame
+            eyebrow="정책"
+            title="개인정보처리방침"
+            size="sm"
+            animate={false}
+            maxWidth="full"
+            headingLevel={1}
+            className="px-0"
+          >
+            <div />
+          </SectionFrame>
           
           <div className="prose prose-lg max-w-none">
             <div className="mb-8 p-4 bg-blue-50 rounded-lg">

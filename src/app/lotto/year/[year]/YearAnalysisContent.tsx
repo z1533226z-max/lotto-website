@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import SectionFrame from '@/components/ui/SectionFrame';
 
 interface YearRound {
   round: number;
@@ -56,12 +57,18 @@ export default function YearAnalysisContent({
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold">{year}년 로또 당첨번호 분석</h1>
-        <p style={{ color: 'var(--text-secondary)' }} className="mt-2">
-          {firstRound}회 ~ {lastRound}회 | 총 {roundCount}회 추첨
-        </p>
-      </div>
+      <SectionFrame
+        eyebrow="연도별 분석"
+        title={`${year}년 로또 당첨번호 분석`}
+        subtitle={`${firstRound}회 ~ ${lastRound}회 | 총 ${roundCount}회 추첨`}
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       {/* 핵심 지표 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

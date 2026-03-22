@@ -4,6 +4,7 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 
 export const revalidate = 3600; // ISR: 1시간마다 재생성
@@ -28,9 +29,18 @@ export default async function LottoRecentPage() {
         { label: '최근 당첨번호' },
       ]} />
 
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-        최근 로또 당첨번호
-      </h1>
+      <SectionFrame
+        eyebrow="최근 추첨"
+        title="최근 로또 당첨번호"
+        subtitle="최근 10회차 당첨번호를 한눈에 확인하세요"
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
 
       <div className="space-y-4">
         {recentData.map((item) => (

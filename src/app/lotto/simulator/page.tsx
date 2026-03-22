@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -353,24 +354,18 @@ export default function SimulatorPage() {
       ]} />
 
       <div className="max-w-3xl mx-auto">
-        {/* Page header */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              boxShadow: '0 8px 24px rgba(211, 97, 53, 0.3)',
-            }}
-          >
-            <Dices className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text)' }}>
-            로또 당첨 시뮬레이터
-          </h1>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            내가 매주 같은 번호를 샀다면? 과거 전 회차 당첨 결과를 확인해보세요
-          </p>
-        </div>
+        <SectionFrame
+          eyebrow="당첨 시뮬레이터"
+          title="로또 당첨 시뮬레이터"
+          subtitle="내가 매주 같은 번호를 샀다면? 과거 전 회차 당첨 결과를 확인해보세요"
+          size="sm"
+          animate={false}
+          maxWidth="full"
+          headingLevel={1}
+          className="px-0"
+        >
+          <div />
+        </SectionFrame>
 
         <UsageLimitBanner feature="simulator" />
 

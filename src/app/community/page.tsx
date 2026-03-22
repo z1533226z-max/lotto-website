@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import SectionFrame from '@/components/ui/SectionFrame';
 import Tabs from '@/components/ui/Tabs';
 import PostCard from '@/components/community/PostCard';
 import type { PostListItem } from '@/types/database';
@@ -75,15 +76,19 @@ export default function CommunityPage() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* 페이지 제목 */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
-            커뮤니티
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
-            로또에 대한 이야기를 나눠보세요
-          </p>
-        </div>
+      <SectionFrame
+        eyebrow="커뮤니티"
+        title="커뮤니티"
+        subtitle="로또에 대한 이야기를 나눠보세요"
+        size="sm"
+        animate={false}
+        maxWidth="full"
+        headingLevel={1}
+        className="px-0"
+      >
+        <div />
+      </SectionFrame>
+      <div className="flex justify-end mb-6">
         <Button
           variant="primary"
           size="md"
