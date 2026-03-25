@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/lotto/fortune`, lastModified: DREAM_DATE, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/lotto/dream`, lastModified: DREAM_DATE, changeFrequency: 'monthly', priority: 0.7 },
 
+    { url: `${baseUrl}/lotto/analysis/weekly`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/lotto/ai-hits`, lastModified: STATIC_DATE, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/lotto/stores`, lastModified: STATIC_DATE, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/community`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
