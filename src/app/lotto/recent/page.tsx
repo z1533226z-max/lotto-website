@@ -65,12 +65,24 @@ export default async function LottoRecentPage() {
         ))}
       </div>
 
-      <div className="text-center mt-8">
+      <div className="flex flex-wrap justify-center gap-3 mt-8">
         <Link
           href="/lotto/list"
           className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           전체 당첨번호 보기
+        </Link>
+        <Link
+          href="/lotto/analysis/weekly"
+          className="inline-block px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors border border-white/20"
+        >
+          주간 분석 보기
+        </Link>
+        <Link
+          href="/lotto/statistics"
+          className="inline-block px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors border border-white/20"
+        >
+          번호 통계
         </Link>
       </div>
     </>

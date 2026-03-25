@@ -8,6 +8,7 @@ const navLinks = [
   { name: 'AI적중', path: '/lotto/ai-hits' },
   { name: '시뮬레이터', path: '/lotto/simulator' },
   { name: '꿈해몽', path: '/lotto/dream' },
+  { name: '주간분석', path: '/lotto/analysis/weekly' },
   { name: '계산기', path: '/lotto/calculator' },
   { name: '커뮤니티', path: '/community' },
 ];

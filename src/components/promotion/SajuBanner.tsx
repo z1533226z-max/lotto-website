@@ -5,7 +5,7 @@ import React from 'react';
 export default function SajuBanner() {
   return (
     <a
-      href="https://saju-website-vercel.vercel.app/"
+      href="https://saju.gon.ai.kr/"
       target="_blank"
       rel="noopener noreferrer"
       style={{

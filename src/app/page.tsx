@@ -7,7 +7,7 @@ import AIHitsBanner from '@/components/lotto/AIHitsBanner';
 import SajuBanner from '@/components/promotion/SajuBanner';
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
 import SectionFrame from '@/components/ui/SectionFrame';
-import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save } from 'lucide-react';
+import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save, TrendingUp } from 'lucide-react';
 import { REAL_LOTTO_DATA, getLatestLottoData } from '@/data/realLottoData';
 import type { Metadata } from 'next';
 
@@ -193,6 +193,7 @@ const quickLinks = [
   { href: '/lotto/calculator', icon: <Calculator className="w-5 h-5" />, label: '세금 계산기', desc: '실수령액 즉시 계산' },
   { href: '/lotto/rankings', icon: <Trophy className="w-5 h-5" />, label: '당첨금 순위', desc: '역대 최고 당첨금' },
   { href: '/lotto/ai-hits', icon: <Target className="w-5 h-5" />, label: 'AI 적중 기록', desc: 'AI 예측 성과 확인' },
+  { href: '/lotto/analysis/weekly', icon: <TrendingUp className="w-5 h-5" />, label: '주간 분석', desc: '이번 주 번호 트렌드' },
 ];
 
 export default function HomePage() {

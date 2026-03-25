@@ -179,6 +179,28 @@ export default function LottoStatisticsPage() {
           </div>
         </div>
       </section>
+
+      {/* 관련 분석 크로스링크 */}
+      <section className="mt-8">
+        <SectionFrame title="관련 분석">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link href="/lotto/analysis/weekly" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+              <Calendar className="w-8 h-8 text-yellow-400 shrink-0" />
+              <div>
+                <p className="font-semibold text-sm">주간 번호 분석</p>
+                <p className="text-xs text-gray-400">이번 주 핫넘버, 트렌드, 패턴 분석</p>
+              </div>
+            </Link>
+            <Link href="/lotto/numbers" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+              <Hash className="w-8 h-8 text-blue-400 shrink-0" />
+              <div>
+                <p className="font-semibold text-sm">AI 번호 생성</p>
+                <p className="text-xs text-gray-400">통계 기반 AI 추천 번호 받기</p>
+              </div>
+            </Link>
+          </div>
+        </SectionFrame>
+      </section>
     </>
   );
 }

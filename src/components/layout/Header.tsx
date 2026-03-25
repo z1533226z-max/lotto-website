@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
-import { Dices, Gamepad2, Moon, Clover, Calculator, BookOpen, User, ShieldCheck, ClipboardList, LogOut, Zap, Sparkles } from 'lucide-react';
+import { Dices, Gamepad2, Moon, Clover, Calculator, BookOpen, User, ShieldCheck, ClipboardList, LogOut, Zap, Sparkles, TrendingUp } from 'lucide-react';
 
 const mainNavLinks = [
   { name: '홈', path: '/' },
@@ -27,6 +27,7 @@ const toolLinks = [
   { name: '계산기', path: '/lotto/calculator', desc: '당첨금 세금 계산', Icon: Calculator },
   { name: '가이드', path: '/lotto/guide', desc: '로또 완전 가이드', Icon: BookOpen },
   { name: '연도별분석', path: `/lotto/year/${new Date().getFullYear()}`, desc: '연도별 당첨번호 통계', Icon: ClipboardList },
+  { name: '주간분석', path: '/lotto/analysis/weekly', desc: '이번 주 번호 트렌드', Icon: TrendingUp },
 ];
 
 const Header: React.FC = () => {

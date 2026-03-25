@@ -1,32 +1,47 @@
 import React from 'react';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
-import { BarChart3, TrendingUp, Flame, Snowflake, ArrowRight, ChevronLeft } from 'lucide-react';
+import { BarChart3, TrendingUp, Flame, Snowflake, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
-import { generateWeeklyAnalysis } from '@/lib/weeklyAnalysisGenerator';
+import { generateWeeklyAnalysisForRound } from '@/lib/weeklyAnalysisGenerator';
 import LottoBall from '@/components/lotto/LottoBall';
 
-export const metadata: Metadata = {
-  title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
-  description: '매주 자동 업데이트되는 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 홀짝비, 연속번호 패턴, 구간 분포까지. AI 데이터 기반 주간 트렌드 분석!',
-  openGraph: {
-    title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
-    description: '매주 자동 업데이트되는 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 패턴 분석!',
-  },
-};
+export const revalidate = 86400; // 24시간 캐시 (아카이브는 변하지 않음)
 
-// ISR: 1시간마다 재생성
-export const revalidate = 3600;
+type Props = { params: Promise<{ round: string }> };
 
-export default async function WeeklyAnalysisPage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { round: roundStr } = await params;
+  const round = parseInt(roundStr, 10);
+  return {
+    title: `${round}회 주간 로또 분석 | 로또킹`,
+    description: `${round}회 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 홀짝비, 연속번호 패턴, 구간 분포 분석.`,
+    openGraph: {
+      title: `${round}회 주간 로또 분석 | 로또킹`,
+      description: `${round}회 로또 당첨번호 심층 분석 - 핫넘버, 콜드넘버, 패턴 분석!`,
+    },
+  };
+}
+
+export default async function WeeklyAnalysisRoundPage({ params }: Props) {
+  const { round: roundStr } = await params;
+  const round = parseInt(roundStr, 10);
+
+  if (isNaN(round) || round < 11) return notFound();
+
   const allData = await getAllLottoData();
-  const analysis = generateWeeklyAnalysis(allData);
+  const maxRound = allData[allData.length - 1]?.round ?? 0;
 
-  if (!analysis) {
-    return <div style={{ padding: '2rem', textAlign: 'center' }}>분석 데이터를 생성할 수 없습니다.</div>;
-  }
+  if (round > maxRound) return notFound();
+
+  const analysis = generateWeeklyAnalysisForRound(allData, round);
+  if (!analysis) return notFound();
+
+  const hasPrev = round > 11;
+  const hasNext = round < maxRound;
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
@@ -34,14 +49,45 @@ export default async function WeeklyAnalysisPage() {
         items={[
           { label: '홈', href: '/' },
           { label: '주간 분석', href: '/lotto/analysis/weekly' },
+          { label: `${round}회`, href: `/lotto/analysis/weekly/${round}` },
         ]}
       />
 
-      <h1 className="text-2xl md:text-3xl font-bold mt-4 mb-2" style={{ color: 'var(--text-primary)' }}>
+      {/* 이전/다음 네비게이션 */}
+      <div className="flex justify-between items-center mt-4 mb-2">
+        {hasPrev ? (
+          <Link
+            href={`/lotto/analysis/weekly/${round - 1}`}
+            className="inline-flex items-center gap-1 text-sm"
+            style={{ color: 'var(--accent)' }}
+          >
+            <ChevronLeft size={16} /> {round - 1}회
+          </Link>
+        ) : <span />}
+        {hasNext ? (
+          <Link
+            href={`/lotto/analysis/weekly/${round + 1}`}
+            className="inline-flex items-center gap-1 text-sm"
+            style={{ color: 'var(--accent)' }}
+          >
+            {round + 1}회 <ChevronRight size={16} />
+          </Link>
+        ) : (
+          <Link
+            href="/lotto/analysis/weekly"
+            className="inline-flex items-center gap-1 text-sm"
+            style={{ color: 'var(--accent)' }}
+          >
+            최신 분석 <ArrowRight size={14} />
+          </Link>
+        )}
+      </div>
+
+      <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
         {analysis.round}회 주간 로또 분석
       </h1>
       <p className="mb-6" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-        추첨일: {analysis.drawDate} | 매주 자동 업데이트
+        추첨일: {analysis.drawDate}
       </p>
 
       {/* 당첨 결과 */}
@@ -103,7 +149,7 @@ export default async function WeeklyAnalysisPage() {
             {analysis.hotNumbers.map(n => <LottoBall key={n} number={n} size="sm" />)}
           </div>
           <p className="mt-2" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            최근 10회 동안 가장 자주 출현한 번호
+            {round}회 기준 최근 10회 가장 자주 출현한 번호
           </p>
         </SectionFrame>
 
@@ -115,7 +161,7 @@ export default async function WeeklyAnalysisPage() {
             {analysis.coldNumbers.map(n => <LottoBall key={n} number={n} size="sm" />)}
           </div>
           <p className="mt-2" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            최근 10회 동안 출현하지 않았거나 적게 나온 번호
+            {round}회 기준 최근 10회 출현하지 않았거나 적게 나온 번호
           </p>
         </SectionFrame>
       </div>
@@ -147,45 +193,15 @@ export default async function WeeklyAnalysisPage() {
           전체 통계 <ArrowRight size={14} />
         </Link>
         <Link
-          href="/lotto/ai-hits"
+          href="/lotto/analysis/weekly"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
-          style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+          style={{ background: 'var(--accent)', color: '#fff', border: 'none' }}
         >
-          AI 예측 <ArrowRight size={14} />
+          최신 주간분석 <ArrowRight size={14} />
         </Link>
       </div>
 
-      {/* 아카이브 네비게이션 */}
-      <SectionFrame>
-        <h2 className="text-lg font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>
-          지난 주간 분석
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {Array.from({ length: 10 }, (_, i) => analysis.round - 1 - i)
-            .filter(r => r >= 11)
-            .map(r => (
-              <Link
-                key={r}
-                href={`/lotto/analysis/weekly/${r}`}
-                className="px-3 py-1.5 rounded-lg text-sm"
-                style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-              >
-                {r}회
-              </Link>
-            ))}
-        </div>
-        {analysis.round > 21 && (
-          <Link
-            href={`/lotto/analysis/weekly/${analysis.round - 11}`}
-            className="inline-flex items-center gap-1 mt-3 text-sm"
-            style={{ color: 'var(--accent)' }}
-          >
-            <ChevronLeft size={14} /> 더 이전 분석 보기
-          </Link>
-        )}
-      </SectionFrame>
-
-      {/* JSON-LD 구조화 데이터 */}
+      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

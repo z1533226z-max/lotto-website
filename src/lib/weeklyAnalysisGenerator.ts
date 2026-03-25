@@ -23,6 +23,13 @@ export interface WeeklyAnalysis {
   generatedAt: string;
 }
 
+export function generateWeeklyAnalysisForRound(allData: LottoResult[], targetRound: number): WeeklyAnalysis | null {
+  const targetIndex = allData.findIndex(d => d.round === targetRound);
+  if (targetIndex < 10) return null;
+  const slicedData = allData.slice(0, targetIndex + 1);
+  return generateWeeklyAnalysis(slicedData);
+}
+
 export function generateWeeklyAnalysis(allData: LottoResult[]): WeeklyAnalysis | null {
   if (allData.length < 10) return null;
 

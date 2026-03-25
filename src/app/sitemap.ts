@@ -95,5 +95,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...roundPages];
+  // 주간분석 회차별 아카이브 (최근 52회 = 약 1년)
+  const latestRound = REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1]?.round ?? 0;
+  const weeklyArchivePages: MetadataRoute.Sitemap = [];
+  for (let r = latestRound; r >= Math.max(11, latestRound - 51); r--) {
+    const roundData = REAL_LOTTO_DATA.find(d => d.round === r);
+    weeklyArchivePages.push({
+      url: `${baseUrl}/lotto/analysis/weekly/${r}`,
+      lastModified: roundData ? new Date(roundData.drawDate) : STATIC_DATE,
+      changeFrequency: 'never' as const,
+      priority: 0.5,
+    });
+  }
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
 }
