@@ -19,6 +19,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const round = parseInt(params.round);
+
+  if (isNaN(round) || round < 1) {
+    return { title: '로또 당첨번호 조회 | 로또킹' };
+  }
+
   const result = await fetchRound(round);
   const data = result?.data;
 
@@ -33,6 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://lotto.gon.ai.kr/lotto/${round}`,
+    },
     openGraph: {
       title: `로또 ${round}회 당첨번호`,
       description,
