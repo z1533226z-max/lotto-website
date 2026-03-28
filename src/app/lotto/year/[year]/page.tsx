@@ -120,7 +120,7 @@ export default function YearAnalysisPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `${year}년 로또 당첨번호 분석`,
-    description: `${year}년도 로또 6/45 전체 회차의 당첨번호 데이터 및 통계 분석입니다. 최다 출현 번호, 최소 출현 번호, 번호대별 분포, 1등 당첨금 추이 등 연간 종합 통계를 제공합니다.`,
+    description: `${year}년도 로또 6/45 전체 회차(${firstRound}회~${lastRound}회)의 당첨번호 데이터 및 통계 분석입니다. 최다 출현 번호, 최소 출현 번호, 번호대별 분포, 홀짝 비율, 연속번호 출현 빈도, 1등 당첨금 추이 등 연간 종합 통계를 제공합니다. ${year}년 총 ${yearData.length}회 추첨 결과를 기반으로 산출된 데이터이며, 동행복권 공식 추첨 결과를 기반으로 합니다. 연도별 번호 출현 패턴 비교와 당첨금 변동 추이 분석에 활용할 수 있습니다.`,
     url: `https://lotto.gon.ai.kr/lotto/year/${year}`,
     temporalCoverage: `${year}`,
     keywords: [`${year}년 로또`, '로또 당첨번호', '로또 통계', '연도별 분석'],

@@ -115,7 +115,7 @@ export default function NumberAnalysisPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `로또 ${num}번 번호 분석`,
-    description: `로또 6/45 번호 ${num}번의 역대 출현 빈도, 출현 간격, 최근 추세 분석 데이터입니다. 전체 추첨 회차에서의 통계와 핫/콜드 번호 판정, 동반 출현 번호 정보를 제공합니다.`,
+    description: `로또 6/45 번호 ${num}번의 역대 출현 빈도, 출현 간격, 최근 추세 분석 데이터입니다. 전체 추첨 회차에서의 통계와 핫/콜드 번호 판정, 동반 출현 번호 정보를 제공합니다. ${num}번은 전체 ${totalRounds}회 추첨 중 ${frequency}회 출현하여 출현율 ${percentage}%를 기록했으며, 현재 ${status}로 판정됩니다. 번호대 ${section} 구간에 속하며, 최근 출현 주기와 평균 간격 대비 현재 미출현 기간 분석, 동반 출현 빈도가 높은 번호 조합 정보를 포함합니다. 로또킹의 데이터는 동행복권 공식 추첨 결과를 기반으로 산출됩니다.`,
     url: `https://lotto.gon.ai.kr/lotto/number/${num}`,
     keywords: [`로또 ${num}번`, '로또 번호 분석', '로또 출현 빈도', '로또 통계'],
     creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
