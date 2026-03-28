@@ -31,6 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `/lotto/number/${num}`,
+    },
     openGraph: {
       title: `로또 ${num}번 번호 분석`,
       description,
@@ -112,10 +115,11 @@ export default function NumberAnalysisPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `로또 ${num}번 번호 분석`,
-    description: `로또 6/45 ${num}번의 출현 빈도, 간격, 추세 분석 데이터`,
+    description: `로또 6/45 번호 ${num}번의 역대 출현 빈도, 출현 간격, 최근 추세 분석 데이터입니다. 전체 추첨 회차에서의 통계와 핫/콜드 번호 판정, 동반 출현 번호 정보를 제공합니다.`,
     url: `https://lotto.gon.ai.kr/lotto/number/${num}`,
     keywords: [`로또 ${num}번`, '로또 번호 분석', '로또 출현 빈도', '로또 통계'],
-    creator: { '@type': 'Organization', name: '로또킹' },
+    creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
   const faqJsonLd = {

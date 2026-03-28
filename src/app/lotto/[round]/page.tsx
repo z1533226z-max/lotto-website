@@ -72,9 +72,10 @@ export default async function LottoRoundPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `로또 6/45 ${round}회 당첨번호`,
-    description: `${data.drawDate} 추첨 로또 ${round}회 당첨번호 ${data.numbers.join(', ')} + ${data.bonusNumber}`,
+    description: `${data.drawDate} 추첨된 로또 6/45 제${round}회 당첨번호는 ${data.numbers.join(', ')} + 보너스 ${data.bonusNumber}입니다. 1등부터 5등까지의 당첨금 및 당첨자 수 정보를 포함한 공식 추첨 결과 데이터입니다.`,
     datePublished: data.drawDate,
-    publisher: { '@type': 'Organization', name: '로또킹' },
+    creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
   return (

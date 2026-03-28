@@ -36,6 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `/lotto/year/${year}`,
+    },
     openGraph: {
       title: `${year}년 로또 당첨번호 분석`,
       description,
@@ -117,11 +120,12 @@ export default function YearAnalysisPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: `${year}년 로또 당첨번호 분석`,
-    description: `${year}년 로또 6/45 당첨번호 데이터 및 통계 분석`,
+    description: `${year}년도 로또 6/45 전체 회차의 당첨번호 데이터 및 통계 분석입니다. 최다 출현 번호, 최소 출현 번호, 번호대별 분포, 1등 당첨금 추이 등 연간 종합 통계를 제공합니다.`,
     url: `https://lotto.gon.ai.kr/lotto/year/${year}`,
     temporalCoverage: `${year}`,
     keywords: [`${year}년 로또`, '로또 당첨번호', '로또 통계', '연도별 분석'],
-    creator: { '@type': 'Organization', name: '로또킹' },
+    creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
   const faqJsonLd = {
