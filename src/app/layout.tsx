@@ -53,6 +53,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  alternates: {},
   verification: {
     google: 'WUrfnWHUFd9icr_v6BWbC5IWS2mG_Dca7LBuL9Plx-I',
     other: {
