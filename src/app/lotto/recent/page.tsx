@@ -12,6 +12,9 @@ export const revalidate = 3600; // ISR: 1시간마다 재생성
 export const metadata: Metadata = {
   title: '최근 로또 당첨번호 - 최근 10회 추첨 결과 | 로또킹',
   description: '로또 6/45 최근 10회차 당첨번호를 한눈에 확인하세요. 최신 당첨번호, 보너스번호, 1등 당첨금 정보를 제공합니다.',
+  alternates: {
+    canonical: '/lotto/recent',
+  },
   openGraph: {
     title: '최근 로또 당첨번호 | 로또킹',
     url: 'https://lotto.gon.ai.kr/lotto/recent',

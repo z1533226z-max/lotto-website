@@ -13,6 +13,9 @@ export const revalidate = 3600; // ISR: 1시간마다 재생성
 export const metadata: Metadata = {
   title: '로또 당첨번호 전체 조회 - 역대 당첨번호 목록 | 로또킹',
   description: '로또 6/45 1회부터 최신 회차까지 역대 전체 당첨번호를 조회하세요. 회차별 당첨번호, 보너스번호, 1등 당첨금, 당첨자수 정보를 제공합니다.',
+  alternates: {
+    canonical: '/lotto/list',
+  },
   openGraph: {
     title: '로또 당첨번호 전체 조회 | 로또킹',
     description: '역대 전체 로또 당첨번호 목록',

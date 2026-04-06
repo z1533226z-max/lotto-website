@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
 
-const STATIC_DATE = new Date('2026-03-01');
+const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
 
 export default function sitemap(): MetadataRoute.Sitemap {

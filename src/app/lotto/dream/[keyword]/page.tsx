@@ -32,6 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: `/lotto/dream/${encodeURIComponent(dream.keyword)}`,
+    },
     openGraph: {
       title: `${dream.keyword} 꿈해몽 로또번호`,
       description,

@@ -7,10 +7,13 @@ import { BarChart3, TrendingUp, Hash, BookOpen, Calendar } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '로또 번호 통계 분석 - 출현 빈도, 핫/콜드 번호 | 로또킹',
-  description: '1,200회+ 로또 데이터 기반 번호 출현 빈도, 핫/콜드 번호, 구간별 분포, 홀짝 비율, 연속번호 패턴 종합 통계. 데이터 기반 당첨번호 예측에 활용하세요!',
+  title: "로또 당첨번호 통계 분석 - 2026년 최신 핫/콜드 번호 | 로또킹",
+  description: "1회~1,200+회 전체 로또 당첨번호 통계! 가장 많이 나온 번호, 최근 핫번호, 안 나온 콜드번호, 연속번호 패턴까지. 무료 데이터 분석으로 다음 당첨 확률을 높이세요.",
+  alternates: {
+    canonical: '/lotto/statistics',
+  },
   openGraph: {
-    title: '로또 번호 통계 분석 - 출현 빈도, 핫/콜드 번호 | 로또킹',
+    title: "로또 당첨번호 통계 분석 - 2026년 최신 핫/콜드 번호 | 로또킹",
     description: '1,200회+ 로또 데이터 기반 종합 통계 분석. 핫/콜드 번호, 구간별 분포, 패턴 확인!',
   },
 };
