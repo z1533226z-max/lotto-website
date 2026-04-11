@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
+import type { LottoResult } from '@/types/lotto';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import PatternAnalysisContent from './PatternAnalysisContent';
 
@@ -31,7 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pattern = PATTERN_TYPES.find(p => p.type === params.type);
   if (!pattern) return { title: '패턴 분석 | 로또킹' };
 
-  const totalRounds = REAL_LOTTO_DATA.length;
+  const allData = await getAllLottoData();
+  const totalRounds = allData.length;
   const title = `로또 ${pattern.name} - ${totalRounds}회 데이터 기반 | 로또킹`;
   const description = `${pattern.desc}. 총 ${totalRounds}회 추첨 데이터를 기반으로 당첨 확률이 높은 패턴을 분석합니다.`;
 
@@ -46,32 +48,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function analyzeOddEven() {
+function analyzeOddEven(data: LottoResult[]) {
   const distribution: Record<string, number> = {};
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     const oddCount = round.numbers.filter(n => n % 2 === 1).length;
     const key = `${oddCount}:${6 - oddCount}`;
     distribution[key] = (distribution[key] || 0) + 1;
   }
   return Object.entries(distribution)
-    .map(([ratio, count]) => ({ ratio, count, percentage: ((count / REAL_LOTTO_DATA.length) * 100).toFixed(1) }))
+    .map(([ratio, count]) => ({ ratio, count, percentage: ((count / data.length) * 100).toFixed(1) }))
     .sort((a, b) => b.count - a.count);
 }
 
-function analyzeHighLow() {
+function analyzeHighLow(data: LottoResult[]) {
   const distribution: Record<string, number> = {};
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     const lowCount = round.numbers.filter(n => n <= 22).length;
     const key = `저${lowCount}:고${6 - lowCount}`;
     distribution[key] = (distribution[key] || 0) + 1;
   }
   return Object.entries(distribution)
-    .map(([ratio, count]) => ({ ratio, count, percentage: ((count / REAL_LOTTO_DATA.length) * 100).toFixed(1) }))
+    .map(([ratio, count]) => ({ ratio, count, percentage: ((count / data.length) * 100).toFixed(1) }))
     .sort((a, b) => b.count - a.count);
 }
 
-function analyzeSumRange() {
-  const sums = REAL_LOTTO_DATA.map(r => ({
+function analyzeSumRange(data: LottoResult[]) {
+  const sums = data.map(r => ({
     round: r.round,
     sum: r.numbers.reduce((a, b) => a + b, 0),
   }));
@@ -91,10 +93,10 @@ function analyzeSumRange() {
   return { ranges: result, avgSum, minSum: Math.min(...sums.map(s => s.sum)), maxSum: Math.max(...sums.map(s => s.sum)) };
 }
 
-function analyzeConsecutive() {
+function analyzeConsecutive(data: LottoResult[]) {
   let withConsecutive = 0;
   const consecutiveCounts: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0 };
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     const sorted = [...round.numbers].sort((a, b) => a - b);
     let maxConsec = 0;
     let currentConsec = 0;
@@ -112,16 +114,16 @@ function analyzeConsecutive() {
   }
   return {
     withConsecutive,
-    withoutConsecutive: REAL_LOTTO_DATA.length - withConsecutive,
-    percentage: ((withConsecutive / REAL_LOTTO_DATA.length) * 100).toFixed(1),
+    withoutConsecutive: data.length - withConsecutive,
+    percentage: ((withConsecutive / data.length) * 100).toFixed(1),
     counts: consecutiveCounts,
   };
 }
 
-function analyzeSection() {
+function analyzeSection(data: LottoResult[]) {
   const sectionCounts = [0, 0, 0, 0, 0];
   const sectionLabels = ['1~10', '11~20', '21~30', '31~40', '41~45'];
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     for (const n of round.numbers) {
       if (n <= 10) sectionCounts[0]++;
       else if (n <= 20) sectionCounts[1]++;
@@ -139,10 +141,10 @@ function analyzeSection() {
   }));
 }
 
-function analyzeEndingNumber() {
+function analyzeEndingNumber(data: LottoResult[]) {
   const endings: Record<number, number> = {};
   for (let i = 0; i <= 9; i++) endings[i] = 0;
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     for (const n of round.numbers) {
       endings[n % 10]++;
     }
@@ -153,9 +155,9 @@ function analyzeEndingNumber() {
     .sort((a, b) => b.count - a.count);
 }
 
-function analyzeGap() {
+function analyzeGap(data: LottoResult[]) {
   const gaps: Record<number, number> = {};
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     const sorted = [...round.numbers].sort((a, b) => a - b);
     for (let i = 1; i < sorted.length; i++) {
       const gap = sorted[i] - sorted[i - 1];
@@ -168,9 +170,9 @@ function analyzeGap() {
     .slice(0, 20);
 }
 
-function analyzeACValue() {
+function analyzeACValue(data: LottoResult[]) {
   const acValues: Record<number, number> = {};
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of data) {
     const sorted = [...round.numbers].sort((a, b) => a - b);
     const diffs = new Set<number>();
     for (let i = 0; i < sorted.length; i++) {
@@ -181,28 +183,29 @@ function analyzeACValue() {
     const ac = diffs.size - 5;
     acValues[ac] = (acValues[ac] || 0) + 1;
   }
-  const total = REAL_LOTTO_DATA.length;
+  const total = data.length;
   return Object.entries(acValues)
     .map(([ac, count]) => ({ ac: Number(ac), count, percentage: ((count / total) * 100).toFixed(1) }))
     .sort((a, b) => a.ac - b.ac);
 }
 
-export default function PatternPage({ params }: Props) {
+export default async function PatternPage({ params }: Props) {
   const pattern = PATTERN_TYPES.find(p => p.type === params.type);
   if (!pattern) notFound();
 
-  const totalRounds = REAL_LOTTO_DATA.length;
+  const allData = await getAllLottoData();
+  const totalRounds = allData.length;
 
   let analysisData: unknown;
   switch (params.type as PatternType) {
-    case 'odd-even': analysisData = analyzeOddEven(); break;
-    case 'high-low': analysisData = analyzeHighLow(); break;
-    case 'sum-range': analysisData = analyzeSumRange(); break;
-    case 'consecutive': analysisData = analyzeConsecutive(); break;
-    case 'section': analysisData = analyzeSection(); break;
-    case 'ending-number': analysisData = analyzeEndingNumber(); break;
-    case 'gap': analysisData = analyzeGap(); break;
-    case 'ac-value': analysisData = analyzeACValue(); break;
+    case 'odd-even': analysisData = analyzeOddEven(allData); break;
+    case 'high-low': analysisData = analyzeHighLow(allData); break;
+    case 'sum-range': analysisData = analyzeSumRange(allData); break;
+    case 'consecutive': analysisData = analyzeConsecutive(allData); break;
+    case 'section': analysisData = analyzeSection(allData); break;
+    case 'ending-number': analysisData = analyzeEndingNumber(allData); break;
+    case 'gap': analysisData = analyzeGap(allData); break;
+    case 'ac-value': analysisData = analyzeACValue(allData); break;
   }
 
   const faqJsonLd = {

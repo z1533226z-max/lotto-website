@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import YearAnalysisContent from './YearAnalysisContent';
 
@@ -27,7 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: '연도별 분석 | 로또킹' };
   }
 
-  const yearData = REAL_LOTTO_DATA.filter(r => r.drawDate.startsWith(String(year)));
+  const allData = await getAllLottoData();
+  const yearData = allData.filter(r => r.drawDate.startsWith(String(year)));
   const roundCount = yearData.length;
 
   const title = `${year}년 로또 당첨번호 분석 - 총 ${roundCount}회 추첨 | 로또킹`;
@@ -47,18 +48,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function YearAnalysisPage({ params }: Props) {
+export default async function YearAnalysisPage({ params }: Props) {
   const year = parseInt(params.year);
   if (isNaN(year) || year < START_YEAR || year > CURRENT_YEAR) {
     notFound();
   }
 
-  const yearData = REAL_LOTTO_DATA.filter(r => r.drawDate.startsWith(String(year)));
+  const allData = await getAllLottoData();
+  const yearData = allData.filter(r => r.drawDate.startsWith(String(year)));
   if (yearData.length === 0) {
     notFound();
   }
 
-  // 번호별 출현 횟수
   const numberFrequency: Record<number, number> = {};
   for (let i = 1; i <= 45; i++) numberFrequency[i] = 0;
   for (const round of yearData) {
@@ -75,7 +76,6 @@ export default function YearAnalysisPage({ params }: Props) {
   const top10 = sortedByFreq.slice(0, 10);
   const bottom10 = sortedByFreq.slice(-10).reverse();
 
-  // 당첨금 통계
   const firstPrizes = yearData.filter(r => r.prizeMoney.first > 0).map(r => r.prizeMoney.first);
   const avgFirstPrize = firstPrizes.length > 0
     ? Math.round(firstPrizes.reduce((a, b) => a + b, 0) / firstPrizes.length)
@@ -83,7 +83,6 @@ export default function YearAnalysisPage({ params }: Props) {
   const maxFirstPrize = firstPrizes.length > 0 ? Math.max(...firstPrizes) : 0;
   const totalFirstWinners = yearData.reduce((sum, r) => sum + r.prizeMoney.firstWinners, 0);
 
-  // 홀짝 비율
   let oddCount = 0;
   let evenCount = 0;
   for (const round of yearData) {
@@ -93,8 +92,7 @@ export default function YearAnalysisPage({ params }: Props) {
     }
   }
 
-  // 구간별 분포
-  const sections = [0, 0, 0, 0, 0]; // 1-10, 11-20, 21-30, 31-40, 41-45
+  const sections = [0, 0, 0, 0, 0];
   for (const round of yearData) {
     for (const n of round.numbers) {
       if (n <= 10) sections[0]++;
@@ -105,11 +103,9 @@ export default function YearAnalysisPage({ params }: Props) {
     }
   }
 
-  // 회차 범위
   const firstRound = yearData[0].round;
   const lastRound = yearData[yearData.length - 1].round;
 
-  // 모든 연도 목록
   const allYears: number[] = [];
   for (let y = START_YEAR; y <= CURRENT_YEAR; y++) {
     allYears.push(y);

@@ -8,10 +8,12 @@ import SajuBanner from '@/components/promotion/SajuBanner';
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
 import SectionFrame from '@/components/ui/SectionFrame';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save, TrendingUp } from 'lucide-react';
-import { REAL_LOTTO_DATA, getLatestLottoData } from '@/data/realLottoData';
+import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
+import type { LottoResult } from '@/types/lotto';
 import type { Metadata } from 'next';
 
-// ── 서버 전용: 볼 색상 (LottoNumbers의 getBallHexColor와 동일)
+export const revalidate = 3600;
+
 function getBallColor(num: number): { bg: string; text: string } {
   if (num <= 10) return { bg: '#FFC107', text: '#333333' };
   if (num <= 20) return { bg: '#2196F3', text: '#FFFFFF' };
@@ -20,10 +22,7 @@ function getBallColor(num: number): { bg: string; text: string } {
   return { bg: '#4CAF50', text: '#FFFFFF' };
 }
 
-// ── 서버 렌더링 최신 회차 블록 (SEO용, 인터랙션 없음)
-function LatestResultSSR() {
-  const latest = getLatestLottoData();
-  if (!latest) return null;
+function LatestResultSSR({ latest }: { latest: LottoResult }) {
 
   const drawDateFormatted = latest.drawDate.replace(/-/g, '.');
   const firstPrize = latest.prizeMoney.first;
@@ -38,7 +37,6 @@ function LatestResultSSR() {
     <section
       aria-label={`로또 ${latest.round}회 당첨번호`}
     >
-      {/* 헤더 */}
       <div className="flex items-center justify-between mb-5">
         <div>
           <p className="text-xs font-medium mb-0.5" style={{ color: 'var(--text-tertiary)' }}>
@@ -56,7 +54,6 @@ function LatestResultSSR() {
         </span>
       </div>
 
-      {/* 번호 볼 */}
       <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
         {latest.numbers.map((num) => {
           const { bg, text } = getBallColor(num);
@@ -74,7 +71,6 @@ function LatestResultSSR() {
             </div>
           );
         })}
-        {/* 구분자 + 보너스 */}
         <span className="text-lg font-bold mx-1" style={{ color: 'var(--text-tertiary)' }}>+</span>
         {(() => {
           const { bg, text } = getBallColor(latest.bonusNumber);
@@ -93,7 +89,6 @@ function LatestResultSSR() {
         })()}
       </div>
 
-      {/* 당첨 정보 */}
       <div
         className="flex items-center justify-center gap-6 pt-4 text-sm"
         style={{ borderTop: '1px solid var(--border)' }}
@@ -196,7 +191,11 @@ const quickLinks = [
   { href: '/lotto/analysis/weekly', icon: <TrendingUp className="w-5 h-5" />, label: '주간 분석', desc: '이번 주 번호 트렌드' },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const allData = await getAllLottoData();
+  const latest = getLatestRound(allData);
+  const totalRounds = allData.length;
+
   return (
     <div className="min-h-[100dvh]" style={{ backgroundColor: 'var(--bg)' }}>
       <Header />
@@ -266,7 +265,7 @@ export default function HomePage() {
                 {/* Trust indicators */}
                 <div className="flex items-center gap-6 pt-2">
                   {[
-                    { value: `${REAL_LOTTO_DATA.length.toLocaleString()}+`, label: '분석 회차' },
+                    { value: `${totalRounds.toLocaleString()}+`, label: '분석 회차' },
                     { value: '무료', label: '이용 비용' },
                     { value: '매주', label: '자동 업데이트' },
                   ].map((stat) => (
@@ -381,10 +380,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Main content */}
             <div className="lg:col-span-8 space-y-8">
-              {/* 최신 회차 서버 렌더링 블록 (SEO — 구글 크롤링용) */}
-              <LatestResultSSR />
+              {latest && <LatestResultSSR latest={latest} />}
 
-              {/* Latest Result (클라이언트 — 실시간 API 연동) */}
               <section id="home">
                 <LatestResult />
               </section>

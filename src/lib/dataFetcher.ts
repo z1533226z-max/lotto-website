@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { LottoResult } from '@/types/lotto';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 
@@ -214,22 +215,20 @@ export async function fetchLatestRound(): Promise<{ data: LottoResult; source: s
   throw new Error('로또 데이터를 가져올 수 없습니다.');
 }
 
-// 전체 로또 데이터 반환
+// 전체 로또 데이터 반환 (React cache로 같은 요청 내 중복 호출 dedup)
 // Priority: gon-services API (전체) → 정적 데이터 + API 보충
-export async function getAllLottoData(): Promise<LottoResult[]> {
-  // 캐시 확인
+export const getAllLottoData = cache(async (): Promise<LottoResult[]> => {
   if (allDataCache && Date.now() - allDataCache.fetchedAt < ALL_DATA_CACHE_TTL) {
     return allDataCache.data;
   }
 
-  // 1. gon-services 백엔드에서 전체 데이터 시도 (primary)
   const gonData = await fetchAllFromGonServices();
   if (gonData && gonData.length > 0) {
     allDataCache = { data: gonData, fetchedAt: Date.now() };
     return gonData;
   }
 
-  // 2. Fallback: 정적 데이터 + 최신 API 데이터 합산
+  // Fallback: 정적 데이터 + 최신 API 데이터 합산
   const staticData = [...REAL_LOTTO_DATA];
   const lastStaticRound = staticData.length > 0
     ? staticData[staticData.length - 1].round
@@ -265,6 +264,11 @@ export async function getAllLottoData(): Promise<LottoResult[]> {
   allDataCache = { data: allData, fetchedAt: Date.now() };
 
   return allData;
+});
+
+// 가장 최근 회차 데이터 반환 (빈 배열 가드 포함)
+export function getLatestRound(allData: LottoResult[]): LottoResult | null {
+  return allData.length > 0 ? allData[allData.length - 1] : null;
 }
 
 // 외부 캐시 무효화 콜백 (API 라우트 등에서 등록)

@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
-import { fetchRound, getEstimatedLatestRound } from '@/lib/dataFetcher';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { getAllLottoData, getEstimatedLatestRound, getLatestRound } from '@/lib/dataFetcher';
+import { formatCurrency } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 
@@ -14,7 +13,8 @@ export const revalidate = 3600; // ISR: 1시간마다 재생성
 export const dynamicParams = true; // 빌드에 없는 회차도 동적 처리
 
 export async function generateStaticParams() {
-  return REAL_LOTTO_DATA.map(d => ({ round: String(d.round) }));
+  const data = await getAllLottoData();
+  return data.map(d => ({ round: String(d.round) }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: '로또 당첨번호 조회 | 로또킹' };
   }
 
-  const result = await fetchRound(round);
-  const data = result?.data;
+  const allData = await getAllLottoData();
+  const data = allData.find(d => d.round === round);
 
   if (!data) {
     return { title: `${round}회 로또 당첨번호 | 로또킹` };
@@ -56,17 +56,15 @@ export default async function LottoRoundPage({ params }: Props) {
     notFound();
   }
 
-  const result = await fetchRound(round);
+  const allData = await getAllLottoData();
+  const data = allData.find(d => d.round === round);
 
-  if (!result) {
+  if (!data) {
     notFound();
   }
 
-  const { data } = result;
-  const staticMaxRound = REAL_LOTTO_DATA.length > 0
-    ? REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1].round
-    : round;
-  const maxRound = Math.max(staticMaxRound, getEstimatedLatestRound());
+  const knownMaxRound = getLatestRound(allData)?.round ?? round;
+  const maxRound = Math.max(knownMaxRound, getEstimatedLatestRound());
 
   const jsonLd = {
     '@context': 'https://schema.org',

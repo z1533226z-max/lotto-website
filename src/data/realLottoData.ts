@@ -23092,21 +23092,5 @@ export const REAL_LOTTO_DATA: LottoResult[] = [
   }
 ];
 
-export const getLottoDataByRange = (startRound: number, endRound: number): LottoResult[] => {
-  return REAL_LOTTO_DATA.filter(
-    data => data.round >= startRound && data.round <= endRound
-  );
-};
-
-export const getLatestLottoData = (): LottoResult | null => {
-  return REAL_LOTTO_DATA.length > 0
-    ? REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1]
-    : null;
-};
-
-// 통계 분석용 빠른 조회
-export const getLottoDataCount = (): number => {
-  return REAL_LOTTO_DATA.length;
-};
 
 export default REAL_LOTTO_DATA;

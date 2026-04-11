@@ -1,12 +1,13 @@
 import { MetadataRoute } from 'next';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData } from '@/lib/dataFetcher';
 import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
 
 const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://lotto.gon.ai.kr';
+  const allData = await getAllLottoData();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
@@ -29,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/privacy`, lastModified: STATIC_DATE, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  const roundPages: MetadataRoute.Sitemap = REAL_LOTTO_DATA.map(d => ({
+  const roundPages: MetadataRoute.Sitemap = allData.map(d => ({
     url: `${baseUrl}/lotto/${d.round}`,
     lastModified: new Date(d.drawDate),
     changeFrequency: 'never' as const,
@@ -96,10 +97,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // 주간분석 회차별 아카이브 (최근 52회 = 약 1년)
-  const latestRound = REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1]?.round ?? 0;
+  const latestRound = allData[allData.length - 1]?.round ?? 0;
   const weeklyArchivePages: MetadataRoute.Sitemap = [];
   for (let r = latestRound; r >= Math.max(11, latestRound - 51); r--) {
-    const roundData = REAL_LOTTO_DATA.find(d => d.round === r);
+    const roundData = allData.find(d => d.round === r);
     weeklyArchivePages.push({
       url: `${baseUrl}/lotto/analysis/weekly/${r}`,
       lastModified: roundData ? new Date(roundData.drawDate) : STATIC_DATE,

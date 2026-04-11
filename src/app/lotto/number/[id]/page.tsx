@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import NumberAnalysisContent from './NumberAnalysisContent';
@@ -21,8 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: '번호 분석 | 로또킹' };
   }
 
-  const frequency = LottoStatisticsAnalyzer.calculateFrequency(num, REAL_LOTTO_DATA);
-  const totalRounds = REAL_LOTTO_DATA.length;
+  const allData = await getAllLottoData();
+  const frequency = LottoStatisticsAnalyzer.calculateFrequency(num, allData);
+  const totalRounds = allData.length;
   const percentage = ((frequency / totalRounds) * 100).toFixed(1);
 
   const title = `로또 ${num}번 분석 - 출현 ${frequency}회 (${percentage}%) | 로또킹`;
@@ -42,24 +43,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function NumberAnalysisPage({ params }: Props) {
+export default async function NumberAnalysisPage({ params }: Props) {
   const num = parseInt(params.id);
   if (isNaN(num) || num < 1 || num > 45) {
     notFound();
   }
 
-  // 통계 계산
-  const totalRounds = REAL_LOTTO_DATA.length;
-  const frequency = LottoStatisticsAnalyzer.calculateFrequency(num, REAL_LOTTO_DATA);
-  const lastAppeared = LottoStatisticsAnalyzer.calculateLastAppeared(num, REAL_LOTTO_DATA);
-  const hotColdScore = LottoStatisticsAnalyzer.calculateHotColdScore(num, REAL_LOTTO_DATA);
-  const consecutiveCount = LottoStatisticsAnalyzer.calculateConsecutiveCount(num, REAL_LOTTO_DATA);
-  const recentFrequency = LottoStatisticsAnalyzer.calculateRecentFrequency(num, REAL_LOTTO_DATA, 20);
-  const latestRound = REAL_LOTTO_DATA[REAL_LOTTO_DATA.length - 1].round;
+  const allData = await getAllLottoData();
+  const latest = getLatestRound(allData);
+  if (!latest) notFound();
 
-  // 동반 출현 번호 계산
+  const totalRounds = allData.length;
+  const frequency = LottoStatisticsAnalyzer.calculateFrequency(num, allData);
+  const lastAppeared = LottoStatisticsAnalyzer.calculateLastAppeared(num, allData);
+  const hotColdScore = LottoStatisticsAnalyzer.calculateHotColdScore(num, allData);
+  const consecutiveCount = LottoStatisticsAnalyzer.calculateConsecutiveCount(num, allData);
+  const recentFrequency = LottoStatisticsAnalyzer.calculateRecentFrequency(num, allData, 20);
+  const latestRound = latest.round;
+
   const companionCounts: Record<number, number> = {};
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of allData) {
     const allNums = [...round.numbers, round.bonusNumber];
     if (allNums.includes(num)) {
       for (const n of round.numbers) {
@@ -74,8 +77,7 @@ export default function NumberAnalysisPage({ params }: Props) {
     .slice(0, 5)
     .map(([n, count]) => ({ number: Number(n), count }));
 
-  // 출현 간격 계산
-  const appearedRounds = REAL_LOTTO_DATA
+  const appearedRounds = allData
     .filter(r => r.numbers.includes(num) || r.bonusNumber === num)
     .map(r => r.round)
     .sort((a, b) => a - b);
@@ -89,10 +91,9 @@ export default function NumberAnalysisPage({ params }: Props) {
   const minGap = gaps.length > 0 ? Math.min(...gaps) : 0;
   const currentGap = latestRound - lastAppeared;
 
-  // 연도별 출현 횟수
   const yearlyFrequency: { year: string; count: number }[] = [];
   const yearMap = new Map<string, number>();
-  for (const round of REAL_LOTTO_DATA) {
+  for (const round of allData) {
     const year = round.drawDate.substring(0, 4);
     if (round.numbers.includes(num) || round.bonusNumber === num) {
       yearMap.set(year, (yearMap.get(year) || 0) + 1);
@@ -103,14 +104,11 @@ export default function NumberAnalysisPage({ params }: Props) {
     yearlyFrequency.push({ year: entry[0], count: entry[1] });
   }
 
-  // 구간 정보
   const section = num <= 10 ? '1~10' : num <= 20 ? '11~20' : num <= 30 ? '21~30' : num <= 40 ? '31~40' : '41~45';
   const percentage = ((frequency / totalRounds) * 100).toFixed(1);
 
-  // 핫/콜드 판정
   const status = hotColdScore >= 20 ? '핫 번호 🔥' : hotColdScore <= -20 ? '콜드 번호 🧊' : '보통';
 
-  // JSON-LD 구조화 데이터
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
