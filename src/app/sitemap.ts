@@ -109,5 +109,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
+  // 번호 조합(pair) 분석 페이지 (45C2 = 990개)
+  const pairPages: MetadataRoute.Sitemap = [];
+  for (let i = 1; i <= 44; i++) {
+    for (let j = i + 1; j <= 45; j++) {
+      pairPages.push({
+        url: `${baseUrl}/lotto/pair/${i}-${j}`,
+        lastModified: STATIC_DATE,
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      });
+    }
+  }
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
 }

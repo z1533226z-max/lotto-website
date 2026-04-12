@@ -125,6 +125,13 @@ export default function NumberAnalysisContent({
                 </div>
               </div>
               <Link
+                href={`/lotto/pair/${Math.min(num, comp.number)}-${Math.max(num, comp.number)}`}
+                className="text-xs px-2 py-1 rounded"
+                style={{ backgroundColor: 'rgba(59,130,246,0.15)', color: '#60A5FA' }}
+              >
+                조합 분석
+              </Link>
+              <Link
                 href={`/lotto/number/${comp.number}`}
                 className="text-xs px-2 py-1 rounded"
                 style={{ backgroundColor: 'var(--border)', color: 'var(--text-secondary)' }}
