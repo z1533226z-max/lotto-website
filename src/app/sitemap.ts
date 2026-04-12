@@ -30,11 +30,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/privacy`, lastModified: STATIC_DATE, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
+  // 최신 100회차는 priority 0.8 (크롤 우선순위 강화), 나머지는 0.6
+  const latestRoundForPriority = allData.length > 0 ? allData[allData.length - 1].round : 0;
   const roundPages: MetadataRoute.Sitemap = allData.map(d => ({
     url: `${baseUrl}/lotto/${d.round}`,
     lastModified: new Date(d.drawDate),
-    changeFrequency: 'never' as const,
-    priority: 0.6,
+    changeFrequency: (latestRoundForPriority - d.round < 10 ? 'weekly' : 'never') as 'weekly' | 'never',
+    priority: latestRoundForPriority - d.round < 100 ? 0.8 : 0.6,
   }));
 
   // 번호별 분석 페이지 (1~45번)
