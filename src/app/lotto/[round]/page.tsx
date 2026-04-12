@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const numbersStr = data.numbers.join(', ');
-  const title = `${round}회 로또 당첨번호 - ${numbersStr} + ${data.bonusNumber} | 로또킹`;
-  const description = `로또 6/45 ${round}회 당첨번호: ${numbersStr} + 보너스 ${data.bonusNumber}. ${data.drawDate} 추첨. 1등 당첨금 ${formatCurrency(data.prizeMoney.first)}, ${data.prizeMoney.firstWinners}명 당첨.`;
+  const title = `${round}회 로또 당첨번호 조회 | ${data.drawDate} 추첨결과 | 로또킹`;
+  const description = `${round}회 로또 당첨번호 ${numbersStr}+${data.bonusNumber} (${data.drawDate} 추첨). 1등 ${formatCurrency(data.prizeMoney.first)} · ${data.prizeMoney.firstWinners}명 당첨. 번호 패턴·홀짝·연속수 분석과 역대 회차 통계 비교까지 한눈에 확인하세요.`;
 
   return {
     title,
