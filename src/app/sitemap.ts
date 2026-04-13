@@ -124,5 +124,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
+  // 월별 아카이브 페이지 (2002-12 ~ 현재)
+  const monthSet = new Set<string>();
+  for (const d of allData) {
+    monthSet.add(d.drawDate.substring(0, 7));
+  }
+  const monthlyPages: MetadataRoute.Sitemap = Array.from(monthSet).sort().map(ym => {
+    const ymYear = parseInt(ym.substring(0, 4));
+    const isCurrentMonth = ym === `${currentYear}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+    return {
+      url: `${baseUrl}/lotto/monthly/${ym}`,
+      lastModified: isCurrentMonth ? new Date() : STATIC_DATE,
+      changeFrequency: isCurrentMonth ? 'weekly' as const : 'yearly' as const,
+      priority: ymYear === currentYear ? 0.7 : 0.5,
+    };
+  });
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
 }
