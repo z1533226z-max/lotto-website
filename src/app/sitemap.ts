@@ -140,5 +140,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
+  // 생일 행운번호 페이지 (366일)
+  const birthdayPages: MetadataRoute.Sitemap = [];
+  const daysPerMonth = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  for (let m = 1; m <= 12; m++) {
+    for (let d = 1; d <= daysPerMonth[m]; d++) {
+      birthdayPages.push({
+        url: `${baseUrl}/lotto/birthday/${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
+        lastModified: STATIC_DATE,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      });
+    }
+  }
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
 }
