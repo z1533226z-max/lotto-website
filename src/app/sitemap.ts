@@ -98,16 +98,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // 주간분석 회차별 아카이브 (최근 52회 = 약 1년)
+  // 주간분석 회차별 아카이브 (11회~최신회차 전체)
   const latestRound = allData[allData.length - 1]?.round ?? 0;
   const weeklyArchivePages: MetadataRoute.Sitemap = [];
-  for (let r = latestRound; r >= Math.max(11, latestRound - 51); r--) {
+  for (let r = latestRound; r >= 11; r--) {
     const roundData = allData.find(d => d.round === r);
+    const isRecent = latestRound - r < 52;
     weeklyArchivePages.push({
       url: `${baseUrl}/lotto/analysis/weekly/${r}`,
       lastModified: roundData ? new Date(roundData.drawDate) : STATIC_DATE,
-      changeFrequency: 'never' as const,
-      priority: 0.5,
+      changeFrequency: isRecent ? 'weekly' as const : 'never' as const,
+      priority: isRecent ? 0.6 : 0.4,
     });
   }
 
