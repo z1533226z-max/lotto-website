@@ -155,5 +155,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...weeklyArchivePages, ...roundPages];
+  // 끝수 분석 페이지 (0~9)
+  const endingDigitPages: MetadataRoute.Sitemap = Array.from({ length: 10 }, (_, i) => ({
+    url: `${baseUrl}/lotto/ending/${i}`,
+    lastModified: STATIC_DATE,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...weeklyArchivePages, ...roundPages];
 }
