@@ -163,5 +163,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...weeklyArchivePages, ...roundPages];
+  // 보너스번호 분석 페이지 (1~45)
+  const bonusPages: MetadataRoute.Sitemap = Array.from({ length: 45 }, (_, i) => ({
+    url: `${baseUrl}/lotto/bonus/${i + 1}`,
+    lastModified: STATIC_DATE,
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...weeklyArchivePages, ...roundPages];
 }
