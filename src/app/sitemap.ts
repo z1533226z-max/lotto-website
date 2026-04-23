@@ -171,5 +171,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...weeklyArchivePages, ...roundPages];
+  // 합계 구간별 분석 페이지 (13개)
+  const sumRangeSlugs = ['21-70', '71-85', '86-100', '101-115', '116-130', '131-145', '146-160', '161-175', '176-190', '191-205', '206-220', '221-235', '236-255'];
+  const sumRangePages: MetadataRoute.Sitemap = sumRangeSlugs.map(slug => ({
+    url: `${baseUrl}/lotto/sum/${slug}`,
+    lastModified: STATIC_DATE,
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...weeklyArchivePages, ...roundPages];
 }
