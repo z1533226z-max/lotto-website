@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import type { DreamKeyword } from '@/data/dreamNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface Props {
   dream: DreamKeyword;
@@ -196,6 +197,8 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, allDream
           );
         })}
       </div>
+
+      <CrossSectionLinks current="dream" theme="light" />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface NumberStat {
   number: number;
@@ -319,6 +320,8 @@ export default function BirthdayContent({
           {formatPrevNextDate(nextDate)} &rarr;
         </Link>
       </div>
+
+      <CrossSectionLinks current="birthday" theme="light" />
 
       {/* 면책조항 */}
       <div className="text-center">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface MonthRound {
   round: number;
@@ -254,6 +255,8 @@ export default function MonthlyArchiveContent({
           </Link>
         ) : <div />}
       </div>
+
+      <CrossSectionLinks current="monthly" className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50" />
     </div>
   );
 }

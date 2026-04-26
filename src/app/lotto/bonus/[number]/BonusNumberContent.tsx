@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface Props {
   num: number;
@@ -239,6 +240,8 @@ export default function BonusNumberContent({
           )}
         </div>
       </section>
+
+      <CrossSectionLinks current="bonus" className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50" />
     </div>
   );
 }

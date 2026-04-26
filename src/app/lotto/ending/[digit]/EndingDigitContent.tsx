@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface Props {
   digit: number;
@@ -244,6 +245,8 @@ export default function EndingDigitContent({
         <Link href="/lotto/statistics" className="text-blue-400 hover:underline">전체 통계 →</Link>
         <Link href="/lotto/pattern/section" className="text-blue-400 hover:underline">구간 분석 →</Link>
       </div>
+
+      <CrossSectionLinks current="ending" className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50" />
     </div>
   );
 }

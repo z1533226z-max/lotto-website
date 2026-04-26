@@ -183,6 +183,31 @@ export default function LottoStatisticsPage() {
         </div>
       </section>
 
+      {/* 심화 분석 허브 */}
+      <section className="mt-8">
+        <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text)' }}>심화 분석</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { href: '/lotto/ending/3', label: '끝수 분석', desc: '끝수별 출현 통계' },
+            { href: '/lotto/bonus/7', label: '보너스번호', desc: '보너스 출현 통계' },
+            { href: '/lotto/sum/101-120', label: '합계 구간', desc: '합계별 당첨 분석' },
+            { href: '/lotto/pair/7-21', label: '번호 궁합', desc: '두 번호 동시출현' },
+            { href: '/lotto/birthday/01-15', label: '생일 행운번호', desc: '생년월일 번호 추천' },
+            { href: '/lotto/monthly/2026-04', label: '월별 아카이브', desc: '연월별 당첨 모아보기' },
+          ].map(({ href, label, desc }) => (
+            <Link
+              key={href}
+              href={href}
+              className="group rounded-xl p-4 transition-all hover:scale-[1.02]"
+              style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
+            >
+              <span className="font-semibold text-sm block" style={{ color: 'var(--primary)' }}>{label}</span>
+              <span className="text-xs mt-1 block" style={{ color: 'var(--text-secondary)' }}>{desc}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* 관련 분석 크로스링크 */}
       <section className="mt-8">
         <SectionFrame title="관련 분석">

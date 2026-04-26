@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface Props {
   num1: number;
@@ -286,6 +287,8 @@ export default function PairAnalysisContent({
           {num2}번 분석 →
         </Link>
       </div>
+
+      <CrossSectionLinks current="pair" className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50" />
     </div>
   );
 }
