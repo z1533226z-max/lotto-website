@@ -180,5 +180,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...weeklyArchivePages, ...roundPages];
+  // 패턴 상세 분석 페이지 (홀짝 7 + 고저 7 + AC값 11 + 연번 5 = 30개)
+  const statsCategories: { category: string; values: string[] }[] = [
+    { category: 'odd-even', values: ['0-6', '1-5', '2-4', '3-3', '4-2', '5-1', '6-0'] },
+    { category: 'high-low', values: ['0-6', '1-5', '2-4', '3-3', '4-2', '5-1', '6-0'] },
+    { category: 'ac', values: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] },
+    { category: 'consecutive', values: ['0', '1', '2', '3', '4'] },
+  ];
+  const statsDetailPages: MetadataRoute.Sitemap = statsCategories.flatMap(sc =>
+    sc.values.map(v => ({
+      url: `${baseUrl}/lotto/stats/${sc.category}/${v}`,
+      lastModified: STATIC_DATE,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
+  );
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...weeklyArchivePages, ...roundPages];
 }

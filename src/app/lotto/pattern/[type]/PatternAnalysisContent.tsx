@@ -134,6 +134,16 @@ function OddEvenResult({ data }: { data: { ratio: string; count: number; percent
       <p className="mt-4 text-sm p-3 rounded-lg" style={{ backgroundColor: 'rgba(211,97,53,0.1)' }}>
         💡 <strong>팁:</strong> 홀짝이 3:3 또는 4:2로 나오는 경우가 가장 많습니다. 한쪽으로 치우친 6:0이나 0:6은 매우 드뭅니다.
       </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {data.map(d => {
+          const [o, e] = d.ratio.split(':');
+          return (
+            <Link key={d.ratio} href={`/lotto/stats/odd-even/${o}-${e}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+              홀{o}짝{e} 상세 →
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -148,6 +158,17 @@ function HighLowResult({ data }: { data: { ratio: string; count: number; percent
       <p className="mt-4 text-sm p-3 rounded-lg" style={{ backgroundColor: 'rgba(211,97,53,0.1)' }}>
         💡 <strong>팁:</strong> 저번호와 고번호가 3:3으로 균형 잡힌 경우가 가장 많습니다.
       </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {data.map(d => {
+          const m = d.ratio.match(/저(\d+):고(\d+)/);
+          if (!m) return null;
+          return (
+            <Link key={d.ratio} href={`/lotto/stats/high-low/${m[2]}-${m[1]}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+              {d.ratio} 상세 →
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -203,6 +224,16 @@ function ConsecutiveResult({ data }: { data: { withConsecutive: number; withoutC
         <p className="mt-4 text-sm p-3 rounded-lg" style={{ backgroundColor: 'rgba(211,97,53,0.1)' }}>
           💡 <strong>팁:</strong> 전체 추첨의 약 {data.percentage}%에서 연속번호가 1쌍 이상 포함됩니다. 연속번호를 완전히 배제하지 않는 것이 유리합니다.
         </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {Object.keys(data.counts).map(key => {
+            const label = key === '0' ? '연번 없음' : `연번 ${key}쌍`;
+            return (
+              <Link key={key} href={`/lotto/stats/consecutive/${key}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+                {label} 상세 →
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -272,6 +303,13 @@ function ACValueResult({ data }: { data: { ac: number; count: number; percentage
       <p className="mt-4 text-sm p-3 rounded-lg" style={{ backgroundColor: 'rgba(211,97,53,0.1)' }}>
         💡 <strong>팁:</strong> AC값 7~10이 가장 흔합니다. AC값이 낮으면 번호가 한쪽에 몰려 있다는 뜻이며 당첨 확률이 낮습니다.
       </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {data.map(d => (
+          <Link key={d.ac} href={`/lotto/stats/ac/${d.ac}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+            AC {d.ac} 상세 →
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
