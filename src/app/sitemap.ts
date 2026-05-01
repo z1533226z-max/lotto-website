@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
+import { getAllGuideSlugs } from '@/data/guideArticles';
 
 const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
@@ -196,5 +197,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...weeklyArchivePages, ...roundPages];
+  // 가이드 서브페이지 (15개)
+  const guidePages: MetadataRoute.Sitemap = getAllGuideSlugs().map(slug => ({
+    url: `${baseUrl}/lotto/guide/${slug}`,
+    lastModified: STATIC_DATE,
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...weeklyArchivePages, ...roundPages];
 }

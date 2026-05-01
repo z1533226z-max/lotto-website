@@ -5,6 +5,7 @@ import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
+import { GUIDE_ARTICLES } from '@/data/guideArticles';
 
 // ============================================
 // Accordion component (client-side interactive)
@@ -787,6 +788,49 @@ export default function GuidePage() {
                 answer={item.answer}
                 defaultOpen={index === 0}
               />
+            ))}
+          </div>
+        </GuideSection>
+
+        {/* Guide Articles Grid */}
+        <GuideSection id="more-guides" title="더 알아보기" icon="&#x1F4DA;">
+          <p
+            className="text-sm mb-4"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            로또에 대해 더 자세히 알고 싶다면 아래 가이드를 확인해보세요.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {GUIDE_ARTICLES.map((article) => (
+              <Link
+                key={article.slug}
+                href={`/lotto/guide/${article.slug}`}
+                className={cn(
+                  'rounded-xl p-4 transition-all duration-200',
+                  'hover:-translate-y-0.5 hover:shadow-md',
+                  'flex items-start gap-3',
+                )}
+                style={{
+                  backgroundColor: 'var(--surface-hover)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                <span className="text-2xl flex-shrink-0 mt-0.5">{article.icon}</span>
+                <div className="min-w-0">
+                  <p
+                    className="text-sm font-bold mb-1 line-clamp-1"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    {article.title}
+                  </p>
+                  <p
+                    className="text-xs line-clamp-2"
+                    style={{ color: 'var(--text-tertiary)' }}
+                  >
+                    {article.metaDescription}
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         </GuideSection>
