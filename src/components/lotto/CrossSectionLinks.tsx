@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Section =
   | 'ending' | 'bonus' | 'sum' | 'birthday' | 'monthly'
-  | 'pair' | 'dream' | 'number' | 'round' | 'statistics' | 'pattern' | 'year';
+  | 'pair' | 'dream' | 'number' | 'round' | 'statistics' | 'pattern' | 'year' | 'mbti';
 
 interface SectionInfo {
   key: Section;
@@ -25,6 +25,7 @@ const ALL_SECTIONS: SectionInfo[] = [
   { key: 'number', label: '번호별 상세 분석', desc: '1~45 개별 번호 심층 분석', href: '/lotto/number/7' },
   { key: 'year', label: '연도별 분석', desc: '연도별 당첨번호 트렌드', href: '/lotto/year/2025' },
   { key: 'pattern', label: '패턴 분석', desc: '홀짝·고저·연속번호 패턴', href: '/lotto/pattern/odd-even' },
+  { key: 'mbti', label: 'MBTI 행운번호', desc: 'MBTI 성격유형별 번호 추천', href: '/lotto/mbti' },
 ];
 
 interface Props {

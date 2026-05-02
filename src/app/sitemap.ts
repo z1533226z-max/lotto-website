@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
 import { getAllGuideSlugs } from '@/data/guideArticles';
+import { MBTI_TYPES } from '@/data/mbtiLotto';
 
 const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
@@ -205,5 +206,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...weeklyArchivePages, ...roundPages];
+  // MBTI별 행운번호 페이지 (16개 + 허브)
+  const mbtiPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/lotto/mbti`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
+    ...MBTI_TYPES.map(type => ({
+      url: `${baseUrl}/lotto/mbti/${type.toLowerCase()}`,
+      lastModified: STATIC_DATE,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ];
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...weeklyArchivePages, ...roundPages];
 }
