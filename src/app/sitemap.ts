@@ -3,6 +3,8 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { DREAM_KEYWORDS } from '@/data/dreamNumbers';
 import { getAllGuideSlugs } from '@/data/guideArticles';
 import { MBTI_TYPES } from '@/data/mbtiLotto';
+import { ZODIAC_IDS } from '@/data/zodiacLotto';
+import { BLOOD_TYPE_IDS } from '@/data/bloodTypeLotto';
 
 const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
@@ -217,5 +219,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...weeklyArchivePages, ...roundPages];
+  // 별자리별 행운번호 페이지 (12개 + 허브)
+  const zodiacPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/lotto/zodiac`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
+    ...ZODIAC_IDS.map(sign => ({
+      url: `${baseUrl}/lotto/zodiac/${sign}`,
+      lastModified: STATIC_DATE,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ];
+
+  // 혈액형별 행운번호 페이지 (4개 + 허브)
+  const bloodTypePages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/lotto/blood-type`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
+    ...BLOOD_TYPE_IDS.map(type => ({
+      url: `${baseUrl}/lotto/blood-type/${type}`,
+      lastModified: STATIC_DATE,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ];
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...weeklyArchivePages, ...roundPages];
 }

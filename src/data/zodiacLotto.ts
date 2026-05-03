@@ -1,0 +1,306 @@
+/** 별자리별 로또 행운번호 데이터 */
+
+export interface ZodiacProfile {
+  id: string;
+  name: string;
+  emoji: string;
+  element: 'fire' | 'earth' | 'air' | 'water';
+  elementName: string;
+  dateRange: string;
+  trait: string;
+  description: string;
+  strategy: string;
+  luckyNumbers: number[];
+  avoidNumbers: number[];
+  bestPairId: string;
+  worstPairId: string;
+  purchaseTip: string;
+  luckyDay: string;
+  luckyColor: string;
+  faqs: { question: string; answer: string }[];
+}
+
+export const ZODIAC_IDS = [
+  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
+  'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+] as const;
+
+export type ZodiacId = typeof ZODIAC_IDS[number];
+
+export const ELEMENT_INFO: Record<string, { name: string; color: string; emoji: string }> = {
+  fire:  { name: '불의 별자리', color: '#E53935', emoji: '🔥' },
+  earth: { name: '흙의 별자리', color: '#8D6E63', emoji: '🌍' },
+  air:   { name: '바람의 별자리', color: '#42A5F5', emoji: '💨' },
+  water: { name: '물의 별자리', color: '#26C6DA', emoji: '💧' },
+};
+
+export const ZODIAC_PROFILES: ZodiacProfile[] = [
+  {
+    id: 'aries',
+    name: '양자리',
+    emoji: '♈',
+    element: 'fire',
+    elementName: '불',
+    dateRange: '3월 21일 ~ 4월 19일',
+    trait: '열정적이고 도전적인 개척자',
+    description: '양자리는 12궁도의 첫 번째 별자리로, 새로운 시작과 도전을 상징합니다. 대담하고 결단력 있으며, 직감적으로 빠르게 행동합니다. 로또에서도 과감한 번호 선택을 선호하며, 첫인상으로 끌리는 번호에 행운이 있습니다.',
+    strategy: '직감을 믿고 빠르게 선택하세요. 양자리는 첫 번째로 떠오르는 번호가 행운의 번호입니다. 너무 오래 고민하면 오히려 운이 달아납니다.',
+    luckyNumbers: [1, 9, 17, 28, 36, 45],
+    avoidNumbers: [6, 15, 24],
+    bestPairId: 'leo',
+    worstPairId: 'cancer',
+    purchaseTip: '화요일 오전에 구매하면 화성의 에너지가 행운을 가져옵니다.',
+    luckyDay: '화요일',
+    luckyColor: '빨간색',
+    faqs: [
+      { question: '양자리에게 어울리는 로또 구매 전략은?', answer: '양자리는 직감형입니다. 번호판을 보고 가장 먼저 눈에 들어오는 번호를 선택하세요. 1, 9번처럼 시작을 상징하는 숫자와 행운의 에너지가 잘 맞습니다.' },
+      { question: '양자리의 로또 행운 요일은?', answer: '양자리의 수호성은 화성(Mars)으로, 화요일에 가장 강한 에너지를 받습니다. 화요일 오전에 구매하면 가장 좋습니다.' },
+    ],
+  },
+  {
+    id: 'taurus',
+    name: '황소자리',
+    emoji: '♉',
+    element: 'earth',
+    elementName: '흙',
+    dateRange: '4월 20일 ~ 5월 20일',
+    trait: '인내심 강하고 실용적인 현실주의자',
+    description: '황소자리는 안정과 풍요를 추구합니다. 꾸준함과 인내가 최대 장점이며, 한번 정한 번호를 오래 유지하는 고정수 전략에 강합니다. 물질적 풍요와 연결된 별자리로 금전운이 좋습니다.',
+    strategy: '고정수 전략을 추천합니다. 한번 선택한 행운번호를 최소 10주 이상 꾸준히 구매하세요. 황소자리의 끈기가 결실을 맺습니다.',
+    luckyNumbers: [2, 11, 20, 29, 33, 44],
+    avoidNumbers: [8, 13, 39],
+    bestPairId: 'virgo',
+    worstPairId: 'aquarius',
+    purchaseTip: '금요일 저녁에 구매하세요. 금성의 에너지가 금전운을 높여줍니다.',
+    luckyDay: '금요일',
+    luckyColor: '초록색',
+    faqs: [
+      { question: '황소자리의 로또 행운번호 특징은?', answer: '황소자리의 행운번호는 안정과 풍요의 에너지를 담고 있습니다. 2(조화), 11(직감), 20(협력), 29(완성), 33(마스터넘버), 44(안정)로 구성됩니다.' },
+      { question: '황소자리가 로또 당첨되면?', answer: '황소자리는 12별자리 중 가장 현명하게 당첨금을 관리합니다. 충동적 소비보다 안정적 투자를 선호하며, 장기적 재산 관리에 뛰어납니다.' },
+    ],
+  },
+  {
+    id: 'gemini',
+    name: '쌍둥이자리',
+    emoji: '♊',
+    element: 'air',
+    elementName: '바람',
+    dateRange: '5월 21일 ~ 6월 21일',
+    trait: '재치 있고 다재다능한 소통의 달인',
+    description: '쌍둥이자리는 호기심이 많고 변화를 즐깁니다. 매번 다른 번호를 선택하는 것을 좋아하며, 여러 조합을 동시에 시도하는 전략이 잘 맞습니다. 정보 수집 능력이 뛰어나 통계 분석도 잘합니다.',
+    strategy: '매주 다른 번호 조합을 시도하세요. 쌍둥이자리의 다재다능함이 다양한 조합에서 당첨 가능성을 높입니다. 2장 이상 구매하되 각각 다른 전략으로 선택하세요.',
+    luckyNumbers: [3, 12, 21, 30, 38, 42],
+    avoidNumbers: [7, 16, 43],
+    bestPairId: 'libra',
+    worstPairId: 'pisces',
+    purchaseTip: '수요일에 친구와 함께 구매하세요. 소통의 에너지가 행운을 불러옵니다.',
+    luckyDay: '수요일',
+    luckyColor: '노란색',
+    faqs: [
+      { question: '쌍둥이자리에게 맞는 로또 전략은?', answer: '매주 다른 번호를 선택하는 변동수 전략이 잘 맞습니다. 한 번에 2~3장을 구매하되, 각각 다른 방법(직감, 통계, 랜덤)으로 번호를 고르면 다양성이 행운을 가져옵니다.' },
+      { question: '쌍둥이자리의 공동구매 궁합은?', answer: '쌍둥이자리는 사자자리(Leo)나 천칭자리(Libra)와 공동구매 궁합이 좋습니다. 서로 다른 관점의 번호 선택이 시너지를 만들어냅니다.' },
+    ],
+  },
+  {
+    id: 'cancer',
+    name: '게자리',
+    emoji: '♋',
+    element: 'water',
+    elementName: '물',
+    dateRange: '6월 22일 ~ 7월 22일',
+    trait: '감성적이고 직감이 뛰어난 수호자',
+    description: '게자리는 달의 영향을 받아 직감이 매우 뛰어납니다. 가족과 관련된 번호에서 특히 강한 행운이 있으며, 감정적으로 편안한 상태에서 번호를 선택하면 적중률이 높아집니다.',
+    strategy: '가족의 생일, 기념일 등 의미 있는 숫자를 조합하세요. 게자리는 감정이 안정된 상태에서 직감이 가장 정확합니다. 집에서 편안하게 번호를 선택하세요.',
+    luckyNumbers: [4, 13, 22, 25, 34, 40],
+    avoidNumbers: [1, 18, 45],
+    bestPairId: 'scorpio',
+    worstPairId: 'aries',
+    purchaseTip: '월요일에 가족을 생각하며 구매하세요. 달의 에너지가 직감을 극대화합니다.',
+    luckyDay: '월요일',
+    luckyColor: '은색',
+    faqs: [
+      { question: '게자리의 로또 행운번호는 어떻게 정해지나요?', answer: '게자리의 수호성인 달(Moon)의 주기(28일)와 관련된 수비학적 에너지를 기반으로 합니다. 4(안정), 13(변화), 22(마스터넘버), 25(자유), 34(창의), 40(완성)의 에너지와 공명합니다.' },
+      { question: '게자리가 로또를 살 때 주의할 점은?', answer: '감정 기복이 심한 날에는 구매를 피하세요. 게자리는 감정 상태가 직감의 정확도에 직접 영향을 미칩니다. 평온하고 안정된 상태에서 구매하면 가장 좋습니다.' },
+    ],
+  },
+  {
+    id: 'leo',
+    name: '사자자리',
+    emoji: '♌',
+    element: 'fire',
+    elementName: '불',
+    dateRange: '7월 23일 ~ 8월 22일',
+    trait: '카리스마 넘치고 자신감 있는 왕',
+    description: '사자자리는 태양의 별자리로, 빛나는 행운의 에너지를 가지고 있습니다. 큰 당첨을 꿈꾸며 과감하게 베팅하는 성향이 있으며, 특별한 날이나 축하할 일이 있을 때 구매하면 행운이 따릅니다.',
+    strategy: '기분이 최고로 좋을 때 구매하세요. 사자자리는 자신감이 행운의 열쇠입니다. 큰 숫자 위주로 선택하면 1등 당첨의 에너지와 잘 맞습니다.',
+    luckyNumbers: [5, 14, 23, 32, 37, 41],
+    avoidNumbers: [3, 19, 35],
+    bestPairId: 'aries',
+    worstPairId: 'scorpio',
+    purchaseTip: '일요일 오후에 가장 자신감이 넘칠 때 구매하세요. 태양의 에너지가 절정입니다.',
+    luckyDay: '일요일',
+    luckyColor: '금색',
+    faqs: [
+      { question: '사자자리의 로또 행운번호 특징은?', answer: '사자자리는 태양의 에너지를 받아 밝고 강한 번호와 궁합이 좋습니다. 5(모험), 14(절제), 23(자유), 32(소통), 37(지혜), 41(독립)로 당당한 에너지를 담고 있습니다.' },
+      { question: '사자자리의 1등 당첨 확률을 높이려면?', answer: '사자자리는 특별한 날(생일, 기념일, 승진)에 구매하면 행운이 극대화됩니다. 평소보다 자신감이 넘치는 순간을 포착하세요.' },
+    ],
+  },
+  {
+    id: 'virgo',
+    name: '처녀자리',
+    emoji: '♍',
+    element: 'earth',
+    elementName: '흙',
+    dateRange: '8월 23일 ~ 9월 22일',
+    trait: '꼼꼼하고 분석적인 완벽주의자',
+    description: '처녀자리는 세밀한 분석과 체계적 접근이 강점입니다. 통계와 데이터를 활용한 번호 선택에 뛰어나며, 작은 당첨도 놓치지 않는 꼼꼼함이 있습니다. 실용적 접근이 최고의 전략입니다.',
+    strategy: '통계 분석 기반 번호 선택을 추천합니다. 출현 빈도, 홀짝 비율, 합계 범위 등 여러 필터를 적용하여 최적의 조합을 찾으세요. 처녀자리의 꼼꼼함이 빛납니다.',
+    luckyNumbers: [6, 15, 24, 27, 36, 43],
+    avoidNumbers: [5, 20, 41],
+    bestPairId: 'taurus',
+    worstPairId: 'sagittarius',
+    purchaseTip: '수요일에 미리 분석한 번호로 구매하세요. 수성의 분석력이 극대화됩니다.',
+    luckyDay: '수요일',
+    luckyColor: '네이비',
+    faqs: [
+      { question: '처녀자리에게 맞는 로또 분석 방법은?', answer: '처녀자리는 통계 기반 분석이 가장 잘 맞습니다. 최근 100회차의 번호 출현 빈도를 분석하고, 홀짝 비율 3:3, 합계 100~170 범위의 번호를 선택하면 당첨 확률이 높아집니다.' },
+      { question: '처녀자리가 로또를 분석할 때 주의할 점은?', answer: '과도한 분석은 피하세요. 모든 데이터를 완벽히 분석하려다 결정을 미루는 것은 처녀자리의 함정입니다. 핵심 지표 3가지만 확인하고 빠르게 결정하세요.' },
+    ],
+  },
+  {
+    id: 'libra',
+    name: '천칭자리',
+    emoji: '♎',
+    element: 'air',
+    elementName: '바람',
+    dateRange: '9월 23일 ~ 10월 22일',
+    trait: '조화롭고 균형 잡힌 심미주의자',
+    description: '천칭자리는 조화와 균형을 추구합니다. 번호 선택에서도 홀짝 균형, 고저 균형 등 조화로운 조합을 선호합니다. 파트너와 함께할 때 행운이 극대화되므로 공동구매에 강합니다.',
+    strategy: '홀수 3개 + 짝수 3개, 고저 균형 잡힌 번호를 선택하세요. 천칭자리의 균형감이 최적의 조합을 찾아줍니다. 공동구매를 적극 추천합니다.',
+    luckyNumbers: [7, 16, 22, 31, 38, 44],
+    avoidNumbers: [4, 23, 37],
+    bestPairId: 'gemini',
+    worstPairId: 'capricorn',
+    purchaseTip: '금요일에 연인이나 절친과 함께 구매하세요. 금성의 조화 에너지가 강합니다.',
+    luckyDay: '금요일',
+    luckyColor: '분홍색',
+    faqs: [
+      { question: '천칭자리의 최적 번호 조합은?', answer: '천칭자리는 균형 잡힌 조합에서 행운이 강합니다. 홀수 3개 + 짝수 3개, 1~22 범위 3개 + 23~45 범위 3개로 균형을 맞추세요. 합계는 120~150 범위가 최적입니다.' },
+      { question: '천칭자리의 공동구매 전략은?', answer: '천칭자리는 공동구매에서 최강입니다. 2~4명이 함께 구매하되, 각자 1개씩 번호를 추천하고 나머지를 천칭자리가 균형을 맞춰 선택하면 시너지가 극대화됩니다.' },
+    ],
+  },
+  {
+    id: 'scorpio',
+    name: '전갈자리',
+    emoji: '♏',
+    element: 'water',
+    elementName: '물',
+    dateRange: '10월 23일 ~ 11월 21일',
+    trait: '신비롭고 통찰력 있는 전략가',
+    description: '전갈자리는 깊은 통찰력과 직감을 가지고 있습니다. 남들이 주목하지 않는 번호에서 보물을 찾아내는 능력이 뛰어나며, 비밀스러운 나만의 전략을 고수합니다. 집중력이 강해 한번 노린 것은 반드시 이룹니다.',
+    strategy: '최근 10회 동안 한 번도 나오지 않은 소외된 번호를 중심으로 선택하세요. 전갈자리의 통찰력이 숨겨진 패턴을 발견합니다. 번호를 남에게 보여주지 마세요.',
+    luckyNumbers: [8, 11, 23, 29, 35, 42],
+    avoidNumbers: [2, 14, 33],
+    bestPairId: 'cancer',
+    worstPairId: 'leo',
+    purchaseTip: '화요일 밤에 조용히 혼자 구매하세요. 명왕성의 심오한 에너지가 직감을 깨웁니다.',
+    luckyDay: '화요일',
+    luckyColor: '검은색',
+    faqs: [
+      { question: '전갈자리의 로또 직감을 높이는 방법은?', answer: '전갈자리는 조용하고 집중할 수 있는 환경에서 직감이 극대화됩니다. 구매 전 5분간 눈을 감고 당첨을 시각화하세요. 그때 떠오르는 숫자가 전갈자리의 행운번호입니다.' },
+      { question: '전갈자리가 피해야 할 번호 선택 습관은?', answer: '남의 추천을 따라가지 마세요. 전갈자리는 자신만의 번호에서 가장 강한 에너지를 받습니다. 커뮤니티 인기번호나 AI 추천보다 자신의 직감을 믿으세요.' },
+    ],
+  },
+  {
+    id: 'sagittarius',
+    name: '궁수자리',
+    emoji: '♐',
+    element: 'fire',
+    elementName: '불',
+    dateRange: '11월 22일 ~ 12월 21일',
+    trait: '낙관적이고 모험을 사랑하는 탐험가',
+    description: '궁수자리는 행운의 별자리로 불립니다. 목성의 축복을 받아 금전운이 강하며, 큰 꿈을 꾸는 것을 좋아합니다. 여행 중이거나 새로운 곳에서 구매할 때 특히 행운이 따릅니다.',
+    strategy: '자동번호(Quick Pick)를 추천합니다! 궁수자리의 행운은 예측 불가능한 곳에서 옵니다. 여행 중 우연히 들른 매장에서 자동으로 구매하면 최고의 행운이 따릅니다.',
+    luckyNumbers: [3, 9, 18, 27, 36, 45],
+    avoidNumbers: [6, 22, 31],
+    bestPairId: 'aries',
+    worstPairId: 'virgo',
+    purchaseTip: '목요일에 평소 가지 않던 새로운 매장에서 구매하세요. 목성의 확장 에너지가 극대화됩니다.',
+    luckyDay: '목요일',
+    luckyColor: '보라색',
+    faqs: [
+      { question: '궁수자리가 행운의 별자리인 이유는?', answer: '궁수자리의 수호성인 목성(Jupiter)은 점성학에서 행운과 풍요의 행성입니다. 모든 별자리 중 가장 강한 금전운을 가지고 있으며, 특히 예상치 못한 횡재운이 강합니다.' },
+      { question: '궁수자리의 최적 로또 구매 장소는?', answer: '새로운 장소에서의 구매가 행운을 가져옵니다. 여행지, 처음 가는 매장, 출장 중 우연히 들른 편의점 등 낯선 곳의 에너지가 궁수자리의 행운을 깨웁니다.' },
+    ],
+  },
+  {
+    id: 'capricorn',
+    name: '염소자리',
+    emoji: '♑',
+    element: 'earth',
+    elementName: '흙',
+    dateRange: '12월 22일 ~ 1월 19일',
+    trait: '야심 차고 끈기 있는 성취자',
+    description: '염소자리는 꾸준한 노력과 인내로 목표를 달성합니다. 로또에서도 장기적 전략을 선호하며, 계획적으로 접근합니다. 나이가 들수록 금전운이 강해지는 별자리입니다.',
+    strategy: '매주 정해진 예산으로 꾸준히 구매하세요. 연말연시에 특히 금전운이 강합니다. 고정수와 변동수를 1:1로 섞는 하이브리드 전략이 염소자리에게 최적입니다.',
+    luckyNumbers: [4, 10, 19, 28, 34, 43],
+    avoidNumbers: [9, 21, 36],
+    bestPairId: 'virgo',
+    worstPairId: 'libra',
+    purchaseTip: '토요일 오전에 구매하세요. 토성의 안정적인 에너지가 꾸준한 행운을 가져옵니다.',
+    luckyDay: '토요일',
+    luckyColor: '갈색',
+    faqs: [
+      { question: '염소자리의 로또 장기 전략은?', answer: '염소자리는 최소 6개월 이상의 장기 전략이 가장 잘 맞습니다. 매주 동일 번호 3개(고정수) + 변동 번호 3개를 조합하고, 월별로 성과를 기록하여 패턴을 파악하세요.' },
+      { question: '염소자리는 언제 금전운이 가장 강한가요?', answer: '염소자리의 금전운은 연말(12월~1월)에 가장 강합니다. 또한 나이가 들수록 재운이 상승하는 만시지탄형으로, 40대 이후 큰 행운이 올 확률이 높습니다.' },
+    ],
+  },
+  {
+    id: 'aquarius',
+    name: '물병자리',
+    emoji: '♒',
+    element: 'air',
+    elementName: '바람',
+    dateRange: '1월 20일 ~ 2월 18일',
+    trait: '독창적이고 혁신적인 자유인',
+    description: '물병자리는 독창성과 혁신의 별자리입니다. 남들과 다른 번호를 선택하는 것을 좋아하며, 의외의 조합에서 당첨이 나옵니다. 과학적 접근과 직감을 동시에 활용하는 능력이 있습니다.',
+    strategy: '통계에서 가장 적게 선택된 번호를 골라보세요. 물병자리의 행운은 남들이 가지 않는 길에 있습니다. AI 추천과 자신의 직감을 50:50으로 섞으면 최적입니다.',
+    luckyNumbers: [2, 11, 20, 26, 35, 41],
+    avoidNumbers: [10, 29, 44],
+    bestPairId: 'gemini',
+    worstPairId: 'taurus',
+    purchaseTip: '토요일 오후에 온라인으로 구매하세요. 천왕성의 혁신 에너지가 디지털에서 강합니다.',
+    luckyDay: '토요일',
+    luckyColor: '하늘색',
+    faqs: [
+      { question: '물병자리만의 독특한 번호 선택법은?', answer: '다른 사람들이 가장 적게 선택하는 번호를 골라보세요. 물병자리는 역발상에서 행운이 옵니다. 인기 없는 번호일수록 당첨 시 배당이 높아 물병자리의 독창성과 잘 맞습니다.' },
+      { question: '물병자리의 기술 활용 로또 전략은?', answer: '물병자리는 기술 친화적입니다. AI 번호 생성기, 통계 분석 도구를 적극 활용하되, 최종 선택은 직감으로 1~2개 번호를 바꾸세요. 기술과 직감의 하이브리드가 최강입니다.' },
+    ],
+  },
+  {
+    id: 'pisces',
+    name: '물고기자리',
+    emoji: '♓',
+    element: 'water',
+    elementName: '물',
+    dateRange: '2월 19일 ~ 3월 20일',
+    trait: '상상력이 풍부하고 영적인 몽상가',
+    description: '물고기자리는 12궁도의 마지막 별자리로, 모든 별자리의 에너지를 종합합니다. 꿈과 직감이 매우 강하며, 실제로 꿈에서 본 번호가 당첨되는 경험이 가장 많은 별자리입니다.',
+    strategy: '꿈에서 본 숫자를 반드시 기록하세요! 물고기자리는 무의식의 힘이 가장 강한 별자리입니다. 로또 구매 전날 밤에 당첨 꿈을 꾸면 반드시 그 번호를 포함하세요.',
+    luckyNumbers: [7, 12, 21, 25, 33, 39],
+    avoidNumbers: [3, 17, 42],
+    bestPairId: 'scorpio',
+    worstPairId: 'gemini',
+    purchaseTip: '목요일 저녁에 명상 후 구매하세요. 해왕성의 영적 에너지가 직감을 극대화합니다.',
+    luckyDay: '목요일',
+    luckyColor: '청록색',
+    faqs: [
+      { question: '물고기자리의 꿈과 로또의 관계는?', answer: '물고기자리는 수호성 해왕성(Neptune)의 영향으로 꿈과 현실의 경계가 가장 얇은 별자리입니다. 로또 당첨 전야에 관련 꿈을 꾸는 비율이 다른 별자리보다 높습니다. 꿈 일기를 쓰는 습관이 행운의 열쇠입니다.' },
+      { question: '물고기자리의 번호 선택 시 피해야 할 것은?', answer: '너무 논리적으로 접근하지 마세요. 물고기자리의 강점은 직감과 영적 에너지입니다. 통계에 매몰되면 오히려 운이 달아납니다. 느낌이 오는 번호를 믿으세요.' },
+    ],
+  },
+];
+
+export function getZodiacProfile(id: string): ZodiacProfile | undefined {
+  return ZODIAC_PROFILES.find(p => p.id === id.toLowerCase());
+}
