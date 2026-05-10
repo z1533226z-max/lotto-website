@@ -241,5 +241,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...weeklyArchivePages, ...roundPages];
+  // 빈도 분석 페이지 (12개)
+  const frequencyPeriods = ['all', 'recent-10', 'recent-20', 'recent-50', 'recent-100', '2026', '2025', '2024', '2023', '2022', '2021', '2020'];
+  const frequencyPages: MetadataRoute.Sitemap = frequencyPeriods.map(period => ({
+    url: `${baseUrl}/lotto/frequency/${period}`,
+    lastModified: ['all', 'recent-10', 'recent-20', 'recent-50', 'recent-100', String(currentYear)].includes(period) ? new Date() : STATIC_DATE,
+    changeFrequency: period.startsWith('recent') || period === 'all' || period === String(currentYear) ? 'weekly' as const : 'yearly' as const,
+    priority: period === 'all' ? 0.8 : 0.7,
+  }));
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages];
 }

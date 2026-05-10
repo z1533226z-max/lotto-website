@@ -5,7 +5,7 @@ import Link from 'next/link';
 type Section =
   | 'ending' | 'bonus' | 'sum' | 'birthday' | 'monthly'
   | 'pair' | 'dream' | 'number' | 'round' | 'statistics' | 'pattern' | 'year'
-  | 'mbti' | 'zodiac' | 'blood-type';
+  | 'mbti' | 'zodiac' | 'blood-type' | 'frequency';
 
 interface SectionInfo {
   key: Section;
@@ -29,6 +29,7 @@ const ALL_SECTIONS: SectionInfo[] = [
   { key: 'mbti', label: 'MBTI 행운번호', desc: 'MBTI 성격유형별 번호 추천', href: '/lotto/mbti' },
   { key: 'zodiac', label: '별자리 행운번호', desc: '12별자리 맞춤 번호 추천', href: '/lotto/zodiac' },
   { key: 'blood-type', label: '혈액형 행운번호', desc: 'A·B·O·AB형 맞춤 번호', href: '/lotto/blood-type' },
+  { key: 'frequency', label: '빈도 랭킹', desc: '핫넘버·콜드넘버·이월번호 순위', href: '/lotto/frequency/all' },
 ];
 
 interface Props {
