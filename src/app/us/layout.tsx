@@ -59,14 +59,32 @@ export default function USLayout({ children }: { children: React.ReactNode }) {
           Mega Millions Consortium, or any state lottery. Players must be 18+ (21+ in some states).
         </p>
         <p className="mt-2">
-          <Link href="/" className="hover:text-orange-600">
-            한국 로또 (Korean Lotto)
+          Need help with problem gambling? Call <strong>1-800-GAMBLER</strong> ·{' '}
+          <Link href="/us/responsible-gambling" className="hover:text-orange-600">
+            Resources
           </Link>
-          {' · '}
+        </p>
+        <p className="mt-3 space-x-2">
+          <Link href="/us/privacy" className="hover:text-orange-600">
+            Privacy
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/us/terms" className="hover:text-orange-600">
+            Terms
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/us/responsible-gambling" className="hover:text-orange-600">
+            Responsible Gambling
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/" className="hover:text-orange-600">
+            한국 로또
+          </Link>
+          <span aria-hidden>·</span>
           <a href="https://www.powerball.com" target="_blank" rel="noopener" className="hover:text-orange-600">
             Powerball.com
           </a>
-          {' · '}
+          <span aria-hidden>·</span>
           <a href="https://www.megamillions.com" target="_blank" rel="noopener" className="hover:text-orange-600">
             MegaMillions.com
           </a>

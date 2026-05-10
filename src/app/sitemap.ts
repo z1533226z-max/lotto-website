@@ -259,6 +259,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/us/mega-millions`, lastModified: STATIC_DATE, changeFrequency: 'weekly' as const, priority: 0.85 },
     { url: `${baseUrl}/us/mega-millions/odds`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
     { url: `${baseUrl}/us/mega-millions/generator`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.75 },
+    { url: `${baseUrl}/us/privacy`, lastModified: STATIC_DATE, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${baseUrl}/us/terms`, lastModified: STATIC_DATE, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${baseUrl}/us/responsible-gambling`, lastModified: STATIC_DATE, changeFrequency: 'yearly' as const, priority: 0.5 },
   ];
 
   return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages, ...usPages];
