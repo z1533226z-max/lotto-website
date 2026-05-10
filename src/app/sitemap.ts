@@ -250,5 +250,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: period === 'all' ? 0.8 : 0.7,
   }));
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages];
+  // US English market pages (Powerball + Mega Millions)
+  const usPages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/us`, lastModified: STATIC_DATE, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/us/powerball`, lastModified: STATIC_DATE, changeFrequency: 'weekly' as const, priority: 0.85 },
+    { url: `${baseUrl}/us/powerball/odds`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
+    { url: `${baseUrl}/us/powerball/generator`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.75 },
+    { url: `${baseUrl}/us/mega-millions`, lastModified: STATIC_DATE, changeFrequency: 'weekly' as const, priority: 0.85 },
+    { url: `${baseUrl}/us/mega-millions/odds`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.7 },
+    { url: `${baseUrl}/us/mega-millions/generator`, lastModified: STATIC_DATE, changeFrequency: 'monthly' as const, priority: 0.75 },
+  ];
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages, ...usPages];
 }
