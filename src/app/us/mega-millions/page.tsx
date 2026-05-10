@@ -5,7 +5,7 @@ import { MEGA_MILLIONS, FAQ_MEGA_MILLIONS, MEGA_MILLIONS_OVERALL_ODDS } from '@/
 export const metadata: Metadata = {
   title: 'Mega Millions Guide — How to Play, Odds, and Tools',
   description:
-    'Mega Millions explained: full rules (5/70 + 1/25), drawing schedule, prize tiers, jackpot minimum, lump-sum vs annuity, and free analysis tools.',
+    'Mega Millions explained: full rules (5/70 + 1/24), drawing schedule, prize tiers, jackpot minimum, lump-sum vs annuity, and free analysis tools.',
   alternates: { canonical: '/us/mega-millions' },
 };
 
@@ -55,7 +55,7 @@ export default function MegaMillionsPage() {
       <h2>Tools</h2>
       <ul>
         <li>
-          <Link href="/us/mega-millions/generator">Mega Millions Number Generator</Link> — random pick respecting 5/70 + 1/25
+          <Link href="/us/mega-millions/generator">Mega Millions Number Generator</Link> — random pick respecting 5/70 + 1/24
         </li>
         <li>
           <Link href="/us/mega-millions/odds">Prize Odds & Tiers</Link> — every match level, exact odds

@@ -38,10 +38,10 @@ export const MEGA_MILLIONS: GameRules = {
   displayName: 'Mega Millions',
   ticketPrice: 5,
   mainPick: { count: 5, max: 70 },
-  bonusPick: { count: 1, max: 25, label: 'Mega Ball' },
+  bonusPick: { count: 1, max: 24, label: 'Mega Ball' },
   drawDays: ['Tuesday', 'Friday'],
   drawTimeET: '11:00 PM ET',
-  jackpotMin: 20_000_000,
+  jackpotMin: 50_000_000,
   drawingsAuthority: 'Mega Millions Consortium',
   officialUrl: 'https://www.megamillions.com',
 };
