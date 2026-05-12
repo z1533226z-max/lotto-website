@@ -1,0 +1,322 @@
+- generic [active] [ref=e1]:
+  - region "adsense.google.com 은(는) 서비스 제공 및 서비스 품질 개선과 트래픽 분석을 위해 쿠키를 사용합니다. 동의 시 광고를 게재하고 표시되는 콘텐츠 및 광고를 맞춤설정하는 데도 쿠키가 사용됩니다." [ref=e2]:
+    - paragraph [ref=e3]:
+      - text: adsense.google.com 은(는) 서비스 제공 및 서비스 품질 개선과 트래픽 분석을 위해 쿠키를 사용합니다. 동의 시 광고를 게재하고 표시되는 콘텐츠 및 광고를 맞춤설정하는 데도 쿠키가 사용됩니다.
+      - link "Google에서 쿠키를 사용하는 방법을 자세히 알아보세요. 새 탭에서 열립니다." [ref=e4] [cursor=pointer]:
+        - /url: https://policies.google.com/technologies/cookies?hl=ko
+        - text: 자세히 알아보세요
+    - button "동의함" [ref=e5] [cursor=pointer]
+    - button "나중에" [ref=e6] [cursor=pointer]
+  - banner [ref=e7]:
+    - generic [ref=e9]:
+      - link "애드센스" [ref=e13] [cursor=pointer]:
+        - /url: ../start/
+        - img [ref=e15]
+        - paragraph [ref=e17]: 애드센스
+      - navigation [ref=e19]:
+        - list [ref=e20]:
+          - listitem [ref=e21]:
+            - link "홈" [ref=e22] [cursor=pointer]:
+              - /url: ../start/
+          - listitem [ref=e23]:
+            - link "애드센스의 작동 원리" [ref=e24] [cursor=pointer]:
+              - /url: ../start/how-adsense-works/
+          - listitem [ref=e25]:
+            - link "H5 게임" [ref=e26] [cursor=pointer]:
+              - /url: ../start/h5-games-ads/
+          - listitem [ref=e27]:
+            - link "성공사례" [ref=e28] [cursor=pointer]:
+              - /url: ../start/success-stories/
+          - listitem [ref=e29]:
+            - link "리소스" [ref=e30] [cursor=pointer]:
+              - /url: ../start/resources/
+          - listitem [ref=e31]:
+            - link "블로그" [ref=e32] [cursor=pointer]:
+              - /url: https://blog.google/products/adsense/
+      - generic [ref=e34]:
+        - link "로그인" [ref=e35] [cursor=pointer]:
+          - /url: https://adsense.google.com/adsense/login?subid=in-en-dr-dr-sa-a-dr
+        - link "가입하기" [ref=e36] [cursor=pointer]:
+          - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+  - generic [ref=e39]:
+    - heading "콘텐츠를 만드세요. 수익 창출은 Google에 맡기세요" [level=1] [ref=e40]:
+      - text: 콘텐츠를 만드세요.
+      - generic [ref=e41]: 수익 창출은 Google에 맡기세요
+    - paragraph [ref=e42]: 독립적인 크리에이터, 큰 규모의 회사 모두 애드센스를 사용하면 콘텐츠를 통해 쉽게 수익을 창출할 수 있습니다. 애드센스에서는 사용자가 관심설정을 직접 조정하고 Google AI를 활용하여 수익을 극대화할 수 있습니다.
+    - link "가입하기" [ref=e43] [cursor=pointer]:
+      - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+    - link "수익 창출을 시작하는 방법 알아보기" [ref=e44] [cursor=pointer]:
+      - /url: ../start/how-adsense-works/
+      - text: 수익 창출을 시작하는 방법 알아보기
+      - img [ref=e45]
+  - generic [ref=e49]:
+    - heading "시작하기 위한 3단계" [level=2] [ref=e52]
+    - generic [ref=e53]:
+      - generic [ref=e55]:
+        - img [ref=e56]
+        - heading "가입하기" [level=3] [ref=e60]
+        - paragraph [ref=e61]: 애드센스 계정을 만들거나, 기존 사이트를 연결하거나, 애드센스와 호환되는 플랫폼으로 시작하세요.
+      - generic [ref=e62]:
+        - img [ref=e63]
+        - heading "관리하기" [level=3] [ref=e67]
+        - paragraph [ref=e68]: 애드센스를 통해 사이트에서 광고를 게재할 위치와 방법을 지정하세요. Google AI를 활용하여 레이아웃을 맞춤설정하고 수익을 극대화할 수 있습니다.
+      - generic [ref=e69]:
+        - img [ref=e70]
+        - heading "수익 창출 시작하기" [level=3] [ref=e74]
+        - paragraph [ref=e75]: 애드센스는 광고주가 설정 및 선택한 사항을 기반으로 광고 공간을 통해 수익을 최대한 창출할 수 있도록 돕습니다.
+    - link "시작하기" [ref=e78] [cursor=pointer]:
+      - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+  - heading "애드센스를 사용해야 하는 이유" [level=2] [ref=e81]
+  - generic [ref=e84]:
+    - heading "광고 수익 증대하기" [level=3] [ref=e85]
+    - paragraph [ref=e86]: 온라인 광고주가 모인 최대 규모의 네트워크에서 내 광고 공간을 두고 입찰하는 동안, 우수한 콘텐츠를 만드는 데만 집중하세요.
+  - generic [ref=e91]:
+    - heading "내 요구사항에 맞게 광고 설정하기" [level=3] [ref=e92]
+    - paragraph [ref=e93]: 직관적인 컨트롤로 광고 게재위치와 레이아웃을 맞춤설정하고 마음에 들지 않는 광고는 차단하세요.
+  - generic [ref=e98]:
+    - heading "방문자에 맞춰 광고 맞춤설정하기" [level=3] [ref=e99]
+    - paragraph [ref=e100]: 애드센스는 품질 및 관련성을 기반으로 광고를 선별하여 방문자의 참여를 유도하는 동시에 게시자 브랜드의 수익을 증대합니다.
+  - generic [ref=e104]:
+    - generic [ref=e105]:
+      - heading "애드센스로 얼마나 많은 수익을 창출할 수 있을지 알아보세요" [level=2] [ref=e108]:
+        - text: 애드센스로 얼마나 많은 수익을
+        - generic [ref=e109]: 창출할 수 있을지 알아보세요
+      - generic [ref=e111]:
+        - paragraph [ref=e112]: 트래픽 대부분이 발생하는 콘텐츠 카테고리 및 위치를 선택하세요.
+        - generic [ref=e113]:
+          - combobox "카테고리" [ref=e114]:
+            - option "건강"
+            - option "게임"
+            - option "과학"
+            - option "금융"
+            - option "뉴스"
+            - option "도서 및 문학"
+            - option "미용, 피트니스"
+            - option "부동산"
+            - option "사법 및 정부 기관"
+            - option "사업, 산업"
+            - option "쇼핑"
+            - option "스포츠"
+            - option "식음료"
+            - option "애완동물 및 동물"
+            - option "여행"
+            - option "예술, 엔터테인먼트"
+            - option "온라인 커뮤니티"
+            - option "인물, 사회"
+            - option "인터넷, 통신"
+            - option "인테리어 및 조경"
+            - option "자동차"
+            - option "참고자료"
+            - option "취미, 레저"
+            - option "취업, 교육"
+            - option "컴퓨터 및 전자제품"
+          - combobox "지역" [ref=e115]:
+            - option "미주"
+            - option "아시아 태평양 국가"
+            - option "유럽, 중동, 아프리카"
+        - generic [ref=e117]:
+          - text: 월간 페이지 조회수
+          - slider "월간 페이지 조회수" [ref=e118]: "50000"
+          - generic [ref=e119]:
+            - generic [ref=e120]: 최소 50,000회
+            - text: 50,000
+            - generic [ref=e121]: 최대 10,000,000회
+      - generic [ref=e123]:
+        - heading "예상 연수익" [level=3] [ref=e124]
+        - generic [ref=e125]:
+          - generic [ref=e126]: $
+          - generic [ref=e127]: XXXX.XX
+        - paragraph [ref=e128]: 이 값을 참고하되, 추정치라는 점에 유의해 주세요.
+    - generic [ref=e131]:
+      - link "가입하기" [ref=e132] [cursor=pointer]:
+        - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+      - paragraph [ref=e133]: "*이만큼의 수익을 창출할 수 있다고 보장하거나 약속하는 것은 아닙니다. 예상 수익은 선택된 콘텐츠 카테고리와 지역을 바탕으로 계산되지만 실제 수익은 광고주 수요, 사용자 위치, 사용자 기기, 콘텐츠 카테고리, 시즌, 광고 형식 및 크기, 광고의 수, 환율 변동 등 여러 요인에 따라 달라집니다."
+  - generic [ref=e134]:
+    - img "잭 헤릭, WikiHow 창립자" [ref=e138]
+    - generic [ref=e139]:
+      - heading "간단한 애드센스 코드만 웹사이트에 삽입하면 즉시 작동합니다." [level=3] [ref=e140]
+      - paragraph [ref=e141]: — 잭 헤릭, WikiHow 창립자
+      - button "잭의 사례 보기" [ref=e143] [cursor=pointer]:
+        - button "잭의 사례 보기" [ref=e144]:
+          - img [ref=e145]
+          - text: 잭의 사례 보기
+  - generic [ref=e149]:
+    - heading "지금 애드센스에 가입하세요" [level=3] [ref=e150]
+    - paragraph [ref=e151]: 애드센스는 많이 사용되는 여러 기존 콘텐츠 플랫폼에서 원활하게 작동합니다.
+    - link "시작하기" [ref=e152] [cursor=pointer]:
+      - /url: https://adsense.google.com/adsense/signup?subid=in-en-dr-dr-sa-a-dr
+  - contentinfo [ref=e153]:
+    - generic [ref=e156]:
+      - heading "팔로우하기" [level=4] [ref=e157]
+      - list [ref=e158]:
+        - listitem [ref=e159]:
+          - link "트위터에서 팔로우하기" [ref=e160] [cursor=pointer]:
+            - /url: https://x.com/GforPublishers
+            - img [ref=e161]
+        - listitem [ref=e163]:
+          - link "Facebook에서 팔로우하기" [ref=e164] [cursor=pointer]:
+            - /url: https://www.facebook.com/GoogleforPublishers
+            - img [ref=e165]
+        - listitem [ref=e167]:
+          - link "YouTube에서 팔로우하기" [ref=e168] [cursor=pointer]:
+            - /url: https://www.youtube.com/user/InsideAdSense
+            - img [ref=e169]
+        - listitem [ref=e171]:
+          - link "Linkedin에서 팔로우하기" [ref=e172] [cursor=pointer]:
+            - /url: https://www.linkedin.com/showcase/google-for-publishers/?viewAsMember=true
+            - img [ref=e173]
+    - navigation [ref=e175]:
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - heading "학습 및 지원" [level=4] [ref=e178]:
+            - generic [ref=e179]: 학습 및 지원
+          - list [ref=e181]:
+            - listitem [ref=e182]:
+              - link "고객센터" [ref=e183] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/?hl=ko#topic=3373519
+            - listitem [ref=e184]:
+              - link "애드센스 도움말 포럼" [ref=e185] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/?hl=ko#topic=3373519
+            - listitem [ref=e186]:
+              - link "인증 게시 파트너" [ref=e187] [cursor=pointer]:
+                - /url: https://www.google.co.kr/intl/ko/ads/publisher/partners/find-a-partner/?utm_source=adsense&utm_medium=website&utm_campaign=footer2#!&modal_active=none
+        - generic [ref=e188]:
+          - heading "개발자" [level=4] [ref=e189]:
+            - generic [ref=e190]: 개발자
+          - list [ref=e192]:
+            - listitem [ref=e193]:
+              - link "Google Developers 사이트" [ref=e194] [cursor=pointer]:
+                - /url: https://developers.google.com/
+            - listitem [ref=e195]:
+              - link "AdSense Management API" [ref=e196] [cursor=pointer]:
+                - /url: https://developers.google.com/adsense/management/
+            - listitem [ref=e197]:
+              - link "애드센스 맞춤검색 광고" [ref=e198] [cursor=pointer]:
+                - /url: https://developers.google.com/custom-search-ads/
+        - generic [ref=e199]:
+          - heading "관련 제품" [level=4] [ref=e200]:
+            - generic [ref=e201]: 관련 제품
+          - list [ref=e203]:
+            - listitem [ref=e204]:
+              - link "Google Ads" [ref=e205] [cursor=pointer]:
+                - /url: https://ads.google.com/intl/ko_kr/home/?sourceid=awo&subid=ww-ww-et-as-rsftr
+            - listitem [ref=e206]:
+              - link "Google Ad Manager" [ref=e207] [cursor=pointer]:
+                - /url: https://admanager.google.com/intl/ko/home/
+            - listitem [ref=e208]:
+              - link "Google AdMob" [ref=e209] [cursor=pointer]:
+                - /url: https://admob.google.com/intl/ko_ALL/home/
+            - listitem [ref=e210]:
+              - link "쇼핑용 애드센스" [ref=e211] [cursor=pointer]:
+                - /url: https://support.google.com/adsense/answer/6078274?hl=ko
+            - listitem [ref=e212]:
+              - link "Google Site Kit" [ref=e213] [cursor=pointer]:
+                - /url: https://sitekit.withgoogle.com/
+            - listitem [ref=e214]:
+              - link "Blogger" [ref=e215] [cursor=pointer]:
+                - /url: https://www.blogger.com/about/?hl=ko
+        - generic [ref=e216]:
+          - heading "기타 Google 솔루션" [level=4] [ref=e217]:
+            - generic [ref=e218]: 기타 Google 솔루션
+          - list [ref=e220]:
+            - listitem [ref=e221]:
+              - link "비즈니스 솔루션" [ref=e222] [cursor=pointer]:
+                - /url: https://www.google.co.kr/intl/ko/services/#?modal_active=none
+            - listitem [ref=e223]:
+              - link "Google for Retail" [ref=e224] [cursor=pointer]:
+                - /url: https://www.google.com/intl/ko_kr/retail/
+            - listitem [ref=e225]:
+              - link "Google Workspace" [ref=e226] [cursor=pointer]:
+                - /url: https://workspace.google.com/intl/ko/?utm_source=adsense&utm_medium=et&utm_campaign=adsense-footer
+            - listitem [ref=e227]:
+              - link "Google 애널리틱스" [ref=e228] [cursor=pointer]:
+                - /url: https://marketingplatform.google.com/intl/ko/about/analytics/
+            - listitem [ref=e229]:
+              - link "Think with Google" [ref=e230] [cursor=pointer]:
+                - /url: https://www.thinkwithgoogle.com/marketing-strategies/
+            - listitem [ref=e231]:
+              - link "Google Domains" [ref=e232] [cursor=pointer]:
+                - /url: https://domains.google/?utm_medium=product&utm_source=AdSense&utm_campaign=x-sell
+    - generic [ref=e233]:
+      - link "Google" [ref=e235] [cursor=pointer]:
+        - /url: https://www.google.com
+        - img [ref=e236]
+      - list [ref=e238]:
+        - listitem [ref=e239]:
+          - link "개인정보 보호" [ref=e240] [cursor=pointer]:
+            - /url: https://www.google.com/intl/ko/policies/privacy/
+        - listitem [ref=e241]:
+          - link "약관" [ref=e242] [cursor=pointer]:
+            - /url: https://www.google.com/intl/ko/policies/terms/
+        - listitem [ref=e243]:
+          - link "Google 정보" [ref=e244] [cursor=pointer]:
+            - /url: https://about.google/intl/ko/
+        - listitem [ref=e245]:
+          - link "Google 제품" [ref=e246] [cursor=pointer]:
+            - /url: https://about.google/intl/ko/products/
+        - listitem [ref=e247]:
+          - button "쿠키 관리" [expanded] [ref=e248] [cursor=pointer]
+      - list [ref=e249]:
+        - listitem [ref=e250]:
+          - link "도움말" [ref=e251] [cursor=pointer]:
+            - /url: https://support.google.com/adsense/?hl=ko#topic=3373519
+            - img [ref=e252]
+            - text: 도움말
+        - listitem [ref=e254]:
+          - combobox "언어 변경" [ref=e255]:
+            - option "Brasil – Português (Brasil)"
+            - option "Danmark - dansk"
+            - option "Deutschland - Deutsch"
+            - option "English – India"
+            - option "España - Español"
+            - option "France - Français"
+            - option "Hrvatska - Hrvatski"
+            - option "Indonesia – Bahasa Indonesia"
+            - option "Italia - Italiano"
+            - option "Latinoamérica - Español"
+            - option "Latvija - Latvietis"
+            - option "Lietuva - Lietuvis"
+            - option "Magyarország – Magyar"
+            - option "Malaysia - Bahasa Melayu"
+            - option "Nederland - Nederlands"
+            - option "Norge - norsk"
+            - option "Pilipinas - Pilipino"
+            - option "Polska - polski"
+            - option "Portugal - Português"
+            - option "România - Română"
+            - option "Slovensko - slovenský"
+            - option "Suomi - Suomalainen"
+            - option "Sverige - svenska"
+            - option "Türkiye – Türkçe"
+            - option "United Kingdom - English"
+            - option "United States - English"
+            - option "Việt Nam – Tiếng Việt"
+            - option "Česká republika - čeština"
+            - option "Ελλάδα - Ελληνικάel_gr"
+            - option "България - български"
+            - option "Россия – Русский"
+            - option "Србија - Српски"
+            - option "Україна - Українська"
+            - option "البحرين – العربية‬"
+            - option "العراق – العربية‬"
+            - option "العراق – العربية‬"
+            - option "العربية"
+            - option "الكويت – العربية‬"
+            - option "المغرب – العربية‬"
+            - option "لبنان – العربية‬"
+            - option "مصر – العربية‬"
+            - option "ہندوستان - اردو"
+            - option "भारत - मराठी"
+            - option "भारत - हिन्दी"
+            - option "বঙ্গ - বাংলা"
+            - option "இந்தியா - தமிழ்"
+            - option "భారతదేశం - తెలుగు"
+            - option "ไทย – ไทย"
+            - option "‫ישראל – עברית‬"
+            - option "‫الإمارات العربية المتحدة – العربية‬"
+            - option "‫المملكة العربية السعودية – العربية‬"
+            - option "‫تونس – العربية‬"
+            - option "日本 – 日本語"
+            - option "简体中文"
+            - option "繁體中文"
+            - option "대한민국 – 한국어" [selected]

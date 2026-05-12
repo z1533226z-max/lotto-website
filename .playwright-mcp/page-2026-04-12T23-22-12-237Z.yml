@@ -1,0 +1,344 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "기본 메뉴" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console?resource_id=sc-domain%3Agon.ai.kr
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: "'gon.ai.kr'에 있는 모든 URL 검사"
+            - combobox "gon.ai.kr에 있는 모든 URL 검사" [ref=e24]
+          - button "검색" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button "도움말" [ref=e33] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button "사용자 설정" [ref=e38] [cursor=pointer]:
+              - img [ref=e41]
+          - button "메시지" [ref=e45] [cursor=pointer]:
+            - generic [ref=e48]: 
+      - generic [ref=e50]:
+        - button "Google 앱" [ref=e54] [cursor=pointer]:
+          - img [ref=e55]
+        - 'button "Google 계정: 이기곤 (z1533226z@gmail.com)" [ref=e60] [cursor=pointer]':
+          - img [ref=e62]
+          - img [ref=e68]
+  - dialog "navigational drawer" [ref=e72]:
+    - navigation "기본" [ref=e75]:
+      - button "속성 검색" [ref=e79] [cursor=pointer]:
+        - img [ref=e81]
+        - combobox "gon.ai.kr" [ref=e88]
+        - generic [ref=e89]: 
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - link "개요" [ref=e94] [cursor=pointer]:
+              - /url: ./search-console?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e96]: home
+              - generic [ref=e98]: 개요
+            - link "유용한 정보" [ref=e101] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e103]: lightbulb_2
+              - generic [ref=e105]: 유용한 정보
+            - link "실적" [ref=e108] [cursor=pointer]:
+              - /url: ./search-console/performance/search-analytics?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e110]: trending_up
+              - generic [ref=e112]: 실적
+            - button "URL 검사" [ref=e115] [cursor=pointer]:
+              - generic [ref=e117]: search
+              - generic [ref=e119]: URL 검사
+          - generic [ref=e123]:
+            - button "색인생성 보고서 섹션" [expanded] [ref=e124] [cursor=pointer]:
+              - generic [ref=e125]:
+                - generic [ref=e128]: 색인생성
+                - img [ref=e132]
+            - generic [ref=e137]:
+              - link "페이지" [ref=e139] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e141]: file_copy
+                - generic [ref=e143]: 페이지
+              - link "Sitemaps" [ref=e146] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e148]: account_tree
+                - generic [ref=e150]: Sitemaps
+              - link "삭제" [ref=e153] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e155]: visibility_off
+                - generic [ref=e157]: 삭제
+          - generic [ref=e161]:
+            - button "실험 보고서 섹션" [expanded] [ref=e162] [cursor=pointer]:
+              - generic [ref=e163]:
+                - generic [ref=e166]: 실험
+                - img [ref=e170]
+            - generic [ref=e175]:
+              - link "코어 웹 바이탈" [ref=e177] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e179]: speed
+                - generic [ref=e181]: 코어 웹 바이탈
+              - link "HTTPS" [ref=e184] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e186]: lock
+                - generic [ref=e188]: HTTPS
+          - generic [ref=e192]:
+            - button "개선사항 보고서 섹션" [expanded] [ref=e193] [cursor=pointer]:
+              - generic [ref=e194]:
+                - generic [ref=e197]: 개선사항
+                - img [ref=e201]
+            - generic [ref=e206]:
+              - link "탐색경로" [ref=e208] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e210]: layers
+                - generic [ref=e212]: 탐색경로
+              - link "데이터세트" [ref=e215] [cursor=pointer]:
+                - /url: ./search-console/r/datasets?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e217]: layers
+                - generic [ref=e219]: 데이터세트
+              - link "잦은 문의 사항" [ref=e222] [cursor=pointer]:
+                - /url: ./search-console/r/faq?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e224]: layers
+                - generic [ref=e226]: 잦은 문의 사항
+              - link "리뷰 스니펫" [ref=e229] [cursor=pointer]:
+                - /url: ./search-console/r/review-snippet?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e231]: layers
+                - generic [ref=e233]: 리뷰 스니펫
+          - button "보안 및 직접 조치 보고서 섹션" [ref=e238] [cursor=pointer]:
+            - generic [ref=e239]:
+              - generic [ref=e242]: 보안 및 직접 조치
+              - img [ref=e246]
+          - generic [ref=e248]:
+            - link "링크 보고서" [ref=e250] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e252]: link_2
+              - generic [ref=e254]: 링크
+            - link "업적" [ref=e257] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e259]: trophy
+              - generic [ref=e261]: 업적
+            - link "설정" [ref=e264] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e266]: settings
+              - generic [ref=e268]: 설정
+        - generic [ref=e270]:
+          - generic [ref=e272]:
+            - button "의견 제출하기" [ref=e274] [cursor=pointer]:
+              - generic [ref=e276]: feedback
+              - generic [ref=e278]: 의견 제출하기
+            - button "Search Console 정보" [ref=e281] [cursor=pointer]:
+              - generic [ref=e283]: info
+              - generic [ref=e285]: Search Console 정보
+          - generic [ref=e289]:
+            - link "개인정보처리방침" [ref=e290] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=ko
+            - link "약관" [ref=e291] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=ko
+  - generic [ref=e296]:
+    - generic [ref=e299]:
+      - navigation "탐색경로" [ref=e301]:
+        - heading "페이지 색인 생성" [level=1] [ref=e304]
+      - button "내보내기" [ref=e307] [cursor=pointer]:
+        - generic [ref=e310]:
+          - generic [ref=e311]: 
+          - generic [ref=e312]: 내보내기
+    - generic [ref=e313]:
+      - generic [ref=e315]:
+        - listbox [ref=e318] [cursor=pointer]:
+          - option "알려진 모든 페이지" [selected] [ref=e319]
+          - option "제출된 모든 페이지"
+          - option "제출되지 않은 페이지만"
+          - generic:
+            - option "http://gon.ai.kr/sitemap.xml"
+            - option "https://lotto.gon.ai.kr/sitemap.xml"
+        - generic [ref=e322]: "최종 업데이트: 26. 4. 10."
+      - main [ref=e324]:
+        - generic [ref=e325]:
+          - generic [ref=e327]:
+            - generic [ref=e328]:
+              - generic [ref=e330]:
+                - generic [ref=e331] [cursor=pointer]:
+                  - button "색인이 생성되지 않은 페이지 1.12천 이유 6개" [ref=e332]:
+                    - generic [ref=e336]:
+                      - generic "색인이 생성되지 않은 페이지" [ref=e337]:
+                        - generic [ref=e338]: 
+                        - generic [ref=e339]: 색인이 생성되지 않은 페이지
+                      - generic "1,122" [ref=e340]: 1.12천
+                      - generic [ref=e341]: 이유 6개
+                  - button "null" [ref=e344]:
+                    - generic [ref=e345]: 
+                - generic [ref=e346] [cursor=pointer]:
+                  - button "색인 생성됨 361" [ref=e347]:
+                    - generic [ref=e351]:
+                      - generic "색인 생성됨" [ref=e352]:
+                        - generic [ref=e353]: 
+                        - generic [ref=e354]: 색인 생성됨
+                      - generic "361" [ref=e355]
+                  - button "null" [ref=e358]:
+                    - generic [ref=e359]: 
+              - generic [ref=e360]:
+                - checkbox "노출" [ref=e361] [cursor=pointer]
+                - generic [ref=e364]: 노출
+              - generic [ref=e365]:
+                - generic [ref=e367]: 페이지
+                - img [ref=e370]:
+                  - generic [ref=e371]:
+                    - generic [ref=e372]:
+                      - generic [ref=e374]: 26. 1. 12.
+                      - generic [ref=e376]: 26. 1. 24.
+                      - generic [ref=e378]: 26. 2. 5.
+                      - generic [ref=e380]: 26. 2. 17.
+                      - generic [ref=e382]: 26. 3. 1.
+                      - generic [ref=e384]: 26. 3. 13.
+                      - generic [ref=e386]: 26. 3. 25.
+                      - generic [ref=e388]: 26. 4. 6.
+                    - generic [ref=e389]:
+                      - generic [ref=e391]: 1.8천
+                      - generic [ref=e393]: 1.2천
+                      - generic [ref=e395]: "600"
+                      - generic [ref=e397]: "0"
+                    - button [ref=e687] [cursor=pointer]:
+                      - generic [ref=e690]: "1"
+            - link "색인이 생성된 페이지에 대한 데이터 보기" [ref=e691] [cursor=pointer]:
+              - /url: ./search-console/index/drilldown?resource_id=sc-domain%3Agon.ai.kr&pages=ALL_URLS
+              - generic [ref=e694]:
+                - generic [ref=e696]: check_circle
+                - generic [ref=e697]: 색인이 생성된 페이지에 대한 데이터 보기
+                - generic [ref=e699]: 
+          - generic [ref=e702]:
+            - generic [ref=e704]:
+              - generic [ref=e707]:
+                - generic [ref=e708]: info_filled
+                - generic [ref=e709]:
+                  - generic [ref=e710]: 페이지 색인이 생성되지 않는 이유
+                  - generic [ref=e711]: 색인이 생성되지 않은 페이지는 Google에 게시할 수 없습니다
+              - button "표의 행 필터링" [ref=e716] [cursor=pointer]:
+                - generic [ref=e719]: 
+            - table [ref=e722]:
+              - rowgroup [ref=e723]:
+                - row "사유 소스 null 유효성 검사 트렌드 페이지" [ref=e724]:
+                  - columnheader "사유" [ref=e725]:
+                    - generic [ref=e727]: 사유
+                    - img [ref=e729] [cursor=pointer]
+                  - columnheader "소스 null" [ref=e731]:
+                    - generic [ref=e733]:
+                      - text: 소스
+                      - button "null" [ref=e736] [cursor=pointer]:
+                        - generic [ref=e737]: 
+                    - img [ref=e739] [cursor=pointer]
+                  - columnheader "유효성 검사" [ref=e741]:
+                    - generic [ref=e743]: 유효성 검사
+                    - img [ref=e745] [cursor=pointer]
+                  - columnheader "트렌드" [ref=e747]:
+                    - generic [ref=e749]: 트렌드
+                  - columnheader "페이지" [ref=e750]:
+                    - img [ref=e752] [cursor=pointer]
+                    - generic [ref=e755]: 페이지
+              - rowgroup [ref=e756]:
+                - row "찾을 수 없음(404) 웹사이트 실패함 4" [ref=e757]:
+                  - cell "찾을 수 없음(404)" [ref=e758]:
+                    - generic "찾을 수 없음(404)" [ref=e760]
+                  - cell "웹사이트" [ref=e761]:
+                    - generic [ref=e763]: 웹사이트
+                  - cell "실패함" [ref=e764]:
+                    - generic [ref=e767]:
+                      - generic [ref=e768]: 
+                      - text: 실패함
+                  - cell [ref=e769]:
+                    - img [ref=e772]
+                  - cell "4" [ref=e773]:
+                    - generic [ref=e775]: "4"
+                - row "리디렉션이 포함된 페이지 웹사이트 시작되지 않음 5" [ref=e776]:
+                  - cell "리디렉션이 포함된 페이지" [ref=e777]:
+                    - generic "리디렉션이 포함된 페이지" [ref=e779]
+                  - cell "웹사이트" [ref=e780]:
+                    - generic [ref=e782]: 웹사이트
+                  - cell "시작되지 않음" [ref=e783]:
+                    - generic [ref=e786]:
+                      - generic [ref=e787]: 
+                      - text: 시작되지 않음
+                  - cell [ref=e788]:
+                    - img [ref=e791]
+                  - cell "5" [ref=e792]:
+                    - generic [ref=e794]: "5"
+                - row "적절한 표준 태그가 포함된 대체 페이지 웹사이트 시작되지 않음 1" [ref=e795]:
+                  - cell "적절한 표준 태그가 포함된 대체 페이지" [ref=e796]:
+                    - generic "적절한 표준 태그가 포함된 대체 페이지" [ref=e798]
+                  - cell "웹사이트" [ref=e799]:
+                    - generic [ref=e801]: 웹사이트
+                  - cell "시작되지 않음" [ref=e802]:
+                    - generic [ref=e805]:
+                      - generic [ref=e806]: 
+                      - text: 시작되지 않음
+                  - cell [ref=e807]:
+                    - img [ref=e810]
+                  - cell "1" [ref=e811]:
+                    - generic [ref=e813]: "1"
+                - row "발견됨 - 현재 색인이 생성되지 않음 Google 시스템 시작되지 않음 1,106" [ref=e814]:
+                  - cell "발견됨 - 현재 색인이 생성되지 않음" [ref=e815]:
+                    - generic "발견됨 - 현재 색인이 생성되지 않음" [ref=e817]
+                  - cell "Google 시스템" [ref=e818]:
+                    - generic [ref=e820]: Google 시스템
+                  - cell "시작되지 않음" [ref=e821]:
+                    - generic [ref=e824]:
+                      - generic [ref=e825]: 
+                      - text: 시작되지 않음
+                  - cell [ref=e826]:
+                    - img [ref=e829]
+                  - cell "1,106" [ref=e831]:
+                    - generic [ref=e833]: 1,106
+                - row "크롤링됨 - 현재 색인이 생성되지 않음 Google 시스템 시작되지 않음 5" [ref=e834]:
+                  - cell "크롤링됨 - 현재 색인이 생성되지 않음" [ref=e835]:
+                    - generic "크롤링됨 - 현재 색인이 생성되지 않음" [ref=e837]
+                  - cell "Google 시스템" [ref=e838]:
+                    - generic [ref=e840]: Google 시스템
+                  - cell "시작되지 않음" [ref=e841]:
+                    - generic [ref=e844]:
+                      - generic [ref=e845]: 
+                      - text: 시작되지 않음
+                  - cell [ref=e846]:
+                    - img [ref=e849]
+                  - cell "5" [ref=e850]:
+                    - generic [ref=e852]: "5"
+                - row "중복 페이지, Google에서 사용자와 다른 표준을 선택함 Google 시스템 시작되지 않음 1" [ref=e853]:
+                  - cell "중복 페이지, Google에서 사용자와 다른 표준을 선택함" [ref=e854]:
+                    - generic "중복 페이지, Google에서 사용자와 다른 표준을 선택함" [ref=e856]
+                  - cell "Google 시스템" [ref=e857]:
+                    - generic [ref=e859]: Google 시스템
+                  - cell "시작되지 않음" [ref=e860]:
+                    - generic [ref=e863]:
+                      - generic [ref=e864]: 
+                      - text: 시작되지 않음
+                  - cell [ref=e865]:
+                    - img [ref=e868]
+                  - cell "1" [ref=e869]:
+                    - generic [ref=e871]: "1"
+                - row "사용자가 선택한 표준이 없는 중복 페이지 웹사이트 해당사항 없음 0" [ref=e872]:
+                  - cell "사용자가 선택한 표준이 없는 중복 페이지" [ref=e873]:
+                    - generic "사용자가 선택한 표준이 없는 중복 페이지" [ref=e875]
+                  - cell "웹사이트" [ref=e876]:
+                    - generic [ref=e878]: 웹사이트
+                  - cell "해당사항 없음" [ref=e879]:
+                    - generic [ref=e882]: 해당사항 없음
+                  - cell [ref=e883]:
+                    - img [ref=e886]
+                  - cell "0" [ref=e887]:
+                    - generic [ref=e889]: "0"
+            - generic [ref=e892]:
+              - generic [ref=e894]:
+                - generic [ref=e895]: "페이지당 행 수:"
+                - listbox "페이지당 행 수" [ref=e896] [cursor=pointer]:
+                  - option "5"
+                  - option "10" [selected] [ref=e897]
+                  - option "25"
+                  - option "50"
+                  - option "100"
+                  - option "250"
+                  - option "500"
+              - generic [ref=e898]:
+                - generic [ref=e899]: 총 7행 중 1~7
+                - generic [ref=e900]:
+                  - generic [ref=e902]: 
+                  - generic [ref=e904]: 

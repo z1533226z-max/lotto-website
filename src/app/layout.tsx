@@ -16,8 +16,8 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
-  title: 'AI 로또 번호 추천 - 매주 자동 업데이트 | 로또킹',
-  description: 'AI 로또 번호 추천! 1,200회+ 역대 데이터 딥러닝 분석으로 매주 업데이트되는 고확률 번호 5세트 무료 제공. 당첨번호 조회, 통계 분석, 세금 계산기까지 한 번에!',
+  title: "AI 로또 번호 생성기 - 무료 당첨번호 예측 분석 | 로또킹",
+  description: "AI가 분석한 이번 주 로또 예상번호를 무료로 확인하세요. 1,200회+ 당첨 데이터 기반 패턴 분석, 핫/콜드 번호, 번호 생성기 제공.",
   keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측', '인공지능', '딥러닝'],
   authors: [{ name: 'Lotto AI' }],
   creator: 'Lotto AI',

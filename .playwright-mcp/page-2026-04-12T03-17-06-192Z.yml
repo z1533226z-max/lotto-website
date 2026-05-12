@@ -1,0 +1,130 @@
+- generic [ref=e14]:
+  - button "콘텐츠로 건너뛰기" [ref=e16]:
+    - generic [ref=e18]: 콘텐츠로 건너뛰기
+  - generic [ref=e20]:
+    - banner [ref=e22]:
+      - generic [ref=e24]:
+        - button "기본 메뉴" [ref=e26] [cursor=pointer]:
+          - img [ref=e29]: menu
+        - link "Google 애드센스" [ref=e30] [cursor=pointer]:
+          - /url: /adsense/u/0/pub-7479840445702290/home
+      - heading "지급 정보" [level=1] [ref=e508]
+      - generic [ref=e34]:
+        - button "도움말" [ref=e36] [cursor=pointer]:
+          - img [ref=e39]: help
+        - button "알림" [ref=e60] [cursor=pointer]:
+          - img [ref=e65]: notifications
+        - button "Google 계정" [ref=e41] [cursor=pointer]:
+          - img "Google 계정 (z1533226z@gmail.com)" [ref=e67]
+    - generic [ref=e44]:
+      - generic [ref=e45]:
+        - menu [ref=e68]:
+          - menuitem [ref=e71] [cursor=pointer]:
+            - img [ref=e75]: home
+        - menu [ref=e76]:
+          - menuitem [ref=e79] [cursor=pointer]:
+            - img [ref=e83]: picture_in_picture
+        - menu [ref=e84]:
+          - menuitem [ref=e87] [cursor=pointer]:
+            - img [ref=e91]: drive_site
+        - menu [ref=e94]:
+          - menuitem [ref=e97] [cursor=pointer]:
+            - img [ref=e100]
+        - menu [ref=e102]:
+          - menuitem [ref=e105] [cursor=pointer]:
+            - img [ref=e109]: not_interested
+        - menu [ref=e110]:
+          - menuitem [ref=e113] [cursor=pointer]:
+            - img [ref=e117]: assessment
+        - menu [ref=e118]:
+          - menuitem [ref=e121] [cursor=pointer]:
+            - img [ref=e125]: trending_up
+        - menu [ref=e126]:
+          - menuitem [ref=e129] [cursor=pointer]:
+            - img [ref=e133]: policy
+        - menu [ref=e136]:
+          - menuitem [expanded] [ref=e139] [cursor=pointer]:
+            - img [ref=e142]
+          - generic [ref=e509]:
+            - menuitem [ref=e512] [cursor=pointer]:
+              - img [ref=e515]
+            - menuitem [ref=e519] [cursor=pointer]:
+              - img [ref=e522]
+        - menu [ref=e144]:
+          - menuitem [ref=e147] [cursor=pointer]:
+            - img [ref=e151]: settings
+        - menu [ref=e152]:
+          - menuitem [ref=e155] [cursor=pointer]:
+            - img [ref=e159]: feedback
+      - navigation [ref=e46]:
+        - menu [ref=e47]:
+          - menuitem "홈" [ref=e163] [cursor=pointer]:
+            - generic [ref=e164]:
+              - img [ref=e168]: home
+              - generic [ref=e169]: 홈
+          - menuitem "광고" [ref=e173] [cursor=pointer]:
+            - generic [ref=e174]:
+              - img [ref=e178]: picture_in_picture
+              - generic [ref=e179]: 광고
+          - menuitem "사이트" [ref=e183] [cursor=pointer]:
+            - generic [ref=e184]:
+              - img [ref=e188]: drive_site
+              - generic [ref=e189]: 사이트
+          - menuitem "개인 정보 보호 및 메시지" [ref=e195] [cursor=pointer]:
+            - generic [ref=e196]:
+              - img [ref=e199]
+              - generic [ref=e201]: 개인 정보 보호 및 메시지
+          - menuitem "브랜드 안전성" [ref=e205] [cursor=pointer]:
+            - generic [ref=e206]:
+              - img [ref=e209]: arrow_right
+              - img [ref=e212]: not_interested
+              - generic [ref=e213]: 브랜드 안전성
+          - menuitem "보고서" [ref=e217] [cursor=pointer]:
+            - generic [ref=e218]:
+              - img [ref=e222]: assessment
+              - generic [ref=e223]: 보고서
+          - menuitem "최적화" [ref=e227] [cursor=pointer]:
+            - generic [ref=e228]:
+              - img [ref=e231]: arrow_right
+              - img [ref=e234]: trending_up
+              - generic [ref=e235]: 최적화
+          - menuitem "정책 센터" [ref=e239] [cursor=pointer]:
+            - generic [ref=e240]:
+              - img [ref=e244]: policy
+              - generic [ref=e245]: 정책 센터
+          - generic [ref=e248]:
+            - menuitem "지급" [expanded] [ref=e251] [cursor=pointer]:
+              - generic [ref=e252]:
+                - img [ref=e255]: arrow_right
+                - img [ref=e257]
+                - generic [ref=e259]: 지급
+            - generic [ref=e524]:
+              - menuitem "지급 정보" [ref=e527] [cursor=pointer]:
+                - generic [ref=e528]:
+                  - img [ref=e531]
+                  - generic [ref=e533]: 지급 정보
+              - menuitem "본인 확인" [ref=e536] [cursor=pointer]:
+                - generic [ref=e537]:
+                  - img [ref=e540]
+                  - generic [ref=e542]: 본인 확인
+          - menuitem "계정" [ref=e263] [cursor=pointer]:
+            - generic [ref=e264]:
+              - img [ref=e267]: arrow_right
+              - img [ref=e270]: settings
+              - generic [ref=e271]: 계정
+          - menuitem "의견" [ref=e275] [cursor=pointer]:
+            - generic [ref=e276]:
+              - img [ref=e280]: feedback
+              - generic [ref=e281]: 의견
+        - generic [ref=e50]:
+          - link "개인정보처리방침" [ref=e52] [cursor=pointer]:
+            - /url: https://www.google.com/intl/ko/policies/privacy
+          - link "약관" [ref=e282] [cursor=pointer]:
+            - /url: https://adsense.google.com/adsense/terms?rc=KR&ce=19
+    - generic [ref=e53]:
+      - generic:
+        - region "알림"
+      - main "지급 정보" [active] [ref=e543]:
+        - generic [ref=e551]:
+          - text: 결제 계정
+          - generic [ref=e553]: 애드센스(대한민국)

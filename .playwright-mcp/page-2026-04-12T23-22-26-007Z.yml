@@ -1,0 +1,171 @@
+- generic [ref=e2]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "기본 메뉴" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - link "Google Search Console" [ref=e12] [cursor=pointer]:
+          - /url: ./search-console?resource_id=sc-domain%3Agon.ai.kr
+          - img [ref=e13]
+      - generic [ref=e14]:
+        - search [ref=e16]:
+          - generic [ref=e22]:
+            - textbox [disabled] [ref=e23]: "'gon.ai.kr'에 있는 모든 URL 검사"
+            - combobox "gon.ai.kr에 있는 모든 URL 검사" [ref=e24]
+          - button "검색" [ref=e25] [cursor=pointer]:
+            - img [ref=e26]
+        - generic [ref=e29]:
+          - generic [ref=e31]:
+            - button "도움말" [ref=e33] [cursor=pointer]:
+              - generic [ref=e36]: 
+            - button "사용자 설정" [ref=e38] [cursor=pointer]:
+              - img [ref=e41]
+          - button "메시지" [ref=e45] [cursor=pointer]:
+            - generic [ref=e48]: 
+      - generic [ref=e50]:
+        - button "Google 앱" [ref=e54] [cursor=pointer]:
+          - img [ref=e55]
+        - 'button "Google 계정: 이기곤 (z1533226z@gmail.com)" [ref=e60] [cursor=pointer]':
+          - img [ref=e62]
+          - img [ref=e68]
+  - dialog "navigational drawer" [ref=e72]:
+    - navigation "기본" [ref=e75]:
+      - button "속성 검색" [ref=e79] [cursor=pointer]:
+        - img [ref=e81]
+        - combobox "gon.ai.kr" [ref=e88]
+        - generic [ref=e89]: 
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - link "개요" [ref=e94] [cursor=pointer]:
+              - /url: ./search-console?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e96]: home
+              - generic [ref=e98]: 개요
+            - link "유용한 정보" [ref=e101] [cursor=pointer]:
+              - /url: ./search-console/performance/insights?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e103]: lightbulb_2
+              - generic [ref=e105]: 유용한 정보
+            - link "실적" [ref=e108] [cursor=pointer]:
+              - /url: ./search-console/performance/search-analytics?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e110]: trending_up
+              - generic [ref=e112]: 실적
+            - button "URL 검사" [ref=e115] [cursor=pointer]:
+              - generic [ref=e117]: search
+              - generic [ref=e119]: URL 검사
+          - generic [ref=e123]:
+            - button "색인생성 보고서 섹션" [expanded] [ref=e124] [cursor=pointer]:
+              - generic [ref=e125]:
+                - generic [ref=e128]: 색인생성
+                - img [ref=e132]
+            - generic [ref=e137]:
+              - link "페이지" [ref=e139] [cursor=pointer]:
+                - /url: ./search-console/index?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e141]: file_copy
+                - generic [ref=e143]: 페이지
+              - link "Sitemaps" [ref=e146] [cursor=pointer]:
+                - /url: ./search-console/sitemaps?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e148]: account_tree
+                - generic [ref=e150]: Sitemaps
+              - link "삭제" [ref=e153] [cursor=pointer]:
+                - /url: ./search-console/removals?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e155]: visibility_off
+                - generic [ref=e157]: 삭제
+          - generic [ref=e161]:
+            - button "실험 보고서 섹션" [expanded] [ref=e162] [cursor=pointer]:
+              - generic [ref=e163]:
+                - generic [ref=e166]: 실험
+                - img [ref=e170]
+            - generic [ref=e175]:
+              - link "코어 웹 바이탈" [ref=e177] [cursor=pointer]:
+                - /url: ./search-console/core-web-vitals?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e179]: speed
+                - generic [ref=e181]: 코어 웹 바이탈
+              - link "HTTPS" [ref=e184] [cursor=pointer]:
+                - /url: ./search-console/https?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e186]: lock
+                - generic [ref=e188]: HTTPS
+          - generic [ref=e192]:
+            - button "개선사항 보고서 섹션" [expanded] [ref=e193] [cursor=pointer]:
+              - generic [ref=e194]:
+                - generic [ref=e197]: 개선사항
+                - img [ref=e201]
+            - generic [ref=e206]:
+              - link "탐색경로" [ref=e208] [cursor=pointer]:
+                - /url: ./search-console/r/breadcrumbs?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e210]: layers
+                - generic [ref=e212]: 탐색경로
+              - link "데이터세트" [ref=e215] [cursor=pointer]:
+                - /url: ./search-console/r/datasets?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e217]: layers
+                - generic [ref=e219]: 데이터세트
+              - link "잦은 문의 사항" [ref=e222] [cursor=pointer]:
+                - /url: ./search-console/r/faq?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e224]: layers
+                - generic [ref=e226]: 잦은 문의 사항
+              - link "리뷰 스니펫" [ref=e229] [cursor=pointer]:
+                - /url: ./search-console/r/review-snippet?resource_id=sc-domain%3Agon.ai.kr
+                - generic [ref=e231]: layers
+                - generic [ref=e233]: 리뷰 스니펫
+          - button "보안 및 직접 조치 보고서 섹션" [ref=e238] [cursor=pointer]:
+            - generic [ref=e239]:
+              - generic [ref=e242]: 보안 및 직접 조치
+              - img [ref=e246]
+          - generic [ref=e248]:
+            - link "링크 보고서" [ref=e250] [cursor=pointer]:
+              - /url: ./search-console/links?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e252]: link_2
+              - generic [ref=e254]: 링크
+            - link "업적" [ref=e257] [cursor=pointer]:
+              - /url: ./search-console/achievements?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e259]: trophy
+              - generic [ref=e261]: 업적
+            - link "설정" [ref=e264] [cursor=pointer]:
+              - /url: ./search-console/settings?resource_id=sc-domain%3Agon.ai.kr
+              - generic [ref=e266]: settings
+              - generic [ref=e268]: 설정
+        - generic [ref=e270]:
+          - generic [ref=e272]:
+            - button "의견 제출하기" [ref=e274] [cursor=pointer]:
+              - generic [ref=e276]: feedback
+              - generic [ref=e278]: 의견 제출하기
+            - button "Search Console 정보" [ref=e281] [cursor=pointer]:
+              - generic [ref=e283]: info
+              - generic [ref=e285]: Search Console 정보
+          - generic [ref=e289]:
+            - link "개인정보처리방침" [ref=e290] [cursor=pointer]:
+              - /url: https://myaccount.google.com/privacypolicy?hl=ko
+            - link "약관" [ref=e291] [cursor=pointer]:
+              - /url: https://myaccount.google.com/termsofservice?hl=ko
+  - generic [ref=e294]:
+    - generic [ref=e297]:
+      - navigation "탐색경로" [ref=e299]:
+        - link "페이지 색인 생성" [ref=e301] [cursor=pointer]:
+          - /url: ./search-console/index?resource_id=sc-domain%3Agon.ai.kr&pages=ALL_SUBMITTED_URLS
+        - generic [ref=e302]: 
+        - heading "승인되지 않은 요청(401)으로 인해 차단되었습니다." [level=1] [ref=e305]
+      - button "공유 가능한 링크를 생성합니다." [ref=e310] [cursor=pointer]:
+        - generic [ref=e314]:
+          - generic [ref=e315]: 
+          - generic [ref=e316]: 공유
+    - generic [ref=e322]:
+      - generic [ref=e324]:
+        - listbox [ref=e327] [cursor=pointer]:
+          - option "알려진 모든 페이지"
+          - option "제출된 모든 페이지" [selected] [ref=e328]
+          - option "제출되지 않은 페이지만"
+          - generic:
+            - option "http://gon.ai.kr/sitemap.xml"
+            - option "https://lotto.gon.ai.kr/sitemap.xml"
+        - generic [ref=e331]: "최종 업데이트: 26. 4. 10."
+      - main [ref=e333]:
+        - generic [ref=e334]:
+          - generic [ref=e337]:
+            - generic [ref=e338]: 승인되지 않은 요청(401)으로 인해 차단되었습니다.
+            - generic [ref=e339]: "상태:"
+            - link "더 광범위한 문서로 연결되는 링크" [ref=e341] [cursor=pointer]:
+              - /url: https://support.google.com/webmasters/answer/7440203#blocked_due_to_unauthorized_request_401
+              - generic [ref=e344]: 자세히 알아보기
+          - generic [ref=e346]:
+            - generic [ref=e348]: 
+            - generic [ref=e349]: 데이터를 찾지 못함
+            - generic [ref=e350]: 나중에 다시 확인하세요
