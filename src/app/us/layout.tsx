@@ -49,6 +49,11 @@ export default function USLayout({ children }: { children: React.ReactNode }) {
                 Mega Millions
               </Link>
             </li>
+            <li>
+              <Link href="/us/guide" className="hover:text-orange-600">
+                Guides
+              </Link>
+            </li>
           </ul>
         </nav>
       </header>

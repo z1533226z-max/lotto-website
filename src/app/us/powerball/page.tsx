@@ -59,6 +59,31 @@ export default function PowerballPage() {
         </li>
       </ul>
 
+      <h2>Powerball Guides</h2>
+      <ul>
+        <li>
+          <Link href="/us/guide/powerball-strategy">Powerball Strategy — 7 statistically grounded tips</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-quick-pick-vs-self-pick">Quick Pick vs Self-Pick — what the data really shows</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — head-to-head comparison</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-most-common-numbers">Most Common Powerball Numbers (and why it doesn&apos;t matter)</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/power-play-explained">Power Play Explained — is the $1 add-on worth it?</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</Link>
+        </li>
+      </ul>
+
       <h2>Frequently Asked Questions</h2>
       {FAQ_POWERBALL.map((f) => (
         <section key={f.q}>
