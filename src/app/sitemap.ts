@@ -5,6 +5,7 @@ import { getAllGuideSlugs } from '@/data/guideArticles';
 import { MBTI_TYPES } from '@/data/mbtiLotto';
 import { ZODIAC_IDS } from '@/data/zodiacLotto';
 import { BLOOD_TYPE_IDS } from '@/data/bloodTypeLotto';
+import { getAllUsGuideSlugs } from '@/data/usGuideArticles';
 
 const STATIC_DATE = new Date();
 const DREAM_DATE = new Date('2026-03-15');
@@ -264,5 +265,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/us/responsible-gambling`, lastModified: STATIC_DATE, changeFrequency: 'yearly' as const, priority: 0.5 },
   ];
 
-  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages, ...usPages];
+  // US English guide subpages (long-tail SEO)
+  const usGuidePages: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/us/guide`, lastModified: STATIC_DATE, changeFrequency: 'weekly' as const, priority: 0.85 },
+    ...getAllUsGuideSlugs().map(slug => ({
+      url: `${baseUrl}/us/guide/${slug}`,
+      lastModified: STATIC_DATE,
+      changeFrequency: 'monthly' as const,
+      priority: 0.75,
+    })),
+  ];
+
+  return [...staticPages, ...dailyFortunePages, ...numberPages, ...pairPages, ...birthdayPages, ...monthlyPages, ...yearPages, ...dreamPages, ...patternPages, ...endingDigitPages, ...bonusPages, ...sumRangePages, ...statsDetailPages, ...guidePages, ...mbtiPages, ...zodiacPages, ...bloodTypePages, ...frequencyPages, ...weeklyArchivePages, ...roundPages, ...usPages, ...usGuidePages];
 }

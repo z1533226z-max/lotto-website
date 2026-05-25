@@ -62,6 +62,22 @@ export default function MegaMillionsPage() {
         </li>
       </ul>
 
+      <h2>Mega Millions Guides</h2>
+      <ul>
+        <li>
+          <Link href="/us/guide/mega-millions-strategy">Mega Millions Strategy — smart ways to play in 2026</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — which game has better odds?</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</Link>
+        </li>
+        <li>
+          <Link href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</Link>
+        </li>
+      </ul>
+
       <h2>Frequently Asked Questions</h2>
       {FAQ_MEGA_MILLIONS.map((f) => (
         <section key={f.q}>

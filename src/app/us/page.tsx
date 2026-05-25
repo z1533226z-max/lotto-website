@@ -70,6 +70,32 @@ export default function USHubPage() {
         ))}
       </section>
 
+      <section className="rounded-xl border border-orange-200 bg-orange-50 p-6 dark:border-orange-900/50 dark:bg-orange-950/30">
+        <h2 className="text-lg font-semibold">Player guides — strategy, payouts, taxes</h2>
+        <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+          Honest, math-grounded guides for Powerball and Mega Millions players. No &ldquo;secret systems&rdquo; — just what the data shows.
+        </p>
+        <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+          <Link href="/us/guide/powerball-strategy" className="text-orange-700 hover:underline dark:text-orange-300">
+            → Powerball Strategy: 7 Statistically Grounded Tips
+          </Link>
+          <Link href="/us/guide/powerball-vs-mega-millions" className="text-orange-700 hover:underline dark:text-orange-300">
+            → Powerball vs Mega Millions: Which Has Better Odds?
+          </Link>
+          <Link href="/us/guide/powerball-annuity-vs-lump-sum" className="text-orange-700 hover:underline dark:text-orange-300">
+            → Annuity vs Lump Sum: Which Payout to Take
+          </Link>
+          <Link href="/us/guide/lottery-tax-by-state" className="text-orange-700 hover:underline dark:text-orange-300">
+            → US Lottery Tax by State
+          </Link>
+        </div>
+        <p className="mt-4">
+          <Link href="/us/guide" className="text-sm font-semibold text-orange-700 hover:underline dark:text-orange-300">
+            See all guides →
+          </Link>
+        </p>
+      </section>
+
       <section className="rounded-xl bg-gray-50 p-6 text-sm leading-relaxed dark:bg-gray-900">
         <h2 className="text-lg font-semibold">About Lotto.Gon US</h2>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
