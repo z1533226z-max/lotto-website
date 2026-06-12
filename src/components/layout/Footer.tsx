@@ -18,6 +18,14 @@ const legalLinks = [
   { name: '개인정보처리방침', path: '/privacy' },
 ];
 
+// 영문(US) 로또 트랙 진입 링크 — 한국어 사이트에서 /us 트랙으로 가는 내부 크롤 경로 제공
+const globalLinks = [
+  { name: 'US Lottery', path: '/us' },
+  { name: 'Powerball', path: '/us/powerball' },
+  { name: 'Mega Millions', path: '/us/mega-millions' },
+  { name: 'US Guides', path: '/us/guide' },
+];
+
 const Footer: React.FC = () => {
   return (
     <footer className="mt-16 pt-12 pb-8 px-4 sm:px-6 lg:px-8" style={{ borderTop: '1px solid var(--border)' }}>
@@ -39,17 +47,39 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Navigation — horizontal wrap */}
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className="text-[13px] font-medium transition-colors duration-300 hover:text-primary"
-                style={{ color: 'var(--text-secondary)' }}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className="text-[13px] font-medium transition-colors duration-300 hover:text-primary"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+            {/* English / US Lottery 진입 — 영문 트랙 색인 가속용 내부링크 */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span
+                className="text-[11px] font-semibold uppercase tracking-wide"
+                style={{ color: 'var(--text-tertiary)' }}
               >
-                {link.name}
-              </Link>
-            ))}
+                English
+              </span>
+              {globalLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  hrefLang="en"
+                  className="text-[12px] font-medium transition-colors duration-300 hover:text-primary"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
