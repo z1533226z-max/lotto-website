@@ -25,7 +25,24 @@ export interface UsGuideArticle {
   sections: UsGuideSection[];
   faqs: UsGuideFAQ[];
   relatedSlugs: string[];
+  /** ISO 8601. Falls back to GUIDE_PUBLISHED_DATE when omitted. */
+  datePublished?: string;
+  /** ISO 8601. Falls back to GUIDE_UPDATED_DATE when omitted. */
+  dateModified?: string;
 }
+
+/**
+ * E-E-A-T / freshness signals shared across the /us/guide articles.
+ * Articles were first published together; bump GUIDE_UPDATED_DATE whenever the
+ * guide content is meaningfully revised so Article schema reflects real freshness.
+ */
+export const GUIDE_PUBLISHED_DATE = '2026-05-25T09:00:00+09:00';
+export const GUIDE_UPDATED_DATE = '2026-06-18T09:00:00+09:00';
+
+export const GUIDE_AUTHOR = {
+  name: 'Lotto.Gon Editorial Team',
+  url: 'https://lotto.gon.ai.kr/us',
+} as const;
 
 export const US_GUIDE_ARTICLES: UsGuideArticle[] = [
   {
