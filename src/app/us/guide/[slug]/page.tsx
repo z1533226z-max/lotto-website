@@ -5,6 +5,9 @@ import {
   US_GUIDE_ARTICLES,
   getUsGuide,
   getAllUsGuideSlugs,
+  GUIDE_PUBLISHED_DATE,
+  GUIDE_UPDATED_DATE,
+  GUIDE_AUTHOR,
 } from '@/data/usGuideArticles';
 
 interface Props {
@@ -21,9 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = getUsGuide(params.slug);
   if (!article) return { title: 'US Lottery Guide' };
 
+  const publishedTime = article.datePublished ?? GUIDE_PUBLISHED_DATE;
+  const modifiedTime = article.dateModified ?? GUIDE_UPDATED_DATE;
+
   return {
     title: article.metaTitle,
     description: article.metaDescription,
+    authors: [{ name: GUIDE_AUTHOR.name, url: GUIDE_AUTHOR.url }],
     alternates: { canonical: `/us/guide/${article.slug}` },
     openGraph: {
       title: article.metaTitle,
@@ -31,6 +38,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://lotto.gon.ai.kr/us/guide/${article.slug}`,
       type: 'article',
       locale: 'en_US',
+      publishedTime,
+      modifiedTime,
+      authors: [GUIDE_AUTHOR.name],
+      section: article.category,
     },
     twitter: {
       card: 'summary_large_image',
@@ -38,6 +49,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: article.metaDescription,
     },
   };
+}
+
+/** en-US display format, e.g. "May 25, 2026" — deterministic, no locale data needed. */
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+function formatGuideDate(iso: string): string {
+  const [y, m, d] = iso.slice(0, 10).split('-').map(Number);
+  return `${MONTHS[m - 1]} ${d}, ${y}`;
 }
 
 export default function UsGuideArticlePage({ params }: Props) {
@@ -59,13 +80,28 @@ export default function UsGuideArticlePage({ params }: Props) {
     })),
   };
 
+  const publishedTime = article.datePublished ?? GUIDE_PUBLISHED_DATE;
+  const modifiedTime = article.dateModified ?? GUIDE_UPDATED_DATE;
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
     description: article.metaDescription,
     url: `https://lotto.gon.ai.kr/us/guide/${article.slug}`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://lotto.gon.ai.kr/us/guide/${article.slug}`,
+    },
     inLanguage: 'en-US',
+    articleSection: article.category,
+    datePublished: publishedTime,
+    dateModified: modifiedTime,
+    author: {
+      '@type': 'Organization',
+      name: GUIDE_AUTHOR.name,
+      url: GUIDE_AUTHOR.url,
+    },
     publisher: {
       '@type': 'Organization',
       name: 'Lotto.Gon US',
@@ -116,6 +152,20 @@ export default function UsGuideArticlePage({ params }: Props) {
 
       <article className="prose prose-gray max-w-none dark:prose-invert">
         <h1>{article.title}</h1>
+        <p className="not-prose mb-4 text-sm text-gray-500 dark:text-gray-400">
+          By{' '}
+          <span className="font-medium text-gray-700 dark:text-gray-200">
+            {GUIDE_AUTHOR.name}
+          </span>{' '}
+          · Published{' '}
+          <time dateTime={publishedTime.slice(0, 10)}>
+            {formatGuideDate(publishedTime)}
+          </time>{' '}
+          · Updated{' '}
+          <time dateTime={modifiedTime.slice(0, 10)}>
+            {formatGuideDate(modifiedTime)}
+          </time>
+        </p>
         <p className="lead">{article.metaDescription}</p>
 
         <nav className="not-prose my-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-gray-800 dark:bg-gray-900">
