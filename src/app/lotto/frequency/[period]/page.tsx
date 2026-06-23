@@ -103,6 +103,41 @@ function calculateRanking(filtered: { round: number; numbers: number[]; bonusNum
   return stats.sort((a, b) => b.count - a.count || a.gap - b.gap);
 }
 
+// Trend: compare appearance rate in the most recent N draws vs all-time average.
+// "Hot number" = appeared most overall; "Trend" = appearing MORE often lately.
+function calculateTrend(
+  allData: { round: number; numbers: number[] }[],
+  window = 50,
+) {
+  const sorted = [...allData].sort((a, b) => b.round - a.round);
+  const recent = sorted.slice(0, window);
+  const recentRounds = recent.length;
+  const totalRounds = allData.length;
+
+  const trend = Array.from({ length: 45 }, (_, i) => {
+    const num = i + 1;
+    let recentCount = 0;
+    let allCount = 0;
+    for (const d of recent) if (d.numbers.includes(num)) recentCount++;
+    for (const d of allData) if (d.numbers.includes(num)) allCount++;
+    const recentRate = recentRounds > 0 ? (recentCount / recentRounds) * 100 : 0;
+    const allRate = totalRounds > 0 ? (allCount / totalRounds) * 100 : 0;
+    return {
+      number: num,
+      recentCount,
+      recentRate: recentRate.toFixed(1),
+      allRate: allRate.toFixed(1),
+      delta: Number((recentRate - allRate).toFixed(1)),
+    };
+  });
+
+  return {
+    rising: [...trend].sort((a, b) => b.delta - a.delta).slice(0, 5),
+    falling: [...trend].sort((a, b) => a.delta - b.delta).slice(0, 5),
+    window: recentRounds,
+  };
+}
+
 const COLOR_GROUPS = [
   { group: '노란공 (1~10)', color: '#FFC107', range: [1, 10] as const },
   { group: '파란공 (11~20)', color: '#2196F3', range: [11, 20] as const },
@@ -122,6 +157,7 @@ export default async function FrequencyPage({ params }: Props) {
   if (totalRounds === 0) notFound();
 
   const ranked = calculateRanking(filtered, allData);
+  const trend = calculateTrend(allData);
 
   const colorGroupStats = COLOR_GROUPS.map(g => {
     const nums = ranked.filter(n => n.number >= g.range[0] && n.number <= g.range[1]);
@@ -141,7 +177,7 @@ export default async function FrequencyPage({ params }: Props) {
     name: `로또 ${cfg.label} 번호 출현 빈도 랭킹`,
     description: `${cfg.filterLabel} ${totalRounds}회 기준 로또 번호 1~45 출현 빈도 순위`,
     url: `https://lotto.gon.ai.kr/lotto/frequency/${params.period}`,
-    keywords: ['로또 자주 나오는 번호', '로또 핫넘버', '로또 콜드넘버', '로또 빈도 분석', `로또 ${cfg.label} 통계`],
+    keywords: ['로또 자주 나오는 번호', '로또 핫넘버', '로또 콜드넘버', '로또 빈도 분석', '로또 당첨번호 트렌드', '로또 번호 추세', `로또 ${cfg.label} 통계`],
     creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
   };
 
@@ -177,6 +213,14 @@ export default async function FrequencyPage({ params }: Props) {
           text: `현재 가장 오래 안 나온 번호는 ${overdueTop.map(n => `${n.number}번(${n.gap}회차째 미출현)`).join(', ')}입니다. 통계적으로 이월번호가 반드시 나오는 시점은 예측할 수 없지만, 평균 출현 간격을 참고할 수 있습니다.`,
         },
       },
+      {
+        '@type': 'Question',
+        name: '요즘 로또에서 상승세(트렌드)인 번호는?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: `최근 ${trend.window}회 기준 출현율이 역대 평균보다 가장 많이 오른 상승세 번호는 ${trend.rising.slice(0, 3).map(n => `${n.number}번(+${n.delta}%p)`).join(', ')}입니다. 반대로 하락세 번호는 ${trend.falling.slice(0, 3).map(n => `${n.number}번(${n.delta}%p)`).join(', ')}입니다. 핫넘버가 누적 출현 기준이라면, 트렌드는 최근 출현 흐름을 보여줍니다.`,
+        },
+      },
     ],
   };
 
@@ -198,6 +242,9 @@ export default async function FrequencyPage({ params }: Props) {
         rankedNumbers={ranked}
         colorGroupStats={colorGroupStats}
         allPeriods={ALL_PERIODS}
+        risingNumbers={trend.rising}
+        fallingNumbers={trend.falling}
+        trendWindow={trend.window}
       />
     </>
   );
