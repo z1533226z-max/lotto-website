@@ -11,6 +11,14 @@ interface NumberFreq {
   gap: number;
 }
 
+interface TrendItem {
+  number: number;
+  recentCount: number;
+  recentRate: string;
+  allRate: string;
+  delta: number;
+}
+
 interface Props {
   period: string;
   periodLabel: string;
@@ -18,6 +26,9 @@ interface Props {
   rankedNumbers: NumberFreq[];
   colorGroupStats: { group: string; color: string; avg: string; numbers: string }[];
   allPeriods: { slug: string; label: string }[];
+  risingNumbers: TrendItem[];
+  fallingNumbers: TrendItem[];
+  trendWindow: number;
 }
 
 const getBallStyle = (num: number): { bg: string; text: string } => {
@@ -42,6 +53,7 @@ function Ball({ num, size = 32 }: { num: number; size?: number }) {
 
 export default function FrequencyContent({
   period, periodLabel, totalRounds, rankedNumbers, colorGroupStats, allPeriods,
+  risingNumbers, fallingNumbers, trendWindow,
 }: Props) {
   const top5 = rankedNumbers.slice(0, 5);
   const bottom5 = [...rankedNumbers].slice(-5).reverse();
@@ -113,6 +125,44 @@ export default function FrequencyContent({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Trend analysis: recent appearance rate vs all-time average */}
+      <div className="bg-gradient-to-br from-orange-900/20 to-sky-900/10 rounded-xl p-4 border border-orange-700/30">
+        <h2 className="text-lg font-bold text-white mb-1">📈 로또 당첨번호 트렌드 (최근 {trendWindow}회 추세)</h2>
+        <p className="text-xs text-gray-400 mb-4">
+          최근 {trendWindow}회 출현율을 역대 평균과 비교해 <span className="text-orange-400 font-semibold">상승세</span>·<span className="text-sky-400 font-semibold">하락세</span> 번호를 분석했습니다.
+          핫넘버가 &ldquo;누적으로 많이 나온 번호&rdquo;라면, 트렌드는 &ldquo;요즘 더 자주 나오는 번호&rdquo;입니다.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-sm font-bold text-orange-400 mb-2">📈 상승세 (요즘 더 자주)</h3>
+            <div className="space-y-1">
+              {risingNumbers.map(n => (
+                <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+                  <Ball num={n.number} size={28} />
+                  <span className="text-sm text-gray-300 flex-1">최근 {n.recentCount}회 출현 · 역대 {n.allRate}%</span>
+                  <span className="text-sm font-semibold text-orange-400">+{n.delta}%p</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-sky-400 mb-2">📉 하락세 (요즘 뜸함)</h3>
+            <div className="space-y-1">
+              {fallingNumbers.map(n => (
+                <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+                  <Ball num={n.number} size={28} />
+                  <span className="text-sm text-gray-300 flex-1">최근 {n.recentCount}회 출현 · 역대 {n.allRate}%</span>
+                  <span className="text-sm font-semibold text-sky-400">{n.delta}%p</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mt-3">
+          ※ %p는 최근 출현율에서 역대 평균 출현율을 뺀 값입니다. 로또는 매 회차 독립 추첨이므로 트렌드는 참고용 통계이며 당첨을 보장하지 않습니다.
+        </p>
       </div>
 
       {/* Overdue numbers */}
