@@ -93,6 +93,21 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, allDream
         </div>
       </div>
 
+      {/* 상황별 풀이 (고가치 키워드만) */}
+      {dream.situations && dream.situations.length > 0 && (
+        <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <h2 className="text-xl font-bold mb-4">🌙 {dream.keyword} 꿈, 상황별 해몽</h2>
+          <div className="space-y-3">
+            {dream.situations.map((s, i) => (
+              <div key={i} className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg)' }}>
+                <h3 className="font-semibold mb-1">{s.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 꿈 활용 팁 */}
       <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
         <h2 className="text-xl font-bold mb-4">💡 꿈 활용 팁</h2>
@@ -132,6 +147,9 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, allDream
             q={`${dream.keyword} 꿈에서 추천 번호를 조합하는 방법은?`}
             a={`추천번호 ${dream.numbers.join(', ')}을 기본으로, 같은 ${dream.category} 카테고리의 다른 꿈 번호와 조합하면 효과적입니다. 여러 꿈을 꾸었다면 각 꿈의 번호를 모아 6개를 선택해 보세요.`}
           />
+          {dream.extraFaq?.map((f, i) => (
+            <FaqItem key={i} q={f.q} a={f.a} />
+          ))}
         </div>
       </div>
 

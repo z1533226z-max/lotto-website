@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const numbersStr = dream.numbers.join(', ');
-  const title = `${dream.keyword} 꿈해몽 로또번호 - ${numbersStr} | 로또킹`;
-  const description = `꿈에 ${dream.keyword}이(가) 나왔다면? 추천 로또번호: ${numbersStr}. ${dream.description} ${dream.category} 카테고리의 꿈해몽 로또번호를 확인하세요.`;
+  const title = dream.metaTitle ?? `${dream.keyword} 꿈해몽 로또번호 - ${numbersStr} | 로또킹`;
+  const description = dream.metaDescription ?? `꿈에 ${dream.keyword}이(가) 나왔다면? 추천 로또번호: ${numbersStr}. ${dream.description} ${dream.category} 카테고리의 꿈해몽 로또번호를 확인하세요.`;
 
   return {
     title,
@@ -93,6 +93,14 @@ export default function DreamDetailPage({ params }: Props) {
           text: `추천번호 ${dream.numbers.join(', ')}을 기본으로, 같은 ${dream.category} 카테고리의 다른 꿈 번호와 조합하면 효과적입니다. 여러 꿈을 꾸었다면 각 꿈의 번호를 모아 6개를 선택해 보세요.`,
         },
       },
+      ...(dream.extraFaq ?? []).map(f => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.a,
+        },
+      })),
     ],
   };
 
