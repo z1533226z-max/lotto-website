@@ -53,6 +53,11 @@ export default function DreamDetailPage({ params }: Props) {
   const sameCategoryDreams = DREAM_KEYWORDS
     .filter(d => d.category === dream.category && d.keyword !== dream.keyword);
 
+  // 상황별 심화 풀이가 있는 고가치 꿈 (검색 수요 검증됨, 현재 페이지 제외)
+  // — 카테고리를 넘나드는 크로스링크 클러스터로 PageRank를 집중시킨다
+  const featuredDreams = DREAM_KEYWORDS
+    .filter(d => d.situations && d.situations.length > 0 && d.keyword !== dream.keyword);
+
   // 전체 카테고리 목록
   const categories = Array.from(new Set(DREAM_KEYWORDS.map(d => d.category)));
 
@@ -117,6 +122,7 @@ export default function DreamDetailPage({ params }: Props) {
       <DreamDetailContent
         dream={dream}
         sameCategoryDreams={sameCategoryDreams}
+        featuredDreams={featuredDreams}
         allDreams={DREAM_KEYWORDS}
         categories={categories}
       />
