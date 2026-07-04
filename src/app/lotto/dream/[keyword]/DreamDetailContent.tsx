@@ -8,6 +8,7 @@ import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 interface Props {
   dream: DreamKeyword;
   sameCategoryDreams: DreamKeyword[];
+  featuredDreams: DreamKeyword[];
   allDreams: DreamKeyword[];
   categories: string[];
 }
@@ -29,7 +30,7 @@ const fortuneLabel: Record<string, { text: string; color: string; bg: string }> 
   '주의': { text: '주의', color: '#c00', bg: 'rgba(204,0,0,0.1)' },
 };
 
-export default function DreamDetailContent({ dream, sameCategoryDreams, allDreams, categories }: Props) {
+export default function DreamDetailContent({ dream, sameCategoryDreams, featuredDreams, allDreams, categories }: Props) {
   const fortune = fortuneLabel[dream.fortune] || fortuneLabel['보통'];
 
   return (
@@ -152,6 +153,31 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, allDream
           ))}
         </div>
       </div>
+
+      {/* 함께 많이 보는 꿈해몽 (고가치 심화 키워드 크로스링크) */}
+      {featuredDreams.length > 0 && (
+        <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
+          <h2 className="text-xl font-bold mb-4">🔥 함께 많이 보는 꿈해몽</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {featuredDreams.map(d => (
+              <Link
+                key={d.keyword}
+                href={`/lotto/dream/${encodeURIComponent(d.keyword)}`}
+                className="p-4 rounded-lg hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
+              >
+                <div className="font-semibold mb-1">
+                  {categoryEmoji[d.category] || '✨'} {d.keyword} 꿈 로또번호
+                </div>
+                <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>
+                  {d.category} · 상황별 해몽
+                </p>
+                <LottoNumbers numbers={d.numbers} size="xs" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* 같은 카테고리 */}
       {sameCategoryDreams.length > 0 && (
