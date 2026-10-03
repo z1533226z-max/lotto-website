@@ -119,11 +119,12 @@ type PageProps = { params: Promise<{ date: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { date } = await params;
-  if (!isDateInFortuneWindow(date)) return { title: '띠별 로또 행운번호 | 로또킹' };
+  const today = getTodayKST();
+  if (!isDateInFortuneWindow(date, today)) return { title: '띠별 로또 행운번호 | 로또킹' };
 
   const formatted = formatDateKorean(date);
   // 지난 날짜는 구글/빙 색인 제외(네이버는 유지), 오늘·내일만 전체 색인
-  const robotsMeta = date < getTodayKST() ? NAVER_ONLY_ROBOTS : {};
+  const robotsMeta = date < today ? NAVER_ONLY_ROBOTS : {};
   return {
     ...robotsMeta,
     title: `${formatted} 띠별 로또 행운번호 - 사주 오행 분석 | 로또킹`,
@@ -140,7 +141,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function DailyFortuneDatePage({ params }: PageProps) {
   const { date } = await params;
 
-  // 유효 기간: 오늘(KST) 기준 과거 30일 ~ 내일
+  // 유효 기간: DAILY_FORTUNE_FIRST_DATE(사이트맵 최초 등재일) ~ 내일(KST). 그 밖은 notFound
   const today = getTodayKST();
   if (!isDateInFortuneWindow(date, today)) {
     notFound();

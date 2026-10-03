@@ -6,7 +6,7 @@ import { MBTI_TYPES } from '@/data/mbtiLotto';
 import { ZODIAC_IDS } from '@/data/zodiacLotto';
 import { BLOOD_TYPE_IDS } from '@/data/bloodTypeLotto';
 import { getAllUsGuideSlugs } from '@/data/usGuideArticles';
-import { getTodayKST, shiftDateStr, DAILY_FORTUNE_PAST_DAYS } from '@/lib/dailyFortuneGenerator';
+import { getTodayKST, shiftDateStr, DAILY_FORTUNE_FIRST_DATE } from '@/lib/dailyFortuneGenerator';
 import { CONTENT_DATES, isIndexableWeeklyAnalysis } from '@/lib/seo';
 
 /**
@@ -79,11 +79,9 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('/privacy', D.legal, 'yearly', 0.3),
   ];
 
-  // 띠별 행운번호: 허브 + 오늘 날짜만 (지난 날짜는 네이버 사이트맵)
-  const dailyFortune: Entry[] = [
-    entry('/lotto/daily-fortune', today, 'daily', 0.9),
-    entry(`/lotto/daily-fortune/${today}`, today, 'daily', 0.9),
-  ];
+  // 띠별 행운번호: 오늘 날짜만. 허브(/lotto/daily-fortune)는 오늘 날짜로 리다이렉트만 하므로 제외,
+  // 지난 날짜는 구글·빙 noindex라 네이버 사이트맵에 둔다.
+  const dailyFortune = entry(`/lotto/daily-fortune/${today}`, today, 'daily', 0.9);
 
   const guides = getAllGuideSlugs().map(slug => entry(`/lotto/guide/${slug}`, D.guide, 'monthly', 0.7));
 
@@ -146,7 +144,7 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
   ];
 
   return [
-    ...hubs, ...dailyFortune, ...guides, ...dreams, ...numbers, ...years, ...frequency, ...patterns,
+    ...hubs, dailyFortune, ...guides, ...dreams, ...numbers, ...years, ...frequency, ...patterns,
     ...mbti, ...zodiac, ...bloodType, ...weekly, ...rounds, ...us,
   ];
 }
@@ -191,10 +189,9 @@ export function getNaverSitemapEntries(allData: LottoResult[], today: string = g
     sc.values.map(v => entry(`/lotto/stats/${sc.category}/${v}`, latestDraw, 'weekly', 0.6))
   );
 
-  // 띠별 행운번호 지난 날짜 (유효 기간 30일)
+  // 띠별 행운번호 지난 날짜 전체 (DAILY_FORTUNE_FIRST_DATE ~ 어제, 최신순)
   const pastFortunes: Entry[] = [];
-  for (let i = 1; i <= DAILY_FORTUNE_PAST_DAYS; i++) {
-    const date = shiftDateStr(today, -i);
+  for (let date = shiftDateStr(today, -1); date >= DAILY_FORTUNE_FIRST_DATE; date = shiftDateStr(date, -1)) {
     pastFortunes.push(entry(`/lotto/daily-fortune/${date}`, date, 'never', 0.5));
   }
 

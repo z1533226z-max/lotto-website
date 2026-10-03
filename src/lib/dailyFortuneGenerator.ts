@@ -182,8 +182,14 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const WEEKDAYS_KO = ['일', '월', '화', '수', '목', '금', '토'];
 
-/** 띠별 행운번호 유효 기간: 오늘 기준 과거 30일 ~ 내일 */
-export const DAILY_FORTUNE_PAST_DAYS = 30;
+/**
+ * 띠별 행운번호 유효 기간: DAILY_FORTUNE_FIRST_DATE ~ 내일(KST).
+ *
+ * 2026-03-19 출시 당시 사이트맵이 그 이전 30일(2026-02-18~)까지 나열했고, 지난 날짜는 모두 200으로
+ * 열려 있었다. 네이버가 색인한 날짜를 soft-404(+일반 noindex)로 만들지 않도록 하한은 사이트맵에
+ * 처음 실렸던 날짜로 고정한다. 지난 날짜는 페이지에서 구글·빙 전용 noindex(NAVER_ONLY_ROBOTS)를 받는다.
+ */
+export const DAILY_FORTUNE_FIRST_DATE = '2026-02-18';
 export const DAILY_FORTUNE_FUTURE_DAYS = 1;
 
 function parseDateUTC(dateStr: string): Date | null {
@@ -212,11 +218,11 @@ export function shiftDateStr(dateStr: string, offsetDays: number): string {
   return new Date(dt.getTime() + offsetDays * DAY_MS).toISOString().split('T')[0];
 }
 
-// 유효 기간(과거 30일 ~ 내일) 안의 날짜인지
+// 유효 기간(DAILY_FORTUNE_FIRST_DATE ~ 내일) 안의 날짜인지
 export function isDateInFortuneWindow(dateStr: string, today: string = getTodayKST()): boolean {
-  if (!isValidDate(dateStr)) return false;
   return (
-    dateStr >= shiftDateStr(today, -DAILY_FORTUNE_PAST_DAYS) &&
+    isValidDate(dateStr) &&
+    dateStr >= DAILY_FORTUNE_FIRST_DATE &&
     dateStr <= shiftDateStr(today, DAILY_FORTUNE_FUTURE_DAYS)
   );
 }
