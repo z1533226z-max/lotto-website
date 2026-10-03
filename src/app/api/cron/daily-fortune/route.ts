@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { getTodayKST } from '@/lib/dailyFortuneGenerator';
+import { getTodayKST, shiftDateStr } from '@/lib/dailyFortuneGenerator';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
@@ -23,18 +23,14 @@ export async function GET(request: NextRequest) {
     const today = getTodayKST();
 
     // ISR 캐시 무효화 - 오늘 + 어제 페이지
-    const yesterday = new Date(today + 'T00:00:00+09:00');
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const yesterdayStr = shiftDateStr(today, -1);
 
     revalidatePath('/lotto/daily-fortune');
     revalidatePath(`/lotto/daily-fortune/${today}`);
     revalidatePath(`/lotto/daily-fortune/${yesterdayStr}`);
 
     // 내일 페이지도 미리 무효화 (내일 미리보기용)
-    const tomorrow = new Date(today + 'T00:00:00+09:00');
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const tomorrowStr = shiftDateStr(today, 1);
     revalidatePath(`/lotto/daily-fortune/${tomorrowStr}`);
 
     const elapsed = Date.now() - startTime;
