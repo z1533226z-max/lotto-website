@@ -120,9 +120,6 @@ export default async function MonthlyArchivePage({ params }: Props) {
     firstWinners: r.prizeMoney.firstWinners,
   }));
 
-  const sortedFreq = [...numberFrequency].sort((a, b) => b.count - a.count);
-  const top3 = sortedFreq.filter(x => x.count > 0).slice(0, 3);
-
   // JSON-LD: Dataset (server-generated from trusted lotto draw data, not user input)
   const jsonLd = {
     '@context': 'https://schema.org',

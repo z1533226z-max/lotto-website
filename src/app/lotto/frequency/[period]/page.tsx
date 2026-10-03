@@ -181,10 +181,6 @@ export default async function FrequencyPage({ params }: Props) {
     creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
   };
 
-  const top3 = ranked.slice(0, 3);
-  const bottom3 = ranked.slice(-3);
-  const overdueTop = [...ranked].sort((a, b) => b.gap - a.gap).slice(0, 3);
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
