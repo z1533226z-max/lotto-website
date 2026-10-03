@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import SectionFrame from '@/components/ui/SectionFrame';
 
@@ -124,20 +123,20 @@ export default function NumberAnalysisContent({
                   </div>
                 </div>
               </div>
-              <Link
+              <a
                 href={`/lotto/pair/${Math.min(num, comp.number)}-${Math.max(num, comp.number)}`}
                 className="text-xs px-2 py-1 rounded"
                 style={{ backgroundColor: 'rgba(59,130,246,0.15)', color: '#60A5FA' }}
               >
                 조합 분석
-              </Link>
-              <Link
+              </a>
+              <a
                 href={`/lotto/number/${comp.number}`}
                 className="text-xs px-2 py-1 rounded"
                 style={{ backgroundColor: 'var(--border)', color: 'var(--text-secondary)' }}
               >
                 분석 보기
-              </Link>
+              </a>
             </div>
           ))}
         </div>
@@ -196,7 +195,7 @@ export default function NumberAnalysisContent({
         <h2 className="text-xl font-bold mb-4">🔢 다른 번호 분석</h2>
         <div className="flex flex-wrap gap-2">
           {Array.from({ length: 45 }, (_, i) => i + 1).map(n => (
-            <Link
+            <a
               key={n}
               href={`/lotto/number/${n}`}
               className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all hover:scale-110 ${n === num ? 'ring-2 ring-offset-2 ring-primary' : ''}`}
@@ -206,7 +205,7 @@ export default function NumberAnalysisContent({
               }}
             >
               {n}
-            </Link>
+            </a>
           ))}
         </div>
       </div>

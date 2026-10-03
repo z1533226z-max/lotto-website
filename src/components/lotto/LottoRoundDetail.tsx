@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { Trophy } from 'lucide-react';
 import LottoNumbers from './LottoNumbers';
 import Card from '@/components/ui/Card';
@@ -145,26 +144,26 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound }) => {
           {/* 이전/다음 네비게이션 */}
           <div className="flex justify-between items-center pt-4 border-t border-gray-200">
             {data.round > 1 ? (
-              <Link
+              <a
                 href={`/lotto/${data.round - 1}`}
                 className="flex items-center gap-1 text-primary hover:underline"
               >
                 ← {data.round - 1}회
-              </Link>
+              </a>
             ) : <span />}
-            <Link
+            <a
               href="/lotto/list"
               className="text-gray-600 hover:text-primary transition-colors"
             >
               전체 목록
-            </Link>
+            </a>
             {data.round < maxRound ? (
-              <Link
+              <a
                 href={`/lotto/${data.round + 1}`}
                 className="flex items-center gap-1 text-primary hover:underline"
               >
                 {data.round + 1}회 →
-              </Link>
+              </a>
             ) : <span />}
           </div>
         </div>
