@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import EndingDigitContent from './EndingDigitContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { digit: string };
@@ -50,6 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45 끝수 ${digit}번(${nums.join(', ')}번)의 ${totalRounds}회 누적 출현 ${totalHits}회, 회당 평균 ${avgPerRound}개. 끝수별 출현 빈도, 최근 추세, 동반 끝수 조합을 분석합니다.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/ending/${digit}` },

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SumRangeContent from './SumRangeContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { range: string };
@@ -55,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45 당첨번호 합계가 ${range.min}~${range.max}인 회차 완전 분석. ${totalRounds}회 중 ${matchCount}회(${pct}%) 출현. 자주 나오는 번호, 홀짝·고저 비율, 최근 추세를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/sum/${range.slug}` },

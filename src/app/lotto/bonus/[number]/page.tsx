@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import BonusNumberContent from './BonusNumberContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { number: string };
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45 보너스번호 ${num}번 완전 분석. ${totalRounds}회 중 보너스로 ${frequency}회 출현(${pct}%). 출현 간격, 최근 추세, 동반 당첨번호, 본번호 비교까지 한눈에 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/bonus/${num}` },

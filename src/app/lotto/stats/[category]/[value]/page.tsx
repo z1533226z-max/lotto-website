@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import StatsDetailContent from './StatsDetailContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { category: string; value: string };
@@ -90,6 +91,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45 역대 ${totalRounds}회 중 ${cfg.label(params.value)} 조합 ${matchCount}회 출현(${pct}%). 출현 추세, 최근 당첨번호, 연도별 통계를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/stats/${params.category}/${params.value}` },

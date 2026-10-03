@@ -4,6 +4,7 @@ import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import PairAnalysisContent from './PairAnalysisContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { pair: string };
@@ -47,6 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45에서 ${num1}번과 ${num2}번이 함께 나온 횟수는 ${pairCount}회입니다. 동시 출현 패턴, 최근 추세, 출현 회차 목록, 관련 번호 조합을 분석합니다.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/pair/${num1}-${num2}` },

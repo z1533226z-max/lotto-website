@@ -4,6 +4,7 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import BirthdayContent from './BirthdayContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { date: string };
@@ -131,6 +132,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${month}월 ${day}일 생일이라면 행운번호는 ${numbers.join(', ')}! ${zodiac.name}의 ${zodiac.trait} 성격에 맞는 로또 번호 분석과 당첨 통계를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/birthday/${params.date}` },
