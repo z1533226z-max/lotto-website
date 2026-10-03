@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import type { FaqItem } from '@/lib/seo';
 
 interface Props {
   category: string;
@@ -23,12 +24,13 @@ interface Props {
   }[];
   yearlyData: { year: number; count: number; total: number }[];
   otherValues: { value: string; name: string; count: number; percentage: string }[];
+  faqItems: FaqItem[];
 }
 
 export default function StatsDetailContent({
   category, value, categoryName, valueName, patternSlug,
   totalRounds, matchCount, percentage, avgGap, roundsSinceLast,
-  recentMatches, yearlyData, otherValues,
+  recentMatches, yearlyData, otherValues, faqItems,
 }: Props) {
   const maxYearlyCount = Math.max(...yearlyData.map(y => y.count), 1);
 
@@ -167,25 +169,12 @@ export default function StatsDetailContent({
       <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
         <h2 className="text-lg font-bold text-white mb-4">자주 묻는 질문</h2>
         <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold text-blue-300 mb-1">
-              Q. 로또에서 {valueName} 패턴은 얼마나 자주 나오나요?
-            </h3>
-            <p className="text-sm text-gray-400">
-              전체 {totalRounds.toLocaleString()}회 추첨 중 {valueName} 패턴은 {matchCount.toLocaleString()}회 출현했습니다.
-              출현 확률은 {percentage}%이며, 평균 {avgGap}회마다 한 번 출현합니다.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-blue-300 mb-1">
-              Q. {categoryName} 분석으로 당첨 확률을 높일 수 있나요?
-            </h3>
-            <p className="text-sm text-gray-400">
-              {categoryName} 분석은 과거 통계를 기반으로 합니다. 극단적으로 치우친 패턴(출현율 5% 미만)을 피하면
-              통계적으로 더 유리한 번호 조합을 선택할 수 있습니다. 가장 많이 출현한 패턴을 참고하되,
-              로또는 매 회차 독립적인 추첨이므로 과거 패턴이 미래를 보장하지 않습니다.
-            </p>
-          </div>
+          {faqItems.map(item => (
+            <div key={item.q}>
+              <h3 className="text-sm font-semibold text-blue-300 mb-1">Q. {item.q}</h3>
+              <p className="text-sm text-gray-400">{item.a}</p>
+            </div>
+          ))}
         </div>
       </div>
 

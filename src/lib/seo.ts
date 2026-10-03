@@ -40,3 +40,22 @@ export const NAVER_ONLY_ROBOTS: Pick<Metadata, 'robots' | 'other'> = {
 export function isIndexableWeeklyAnalysis(round: number, latestRound: number): boolean {
   return latestRound - round < WEEKLY_ANALYSIS_INDEXABLE_COUNT;
 }
+
+/** FAQ 한 항목 (화면 표시와 FAQPage JSON-LD가 같은 배열을 쓰도록 공유) */
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+/** 화면에 보이는 FAQ 목록 그대로 FAQPage JSON-LD를 만든다 (마크업 = 표시 내용) */
+export function buildFaqPageJsonLd(items: FaqItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}

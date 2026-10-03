@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import StatsDetailContent from './StatsDetailContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, buildFaqPageJsonLd, type FaqItem } from '@/lib/seo';
 
 interface Props {
   params: { category: string; value: string };
@@ -109,6 +109,7 @@ export default async function StatsDetailPage({ params }: Props) {
 
   const allData = await getAllLottoData();
   const totalRounds = allData.length;
+  const valueName = cfg.label(params.value);
 
   // Filter matching rounds
   const matchingRounds = allData.filter(d => cfg.match(d.numbers, params.value));
@@ -156,44 +157,24 @@ export default async function StatsDetailPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: cfg.title(params.value),
-    description: `${cfg.label(params.value)} 패턴의 ${totalRounds}회 누적 통계`,
+    description: `${valueName} 패턴의 ${totalRounds}회 누적 통계`,
     url: `https://lotto.gon.ai.kr/lotto/stats/${params.category}/${params.value}`,
     keywords: [cfg.title(params.value), `로또 ${cfg.name}`, '로또 패턴 분석', '로또 통계'],
     creator: { '@type': 'Organization', name: '로또킹', url: 'https://lotto.gon.ai.kr' },
   };
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또에서 ${cfg.label(params.value)} 패턴은 얼마나 자주 나오나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `전체 ${totalRounds}회 추첨 중 ${cfg.label(params.value)} 패턴은 ${matchCount}회 출현했습니다. 출현 확률은 ${pct}%입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${cfg.label(params.value)} 패턴이 가장 최근에 나온 회차는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: lastMatch
-            ? `가장 최근 출현 회차는 ${lastMatch.round}회(${lastMatch.drawDate})이며, 당첨번호는 ${lastMatch.numbers.join(', ')}입니다.`
-            : '해당 패턴의 출현 기록이 없습니다.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${cfg.name} 분석이 로또 번호 선택에 도움이 되나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${cfg.name} 분석은 과거 통계를 기반으로 각 패턴의 출현 빈도를 보여줍니다. 극단적으로 치우친 패턴(출현율 5% 미만)을 피하면 통계적으로 유리한 조합을 선택할 수 있습니다.`,
-        },
-      },
-    ],
-  };
+  // FAQ: 화면(StatsDetailContent)과 FAQPage JSON-LD가 같은 배열을 쓴다
+  const faqItems: FaqItem[] = [
+    {
+      q: `로또에서 ${valueName} 패턴은 얼마나 자주 나오나요?`,
+      a: `전체 ${totalRounds.toLocaleString()}회 추첨 중 ${valueName} 패턴은 ${matchCount.toLocaleString()}회 출현했습니다. 출현 확률은 ${pct}%이며, 평균 ${avgGap}회마다 한 번 출현합니다.`,
+    },
+    {
+      q: `${cfg.name} 분석으로 당첨 확률을 높일 수 있나요?`,
+      a: `${cfg.name} 분석은 과거 통계를 기반으로 합니다. 극단적으로 치우친 패턴(출현율 5% 미만)을 피하면 통계적으로 더 유리한 번호 조합을 선택할 수 있습니다. 가장 많이 출현한 패턴을 참고하되, 로또는 매 회차 독립적인 추첨이므로 과거 패턴이 미래를 보장하지 않습니다.`,
+    },
+  ];
+  const faqJsonLd = buildFaqPageJsonLd(faqItems);
 
   // Server-generated trusted JSON-LD (same pattern as other lotto pages)
   const jsonLdScript = JSON.stringify(jsonLd);
@@ -207,14 +188,14 @@ export default async function StatsDetailPage({ params }: Props) {
       <Breadcrumb items={[
         { label: '홈', href: '/' },
         { label: `${cfg.name} 분석`, href: `/lotto/pattern/${cfg.patternSlug}` },
-        { label: cfg.label(params.value) },
+        { label: valueName },
       ]} />
 
       <StatsDetailContent
         category={params.category}
         value={params.value}
         categoryName={cfg.name}
-        valueName={cfg.label(params.value)}
+        valueName={valueName}
         patternSlug={cfg.patternSlug}
         totalRounds={totalRounds}
         matchCount={matchCount}
@@ -224,6 +205,7 @@ export default async function StatsDetailPage({ params }: Props) {
         recentMatches={recentMatches}
         yearlyData={yearlyData}
         otherValues={otherValues}
+        faqItems={faqItems}
       />
     </>
   );
