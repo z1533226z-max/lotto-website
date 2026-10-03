@@ -1,18 +1,13 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
+// Pretendard 동적 서브셋: 유니코드 범위별로 쪼갠 ~90개 woff2 중 페이지에 실제 쓰인 글자 조각만 내려받는다.
+// (기존: 2MB 가변 폰트 전체를 모든 페이지에서 preload → 모바일 LCP 악화)
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './globals.css';
 import Script from 'next/script';
 import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider';
 import AuthProvider from '@/components/providers/AuthProvider';
 import AuthModal from '@/components/auth/AuthModal';
 import GamificationProvider from '@/components/gamification/GamificationProvider';
-
-const pretendard = localFont({
-  src: '../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2',
-  display: 'swap',
-  variable: '--font-pretendard',
-  weight: '100 900',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
@@ -68,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         {/* Theme initialization script - prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -87,7 +82,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#D36135" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
-      <body className={pretendard.className}>
+      <body>
         <ThemeProvider>
           <AuthProvider>
             {children}
