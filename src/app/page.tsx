@@ -193,6 +193,29 @@ const quickLinks = [
 
 export default async function HomePage() {
   const allData = await getAllLottoData();
+// 구조화 데이터 (JSON-LD) — 홈에서만 출력 (이전에는 layout에서 전 페이지에 주입됨)
+const webAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '로또킹',
+  description: 'AI 기반 로또번호 추천 서비스',
+  url: 'https://lotto.gon.ai.kr',
+  applicationCategory: 'Entertainment',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'KRW',
+    description: '무료 AI 로또번호 추천 서비스',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: '로또킹',
+    url: 'https://lotto.gon.ai.kr',
+  },
+  featureList: ['AI 기반 번호 추천', '당첨번호 조회', '통계 분석', '번호 저장', '당첨 시뮬레이터'],
+};
+
   const latest = getLatestRound(allData);
   const totalRounds = allData.length;
 
@@ -210,6 +233,10 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center py-12 md:py-20">
               {/* Left: Text content */}
               <div className="space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
                 <div
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium"
                   style={{

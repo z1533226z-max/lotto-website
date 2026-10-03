@@ -185,49 +185,9 @@ export default async function FrequencyPage({ params }: Props) {
   const bottom3 = ranked.slice(-3);
   const overdueTop = [...ranked].sort((a, b) => b.gap - a.gap).slice(0, 3);
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또에서 ${cfg.filterLabel} 가장 많이 나온 번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${cfg.filterLabel} 기준 가장 많이 나온 번호는 ${top3.map(n => `${n.number}번(${n.count}회)`).join(', ')}입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 ${cfg.label} 안 나오는 번호(콜드넘버)는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${cfg.filterLabel} 기준 가장 적게 나온 번호는 ${bottom3.map(n => `${n.number}번(${n.count}회)`).join(', ')}입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: '로또 이월번호(오래 안 나온 번호)는 언제 나올까요?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `현재 가장 오래 안 나온 번호는 ${overdueTop.map(n => `${n.number}번(${n.gap}회차째 미출현)`).join(', ')}입니다. 통계적으로 이월번호가 반드시 나오는 시점은 예측할 수 없지만, 평균 출현 간격을 참고할 수 있습니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: '요즘 로또에서 상승세(트렌드)인 번호는?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `최근 ${trend.window}회 기준 출현율이 역대 평균보다 가장 많이 오른 상승세 번호는 ${trend.rising.slice(0, 3).map(n => `${n.number}번(+${n.delta}%p)`).join(', ')}입니다. 반대로 하락세 번호는 ${trend.falling.slice(0, 3).map(n => `${n.number}번(${n.delta}%p)`).join(', ')}입니다. 핫넘버가 누적 출현 기준이라면, 트렌드는 최근 출현 흐름을 보여줍니다.`,
-        },
-      },
-    ],
-  };
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },

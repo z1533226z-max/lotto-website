@@ -136,46 +136,10 @@ export default async function PairAnalysisPage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
-  // JSON-LD: FAQPage (server-generated trusted data, not user input)
-  const faqJsonLdData = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번과 ${num2}번은 몇 번 같이 나왔나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `로또 ${num1}번과 ${num2}번은 총 ${totalRounds}회 추첨 중 ${pairCount}회 동시 출현했습니다 (출현율 ${pairRate}%).`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번 ${num2}번 조합의 출현 확률은?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `이론적 동시 출현 확률은 약 ${THEORETICAL_RATE}%이며, 실제 출현율은 ${pairRate}%입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번과 ${num2}번이 마지막으로 같이 나온 회차는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: lastPairRound > 0
-            ? `${num1}번과 ${num2}번이 마지막으로 동시 출현한 회차는 ${lastPairRound}회차입니다.`
-            : `${num1}번과 ${num2}번은 아직 동시에 출현한 적이 없습니다.`,
-        },
-      },
-    ],
-  };
-
   return (
     <>
       {/* eslint-disable-next-line -- JSON-LD structured data from trusted server-side lotto data */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
-      {/* eslint-disable-next-line -- JSON-LD structured data from trusted server-side lotto data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLdData) }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },

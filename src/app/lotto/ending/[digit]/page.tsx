@@ -169,47 +169,11 @@ export default async function EndingDigitPage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
-  // ── JSON-LD: FAQPage (server-generated trusted data only) ──
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또 끝수 ${digit}에 해당하는 번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `로또 6/45에서 끝수 ${digit}에 해당하는 번호는 ${nums.join(', ')}번입니다 (총 ${nums.length}개).`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 끝수 ${digit}은 얼마나 자주 나오나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${totalRounds}회 추첨 중 끝수 ${digit} 번호는 총 ${totalHits}회 출현하여 회당 평균 ${avgPerRound}개가 포함됩니다. 전체 10개 끝수 중 ${rank}위입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `끝수 ${digit}과 잘 어울리는 끝수는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: topCompanionDigits.length > 0
-            ? `끝수 ${digit}과 가장 자주 함께 출현하는 끝수는 ${topCompanionDigits[0].digit}(${topCompanionDigits[0].count}회), ${topCompanionDigits[1]?.digit ?? '-'}(${topCompanionDigits[1]?.count ?? 0}회) 순입니다.`
-            : `분석할 데이터가 부족합니다.`,
-        },
-      },
-    ],
-  };
-
   const jsonLdScript = JSON.stringify(jsonLdData);
-  const faqJsonLdScript = JSON.stringify(faqJsonLd);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLdScript }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },
