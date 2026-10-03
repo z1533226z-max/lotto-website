@@ -161,6 +161,13 @@ export const formatDate = (dateString: string): string => {
 /**
  * 클립보드에 텍스트 복사
  */
+// 추첨일(YYYY-MM-DD) → "2026년 9월 26일" (타임존 영향 없이 문자열 그대로 변환)
+export const formatDrawDateKo = (drawDate: string): string => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(drawDate);
+  if (!match) return drawDate;
+  return `${Number(match[1])}년 ${Number(match[2])}월 ${Number(match[3])}일`;
+};
+
 export const copyToClipboard = async (text: string): Promise<boolean> => {
   try {
     if (navigator.clipboard) {

@@ -43,7 +43,9 @@ function LatestResultSSR({ latest }: { latest: LottoResult }) {
             최신 당첨 결과
           </p>
           <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-            제 {latest.round.toLocaleString()}회 당첨번호
+            <a href={`/lotto/${latest.round}`} className="hover:underline">
+              제 {latest.round.toLocaleString()}회 당첨번호
+            </a>
           </h2>
         </div>
         <span
@@ -109,6 +111,16 @@ function LatestResultSSR({ latest }: { latest: LottoResult }) {
           <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>추첨일</p>
           <p className="font-bold" style={{ color: 'var(--text)' }}>{drawDateFormatted}</p>
         </div>
+      </div>
+
+      <div className="mt-4 text-center">
+        <a
+          href={`/lotto/${latest.round}`}
+          className="inline-flex items-center gap-1 text-sm font-semibold hover:underline"
+          style={{ color: '#D36135' }}
+        >
+          {latest.round}회 당첨 결과 자세히 보기 →
+        </a>
       </div>
     </section>
     </DoubleBezelCard>
@@ -181,18 +193,6 @@ export const metadata: Metadata = {
   },
 };
 
-const quickLinks = [
-  { href: '/lotto/list', icon: <ClipboardList className="w-5 h-5" />, label: '당첨번호 전체 조회', desc: '1회부터 최신 회차까지' },
-  { href: '/lotto/recent', icon: <Clock className="w-5 h-5" />, label: '최근 당첨번호', desc: '최근 회차 결과 확인' },
-  { href: '/lotto/statistics', icon: <BarChart3 className="w-5 h-5" />, label: '번호 통계 분석', desc: '빈도, 패턴, 트렌드' },
-  { href: '/lotto/calculator', icon: <Calculator className="w-5 h-5" />, label: '세금 계산기', desc: '실수령액 즉시 계산' },
-  { href: '/lotto/rankings', icon: <Trophy className="w-5 h-5" />, label: '당첨금 순위', desc: '역대 최고 당첨금' },
-  { href: '/lotto/ai-hits', icon: <Target className="w-5 h-5" />, label: 'AI 적중 기록', desc: 'AI 예측 성과 확인' },
-  { href: '/lotto/analysis/weekly', icon: <TrendingUp className="w-5 h-5" />, label: '주간 분석', desc: '이번 주 번호 트렌드' },
-];
-
-export default async function HomePage() {
-  const allData = await getAllLottoData();
 // 구조화 데이터 (JSON-LD) — 홈에서만 출력 (이전에는 layout에서 전 페이지에 주입됨)
 const webAppJsonLd = {
   '@context': 'https://schema.org',
@@ -216,11 +216,27 @@ const webAppJsonLd = {
   featureList: ['AI 기반 번호 추천', '당첨번호 조회', '통계 분석', '번호 저장', '당첨 시뮬레이터'],
 };
 
+const quickLinks = [
+  { href: '/lotto/list', icon: <ClipboardList className="w-5 h-5" />, label: '당첨번호 전체 조회', desc: '1회부터 최신 회차까지' },
+  { href: '/lotto/recent', icon: <Clock className="w-5 h-5" />, label: '최근 당첨번호', desc: '최근 회차 결과 확인' },
+  { href: '/lotto/statistics', icon: <BarChart3 className="w-5 h-5" />, label: '번호 통계 분석', desc: '빈도, 패턴, 트렌드' },
+  { href: '/lotto/calculator', icon: <Calculator className="w-5 h-5" />, label: '세금 계산기', desc: '실수령액 즉시 계산' },
+  { href: '/lotto/rankings', icon: <Trophy className="w-5 h-5" />, label: '당첨금 순위', desc: '역대 최고 당첨금' },
+  { href: '/lotto/ai-hits', icon: <Target className="w-5 h-5" />, label: 'AI 적중 기록', desc: 'AI 예측 성과 확인' },
+  { href: '/lotto/analysis/weekly', icon: <TrendingUp className="w-5 h-5" />, label: '주간 분석', desc: '이번 주 번호 트렌드' },
+];
+
+export default async function HomePage() {
+  const allData = await getAllLottoData();
   const latest = getLatestRound(allData);
   const totalRounds = allData.length;
 
   return (
     <div className="min-h-[100dvh]" style={{ backgroundColor: 'var(--bg)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
       <Header />
 
       <main>
@@ -233,10 +249,6 @@ const webAppJsonLd = {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center py-12 md:py-20">
               {/* Left: Text content */}
               <div className="space-y-6">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
                 <div
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium"
                   style={{
