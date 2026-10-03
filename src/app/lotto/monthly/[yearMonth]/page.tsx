@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import MonthlyArchiveContent from './MonthlyArchiveContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { yearMonth: string };
@@ -50,6 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${year}년 ${month}월 로또 6/45 당첨번호를 한눈에! ${roundCount}회 추첨 결과, 이달의 최다 출현 번호, 1등 당첨금 추이를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/monthly/${params.yearMonth}` },
@@ -118,9 +120,6 @@ export default async function MonthlyArchivePage({ params }: Props) {
     firstWinners: r.prizeMoney.firstWinners,
   }));
 
-  const sortedFreq = [...numberFrequency].sort((a, b) => b.count - a.count);
-  const top3 = sortedFreq.filter(x => x.count > 0).slice(0, 3);
-
   // JSON-LD: Dataset (server-generated from trusted lotto draw data, not user input)
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -134,48 +133,13 @@ export default async function MonthlyArchivePage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
-  // JSON-LD: FAQPage (server-generated from trusted lotto draw data, not user input)
-  const lastRound = rounds[rounds.length - 1];
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `${year}년 ${month}월 로또 당첨번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${year}년 ${month}월에는 총 ${monthData.length}회 추첨이 있었습니다.${lastRound ? ` 마지막 ${lastRound.round}회차 당첨번호: ${lastRound.numbers.join(', ')}+${lastRound.bonusNumber}` : ''}`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${year}년 ${month}월 가장 많이 나온 로또 번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${year}년 ${month}월 가장 많이 출현한 번호는 ${top3.map(t => `${t.number}번(${t.count}회)`).join(', ')}입니다.`,
-        },
-      },
-      ...(avgFirstPrize > 0 ? [{
-        '@type': 'Question',
-        name: `${year}년 ${month}월 로또 1등 당첨금은 얼마였나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${year}년 ${month}월 1등 평균 당첨금은 약 ${(avgFirstPrize / 100000000).toFixed(1)}억원이며, 총 ${totalFirstWinners}명이 당첨되었습니다.`,
-        },
-      }] : []),
-    ],
-  };
-
   // All JSON-LD values are derived from server-side lotto data (numbers, dates, prizes)
   // which is fetched from the trusted data source — no user input is involved
   const jsonLdHtml = JSON.stringify(jsonLd);
-  const faqJsonLdHtml = JSON.stringify(faqJsonLd);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLdHtml }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },

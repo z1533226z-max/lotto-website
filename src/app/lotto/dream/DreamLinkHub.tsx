@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { DREAM_KEYWORDS, DREAM_CATEGORIES } from '@/data/dreamNumbers';
 
 /**
@@ -19,7 +18,7 @@ export default function DreamLinkHub() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {featured.map((kw) => (
-              <Link
+              <a
                 key={kw.keyword}
                 href={`/lotto/dream/${encodeURIComponent(kw.keyword)}`}
                 className="block p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
@@ -45,7 +44,7 @@ export default function DreamLinkHub() {
                     </span>
                   ))}
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -67,7 +66,7 @@ export default function DreamLinkHub() {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {keywords.map((kw) => (
-                  <Link
+                  <a
                     key={kw.keyword}
                     href={`/lotto/dream/${encodeURIComponent(kw.keyword)}`}
                     className="inline-block px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
@@ -78,7 +77,7 @@ export default function DreamLinkHub() {
                     }}
                   >
                     {kw.keyword}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>

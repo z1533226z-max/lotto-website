@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface NumberFreq {
@@ -72,7 +71,7 @@ export default function FrequencyContent({
       {/* Period tabs */}
       <div className="flex flex-wrap gap-2 justify-center">
         {allPeriods.map(p => (
-          <Link
+          <a
             key={p.slug}
             href={`/lotto/frequency/${p.slug}`}
             className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
@@ -82,7 +81,7 @@ export default function FrequencyContent({
             }`}
           >
             {p.label}
-          </Link>
+          </a>
         ))}
       </div>
 
@@ -92,7 +91,7 @@ export default function FrequencyContent({
           <h2 className="text-lg font-bold text-red-400 mb-3">🔥 핫넘버 TOP 5</h2>
           <div className="space-y-2">
             {top5.map((n, i) => (
-              <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+              <a key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
                 <span className="text-xs text-gray-500 w-5">{i + 1}위</span>
                 <Ball num={n.number} />
                 <div className="flex-1">
@@ -102,7 +101,7 @@ export default function FrequencyContent({
                 </div>
                 <span className="text-sm text-white font-semibold">{n.count}회</span>
                 <span className="text-xs text-gray-500">{n.percentage}%</span>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -111,7 +110,7 @@ export default function FrequencyContent({
           <h2 className="text-lg font-bold text-blue-400 mb-3">🧊 콜드넘버 TOP 5</h2>
           <div className="space-y-2">
             {bottom5.map((n, i) => (
-              <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+              <a key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
                 <span className="text-xs text-gray-500 w-5">{i + 1}위</span>
                 <Ball num={n.number} />
                 <div className="flex-1">
@@ -121,7 +120,7 @@ export default function FrequencyContent({
                 </div>
                 <span className="text-sm text-white font-semibold">{n.count}회</span>
                 <span className="text-xs text-gray-500">{n.percentage}%</span>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -139,11 +138,11 @@ export default function FrequencyContent({
             <h3 className="text-sm font-bold text-orange-400 mb-2">📈 상승세 (요즘 더 자주)</h3>
             <div className="space-y-1">
               {risingNumbers.map(n => (
-                <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+                <a key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
                   <Ball num={n.number} size={28} />
                   <span className="text-sm text-gray-300 flex-1">최근 {n.recentCount}회 출현 · 역대 {n.allRate}%</span>
                   <span className="text-sm font-semibold text-orange-400">+{n.delta}%p</span>
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -151,11 +150,11 @@ export default function FrequencyContent({
             <h3 className="text-sm font-bold text-sky-400 mb-2">📉 하락세 (요즘 뜸함)</h3>
             <div className="space-y-1">
               {fallingNumbers.map(n => (
-                <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
+                <a key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-3 hover:bg-white/5 rounded-lg p-1.5 transition-colors">
                   <Ball num={n.number} size={28} />
                   <span className="text-sm text-gray-300 flex-1">최근 {n.recentCount}회 출현 · 역대 {n.allRate}%</span>
                   <span className="text-sm font-semibold text-sky-400">{n.delta}%p</span>
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -173,13 +172,13 @@ export default function FrequencyContent({
             .sort((a, b) => b.gap - a.gap)
             .slice(0, 10)
             .map(n => (
-              <Link key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-2 bg-gray-900/50 rounded-lg p-2 hover:bg-gray-700/50 transition-colors">
+              <a key={n.number} href={`/lotto/number/${n.number}`} className="flex items-center gap-2 bg-gray-900/50 rounded-lg p-2 hover:bg-gray-700/50 transition-colors">
                 <Ball num={n.number} size={28} />
                 <div className="text-xs">
                   <div className="text-white font-semibold">{n.gap}회차 째</div>
                   <div className="text-gray-500">미출현</div>
                 </div>
-              </Link>
+              </a>
             ))}
         </div>
       </div>
@@ -219,9 +218,9 @@ export default function FrequencyContent({
                 <tr key={n.number} className="border-b border-gray-700/30 hover:bg-gray-700/20">
                   <td className="py-2 px-2 text-gray-500">{i + 1}</td>
                   <td className="py-2 px-2">
-                    <Link href={`/lotto/number/${n.number}`}>
+                    <a href={`/lotto/number/${n.number}`}>
                       <Ball num={n.number} size={26} />
-                    </Link>
+                    </a>
                   </td>
                   <td className="py-2 px-2 text-white font-semibold">{n.count}회</td>
                   <td className="py-2 px-2 text-gray-300">{n.percentage}%</td>

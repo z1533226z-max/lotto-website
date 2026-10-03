@@ -4,6 +4,8 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import type { LottoResult } from '@/types/lotto';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import PatternAnalysisContent from './PatternAnalysisContent';
+import { getPatternFaqItems } from './patternFaq';
+import { buildFaqPageJsonLd } from '@/lib/seo';
 
 interface Props {
   params: { type: string };
@@ -208,36 +210,9 @@ export default async function PatternPage({ params }: Props) {
     case 'ac-value': analysisData = analyzeACValue(allData); break;
   }
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또 ${pattern.name}이란?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${pattern.desc} 총 ${totalRounds}회 추첨 데이터를 기반으로 분석합니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${pattern.name}을 번호 선택에 어떻게 활용하나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `과거 ${totalRounds}회 데이터에서 가장 자주 출현한 패턴을 참고하여 번호를 선택하면 통계적으로 유리합니다. 극단적인 패턴(예: 한쪽으로 치우친 조합)은 피하는 것이 좋습니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${pattern.name} 데이터는 얼마나 자주 업데이트되나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `매주 토요일 추첨 후 자동으로 업데이트됩니다. 현재 총 ${totalRounds}회 데이터가 반영되어 있습니다.`,
-        },
-      },
-    ],
-  };
+  // FAQPage JSON-LD는 화면에 보이는 FAQ와 같은 배열로 만든다
+  const faqItems = getPatternFaqItems(params.type, pattern.name, totalRounds);
+  const faqJsonLd = buildFaqPageJsonLd(faqItems);
 
   return (
     <>
@@ -256,6 +231,7 @@ export default async function PatternPage({ params }: Props) {
         totalRounds={totalRounds}
         data={analysisData}
         allPatterns={PATTERN_TYPES.map(p => ({ type: p.type, name: p.name }))}
+        faqItems={faqItems}
       />
     </>
   );

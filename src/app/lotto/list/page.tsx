@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
@@ -73,7 +72,7 @@ export default async function LottoListPage({ searchParams }: Props) {
       {/* Card Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {pageData.map((item) => (
-          <Link
+          <a
             key={item.round}
             href={`/lotto/${item.round}`}
             className="block rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
@@ -129,7 +128,7 @@ export default async function LottoListPage({ searchParams }: Props) {
                 </div>
               </div>
             </div>
-          </Link>
+          </a>
         ))}
       </div>
 
@@ -138,13 +137,13 @@ export default async function LottoListPage({ searchParams }: Props) {
         {/* First page */}
         {currentPage > 3 && (
           <>
-            <Link
+            <a
               href="/lotto/list?page=1"
               className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
             >
               1
-            </Link>
+            </a>
             {currentPage > 4 && (
               <span className="px-1" style={{ color: 'var(--text-tertiary)' }}>...</span>
             )}
@@ -153,13 +152,13 @@ export default async function LottoListPage({ searchParams }: Props) {
 
         {/* Previous */}
         {currentPage > 1 && (
-          <Link
+          <a
             href={`/lotto/list?page=${currentPage - 1}`}
             className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
             style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           >
             ← 이전
-          </Link>
+          </a>
         )}
 
         {/* Page numbers */}
@@ -176,7 +175,7 @@ export default async function LottoListPage({ searchParams }: Props) {
           }
           return pageNum;
         }).filter(p => p >= 1 && p <= totalPages).map(pageNum => (
-          <Link
+          <a
             key={pageNum}
             href={`/lotto/list?page=${pageNum}`}
             className="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
@@ -195,18 +194,18 @@ export default async function LottoListPage({ searchParams }: Props) {
             }
           >
             {pageNum}
-          </Link>
+          </a>
         ))}
 
         {/* Next */}
         {currentPage < totalPages && (
-          <Link
+          <a
             href={`/lotto/list?page=${currentPage + 1}`}
             className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
             style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           >
             다음 →
-          </Link>
+          </a>
         )}
 
         {/* Last page */}
@@ -215,13 +214,13 @@ export default async function LottoListPage({ searchParams }: Props) {
             {currentPage < totalPages - 3 && (
               <span className="px-1" style={{ color: 'var(--text-tertiary)' }}>...</span>
             )}
-            <Link
+            <a
               href={`/lotto/list?page=${totalPages}`}
               className="px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
             >
               {totalPages}
-            </Link>
+            </a>
           </>
         )}
       </div>

@@ -32,7 +32,8 @@ const nextConfig = {
               *.googlesyndication.com 
               *.google.com
               *.doubleclick.net
-              *.googleadservices.com;
+              *.googleadservices.com
+              *.adtrafficquality.google;
               img-src 'self' data: 
               *.googlesyndication.com 
               *.google.com 

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import type { DreamKeyword } from '@/data/dreamNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
@@ -64,14 +63,14 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
         </p>
         <div className="flex justify-center gap-2 mt-3">
           {dream.numbers.map(n => (
-            <Link
+            <a
               key={n}
               href={`/lotto/number/${n}`}
               className="px-3 py-1 rounded-full text-xs hover:opacity-80 transition-opacity"
               style={{ backgroundColor: '#D36135', color: '#fff' }}
             >
               {n}번 상세분석 →
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -160,7 +159,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
           <h2 className="text-xl font-bold mb-4">🔥 함께 많이 보는 꿈해몽</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {featuredDreams.map(d => (
-              <Link
+              <a
                 key={d.keyword}
                 href={`/lotto/dream/${encodeURIComponent(d.keyword)}`}
                 className="p-4 rounded-lg hover:opacity-80 transition-opacity"
@@ -173,7 +172,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
                   {d.category} · 상황별 해몽
                 </p>
                 <LottoNumbers numbers={d.numbers} size="xs" />
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -187,7 +186,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {sameCategoryDreams.map(d => (
-              <Link
+              <a
                 key={d.keyword}
                 href={`/lotto/dream/${encodeURIComponent(d.keyword)}`}
                 className="p-3 rounded-lg hover:opacity-80 transition-opacity"
@@ -197,7 +196,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
                 <div className="flex gap-1">
                   <LottoNumbers numbers={d.numbers} size="xs" />
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -224,7 +223,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
               <h3 className="font-semibold mb-2">{categoryEmoji[cat]} {cat} ({catDreams.length}개)</h3>
               <div className="flex flex-wrap gap-2">
                 {catDreams.map(d => (
-                  <Link
+                  <a
                     key={d.keyword}
                     href={`/lotto/dream/${encodeURIComponent(d.keyword)}`}
                     className={`px-3 py-1 rounded-full text-sm transition-all hover:scale-105 ${d.keyword === dream.keyword ? 'font-bold' : ''}`}
@@ -234,7 +233,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
                     }}
                   >
                     {d.keyword}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
@@ -267,13 +266,13 @@ function TipItem({ title, desc }: { title: string; desc: string }) {
 
 function LinkCard({ href, icon, title }: { href: string; icon: string; title: string }) {
   return (
-    <Link
+    <a
       href={href}
       className="p-3 rounded-lg text-center text-sm font-medium transition-all hover:opacity-80"
       style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
     >
       <div className="text-xl mb-1">{icon}</div>
       {title}
-    </Link>
+    </a>
   );
 }

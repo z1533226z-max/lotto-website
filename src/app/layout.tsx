@@ -1,18 +1,13 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
+// Pretendard 동적 서브셋: 유니코드 범위별로 쪼갠 ~90개 woff2 중 페이지에 실제 쓰인 글자 조각만 내려받는다.
+// (기존: 2MB 가변 폰트 전체를 모든 페이지에서 preload → 모바일 LCP 악화)
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './globals.css';
 import Script from 'next/script';
 import { ThemeProvider, themeScript } from '@/components/providers/ThemeProvider';
 import AuthProvider from '@/components/providers/AuthProvider';
 import AuthModal from '@/components/auth/AuthModal';
 import GamificationProvider from '@/components/gamification/GamificationProvider';
-
-const pretendard = localFont({
-  src: '../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2',
-  display: 'swap',
-  variable: '--font-pretendard',
-  weight: '100 900',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
@@ -62,94 +57,16 @@ export const metadata: Metadata = {
   },
 };
 
-// 구조화 데이터 (JSON-LD)
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: '로또킹',
-  description: 'AI 기반 로또번호 추천 서비스',
-  url: 'https://lotto.gon.ai.kr',
-  applicationCategory: 'Entertainment',
-  operatingSystem: 'Web',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'KRW',
-    description: '무료 AI 로또번호 추천 서비스'
-  },
-  provider: {
-    '@type': 'Organization',
-    name: '로또킹',
-    url: 'https://lotto.gon.ai.kr'
-  },
-  featureList: [
-    'AI 기반 번호 추천',
-    '당첨번호 조회',
-    '통계 분석',
-    '번호 저장',
-    '당첨 시뮬레이터'
-  ]
-};
-
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: '로또 6/45란 무엇인가요?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: '로또 6/45는 1부터 45까지의 숫자 중 6개를 선택하여 당첨번호와 일치하면 당첨금을 받는 복권입니다. 매주 토요일 저녁 8시 45분에 추첨합니다.'
-      }
-    },
-    {
-      '@type': 'Question',
-      name: 'AI 로또번호 추천은 어떻게 작동하나요?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: '과거 당첨번호의 출현 빈도, 연속 번호 패턴, 홀짝 비율, 고저 분포 등 다양한 통계 데이터를 AI가 분석하여 최적의 번호 조합을 추천합니다.'
-      }
-    },
-    {
-      '@type': 'Question',
-      name: '로또 당첨 확률은 얼마인가요?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: '로또 1등 당첨 확률은 약 1/8,145,060(약 814만분의 1)입니다. 2등은 약 1/1,357,510, 3등은 약 1/35,724입니다.'
-      }
-    },
-    {
-      '@type': 'Question',
-      name: '로또 당첨금은 어떻게 계산되나요?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: '총 판매액의 50%가 당첨금으로 배분됩니다. 1등(6개 일치)은 당첨금의 75%, 2등(5개+보너스)은 12.5%, 3등(5개 일치)은 12.5%를 나눠 갖습니다. 4등(4개)은 고정 5만원, 5등(3개)은 고정 5천원입니다.'
-      }
-    }
-  ]
-};
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         {/* Theme initialization script - prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-
-        {/* 구조화 데이터 */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
 
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
@@ -165,7 +82,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#D36135" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
-      <body className={pretendard.className}>
+      <body>
         <ThemeProvider>
           <AuthProvider>
             {children}

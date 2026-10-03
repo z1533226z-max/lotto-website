@@ -4,6 +4,7 @@ import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import PairAnalysisContent from './PairAnalysisContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { pair: string };
@@ -47,6 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45에서 ${num1}번과 ${num2}번이 함께 나온 횟수는 ${pairCount}회입니다. 동시 출현 패턴, 최근 추세, 출현 회차 목록, 관련 번호 조합을 분석합니다.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/pair/${num1}-${num2}` },
@@ -134,46 +136,10 @@ export default async function PairAnalysisPage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
-  // JSON-LD: FAQPage (server-generated trusted data, not user input)
-  const faqJsonLdData = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번과 ${num2}번은 몇 번 같이 나왔나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `로또 ${num1}번과 ${num2}번은 총 ${totalRounds}회 추첨 중 ${pairCount}회 동시 출현했습니다 (출현율 ${pairRate}%).`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번 ${num2}번 조합의 출현 확률은?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `이론적 동시 출현 확률은 약 ${THEORETICAL_RATE}%이며, 실제 출현율은 ${pairRate}%입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `로또 ${num1}번과 ${num2}번이 마지막으로 같이 나온 회차는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: lastPairRound > 0
-            ? `${num1}번과 ${num2}번이 마지막으로 동시 출현한 회차는 ${lastPairRound}회차입니다.`
-            : `${num1}번과 ${num2}번은 아직 동시에 출현한 적이 없습니다.`,
-        },
-      },
-    ],
-  };
-
   return (
     <>
       {/* eslint-disable-next-line -- JSON-LD structured data from trusted server-side lotto data */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
-      {/* eslint-disable-next-line -- JSON-LD structured data from trusted server-side lotto data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLdData) }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },

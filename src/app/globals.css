@@ -7,6 +7,9 @@
    2색 체계: Primary #D36135 + Secondary #3E5641
    ============================================ */
 :root {
+  /* Font: Pretendard 동적 서브셋 (layout.tsx에서 CSS import) */
+  --font-pretendard: 'Pretendard Variable', Pretendard;
+
   /* Brand */
   --primary: #D36135;
   --primary-hover: #C05430;

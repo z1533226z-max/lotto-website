@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
@@ -47,7 +46,7 @@ export default async function LottoRecentPage() {
 
       <div className="space-y-4">
         {recentData.map((item) => (
-          <Link key={item.round} href={`/lotto/${item.round}`}>
+          <a key={item.round} href={`/lotto/${item.round}`}>
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -64,29 +63,29 @@ export default async function LottoRecentPage() {
                 </div>
               </div>
             </Card>
-          </Link>
+          </a>
         ))}
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mt-8">
-        <Link
+        <a
           href="/lotto/list"
           className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           전체 당첨번호 보기
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/analysis/weekly"
           className="inline-block px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors border border-white/20"
         >
           주간 분석 보기
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/statistics"
           className="inline-block px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors border border-white/20"
         >
           번호 통계
-        </Link>
+        </a>
       </div>
     </>
   );

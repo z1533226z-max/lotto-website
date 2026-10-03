@@ -175,24 +175,61 @@ export function generateDailyFortune(dateStr: string): DailyFortuneData {
   };
 }
 
+// ── 날짜 유틸 (KST 기준) ──
+// 서버(Vercel)는 UTC로 동작하므로 Date의 로컬 getter(getDate 등)를 쓰면 하루씩 어긋난다.
+// 날짜 문자열(YYYY-MM-DD)은 UTC 자정으로만 다루고 getUTC*로 읽는다.
+const DAY_MS = 24 * 60 * 60 * 1000;
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const WEEKDAYS_KO = ['일', '월', '화', '수', '목', '금', '토'];
+
+/**
+ * 띠별 행운번호 유효 기간: DAILY_FORTUNE_FIRST_DATE ~ 내일(KST).
+ *
+ * 2026-03-19 출시 당시 사이트맵이 그 이전 30일(2026-02-18~)까지 나열했고, 지난 날짜는 모두 200으로
+ * 열려 있었다. 네이버가 색인한 날짜를 soft-404(+일반 noindex)로 만들지 않도록 하한은 사이트맵에
+ * 처음 실렸던 날짜로 고정한다. 지난 날짜는 페이지에서 구글·빙 전용 noindex(NAVER_ONLY_ROBOTS)를 받는다.
+ */
+export const DAILY_FORTUNE_FIRST_DATE = '2026-02-18';
+export const DAILY_FORTUNE_FUTURE_DAYS = 1;
+
+function parseDateUTC(dateStr: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+  if (!match) return null;
+  const [y, m, d] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return null;
+  return dt;
+}
+
 // 오늘 날짜 (KST) 가져오기
-export function getTodayKST(): string {
-  const now = new Date();
-  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  return kst.toISOString().split('T')[0];
+export function getTodayKST(now: Date = new Date()): string {
+  return new Date(now.getTime() + KST_OFFSET_MS).toISOString().split('T')[0];
 }
 
-// 날짜 유효성 검증
+// 날짜 유효성 검증 (2026-02-31 같은 존재하지 않는 날짜도 거부)
 export function isValidDate(dateStr: string): boolean {
-  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) return false;
-  const d = new Date(dateStr);
-  return !isNaN(d.getTime());
+  return parseDateUTC(dateStr) !== null;
 }
 
-// 날짜 포맷: "2026년 3월 19일 (수)"
+// YYYY-MM-DD 문자열을 offsetDays만큼 이동
+export function shiftDateStr(dateStr: string, offsetDays: number): string {
+  const dt = parseDateUTC(dateStr);
+  if (!dt) throw new Error(`Invalid date: ${dateStr}`);
+  return new Date(dt.getTime() + offsetDays * DAY_MS).toISOString().split('T')[0];
+}
+
+// 유효 기간(DAILY_FORTUNE_FIRST_DATE ~ 내일) 안의 날짜인지
+export function isDateInFortuneWindow(dateStr: string, today: string = getTodayKST()): boolean {
+  return (
+    isValidDate(dateStr) &&
+    dateStr >= DAILY_FORTUNE_FIRST_DATE &&
+    dateStr <= shiftDateStr(today, DAILY_FORTUNE_FUTURE_DAYS)
+  );
+}
+
+// 날짜 포맷: "2026년 3월 19일 (목)"
 export function formatDateKorean(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00+09:00');
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+  const dt = parseDateUTC(dateStr);
+  if (!dt) return dateStr;
+  return `${dt.getUTCFullYear()}년 ${dt.getUTCMonth() + 1}월 ${dt.getUTCDate()}일 (${WEEKDAYS_KO[dt.getUTCDay()]})`;
 }

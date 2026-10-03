@@ -43,7 +43,9 @@ function LatestResultSSR({ latest }: { latest: LottoResult }) {
             최신 당첨 결과
           </p>
           <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-            제 {latest.round.toLocaleString()}회 당첨번호
+            <a href={`/lotto/${latest.round}`} className="hover:underline">
+              제 {latest.round.toLocaleString()}회 당첨번호
+            </a>
           </h2>
         </div>
         <span
@@ -109,6 +111,16 @@ function LatestResultSSR({ latest }: { latest: LottoResult }) {
           <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>추첨일</p>
           <p className="font-bold" style={{ color: 'var(--text)' }}>{drawDateFormatted}</p>
         </div>
+      </div>
+
+      <div className="mt-4 text-center">
+        <a
+          href={`/lotto/${latest.round}`}
+          className="inline-flex items-center gap-1 text-sm font-semibold hover:underline"
+          style={{ color: '#D36135' }}
+        >
+          {latest.round}회 당첨 결과 자세히 보기 →
+        </a>
       </div>
     </section>
     </DoubleBezelCard>
@@ -181,6 +193,29 @@ export const metadata: Metadata = {
   },
 };
 
+// 구조화 데이터 (JSON-LD) — 홈에서만 출력 (이전에는 layout에서 전 페이지에 주입됨)
+const webAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '로또킹',
+  description: 'AI 기반 로또번호 추천 서비스',
+  url: 'https://lotto.gon.ai.kr',
+  applicationCategory: 'Entertainment',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'KRW',
+    description: '무료 AI 로또번호 추천 서비스',
+  },
+  provider: {
+    '@type': 'Organization',
+    name: '로또킹',
+    url: 'https://lotto.gon.ai.kr',
+  },
+  featureList: ['AI 기반 번호 추천', '당첨번호 조회', '통계 분석', '번호 저장', '당첨 시뮬레이터'],
+};
+
 const quickLinks = [
   { href: '/lotto/list', icon: <ClipboardList className="w-5 h-5" />, label: '당첨번호 전체 조회', desc: '1회부터 최신 회차까지' },
   { href: '/lotto/recent', icon: <Clock className="w-5 h-5" />, label: '최근 당첨번호', desc: '최근 회차 결과 확인' },
@@ -198,6 +233,10 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-[100dvh]" style={{ backgroundColor: 'var(--bg)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
       <Header />
 
       <main>

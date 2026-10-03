@@ -4,6 +4,7 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import BirthdayContent from './BirthdayContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { date: string };
@@ -131,6 +132,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${month}월 ${day}일 생일이라면 행운번호는 ${numbers.join(', ')}! ${zodiac.name}의 ${zodiac.trait} 성격에 맞는 로또 번호 분석과 당첨 통계를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/birthday/${params.date}` },
@@ -216,50 +218,14 @@ export default async function BirthdayPage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   };
 
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `${month}월 ${day}일 생일 로또 행운번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${month}월 ${day}일 생일의 행운번호는 ${numbers.join(', ')}입니다. ${zodiac.name}(${zodiac.element} 원소)의 에너지를 반영한 번호 조합입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${month}월 ${day}일은 무슨 별자리인가요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `${month}월 ${day}일은 ${zodiac.name}${zodiac.emoji}입니다. ${zodiac.trait} 성격의 소유자로, ${zodiac.element} 원소의 기운을 받습니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `${month}월 ${day}일 행운번호가 실제로 당첨된 적이 있나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: matchedRounds.length > 0
-            ? `${month}월 ${day}일 행운번호 6개 중 3개 이상이 일치한 회차가 ${matchedRounds.length}회 있습니다. 최다 일치는 ${matchedRounds[0].matchCount}개(${matchedRounds[0].round}회차)입니다.`
-            : `아직 3개 이상 일치한 회차는 없지만, 개별 번호들은 꾸준히 출현하고 있습니다.`,
-        },
-      },
-    ],
-  };
-
   // Server-generated JSON-LD from deterministic seed + trusted lotto draw data
   // Values: month/day from validated URL params, numbers from seeded RNG, stats from official draw results
   const jsonLdScript = JSON.stringify(jsonLd);
-  const faqJsonLdScript = JSON.stringify(faqJsonLd);
 
   return (
     <>
       {/* eslint-disable-next-line -- JSON-LD structured data from server-side deterministic seed + trusted lotto data, no user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
-      {/* eslint-disable-next-line -- JSON-LD FAQ from server-side deterministic seed + trusted lotto data, no user input */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLdScript }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },

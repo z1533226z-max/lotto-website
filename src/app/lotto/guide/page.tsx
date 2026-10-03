@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
@@ -646,7 +645,7 @@ export default function GuidePage() {
             </div>
 
             <div className="flex justify-center">
-              <Link
+              <a
                 href="/lotto/calculator"
                 className={cn(
                   'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
@@ -660,7 +659,7 @@ export default function GuidePage() {
               >
                 <span>&#x1F9EE;</span>
                 세금 계산기로 직접 계산해보기
-              </Link>
+              </a>
             </div>
           </div>
         </GuideSection>
@@ -802,7 +801,7 @@ export default function GuidePage() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {GUIDE_ARTICLES.map((article) => (
-              <Link
+              <a
                 key={article.slug}
                 href={`/lotto/guide/${article.slug}`}
                 className={cn(
@@ -830,7 +829,7 @@ export default function GuidePage() {
                     {article.metaDescription}
                   </p>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </GuideSection>
@@ -850,7 +849,7 @@ export default function GuidePage() {
             AI 추천, 행운번호 생성기 등 다양한 방법으로 번호를 생성해보세요.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
+            <a
               href="/"
               className={cn(
                 'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
@@ -863,8 +862,8 @@ export default function GuidePage() {
               }}
             >
               번호 생성하기
-            </Link>
-            <Link
+            </a>
+            <a
               href="/lotto/fortune"
               className={cn(
                 'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
@@ -879,7 +878,7 @@ export default function GuidePage() {
               }}
             >
               행운번호 생성기
-            </Link>
+            </a>
           </div>
         </Card>
       </div>

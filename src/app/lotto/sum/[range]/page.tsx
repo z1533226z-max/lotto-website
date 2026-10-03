@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SumRangeContent from './SumRangeContent';
+import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { range: string };
@@ -55,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `로또 6/45 당첨번호 합계가 ${range.min}~${range.max}인 회차 완전 분석. ${totalRounds}회 중 ${matchCount}회(${pct}%) 출현. 자주 나오는 번호, 홀짝·고저 비율, 최근 추세를 확인하세요.`;
 
   return {
+    ...NAVER_ONLY_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/sum/${range.slug}` },
@@ -182,43 +184,9 @@ export default async function SumRangePage({ params }: Props) {
     license: 'https://creativecommons.org/licenses/by/4.0/',
   });
 
-  const faqJsonLd = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `로또 합계 ${range.min}~${range.max}은 몇 번 나왔나요?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `로또 6/45에서 당첨번호 6개의 합계가 ${range.min}~${range.max}인 경우는 총 ${matchCount}회 출현했습니다. 전체 ${totalRounds}회 중 ${matchPct}%의 비율입니다.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `합계 ${range.min}~${range.max} 구간에서 가장 많이 나온 번호는?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: topNumbers.length > 0
-            ? `합계 ${range.min}~${range.max} 구간에서 가장 많이 나온 번호는 ${topNumbers[0].number}번(${topNumbers[0].count}회, ${topNumbers[0].pct}%)${topNumbers[1] ? `, ${topNumbers[1].number}번(${topNumbers[1].count}회)` : ''} 순입니다.`
-            : '분석할 데이터가 부족합니다.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: '로또 당첨번호 합계는 보통 얼마인가요?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: '로또 6/45 당첨번호 6개의 합계는 평균 약 131~145 구간에 가장 많이 분포합니다. 이론적 평균은 138입니다.',
-        },
-      },
-    ],
-  });
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdData }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
       <Breadcrumb items={[
         { label: '홈', href: '/' },
