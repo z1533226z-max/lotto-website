@@ -105,13 +105,12 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Google AdSense — 앵커는 하단 전용: 상단 고정 헤더(3/22~)와 겹쳐 모바일 앵커가 거의 안 뜸 (support.google.com/adsense/answer/7478225) */}
+        {/* Google AdSense 자동광고 — 앵커 위치는 애드센스가 정함(모바일 헤더는 고정하지 않음, Header.tsx 참고) */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7479840445702290"
           crossOrigin="anonymous"
           strategy="afterInteractive"
-          data-overlays="bottom"
         />
       </body>
     </html>
