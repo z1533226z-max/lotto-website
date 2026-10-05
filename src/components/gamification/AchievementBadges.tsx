@@ -73,7 +73,7 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({
       {showToast && toastBadge && (
         <div
           className={cn(
-            'fixed bottom-24 right-4 z-[60]',
+            'fixed top-20 right-4 lg:top-auto lg:bottom-24 z-[60]',
             'animate-slide-in-right'
           )}
           style={{
@@ -110,7 +110,9 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = ({
       )}
 
       {/* ── Floating Trigger Button ────────────────────── */}
-      <div className="fixed bottom-4 right-4 z-50" ref={panelRef}>
+      {/* 모바일에서는 숨김: 화면 하단 고정 요소가 있으면 애드센스 하단 고정(앵커) 광고가 뜨지 않음.
+          3/22 상단 헤더 고정 이후 모바일 앵커 광고 요청 0 (2026-10-05 확인) */}
+      <div className="fixed bottom-4 right-4 z-50 hidden lg:block" ref={panelRef}>
         <button
           onClick={() => setIsOpen((prev) => !prev)}
           className={cn(
