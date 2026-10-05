@@ -7,21 +7,20 @@ import Card from '@/components/ui/Card';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import LottoNumbers from './LottoNumbers';
 import { NumberGenerator as NumberGen } from '@/lib/numberGenerator';
-import { getRandomMarketingText, copyToClipboard, generateVirtualUserCount, delay } from '@/lib/utils';
+import { getRandomMarketingText, copyToClipboard, delay } from '@/lib/utils';
 import { ANIMATION_DELAYS } from '@/lib/constants';
 import { getNextDrawRound } from '@/lib/lottoUtils';
 import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
-import { Bot, Target, Lock, Sparkles, Cloud, BarChart3, Brain, Copy, Save, Lightbulb, AlertTriangle, Zap } from 'lucide-react';
+import { Bot, Target, Lock, Sparkles, Cloud, BarChart3, Brain, Copy, Save, Lightbulb, AlertTriangle } from 'lucide-react';
 import type { NumberStatistics } from '@/types/lotto';
 
 const NumberGenerator: React.FC = () => {
   const [generatedSets, setGeneratedSets] = useState<number[][]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [marketingText, setMarketingText] = useState('');
-  const [virtualUsers, setVirtualUsers] = useState(generateVirtualUserCount());
   const [showSuccess, setShowSuccess] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [multiSetMode, setMultiSetMode] = useState(false);
@@ -132,7 +131,6 @@ const NumberGenerator: React.FC = () => {
     setShowSuccess(false);
     setSavedToServer(false);
     setMarketingText(getRandomMarketingText());
-    setVirtualUsers(generateVirtualUserCount());
 
     try {
       await delay(ANIMATION_DELAYS.GENERATION_TIME);
@@ -445,19 +443,6 @@ const NumberGenerator: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* 가상 활동 통계 */}
-        <motion.div
-          className="border-t pt-4"
-          style={{ borderColor: 'var(--border)' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-            <Zap className="w-3.5 h-3.5 inline-block mr-1" /> 지금 <span className="font-bold text-primary">{virtualUsers}명</span>이 AI 분석번호를 확인했습니다!
-          </p>
-        </motion.div>
       </div>
 
       {/* 사용량 제한 모달 */}

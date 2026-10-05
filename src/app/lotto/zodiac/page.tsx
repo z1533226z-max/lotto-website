@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { ZODIAC_PROFILES, ELEMENT_INFO } from '@/data/zodiacLotto';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     title: '별자리별 로또 행운번호 추천',
     description: '12별자리 성격에 맞는 로또 행운번호와 구매 전략을 확인하세요.',
     url: 'https://lotto.gon.ai.kr/lotto/zodiac',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
@@ -74,7 +75,7 @@ export default function ZodiacHubPage() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {profiles.map(p => (
-                  <Link
+                  <a
                     key={p.id}
                     href={`/lotto/zodiac/${p.id}`}
                     className="block bg-gray-800/60 rounded-xl p-5 border border-gray-700 hover:border-gray-500 transition-all hover:scale-[1.02]"
@@ -95,7 +96,7 @@ export default function ZodiacHubPage() {
                     <div className="text-xs text-gray-500">
                       행운 요일: {p.luckyDay} · 행운 색: {p.luckyColor}
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </section>
@@ -114,15 +115,15 @@ export default function ZodiacHubPage() {
         <section className="bg-gray-800/40 rounded-xl p-6 border border-gray-700">
           <h2 className="text-lg font-bold text-white mb-3">다른 유형별 행운번호</h2>
           <div className="flex flex-wrap gap-3">
-            <Link href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
+            <a href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
               MBTI별 행운번호
-            </Link>
-            <Link href="/lotto/blood-type" className="text-sm text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-lg">
+            </a>
+            <a href="/lotto/blood-type" className="text-sm text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-lg">
               혈액형별 행운번호
-            </Link>
-            <Link href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
+            </a>
+            <a href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
               꿈해몽 번호
-            </Link>
+            </a>
           </div>
         </section>
       </div>

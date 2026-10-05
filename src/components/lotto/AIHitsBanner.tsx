@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Target } from 'lucide-react';
-import Link from 'next/link';
 
 interface BannerStats {
   avgMatch: number;
@@ -33,7 +32,8 @@ const AIHitsBanner: React.FC = () => {
         if (data.success && data.stats) {
           setStats(data.stats);
           if (data.matchResults && data.matchResults.length > 0) {
-            const latest = data.matchResults[0];
+            // matchResults는 정적 기록(1215회~)이 앞에 오므로 [0]이 아니라 가장 최근 회차를 고른다
+            const latest = (data.matchResults as MatchResult[]).reduce((a, b) => (b.round > a.round ? b : a));
             setLatestHit({
               round: latest.round,
               matchCount: latest.matchCount,
@@ -48,7 +48,7 @@ const AIHitsBanner: React.FC = () => {
   if (!latestHit) return null;
 
   return (
-    <Link href="/lotto/ai-hits" className="block group">
+    <a href="/lotto/ai-hits" className="block group">
       <div
         className="relative overflow-hidden rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
         style={{
@@ -74,13 +74,13 @@ const AIHitsBanner: React.FC = () => {
 
             <div className="min-w-0">
               <p className="font-bold text-sm truncate" style={{ color: 'var(--text)' }}>
-                AI가 {latestHit.round}회에서{' '}
+                AI 추천번호 {latestHit.round}회 결과:{' '}
                 <span style={{ color: '#D36135' }}>
-                  {latestHit.matchCount}개 적중!
+                  {latestHit.matchCount}개 일치
                 </span>
               </p>
               <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-tertiary)' }}>
-                역대 최고 {stats.maxMatch}개 적중 | 평균{' '}
+                추첨 전 데이터 기준 | 최고 {stats.maxMatch}개 | 평균{' '}
                 {stats.avgMatch}개 | 3개 이상 {stats.threeOrMore}회
               </p>
             </div>
@@ -98,7 +98,7 @@ const AIHitsBanner: React.FC = () => {
           </span>
         </div>
       </div>
-    </Link>
+    </a>
   );
 };
 

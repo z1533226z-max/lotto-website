@@ -4,7 +4,10 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { MBTI_TYPES, getMbtiProfile, MBTI_GROUP_INFO } from '@/data/mbtiLotto';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import MbtiContent from './MbtiContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { type: string };
@@ -31,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${profile.type} ${profile.name} - 로또 행운번호 추천`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/mbti/${params.type.toLowerCase()}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -126,18 +130,20 @@ export default async function MbtiPage({ params }: Props) {
         ]}
       />
 
-      <MbtiContent
-        profile={profile}
-        groupInfo={groupInfo}
-        numberStats={numberStats}
-        avoidStats={avoidStats}
-        matchedRounds={matchedRounds}
-        totalRounds={totalRounds}
-        bestPair={bestPair ? { type: bestPair.type, name: bestPair.name, emoji: bestPair.emoji } : null}
-        worstPair={worstPair ? { type: worstPair.type, name: worstPair.name, emoji: worstPair.emoji } : null}
-        prevType={prevType}
-        nextType={nextType}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <MbtiContent
+          profile={profile}
+          groupInfo={groupInfo}
+          numberStats={numberStats}
+          avoidStats={avoidStats}
+          matchedRounds={matchedRounds}
+          totalRounds={totalRounds}
+          bestPair={bestPair ? { type: bestPair.type, name: bestPair.name, emoji: bestPair.emoji } : null}
+          worstPair={worstPair ? { type: worstPair.type, name: worstPair.name, emoji: worstPair.emoji } : null}
+          prevType={prevType}
+          nextType={nextType}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -11,6 +10,7 @@ import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save, Tren
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import type { LottoResult } from '@/types/lotto';
 import type { Metadata } from 'next';
+import { formatDrawMonthDayKo } from '@/lib/utils';
 
 export const revalidate = 3600;
 
@@ -183,15 +183,23 @@ const NumberGenerator = dynamic(
   }
 );
 
-export const metadata: Metadata = {
-  title: 'AI 로또 번호 추천 - 이번주 당첨 확률 높은 번호 5세트 무료 | 로또킹',
-  description: '무료 AI 로또 번호 추천! 1,200회+ 역대 데이터를 딥러닝 분석하여 매주 자동 추천. 당첨번호 조회, 통계 분석, 꿈번호, 세금 계산기까지 무료. 지금 바로 번호 받기!',
-  openGraph: {
-    title: 'AI 로또 번호 추천 - 이번주 당첨 확률 높은 번호 5세트 무료 | 로또킹',
-    description: '무료 AI 로또 번호 추천! 매주 자동 업데이트. 딥러닝 분석으로 이번주 고확률 번호 5세트 즉시 확인!',
-    url: 'https://lotto.gon.ai.kr',
-  },
-};
+// 제목에 데이터상 최신 회차·추첨일을 넣는다 (매주 자동 갱신, 아직 데이터가 없는 회차는 나오지 않음).
+// '당첨 확률 높은 번호'·'딥러닝'·'고확률'은 사실이 아니어서 쓰지 않는다.
+export async function generateMetadata(): Promise<Metadata> {
+  const latest = getLatestRound(await getAllLottoData());
+  const title = latest
+    ? `AI 로또 번호 추천 무료 5세트 - ${latest.round}회 당첨번호(${formatDrawMonthDayKo(latest.drawDate)}) | 로또킹`
+    : 'AI 로또 번호 추천 무료 5세트 | 로또킹';
+  return {
+    title,
+    description: '무료 AI 로또 번호 추천! 1,200회+ 역대 당첨 데이터의 출현 빈도·패턴을 반영해 매주 자동 추천. 당첨번호 조회, 통계 분석, 꿈번호, 세금 계산기까지 무료. 지금 바로 번호 받기!',
+    openGraph: {
+      title,
+      description: '무료 AI 로또 번호 추천! 매주 자동 업데이트. 역대 당첨 데이터 통계로 고른 이번주 추천 번호 5세트 즉시 확인!',
+      url: 'https://lotto.gon.ai.kr',
+    },
+  };
+}
 
 // 구조화 데이터 (JSON-LD) — 홈에서만 출력 (이전에는 layout에서 전 페이지에 주입됨)
 const webAppJsonLd = {
@@ -279,15 +287,15 @@ export default async function HomePage() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Link
+                  <a
                     href="#generator"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
                     style={{ background: 'linear-gradient(135deg, #D36135, #C05430)' }}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
                     AI 번호 받기
-                  </Link>
-                  <Link
+                  </a>
+                  <a
                     href="#statistics"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all duration-200 hover:opacity-80"
                     style={{
@@ -298,7 +306,7 @@ export default async function HomePage() {
                   >
                     통계 분석 보기
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Trust indicators */}
@@ -392,7 +400,7 @@ export default async function HomePage() {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="flex gap-1 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
               {quickLinks.map((link) => (
-                <Link
+                <a
                   key={link.href}
                   href={link.href}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 shrink-0 hover:scale-[1.02]"
@@ -404,7 +412,7 @@ export default async function HomePage() {
                 >
                   <span className="flex-shrink-0">{link.icon}</span>
                   {link.label}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -466,7 +474,7 @@ export default async function HomePage() {
                   <ul className="space-y-0.5">
                     {quickLinks.map((link) => (
                       <li key={link.href}>
-                        <Link
+                        <a
                           href={link.href}
                           className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-500 group"
                           style={{ color: 'var(--text-secondary)' }}
@@ -480,7 +488,7 @@ export default async function HomePage() {
                             </span>
                           </div>
                           <svg className="w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                        </Link>
+                        </a>
                       </li>
                     ))}
                   </ul>

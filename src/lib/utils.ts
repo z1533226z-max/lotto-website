@@ -168,6 +168,15 @@ export const formatDrawDateKo = (drawDate: string): string => {
 };
 
 /**
+ * 추첨일(YYYY-MM-DD) → "10월 3일" (연도 생략, 타임존 영향 없이 문자열 그대로 변환)
+ */
+export const formatDrawMonthDayKo = (drawDate: string): string => {
+  const match = /^\d{4}-(\d{2})-(\d{2})/.exec(drawDate);
+  if (!match) return drawDate;
+  return `${Number(match[1])}월 ${Number(match[2])}일`;
+};
+
+/**
  * 클립보드에 텍스트 복사
  */
 export const copyToClipboard = async (text: string): Promise<boolean> => {

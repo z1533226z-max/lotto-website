@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { US_GUIDE_ARTICLES } from '@/data/usGuideArticles';
 
 export const metadata: Metadata = {
@@ -52,23 +51,23 @@ export default function UsGuideHubPage() {
               </span>
             </div>
             <h2 className="text-xl font-semibold leading-tight">
-              <Link
+              <a
                 href={`/us/guide/${article.slug}`}
                 className="hover:text-orange-600 dark:hover:text-orange-400"
               >
                 {article.title}
-              </Link>
+              </a>
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
               {article.metaDescription}
             </p>
             <div className="mt-4">
-              <Link
+              <a
                 href={`/us/guide/${article.slug}`}
                 className="text-sm font-medium text-orange-600 hover:underline dark:text-orange-400"
               >
                 Read guide →
-              </Link>
+              </a>
             </div>
           </article>
         ))}

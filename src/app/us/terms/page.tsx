@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -102,7 +101,7 @@ export default function TermsPage() {
         Lottery play should never be used as a source of income or a strategy for resolving
         financial difficulty. If you or someone you know may have a gambling problem, please
         visit{' '}
-        <Link href="/us/responsible-gambling">our Responsible Gambling resources page</Link>{' '}
+        <a href="/us/responsible-gambling">our Responsible Gambling resources page</a>{' '}
         or call the National Council on Problem Gambling helpline:{' '}
         <strong>1-800-GAMBLER</strong> (1-800-426-2537).
       </p>
@@ -111,7 +110,7 @@ export default function TermsPage() {
       <p>
         The Site uses third-party services (Google AdSense, Google Analytics) for
         advertising and traffic analytics. See the{' '}
-        <Link href="/us/privacy">Privacy Policy</Link> for details.
+        <a href="/us/privacy">Privacy Policy</a> for details.
       </p>
 
       <h2>Changes to These Terms</h2>

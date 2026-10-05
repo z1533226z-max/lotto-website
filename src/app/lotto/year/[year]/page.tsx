@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import YearAnalysisContent from './YearAnalysisContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { year: string };
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${year}년 로또 당첨번호 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/year/${year}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }

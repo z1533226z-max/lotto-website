@@ -4,6 +4,7 @@ import { getAllLottoData, getEstimatedLatestRound, getLatestRound } from '@/lib/
 import { formatCurrency, formatDrawDateKo } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { round: string };
@@ -17,10 +18,22 @@ export async function generateStaticParams() {
   return data.map(d => ({ round: String(d.round) }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const round = parseInt(params.round);
+/**
+ * URL 회차 파라미터 검증: 앞자리 0·문자·소수 없는 양의 정수만 허용하고,
+ * 아직 추첨하지 않은 회차(KST 토요일 20:35 기준)는 null → notFound()로 실제 404를 낸다.
+ * (예: /lotto/012, /lotto/12abc 가 parseInt로 12회 페이지를 중복 노출하던 문제 포함)
+ */
+function parseRoundParam(raw: string): number | null {
+  if (!/^[1-9]\d{0,4}$/.test(raw)) return null;
+  const round = Number(raw);
+  if (round > getEstimatedLatestRound()) return null;
+  return round;
+}
 
-  if (isNaN(round) || round < 1) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const round = parseRoundParam(params.round);
+
+  if (round === null) {
     return { title: '로또 당첨번호 조회 | 로또킹' };
   }
 
@@ -46,14 +59,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 ${round}회 당첨번호 (${drawDateKo} 추첨)`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/${round}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
 
 export default async function LottoRoundPage({ params }: Props) {
-  const round = parseInt(params.round);
+  const round = parseRoundParam(params.round);
 
-  if (isNaN(round) || round < 1) {
+  if (round === null) {
     notFound();
   }
 
@@ -64,8 +78,8 @@ export default async function LottoRoundPage({ params }: Props) {
     notFound();
   }
 
-  const knownMaxRound = getLatestRound(allData)?.round ?? round;
-  const maxRound = Math.max(knownMaxRound, getEstimatedLatestRound());
+  // '다음 회차' 링크는 실제 데이터가 있는 회차까지만 (추첨 전·데이터 반영 전 회차로 가는 404 링크 방지)
+  const maxRound = getLatestRound(allData)?.round ?? round;
 
   const jsonLd = {
     '@context': 'https://schema.org',

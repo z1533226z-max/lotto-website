@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { MEGA_MILLIONS, FAQ_MEGA_MILLIONS, MEGA_MILLIONS_OVERALL_ODDS } from '@/data/usLottoData';
 
 export const metadata: Metadata = {
@@ -49,32 +48,32 @@ export default function MegaMillionsPage() {
       </p>
       <p>
         See the full prize-tier breakdown:{' '}
-        <Link href="/us/mega-millions/odds">Mega Millions Prize Odds →</Link>
+        <a href="/us/mega-millions/odds">Mega Millions Prize Odds →</a>
       </p>
 
       <h2>Tools</h2>
       <ul>
         <li>
-          <Link href="/us/mega-millions/generator">Mega Millions Number Generator</Link> — random pick respecting 5/70 + 1/24
+          <a href="/us/mega-millions/generator">Mega Millions Number Generator</a> — random pick respecting 5/70 + 1/24
         </li>
         <li>
-          <Link href="/us/mega-millions/odds">Prize Odds & Tiers</Link> — every match level, exact odds
+          <a href="/us/mega-millions/odds">Prize Odds & Tiers</a> — every match level, exact odds
         </li>
       </ul>
 
       <h2>Mega Millions Guides</h2>
       <ul>
         <li>
-          <Link href="/us/guide/mega-millions-strategy">Mega Millions Strategy — smart ways to play in 2026</Link>
+          <a href="/us/guide/mega-millions-strategy">Mega Millions Strategy — smart ways to play in 2026</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — which game has better odds?</Link>
+          <a href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — which game has better odds?</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</Link>
+          <a href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</a>
         </li>
         <li>
-          <Link href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</Link>
+          <a href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</a>
         </li>
       </ul>
 

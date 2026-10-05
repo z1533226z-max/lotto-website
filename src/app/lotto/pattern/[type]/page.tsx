@@ -5,7 +5,7 @@ import type { LottoResult } from '@/types/lotto';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import PatternAnalysisContent from './PatternAnalysisContent';
 import { getPatternFaqItems } from './patternFaq';
-import { buildFaqPageJsonLd } from '@/lib/seo';
+import { buildFaqPageJsonLd, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { type: string };
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const allData = await getAllLottoData();
   const totalRounds = allData.length;
   const title = `로또 ${pattern.name} - ${totalRounds}회 데이터 기반 | 로또킹`;
-  const description = `${pattern.desc}. 총 ${totalRounds}회 추첨 데이터를 기반으로 당첨 확률이 높은 패턴을 분석합니다.`;
+  const description = `${pattern.desc}. 총 ${totalRounds}회 추첨 데이터를 기반으로 자주 나온 패턴과 출현 비율을 분석합니다.`;
 
   return {
     title,
@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 ${pattern.name}`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/pattern/${pattern.type}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }

@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import MonthlyArchiveContent from './MonthlyArchiveContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { yearMonth: string };
@@ -59,6 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${year}년 ${month}월 로또 당첨번호 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/monthly/${params.yearMonth}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -147,20 +150,22 @@ export default async function MonthlyArchivePage({ params }: Props) {
         { label: `${MONTH_NAMES[month]}` },
       ]} />
 
-      <MonthlyArchiveContent
-        year={year}
-        month={month}
-        roundCount={monthData.length}
-        rounds={rounds}
-        numberFrequency={numberFrequency}
-        avgFirstPrize={avgFirstPrize}
-        maxFirstPrize={maxFirstPrize}
-        totalFirstWinners={totalFirstWinners}
-        oddCount={oddCount}
-        evenCount={evenCount}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <MonthlyArchiveContent
+          year={year}
+          month={month}
+          roundCount={monthData.length}
+          rounds={rounds}
+          numberFrequency={numberFrequency}
+          avgFirstPrize={avgFirstPrize}
+          maxFirstPrize={maxFirstPrize}
+          totalFirstWinners={totalFirstWinners}
+          oddCount={oddCount}
+          evenCount={evenCount}
+          prevMonth={prevMonth}
+          nextMonth={nextMonth}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

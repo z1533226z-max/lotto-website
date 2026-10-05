@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
@@ -8,15 +7,20 @@ import type { Metadata } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { generateWeeklyAnalysisForRound } from '@/lib/weeklyAnalysisGenerator';
 import LottoBall from '@/components/lotto/LottoBall';
-import { NAVER_ONLY_ROBOTS, isIndexableWeeklyAnalysis } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, isIndexableWeeklyAnalysis, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400; // 24시간 캐시 (아카이브는 변하지 않음)
 
 type Props = { params: Promise<{ round: string }> };
 
+/** 앞자리 0·문자 없는 양의 정수만 허용 (그 외는 NaN → notFound) */
+function parseRoundParam(raw: string): number {
+  return /^[1-9]\d{0,4}$/.test(raw) ? Number(raw) : NaN;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { round: roundStr } = await params;
-  const round = parseInt(roundStr, 10);
+  const round = parseRoundParam(roundStr);
   const allData = await getAllLottoData();
   const latestRound = allData[allData.length - 1]?.round ?? 0;
   // 최신 52회만 구글/빙 색인, 그 이전 아카이브는 네이버 전용
@@ -28,13 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${round}회 주간 로또 분석 | 로또킹`,
       description: `${round}회 로또 당첨번호 심층 분석 - 핫넘버, 콜드넘버, 패턴 분석!`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
 
 export default async function WeeklyAnalysisRoundPage({ params }: Props) {
   const { round: roundStr } = await params;
-  const round = parseInt(roundStr, 10);
+  const round = parseRoundParam(roundStr);
 
   if (isNaN(round) || round < 11) return notFound();
 
@@ -62,30 +67,30 @@ export default async function WeeklyAnalysisRoundPage({ params }: Props) {
       {/* 이전/다음 네비게이션 */}
       <div className="flex justify-between items-center mt-4 mb-2">
         {hasPrev ? (
-          <Link
+          <a
             href={`/lotto/analysis/weekly/${round - 1}`}
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             <ChevronLeft size={16} /> {round - 1}회
-          </Link>
+          </a>
         ) : <span />}
         {hasNext ? (
-          <Link
+          <a
             href={`/lotto/analysis/weekly/${round + 1}`}
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             {round + 1}회 <ChevronRight size={16} />
-          </Link>
+          </a>
         ) : (
-          <Link
+          <a
             href="/lotto/analysis/weekly"
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             최신 분석 <ArrowRight size={14} />
-          </Link>
+          </a>
         )}
       </div>
 
@@ -184,27 +189,27 @@ export default async function WeeklyAnalysisRoundPage({ params }: Props) {
 
       {/* 관련 링크 */}
       <div className="flex flex-wrap gap-3 mt-6 mb-4">
-        <Link
+        <a
           href={`/lotto/${analysis.round}`}
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           {analysis.round}회 상세보기 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/statistics"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           전체 통계 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/analysis/weekly"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--accent)', color: '#fff', border: 'none' }}
         >
           최신 주간분석 <ArrowRight size={14} />
-        </Link>
+        </a>
       </div>
 
       {/* JSON-LD */}

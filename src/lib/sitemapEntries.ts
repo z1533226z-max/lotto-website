@@ -61,7 +61,7 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('/lotto/list', latestDraw, 'weekly', 0.9),
     entry('/lotto/recent', latestDraw, 'weekly', 0.8),
     entry('/lotto/statistics', latestDraw, 'weekly', 0.8),
-    entry('/lotto/frequency', latestDraw, 'weekly', 0.7),
+    // /lotto/frequency: /lotto/frequency/all로 307 리다이렉트만 하는 주소라 제외 (frequency/all은 아래 frequency 목록에 있음)
     entry('/lotto/rankings', latestDraw, 'weekly', 0.7),
     entry('/lotto/analysis/weekly', latestDraw, 'weekly', 0.8),
     entry('/lotto/ai-hits', latestDraw, 'weekly', 0.7),
@@ -74,7 +74,7 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('/lotto/mbti', D.mbti, 'monthly', 0.7),
     entry('/lotto/zodiac', D.zodiac, 'monthly', 0.7),
     entry('/lotto/blood-type', D.bloodType, 'monthly', 0.7),
-    entry('/community', D.tools, 'daily', 0.6),
+    // /community: 게시글이 거의 없어 사이트맵에서 제외 (페이지는 그대로 유지, noindex 추가 안 함)
     entry('/terms', D.legal, 'yearly', 0.3),
     entry('/privacy', D.legal, 'yearly', 0.3),
   ];

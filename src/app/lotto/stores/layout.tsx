@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '당첨 판매점 - 로또킹 | 1등 2등 당첨 판매점 조회',
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '당첨 판매점 - 로또킹',
     description: '로또 1등, 2등 당첨 판매점 정보와 지역별 통계',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

@@ -1,6 +1,7 @@
 // src/app/terms/page.tsx
 import { Metadata } from 'next';
 import SectionFrame from '@/components/ui/SectionFrame';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '이용약관 - 로또 AI 예측',
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     url: 'https://lotto.gon.ai.kr/terms',
     siteName: '로또 AI 예측',
     type: 'website',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
-import { getAllLottoData } from '@/lib/dataFetcher';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
+import { formatCurrency, formatDate, formatDrawMonthDayKo } from '@/lib/utils';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
@@ -8,17 +9,25 @@ import Card from '@/components/ui/Card';
 
 export const revalidate = 3600; // ISR: 1시간마다 재생성
 
-export const metadata: Metadata = {
-  title: '최근 로또 당첨번호 - 최근 10회 추첨 결과 | 로또킹',
-  description: '로또 6/45 최근 10회차 당첨번호를 한눈에 확인하세요. 최신 당첨번호, 보너스번호, 1등 당첨금 정보를 제공합니다.',
-  alternates: {
-    canonical: '/lotto/recent',
-  },
-  openGraph: {
-    title: '최근 로또 당첨번호 | 로또킹',
-    url: 'https://lotto.gon.ai.kr/lotto/recent',
-  },
-};
+// 제목에 데이터상 최신 회차·추첨일을 넣는다 (매주 자동 갱신)
+export async function generateMetadata(): Promise<Metadata> {
+  const latest = getLatestRound(await getAllLottoData());
+  const latestLabel = latest
+    ? ` - 최신 ${latest.round}회(${formatDrawMonthDayKo(latest.drawDate)} 추첨)`
+    : '';
+  return {
+    title: `최근 로또 당첨번호 10회${latestLabel} | 로또킹`,
+    description: '로또 6/45 최근 10회차 당첨번호를 한눈에 확인하세요. 최신 당첨번호, 보너스번호, 1등 당첨금 정보를 제공합니다.',
+    alternates: {
+      canonical: '/lotto/recent',
+    },
+    openGraph: {
+      title: `최근 로또 당첨번호${latestLabel} | 로또킹`,
+      url: 'https://lotto.gon.ai.kr/lotto/recent',
+      images: DEFAULT_OG_IMAGES,
+    },
+  };
+}
 
 export default async function LottoRecentPage() {
   const allData = await getAllLottoData();

@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
 
 interface NumberStat {
   number: number;
@@ -194,7 +194,7 @@ export default function MbtiContent({
         <h2 className="text-xl font-bold text-white mb-4">로또 MBTI 궁합</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {bestPair && (
-            <Link
+            <a
               href={`/lotto/mbti/${bestPair.type.toLowerCase()}`}
               className="block bg-green-900/20 rounded-lg p-4 border border-green-800/40 hover:border-green-600 transition-colors"
             >
@@ -203,10 +203,10 @@ export default function MbtiContent({
                 {bestPair.emoji} {bestPair.type} {bestPair.name}
               </div>
               <div className="text-sm text-gray-400 mt-1">함께 구매하면 시너지!</div>
-            </Link>
+            </a>
           )}
           {worstPair && (
-            <Link
+            <a
               href={`/lotto/mbti/${worstPair.type.toLowerCase()}`}
               className="block bg-red-900/20 rounded-lg p-4 border border-red-800/40 hover:border-red-600 transition-colors"
             >
@@ -215,7 +215,7 @@ export default function MbtiContent({
                 {worstPair.emoji} {worstPair.type} {worstPair.name}
               </div>
               <div className="text-sm text-gray-400 mt-1">번호 선택 스타일이 달라요</div>
-            </Link>
+            </a>
           )}
         </div>
       </section>
@@ -228,7 +228,7 @@ export default function MbtiContent({
           </h2>
           <div className="space-y-3">
             {matchedRounds.map(mr => (
-              <Link
+              <a
                 key={mr.round}
                 href={`/lotto/${mr.round}`}
                 className="block bg-gray-700/40 rounded-lg p-4 hover:bg-gray-700/60 transition-colors"
@@ -269,7 +269,7 @@ export default function MbtiContent({
                     {mr.bonus}
                   </span>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </section>
@@ -294,25 +294,27 @@ export default function MbtiContent({
 
       {/* 네비게이션 */}
       <nav className="flex justify-between items-center py-4">
-        <Link
+        <a
           href={`/lotto/mbti/${prevType.toLowerCase()}`}
           className="text-sm text-gray-400 hover:text-white transition-colors"
         >
           ← {prevType}
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/mbti"
           className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
         >
           전체 MBTI 보기
-        </Link>
-        <Link
+        </a>
+        <a
           href={`/lotto/mbti/${nextType.toLowerCase()}`}
           className="text-sm text-gray-400 hover:text-white transition-colors"
         >
           {nextType} →
-        </Link>
+        </a>
       </nav>
+
+      <SajuYearlyLink />
 
       {/* 다른 분석 더보기 (내부링크) */}
       <CrossSectionLinks current="number" className="bg-gray-800/60 rounded-xl p-5 border border-gray-700" />

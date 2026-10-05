@@ -3,13 +3,16 @@
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import type { DreamKeyword } from '@/data/dreamNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import SajuYearlyLink, { animalKeyFromKoreanName } from '@/components/promotion/SajuYearlyLink';
+
+/** 상세 화면에 실제로 쓰는 필드만 (서버 → 클라이언트 직렬화 크기 최소화) */
+export type DreamView = Omit<DreamKeyword, 'metaTitle' | 'metaDescription'>;
 
 interface Props {
-  dream: DreamKeyword;
-  sameCategoryDreams: DreamKeyword[];
-  featuredDreams: DreamKeyword[];
-  allDreams: DreamKeyword[];
-  categories: string[];
+  dream: DreamView;
+  sameCategoryDreams: Pick<DreamKeyword, 'keyword' | 'numbers'>[];
+  featuredDreams: Pick<DreamKeyword, 'keyword' | 'category' | 'numbers'>[];
+  categoryGroups: { category: string; keywords: string[] }[];
 }
 
 const categoryEmoji: Record<string, string> = {
@@ -29,7 +32,7 @@ const fortuneLabel: Record<string, { text: string; color: string; bg: string }> 
   '주의': { text: '주의', color: '#c00', bg: 'rgba(204,0,0,0.1)' },
 };
 
-export default function DreamDetailContent({ dream, sameCategoryDreams, featuredDreams, allDreams, categories }: Props) {
+export default function DreamDetailContent({ dream, sameCategoryDreams, featuredDreams, categoryGroups }: Props) {
   const fortune = fortuneLabel[dream.fortune] || fortuneLabel['보통'];
 
   return (
@@ -122,7 +125,7 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
           />
           <TipItem
             title="반복되는 꿈에 주목하세요"
-            desc={`${dream.keyword} 꿈이 반복된다면 잠재의식이 강하게 보내는 메시지입니다. 이때 로또를 구매하면 적중률이 높아질 수 있습니다.`}
+            desc={`${dream.keyword} 꿈이 반복된다면 잠재의식이 강하게 보내는 메시지로 풀이합니다. 꿈 내용과 추천번호를 함께 기록해 두고 재미로 활용해 보세요.`}
           />
         </div>
       </div>
@@ -216,30 +219,30 @@ export default function DreamDetailContent({ dream, sameCategoryDreams, featured
       {/* 전체 카테고리 */}
       <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}>
         <h2 className="text-xl font-bold mb-4">📂 전체 꿈해몽 카테고리</h2>
-        {categories.map(cat => {
-          const catDreams = allDreams.filter(d => d.category === cat);
-          return (
-            <div key={cat} className="mb-4">
-              <h3 className="font-semibold mb-2">{categoryEmoji[cat]} {cat} ({catDreams.length}개)</h3>
-              <div className="flex flex-wrap gap-2">
-                {catDreams.map(d => (
-                  <a
-                    key={d.keyword}
-                    href={`/lotto/dream/${encodeURIComponent(d.keyword)}`}
-                    className={`px-3 py-1 rounded-full text-sm transition-all hover:scale-105 ${d.keyword === dream.keyword ? 'font-bold' : ''}`}
-                    style={{
-                      backgroundColor: d.keyword === dream.keyword ? '#D36135' : 'var(--border)',
-                      color: d.keyword === dream.keyword ? '#fff' : 'var(--text)',
-                    }}
-                  >
-                    {d.keyword}
-                  </a>
-                ))}
-              </div>
+        {categoryGroups.map(({ category: cat, keywords }) => (
+          <div key={cat} className="mb-4">
+            <h3 className="font-semibold mb-2">{categoryEmoji[cat]} {cat} ({keywords.length}개)</h3>
+            <div className="flex flex-wrap gap-2">
+              {keywords.map(keyword => (
+                <a
+                  key={keyword}
+                  href={`/lotto/dream/${encodeURIComponent(keyword)}`}
+                  className={`px-3 py-1 rounded-full text-sm transition-all hover:scale-105 ${keyword === dream.keyword ? 'font-bold' : ''}`}
+                  style={{
+                    backgroundColor: keyword === dream.keyword ? '#D36135' : 'var(--border)',
+                    color: keyword === dream.keyword ? '#fff' : 'var(--text)',
+                  }}
+                >
+                  {keyword}
+                </a>
+              ))}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
+
+      {/* 띠 이름 꿈(쥐·소·…·돼지)이면 그 띠 운세, 아니면 띠별 운세 목록 */}
+      <SajuYearlyLink animal={dream.category === '동물' ? animalKeyFromKoreanName(dream.keyword) : undefined} />
 
       <CrossSectionLinks current="dream" theme="light" />
     </div>

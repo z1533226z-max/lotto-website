@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import BirthdayContent from './BirthdayContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { date: string };
@@ -140,6 +142,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${month}월 ${day}일 생일 행운번호 - ${zodiac.name}`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/birthday/${params.date}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -233,22 +236,24 @@ export default async function BirthdayPage({ params }: Props) {
         { label: `${month}월 ${day}일` },
       ]} />
 
-      <BirthdayContent
-        month={month}
-        day={day}
-        numbers={numbers}
-        zodiac={{ name: zodiac.name, emoji: zodiac.emoji, element: zodiac.element, trait: zodiac.trait }}
-        luckyColor={luckyColor}
-        luckyDirection={luckyDirection}
-        luckyTime={luckyTime}
-        fortuneMessage={fortuneMessage}
-        lifePath={lifePathSum}
-        numberStats={numberStats}
-        matchedRounds={matchedRounds}
-        totalRounds={totalRounds}
-        prevDate={prevDate}
-        nextDate={nextDate}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <BirthdayContent
+          month={month}
+          day={day}
+          numbers={numbers}
+          zodiac={{ name: zodiac.name, emoji: zodiac.emoji, element: zodiac.element, trait: zodiac.trait }}
+          luckyColor={luckyColor}
+          luckyDirection={luckyDirection}
+          luckyTime={luckyTime}
+          fortuneMessage={fortuneMessage}
+          lifePath={lifePathSum}
+          numberStats={numberStats}
+          matchedRounds={matchedRounds}
+          totalRounds={totalRounds}
+          prevDate={prevDate}
+          nextDate={nextDate}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

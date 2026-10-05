@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
   title: "AI 로또 번호 생성기 - 무료 당첨번호 예측 분석 | 로또킹",
   description: "AI가 분석한 이번 주 로또 예상번호를 무료로 확인하세요. 1,200회+ 당첨 데이터 기반 패턴 분석, 핫/콜드 번호, 번호 생성기 제공.",
-  keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측', '인공지능', '딥러닝'],
+  keywords: ['로또', '로또번호', 'AI추천', '당첨번호', '로또분석', '로또통계', '번호생성', '로또예측', '인공지능'],
   authors: [{ name: 'Lotto AI' }],
   creator: 'Lotto AI',
   publisher: 'Gon AI',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'AI 로또 번호 추천 - 무료 번호 예측 | 로또킹',
-    description: 'AI 로또 번호 추천! 1,200회+ 딥러닝 분석으로 이번주 고확률 번호 5세트 무료 제공. 지금 확인!',
+    description: 'AI 로또 번호 추천! 1,200회+ 역대 당첨 데이터 통계 분석으로 이번주 추천 번호 5세트 무료 제공. 지금 확인!',
     // 이미지는 opengraph-image.tsx에서 동적 생성
   },
   robots: {

@@ -17,6 +17,15 @@ export const CONTENT_DATES = {
   legal: '2026-03-22', // 이용약관·개인정보처리방침
 } as const;
 
+/**
+ * 하위 페이지 기본 OG 이미지 (루트 app/opengraph-image.tsx가 만드는 1200x630 PNG, CDN 캐시됨).
+ * Next.js는 페이지·레이아웃이 openGraph를 새로 정의하면 상위의 images를 물려주지 않으므로
+ * openGraph를 정의하는 곳마다 images에 이 값을 넣는다. (상대 경로는 루트 metadataBase로 절대 URL이 됨)
+ */
+export const DEFAULT_OG_IMAGES = [
+  { url: '/opengraph-image', width: 1200, height: 630, alt: '로또킹 - AI 로또번호 추천 서비스' },
+];
+
 /** 구글/빙 색인을 유지할 최신 주간분석 회차 수 */
 export const WEEKLY_ANALYSIS_INDEXABLE_COUNT = 52;
 

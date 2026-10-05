@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import {
   generateDailyFortune,
   formatDateKorean,
@@ -12,7 +11,8 @@ import {
 } from '@/lib/dailyFortuneGenerator';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 // ISR: 1시간 캐시 (오늘 페이지), 과거 페이지는 영구 캐시
 export const revalidate = 3600;
@@ -134,6 +134,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${formatted} 띠별 로또 행운번호`,
       description: `사주 오행 분석 기반 12띠별 행운번호. 내 띠의 오늘 행운번호를 확인하세요!`,
       url: `https://lotto.gon.ai.kr/lotto/daily-fortune/${date}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -205,7 +206,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
       {/* 날짜 네비게이션 */}
       <div className="flex items-center justify-between mb-6">
         {canGoPrev ? (
-          <Link
+          <a
             href={`/lotto/daily-fortune/${prevStr}`}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{
@@ -215,7 +216,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             ← 이전
-          </Link>
+          </a>
         ) : (
           <span className="px-4 py-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
             ← 이전
@@ -229,7 +230,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             오늘
           </span>
         ) : (
-          <Link
+          <a
             href="/lotto/daily-fortune"
             className="px-3 py-1 rounded-full text-xs font-medium"
             style={{
@@ -239,10 +240,10 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             오늘로
-          </Link>
+          </a>
         )}
         {canGoNext ? (
-          <Link
+          <a
             href={`/lotto/daily-fortune/${nextStr}`}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{
@@ -252,7 +253,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             다음 →
-          </Link>
+          </a>
         ) : (
           <span className="px-4 py-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
             다음 →
@@ -303,6 +304,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             );
           })}
         </div>
+        <SajuYearlyLink className="text-sm text-center mt-4" />
       </div>
 
       {/* 안내 */}
@@ -341,7 +343,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
           { href: '/lotto/ai-hits', label: '🤖 AI 추천번호', desc: '패턴 분석 기반' },
           { href: '/lotto/statistics', label: '📊 번호 통계', desc: '역대 전체 분석' },
         ].map((link) => (
-          <Link
+          <a
             key={link.href}
             href={link.href}
             className="rounded-xl p-3 text-center transition-all hover:scale-[1.02]"
@@ -357,7 +359,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
               {link.desc}
             </div>
-          </Link>
+          </a>
         ))}
       </div>
     </>

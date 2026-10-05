@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '로또 당첨금 세금 계산기 - 실수령액 자동 계산 | 로또킹',
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '로또 당첨금 세금 계산기 - 실수령액 자동 계산 | 로또킹',
     description: '로또 당첨금 세금을 자동 계산! 구간별 세율 적용, 실수령액 즉시 확인.',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

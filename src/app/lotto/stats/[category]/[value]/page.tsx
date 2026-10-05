@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import StatsDetailContent from './StatsDetailContent';
-import { NAVER_ONLY_ROBOTS, buildFaqPageJsonLd, type FaqItem } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, buildFaqPageJsonLd, type FaqItem, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { category: string; value: string };
@@ -99,6 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: cfg.title(params.value),
       description,
       url: `https://lotto.gon.ai.kr/lotto/stats/${params.category}/${params.value}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -191,22 +194,24 @@ export default async function StatsDetailPage({ params }: Props) {
         { label: valueName },
       ]} />
 
-      <StatsDetailContent
-        category={params.category}
-        value={params.value}
-        categoryName={cfg.name}
-        valueName={valueName}
-        patternSlug={cfg.patternSlug}
-        totalRounds={totalRounds}
-        matchCount={matchCount}
-        percentage={pct}
-        avgGap={avgGap}
-        roundsSinceLast={roundsSinceLast}
-        recentMatches={recentMatches}
-        yearlyData={yearlyData}
-        otherValues={otherValues}
-        faqItems={faqItems}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <StatsDetailContent
+          category={params.category}
+          value={params.value}
+          categoryName={cfg.name}
+          valueName={valueName}
+          patternSlug={cfg.patternSlug}
+          totalRounds={totalRounds}
+          matchCount={matchCount}
+          percentage={pct}
+          avgGap={avgGap}
+          roundsSinceLast={roundsSinceLast}
+          recentMatches={recentMatches}
+          yearlyData={yearlyData}
+          otherValues={otherValues}
+          faqItems={faqItems}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

@@ -4,7 +4,10 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { BLOOD_TYPE_IDS, BLOOD_TYPE_PROFILES, getBloodTypeProfile } from '@/data/bloodTypeLotto';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import BloodTypeContent from './BloodTypeContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { type: string };
@@ -31,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${profile.name} ${profile.emoji} 로또 행운번호 추천`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/blood-type/${params.type}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -118,17 +122,19 @@ export default async function BloodTypePage({ params }: Props) {
         ]}
       />
 
-      <BloodTypeContent
-        profile={profile}
-        numberStats={numberStats}
-        avoidStats={avoidStats}
-        matchedRounds={matchedRounds}
-        totalRounds={totalRounds}
-        bestPair={bestPairProfile ? { id: bestPairProfile.id, name: bestPairProfile.name, emoji: bestPairProfile.emoji } : null}
-        worstPair={worstPairProfile ? { id: worstPairProfile.id, name: worstPairProfile.name, emoji: worstPairProfile.emoji } : null}
-        prevType={{ id: prevProfile.id, name: prevProfile.name }}
-        nextType={{ id: nextProfile.id, name: nextProfile.name }}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <BloodTypeContent
+          profile={profile}
+          numberStats={numberStats}
+          avoidStats={avoidStats}
+          matchedRounds={matchedRounds}
+          totalRounds={totalRounds}
+          bestPair={bestPairProfile ? { id: bestPairProfile.id, name: bestPairProfile.name, emoji: bestPairProfile.emoji } : null}
+          worstPair={worstPairProfile ? { id: worstPairProfile.id, name: worstPairProfile.name, emoji: worstPairProfile.emoji } : null}
+          prevType={{ id: prevProfile.id, name: prevProfile.name }}
+          nextType={{ id: nextProfile.id, name: nextProfile.name }}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

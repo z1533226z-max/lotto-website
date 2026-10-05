@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
@@ -71,17 +70,17 @@ export default function MonthlyArchiveContent({
       {/* Month navigation */}
       <div className="flex justify-between items-center">
         {prevMonth ? (
-          <Link href={`/lotto/monthly/${prevMonth}`} className="text-blue-400 hover:text-blue-300 text-sm">
+          <a href={`/lotto/monthly/${prevMonth}`} className="text-blue-400 hover:text-blue-300 text-sm">
             ← {parseYM(prevMonth).year}년 {MONTH_NAMES[parseYM(prevMonth).month]}
-          </Link>
+          </a>
         ) : <div />}
-        <Link href={`/lotto/year/${year}`} className="text-gray-400 hover:text-white text-sm">
+        <a href={`/lotto/year/${year}`} className="text-gray-400 hover:text-white text-sm">
           {year}년 전체 보기
-        </Link>
+        </a>
         {nextMonth ? (
-          <Link href={`/lotto/monthly/${nextMonth}`} className="text-blue-400 hover:text-blue-300 text-sm">
+          <a href={`/lotto/monthly/${nextMonth}`} className="text-blue-400 hover:text-blue-300 text-sm">
             {parseYM(nextMonth).year}년 {MONTH_NAMES[parseYM(nextMonth).month]} →
-          </Link>
+          </a>
         ) : <div />}
       </div>
 
@@ -119,7 +118,7 @@ export default function MonthlyArchiveContent({
           <h2 className="text-lg font-semibold text-white mb-3">🔥 이달의 핫넘버</h2>
           <div className="space-y-2">
             {top5.map(({ number, count }) => (
-              <Link key={number} href={`/lotto/number/${number}`} className="flex items-center justify-between hover:bg-gray-700/30 rounded-lg p-2 transition-colors">
+              <a key={number} href={`/lotto/number/${number}`} className="flex items-center justify-between hover:bg-gray-700/30 rounded-lg p-2 transition-colors">
                 <div className="flex items-center gap-3">
                   <LottoNumbers numbers={[number]} size="sm" />
                   <span className="text-gray-300">{number}번</span>
@@ -132,7 +131,7 @@ export default function MonthlyArchiveContent({
                     <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${(count / maxCount) * 100}%` }} />
                   </div>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -144,9 +143,9 @@ export default function MonthlyArchiveContent({
               <p className="text-sm text-gray-400 mb-3">이달 미출현 번호 ({notAppeared.length}개)</p>
               <div className="flex flex-wrap gap-2">
                 {notAppeared.map(n => (
-                  <Link key={n} href={`/lotto/number/${n}`} className="hover:scale-110 transition-transform">
+                  <a key={n} href={`/lotto/number/${n}`} className="hover:scale-110 transition-transform">
                     <LottoNumbers numbers={[n]} size="sm" />
-                  </Link>
+                  </a>
                 ))}
               </div>
             </>
@@ -163,7 +162,7 @@ export default function MonthlyArchiveContent({
         </h2>
         <div className="space-y-3">
           {rounds.map(r => (
-            <Link
+            <a
               key={r.round}
               href={`/lotto/${r.round}`}
               className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-900/50 rounded-lg p-3 hover:bg-gray-700/30 transition-colors gap-2"
@@ -178,7 +177,7 @@ export default function MonthlyArchiveContent({
                 <span>{r.drawDate}</span>
                 {r.firstPrize > 0 && <span className="text-green-400">{formatMoney(r.firstPrize)}</span>}
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -190,7 +189,7 @@ export default function MonthlyArchiveContent({
           {numberFrequency.map(({ number, count }) => {
             const intensity = count > 0 ? Math.max(0.2, count / maxCount) : 0;
             return (
-              <Link
+              <a
                 key={number}
                 href={`/lotto/number/${number}`}
                 className="relative aspect-square flex flex-col items-center justify-center rounded-lg text-xs transition-transform hover:scale-110"
@@ -202,7 +201,7 @@ export default function MonthlyArchiveContent({
               >
                 <span className={count > 0 ? 'font-bold text-white' : 'text-gray-500'}>{number}</span>
                 <span className={`text-[10px] ${count > 0 ? 'text-yellow-200' : 'text-gray-600'}`}>{count}</span>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -213,28 +212,28 @@ export default function MonthlyArchiveContent({
       <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
         <h2 className="text-lg font-semibold text-white mb-3">🔗 관련 분석</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <Link href={`/lotto/year/${year}`} className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
+          <a href={`/lotto/year/${year}`} className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
             <div className="text-sm text-gray-300">{year}년 전체</div>
             <div className="text-xs text-gray-500">연도별 분석</div>
-          </Link>
-          <Link href="/lotto/statistics" className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
+          </a>
+          <a href="/lotto/statistics" className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
             <div className="text-sm text-gray-300">전체 통계</div>
             <div className="text-xs text-gray-500">번호 분석</div>
-          </Link>
+          </a>
           {top5[0] && (
-            <Link href={`/lotto/number/${top5[0].number}`} className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
+            <a href={`/lotto/number/${top5[0].number}`} className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors">
               <div className="text-sm text-yellow-400">{top5[0].number}번 분석</div>
               <div className="text-xs text-gray-500">이달의 핫넘버</div>
-            </Link>
+            </a>
           )}
           {top5.length >= 2 && (
-            <Link
+            <a
               href={`/lotto/pair/${Math.min(top5[0].number, top5[1].number)}-${Math.max(top5[0].number, top5[1].number)}`}
               className="bg-gray-900/50 rounded-lg p-3 text-center hover:bg-gray-700/30 transition-colors"
             >
               <div className="text-sm text-blue-400">{top5[0].number}+{top5[1].number} 조합</div>
               <div className="text-xs text-gray-500">번호 궁합</div>
-            </Link>
+            </a>
           )}
         </div>
       </div>
@@ -242,17 +241,17 @@ export default function MonthlyArchiveContent({
       {/* Bottom navigation */}
       <div className="flex justify-between items-center pt-4 border-t border-gray-700/50">
         {prevMonth ? (
-          <Link href={`/lotto/monthly/${prevMonth}`} className="text-blue-400 hover:text-blue-300">
+          <a href={`/lotto/monthly/${prevMonth}`} className="text-blue-400 hover:text-blue-300">
             ← {parseYM(prevMonth).year}년 {MONTH_NAMES[parseYM(prevMonth).month]}
-          </Link>
+          </a>
         ) : <div />}
-        <Link href="/lotto/list" className="text-gray-400 hover:text-white text-sm">
+        <a href="/lotto/list" className="text-gray-400 hover:text-white text-sm">
           전체 목록 →
-        </Link>
+        </a>
         {nextMonth ? (
-          <Link href={`/lotto/monthly/${nextMonth}`} className="text-blue-400 hover:text-blue-300">
+          <a href={`/lotto/monthly/${nextMonth}`} className="text-blue-400 hover:text-blue-300">
             {parseYM(nextMonth).year}년 {MONTH_NAMES[parseYM(nextMonth).month]} →
-          </Link>
+          </a>
         ) : <div />}
       </div>
 

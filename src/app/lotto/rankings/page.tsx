@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 3600; // ISR: 1시간마다 재생성
 
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '역대 로또 최고 당첨금 순위 | 로또킹',
     url: 'https://lotto.gon.ai.kr/lotto/rankings',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
@@ -82,13 +83,13 @@ export default async function LottoRankingsPage() {
                   {idx + 1}위
                 </span>
               </div>
-              <Link
+              <a
                 href={`/lotto/${item.round}`}
                 className="text-lg font-bold hover:text-primary transition-colors block"
                 style={{ color: 'var(--text)' }}
               >
                 {item.round}회
-              </Link>
+              </a>
               <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{item.drawDate}</p>
               <div className="py-2">
                 <LottoNumbers numbers={item.numbers} bonusNumber={item.bonusNumber} size="xs" />
@@ -162,12 +163,12 @@ export default async function LottoRankingsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5">
-                      <Link
+                      <a
                         href={`/lotto/${item.round}`}
                         className="text-primary hover:underline font-semibold"
                       >
                         {item.round}회
-                      </Link>
+                      </a>
                     </td>
                     <td className="px-4 py-3.5 hidden md:table-cell" style={{ color: 'var(--text-secondary)' }}>
                       {item.drawDate}

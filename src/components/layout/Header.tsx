@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import ThemeToggle from '@/components/ui/ThemeToggle';
@@ -16,7 +15,6 @@ const mainNavLinks = [
   { name: '통계분석', path: '/lotto/statistics' },
   { name: '번호분석', path: '/lotto/number/1' },
   { name: '판매점', path: '/lotto/stores' },
-  { name: '커뮤니티', path: '/community' },
 ];
 
 const toolLinks = [
@@ -119,18 +117,18 @@ const Header: React.FC = () => {
           >
             <div className="flex items-center justify-between h-14 px-4 lg:px-6">
               {/* Logo */}
-              <Link href="/" className="flex items-center gap-2 group shrink-0">
+              <a href="/" className="flex items-center gap-2 group shrink-0">
                 <Dices
                   className="w-6 h-6 text-primary transition-transform duration-500 group-hover:rotate-12"
                   style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
                 />
                 <span className="text-lg font-bold gradient-text">로또킹</span>
-              </Link>
+              </a>
 
               {/* Desktop Navigation */}
               <nav className="hidden lg:flex items-center gap-0.5">
                 {mainNavLinks.map((link) => (
-                  <Link
+                  <a
                     key={link.path}
                     href={link.path}
                     className={cn(
@@ -146,7 +144,7 @@ const Header: React.FC = () => {
                     }}
                   >
                     {link.name}
-                  </Link>
+                  </a>
                 ))}
 
                 {/* Tools dropdown */}
@@ -191,7 +189,7 @@ const Header: React.FC = () => {
                     >
                       <div className="rounded-[calc(1rem-0.375rem)] overflow-hidden">
                         {toolLinks.map((link) => (
-                          <Link
+                          <a
                             key={link.path}
                             href={link.path}
                             className={cn(
@@ -212,7 +210,7 @@ const Header: React.FC = () => {
                               <div className="text-sm font-medium">{link.name}</div>
                               <div className="text-[11px] mt-0.5 opacity-50">{link.desc}</div>
                             </div>
-                          </Link>
+                          </a>
                         ))}
                       </div>
                     </div>
@@ -267,23 +265,23 @@ const Header: React.FC = () => {
                           </div>
                           <div className="h-px bg-[var(--border)] mx-2 mb-1" />
                           {auth.user.isAdmin && (
-                            <Link
+                            <a
                               href="/admin"
                               onClick={() => setUserMenuOpen(false)}
                               className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
                               style={{ color: '#EF4444' }}
                             >
                               <ShieldCheck className="w-4 h-4" /> 관리자
-                            </Link>
+                            </a>
                           )}
-                          <Link
+                          <a
                             href="/mypage"
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
                             style={{ color: 'var(--text)' }}
                           >
                             <ClipboardList className="w-4 h-4" /> 마이페이지
-                          </Link>
+                          </a>
                           <button
                             onClick={() => { auth.logout(); setUserMenuOpen(false); }}
                             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all duration-300 hover:bg-[var(--surface-hover)]"
@@ -375,7 +373,7 @@ const Header: React.FC = () => {
           >
             <nav className="p-2 space-y-0.5">
               {mainNavLinks.map((link, i) => (
-                <Link
+                <a
                   key={link.path}
                   href={link.path}
                   className={cn(
@@ -396,7 +394,7 @@ const Header: React.FC = () => {
                     <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                   )}
                   {link.name}
-                </Link>
+                </a>
               ))}
 
               <div className="h-px bg-[var(--border)] mx-3 my-2" />
@@ -407,7 +405,7 @@ const Header: React.FC = () => {
                 </span>
               </div>
               {toolLinks.map((link) => (
-                <Link
+                <a
                   key={link.path}
                   href={link.path}
                   className={cn(
@@ -425,7 +423,7 @@ const Header: React.FC = () => {
                     <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                   )}
                   {link.name}
-                </Link>
+                </a>
               ))}
 
               {/* Mobile auth */}
@@ -455,9 +453,9 @@ const Header: React.FC = () => {
                         <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>{auth.user.nickname}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Link href="/mypage" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium px-3 py-2 rounded-lg text-primary">
+                        <a href="/mypage" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium px-3 py-2 rounded-lg text-primary">
                           마이페이지
-                        </Link>
+                        </a>
                         <button onClick={() => { auth.logout(); setMobileMenuOpen(false); }} className="text-sm font-medium px-3 py-2 rounded-lg" style={{ color: 'var(--text-secondary)' }}>
                           로그아웃
                         </button>

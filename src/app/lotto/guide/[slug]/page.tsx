@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { GUIDE_ARTICLES, getGuideArticle, getAllGuideSlugs } from '@/data/guideArticles';
 import GuideArticleContent from './GuideArticleContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { slug: string };
@@ -28,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: article.metaTitle,
       description: article.metaDescription,
       url: `https://lotto.gon.ai.kr/lotto/guide/${article.slug}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }

@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import EndingDigitContent from './EndingDigitContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { digit: string };
@@ -59,6 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 끝수 ${digit} 통계 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/ending/${digit}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -181,24 +184,26 @@ export default async function EndingDigitPage({ params }: Props) {
         { label: `끝수 ${digit} 분석` },
       ]} />
 
-      <EndingDigitContent
-        digit={digit}
-        numbers={nums}
-        totalRounds={totalRounds}
-        latestRound={latestRound}
-        numberFreq={numberFreq}
-        totalHits={totalHits}
-        avgPerRound={avgPerRound}
-        recentHits={recentHits}
-        recentAvg={recentAvg}
-        rank={rank}
-        allDigitHits={allDigitHits}
-        topCompanionDigits={topCompanionDigits}
-        recentRounds={recentRounds}
-        multiHitRounds={multiHitRounds}
-        avgGap={avgGap}
-        maxGap={maxGap}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <EndingDigitContent
+          digit={digit}
+          numbers={nums}
+          totalRounds={totalRounds}
+          latestRound={latestRound}
+          numberFreq={numberFreq}
+          totalHits={totalHits}
+          avgPerRound={avgPerRound}
+          recentHits={recentHits}
+          recentAvg={recentAvg}
+          rank={rank}
+          allDigitHits={allDigitHits}
+          topCompanionDigits={topCompanionDigits}
+          recentRounds={recentRounds}
+          multiHitRounds={multiHitRounds}
+          avgGap={avgGap}
+          maxGap={maxGap}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

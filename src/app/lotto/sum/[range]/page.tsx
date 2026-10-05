@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import SumRangeContent from './SumRangeContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { range: string };
@@ -64,6 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 합계 ${range.min}~${range.max} 통계 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/sum/${range.slug}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -194,26 +197,28 @@ export default async function SumRangePage({ params }: Props) {
         { label: `합계 ${range.min}~${range.max}` },
       ]} />
 
-      <SumRangeContent
-        rangeLabel={range.label}
-        min={range.min}
-        max={range.max}
-        totalRounds={totalRounds}
-        latestRound={latestRound}
-        matchCount={matchCount}
-        matchPct={matchPct}
-        avgSum={avgSum}
-        medianSum={medianSum}
-        minSum={minSum}
-        maxSum={maxSum}
-        topNumbers={topNumbers}
-        oddEvenDist={oddEvenDist}
-        highLowDist={highLowDist}
-        recentRounds={recentRounds}
-        allRanges={allRanges}
-        recentMatchCount={recentMatchCount}
-        recentMatchPct={recentMatchPct}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <SumRangeContent
+          rangeLabel={range.label}
+          min={range.min}
+          max={range.max}
+          totalRounds={totalRounds}
+          latestRound={latestRound}
+          matchCount={matchCount}
+          matchPct={matchPct}
+          avgSum={avgSum}
+          medianSum={medianSum}
+          minSum={minSum}
+          maxSum={maxSum}
+          topNumbers={topNumbers}
+          oddEvenDist={oddEvenDist}
+          highLowDist={highLowDist}
+          recentRounds={recentRounds}
+          allRanges={allRanges}
+          recentMatchCount={recentMatchCount}
+          recentMatchPct={recentMatchPct}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

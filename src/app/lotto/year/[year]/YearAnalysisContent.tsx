@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import SectionFrame from '@/components/ui/SectionFrame';
 
@@ -99,13 +98,13 @@ export default function YearAnalysisContent({
                   </div>
                 </div>
               </div>
-              <Link
+              <a
                 href={`/lotto/number/${item.number}`}
                 className="text-xs px-2 py-1 rounded hover:opacity-80"
                 style={{ backgroundColor: 'var(--border)', color: 'var(--text-secondary)' }}
               >
                 상세
-              </Link>
+              </a>
             </div>
           ))}
         </div>
@@ -116,10 +115,10 @@ export default function YearAnalysisContent({
         <h2 className="text-xl font-bold mb-4">🧊 {year}년 가장 적게 나온 번호</h2>
         <div className="flex flex-wrap gap-3">
           {bottom10.map(item => (
-            <Link key={item.number} href={`/lotto/number/${item.number}`} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-80" style={{ backgroundColor: 'var(--border)' }}>
+            <a key={item.number} href={`/lotto/number/${item.number}`} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:opacity-80" style={{ backgroundColor: 'var(--border)' }}>
               <LottoNumbers numbers={[item.number]} size="xs" />
               <span className="text-sm">{item.count}회</span>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -160,7 +159,7 @@ export default function YearAnalysisContent({
         <h2 className="text-xl font-bold mb-4">📋 {year}년 전체 당첨번호</h2>
         <div className="space-y-3">
           {yearData.map(round => (
-            <Link
+            <a
               key={round.round}
               href={`/lotto/${round.round}`}
               className="flex items-center gap-3 p-3 rounded-lg hover:opacity-80 transition-opacity"
@@ -171,7 +170,7 @@ export default function YearAnalysisContent({
               <span className="text-xs ml-auto hidden md:block" style={{ color: 'var(--text-secondary)' }}>
                 {round.drawDate}
               </span>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -181,7 +180,7 @@ export default function YearAnalysisContent({
         <h2 className="text-xl font-bold mb-4">📅 다른 연도 분석</h2>
         <div className="flex flex-wrap gap-2">
           {allYears.map(y => (
-            <Link
+            <a
               key={y}
               href={`/lotto/year/${y}`}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-80 ${y === year ? 'font-bold' : ''}`}
@@ -191,7 +190,7 @@ export default function YearAnalysisContent({
               }}
             >
               {y}
-            </Link>
+            </a>
           ))}
         </div>
       </div>

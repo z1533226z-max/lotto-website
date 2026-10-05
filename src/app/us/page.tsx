@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { POWERBALL, MEGA_MILLIONS } from '@/data/usLottoData';
 
 export const metadata: Metadata = {
@@ -30,7 +29,7 @@ export default function USHubPage() {
             className="rounded-xl border border-gray-200 p-6 transition hover:border-orange-500 dark:border-gray-800"
           >
             <h2 className="text-2xl font-semibold">
-              <Link href={`/us/${g.key}`}>{g.displayName}</Link>
+              <a href={`/us/${g.key}`}>{g.displayName}</a>
             </h2>
             <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
               <dt className="text-gray-500">Format</dt>
@@ -47,24 +46,24 @@ export default function USHubPage() {
               <dd>${(g.jackpotMin / 1_000_000).toFixed(0)}M</dd>
             </dl>
             <div className="mt-6 flex flex-wrap gap-2 text-sm">
-              <Link
+              <a
                 href={`/us/${g.key}`}
                 className="rounded-md bg-orange-600 px-3 py-1.5 font-medium text-white hover:bg-orange-700"
               >
                 Overview
-              </Link>
-              <Link
+              </a>
+              <a
                 href={`/us/${g.key}/odds`}
                 className="rounded-md border border-gray-300 px-3 py-1.5 font-medium hover:border-orange-500 dark:border-gray-700"
               >
                 Prize Odds
-              </Link>
-              <Link
+              </a>
+              <a
                 href={`/us/${g.key}/generator`}
                 className="rounded-md border border-gray-300 px-3 py-1.5 font-medium hover:border-orange-500 dark:border-gray-700"
               >
                 Number Generator
-              </Link>
+              </a>
             </div>
           </article>
         ))}
@@ -76,23 +75,23 @@ export default function USHubPage() {
           Honest, math-grounded guides for Powerball and Mega Millions players. No &ldquo;secret systems&rdquo; — just what the data shows.
         </p>
         <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-          <Link href="/us/guide/powerball-strategy" className="text-orange-700 hover:underline dark:text-orange-300">
+          <a href="/us/guide/powerball-strategy" className="text-orange-700 hover:underline dark:text-orange-300">
             → Powerball Strategy: 7 Statistically Grounded Tips
-          </Link>
-          <Link href="/us/guide/powerball-vs-mega-millions" className="text-orange-700 hover:underline dark:text-orange-300">
+          </a>
+          <a href="/us/guide/powerball-vs-mega-millions" className="text-orange-700 hover:underline dark:text-orange-300">
             → Powerball vs Mega Millions: Which Has Better Odds?
-          </Link>
-          <Link href="/us/guide/powerball-annuity-vs-lump-sum" className="text-orange-700 hover:underline dark:text-orange-300">
+          </a>
+          <a href="/us/guide/powerball-annuity-vs-lump-sum" className="text-orange-700 hover:underline dark:text-orange-300">
             → Annuity vs Lump Sum: Which Payout to Take
-          </Link>
-          <Link href="/us/guide/lottery-tax-by-state" className="text-orange-700 hover:underline dark:text-orange-300">
+          </a>
+          <a href="/us/guide/lottery-tax-by-state" className="text-orange-700 hover:underline dark:text-orange-300">
             → US Lottery Tax by State
-          </Link>
+          </a>
         </div>
         <p className="mt-4">
-          <Link href="/us/guide" className="text-sm font-semibold text-orange-700 hover:underline dark:text-orange-300">
+          <a href="/us/guide" className="text-sm font-semibold text-orange-700 hover:underline dark:text-orange-300">
             See all guides →
-          </Link>
+          </a>
         </p>
       </section>
 
@@ -107,9 +106,9 @@ export default function USHubPage() {
         <p className="mt-3 text-gray-600 dark:text-gray-300">
           Lotto.Gon also operates a Korean lottery analytics service for the Korean 6/45 game.
           Looking for that?{' '}
-          <Link href="/" className="font-medium text-orange-600 hover:underline">
+          <a href="/" className="font-medium text-orange-600 hover:underline">
             Visit the Korean site →
-          </Link>
+          </a>
         </p>
       </section>
     </div>

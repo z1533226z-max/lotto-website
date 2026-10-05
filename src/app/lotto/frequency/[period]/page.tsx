@@ -2,7 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import FrequencyContent from './FrequencyContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { period: string };
@@ -57,6 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 ${cfg.label} 핫넘버 콜드넘버 순위`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/frequency/${params.period}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -191,17 +195,19 @@ export default async function FrequencyPage({ params }: Props) {
         { label: cfg.label },
       ]} />
 
-      <FrequencyContent
-        period={params.period}
-        periodLabel={`${cfg.label} 번호`}
-        totalRounds={totalRounds}
-        rankedNumbers={ranked}
-        colorGroupStats={colorGroupStats}
-        allPeriods={ALL_PERIODS}
-        risingNumbers={trend.rising}
-        fallingNumbers={trend.falling}
-        trendWindow={trend.window}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <FrequencyContent
+          period={params.period}
+          periodLabel={`${cfg.label} 번호`}
+          totalRounds={totalRounds}
+          rankedNumbers={ranked}
+          colorGroupStats={colorGroupStats}
+          allPeriods={ALL_PERIODS}
+          risingNumbers={trend.rising}
+          fallingNumbers={trend.falling}
+          trendWindow={trend.window}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import { BarChart3, TrendingUp, Flame, Snowflake, ArrowRight, ChevronLeft } from 'lucide-react';
@@ -7,6 +6,7 @@ import type { Metadata } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { generateWeeklyAnalysis } from '@/lib/weeklyAnalysisGenerator';
 import LottoBall from '@/components/lotto/LottoBall';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
     description: '매주 자동 업데이트되는 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 패턴 분석!',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
@@ -132,27 +133,27 @@ export default async function WeeklyAnalysisPage() {
 
       {/* 관련 링크 */}
       <div className="flex flex-wrap gap-3 mt-6 mb-4">
-        <Link
+        <a
           href={`/lotto/${analysis.round}`}
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           {analysis.round}회 상세보기 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/statistics"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           전체 통계 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/ai-hits"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           AI 예측 <ArrowRight size={14} />
-        </Link>
+        </a>
       </div>
 
       {/* 아카이브 네비게이션 */}
@@ -164,24 +165,24 @@ export default async function WeeklyAnalysisPage() {
           {Array.from({ length: 10 }, (_, i) => analysis.round - 1 - i)
             .filter(r => r >= 11)
             .map(r => (
-              <Link
+              <a
                 key={r}
                 href={`/lotto/analysis/weekly/${r}`}
                 className="px-3 py-1.5 rounded-lg text-sm"
                 style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
               >
                 {r}회
-              </Link>
+              </a>
             ))}
         </div>
         {analysis.round > 21 && (
-          <Link
+          <a
             href={`/lotto/analysis/weekly/${analysis.round - 11}`}
             className="inline-flex items-center gap-1 mt-3 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             <ChevronLeft size={14} /> 더 이전 분석 보기
-          </Link>
+          </a>
         )}
       </SectionFrame>
 

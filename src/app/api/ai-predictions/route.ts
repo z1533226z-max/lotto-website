@@ -79,20 +79,26 @@ export async function GET(request: NextRequest) {
     const statistics = LottoStatisticsAnalyzer.generateStatistics(allLottoData);
     const currentRound = estimateCurrentRound();
 
+    // 공정 모드: 각 회차 R의 예측은 R회 추첨 이전(R-1회까지) 데이터 통계만으로 계산한다.
+    // (전체 통계를 쓰면 추첨 결과가 반영된 번호로 '적중 기록'이 사후에 바뀌므로 사용하지 않음)
+    const fairMode = { useFairMode: true, allData: allLottoData };
+
     // 단일 세트 (하위 호환)
     const dynamicPredictions = generateDynamicPredictions(
       LATEST_STATIC_PREDICTION_ROUND,
       currentRound,
-      statistics
+      statistics,
+      fairMode
     );
     const allPredictions = [...AI_PREDICTION_HISTORY, ...dynamicPredictions];
 
     // 다중 세트 생성
-    const staticMultiSet = convertStaticToMultiSet(AI_PREDICTION_HISTORY, statistics);
+    const staticMultiSet = convertStaticToMultiSet(AI_PREDICTION_HISTORY, statistics, fairMode);
     const dynamicMultiSet = generateDynamicMultiSetPredictions(
       LATEST_STATIC_PREDICTION_ROUND,
       currentRound,
-      statistics
+      statistics,
+      fairMode
     );
     const allMultiSetPredictions = [...staticMultiSet, ...dynamicMultiSet];
 

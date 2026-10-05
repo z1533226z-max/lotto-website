@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 import {
   US_GUIDE_ARTICLES,
   getUsGuide,
@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime,
       authors: [GUIDE_AUTHOR.name],
       section: article.category,
+      images: DEFAULT_OG_IMAGES,
     },
     twitter: {
       card: 'summary_large_image',
@@ -139,13 +140,13 @@ export default function UsGuideArticlePage({ params }: Props) {
       />
 
       <nav className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-        <Link href="/us" className="hover:text-orange-600">
+        <a href="/us" className="hover:text-orange-600">
           US Hub
-        </Link>
+        </a>
         <span aria-hidden> / </span>
-        <Link href="/us/guide" className="hover:text-orange-600">
+        <a href="/us/guide" className="hover:text-orange-600">
           Guides
-        </Link>
+        </a>
         <span aria-hidden> / </span>
         <span className="text-gray-700 dark:text-gray-200">{article.category}</span>
       </nav>
@@ -216,7 +217,7 @@ export default function UsGuideArticlePage({ params }: Props) {
             <h2 className="text-xl font-semibold">Related guides</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               {related.map((r) => (
-                <Link
+                <a
                   key={r.slug}
                   href={`/us/guide/${r.slug}`}
                   className="block rounded-lg border border-gray-200 p-4 transition hover:border-orange-500 dark:border-gray-800"
@@ -227,34 +228,34 @@ export default function UsGuideArticlePage({ params }: Props) {
                   <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     {r.title}
                   </div>
-                </Link>
+                </a>
               ))}
             </div>
           </section>
         )}
 
         <div className="mt-8 flex flex-wrap gap-3 text-sm">
-          <Link
+          <a
             href="/us/guide"
             className="rounded-md border border-gray-300 px-3 py-1.5 font-medium hover:border-orange-500 dark:border-gray-700"
           >
             ← All guides
-          </Link>
+          </a>
           {article.game !== 'mega-millions' && (
-            <Link
+            <a
               href="/us/powerball"
               className="rounded-md border border-gray-300 px-3 py-1.5 font-medium hover:border-orange-500 dark:border-gray-700"
             >
               Powerball overview
-            </Link>
+            </a>
           )}
           {article.game !== 'powerball' && (
-            <Link
+            <a
               href="/us/mega-millions"
               className="rounded-md border border-gray-300 px-3 py-1.5 font-medium hover:border-orange-500 dark:border-gray-700"
             >
               Mega Millions overview
-            </Link>
+            </a>
           )}
         </div>
       </article>

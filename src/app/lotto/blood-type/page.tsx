@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { BLOOD_TYPE_PROFILES } from '@/data/bloodTypeLotto';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     title: '혈액형별 로또 행운번호 추천',
     description: 'A형, B형, O형, AB형 성격에 맞는 로또 행운번호와 구매 전략을 확인하세요.',
     url: 'https://lotto.gon.ai.kr/lotto/blood-type',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
@@ -67,7 +68,7 @@ export default function BloodTypeHubPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {BLOOD_TYPE_PROFILES.map(p => (
-            <Link
+            <a
               key={p.id}
               href={`/lotto/blood-type/${p.id}`}
               className="block bg-gray-800/60 rounded-xl p-6 border border-gray-700 hover:border-gray-500 transition-all hover:scale-[1.02]"
@@ -91,7 +92,7 @@ export default function BloodTypeHubPage() {
                   <MiniLottoBall key={n} number={n} />
                 ))}
               </div>
-            </Link>
+            </a>
           ))}
         </div>
 
@@ -107,15 +108,15 @@ export default function BloodTypeHubPage() {
         <section className="bg-gray-800/40 rounded-xl p-6 border border-gray-700">
           <h2 className="text-lg font-bold text-white mb-3">다른 유형별 행운번호</h2>
           <div className="flex flex-wrap gap-3">
-            <Link href="/lotto/zodiac" className="text-sm text-yellow-400 hover:text-yellow-300 bg-yellow-900/20 px-3 py-1.5 rounded-lg">
+            <a href="/lotto/zodiac" className="text-sm text-yellow-400 hover:text-yellow-300 bg-yellow-900/20 px-3 py-1.5 rounded-lg">
               별자리별 행운번호
-            </Link>
-            <Link href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
+            </a>
+            <a href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
               MBTI별 행운번호
-            </Link>
-            <Link href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
+            </a>
+            <a href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
               꿈해몽 번호
-            </Link>
+            </a>
           </div>
         </section>
       </div>

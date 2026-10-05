@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { Dices } from 'lucide-react';
 
 const navLinks = [
@@ -34,13 +33,13 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-10">
           {/* Brand */}
           <div className="max-w-xs">
-            <Link href="/" className="inline-flex items-center gap-2 mb-3 group">
+            <a href="/" className="inline-flex items-center gap-2 mb-3 group">
               <Dices
                 className="w-5 h-5 text-primary transition-transform duration-500 group-hover:rotate-12"
                 style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
               />
               <span className="text-lg font-bold gradient-text">로또킹</span>
-            </Link>
+            </a>
             <p className="text-[13px] leading-relaxed break-keep-all" style={{ color: 'var(--text-tertiary)' }}>
               역대 전체 회차 데이터를 AI로 분석하여 매주 번호를 추천합니다.
             </p>
@@ -50,14 +49,14 @@ const Footer: React.FC = () => {
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               {navLinks.map((link) => (
-                <Link
+                <a
                   key={link.path}
                   href={link.path}
                   className="text-[13px] font-medium transition-colors duration-300 hover:text-primary"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
             </div>
             {/* English / US Lottery 진입 — 영문 트랙 색인 가속용 내부링크 */}
@@ -69,7 +68,7 @@ const Footer: React.FC = () => {
                 English
               </span>
               {globalLinks.map((link) => (
-                <Link
+                <a
                   key={link.path}
                   href={link.path}
                   hrefLang="en"
@@ -77,7 +76,7 @@ const Footer: React.FC = () => {
                   style={{ color: 'var(--text-tertiary)' }}
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -90,14 +89,14 @@ const Footer: React.FC = () => {
         >
           <div className="flex items-center gap-4">
             {legalLinks.map((link) => (
-              <Link
+              <a
                 key={link.path}
                 href={link.path}
                 className="text-[11px] font-medium transition-colors duration-300 hover:text-primary"
                 style={{ color: 'var(--text-tertiary)' }}
               >
                 {link.name}
-              </Link>
+              </a>
             ))}
           </div>
           <p className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
