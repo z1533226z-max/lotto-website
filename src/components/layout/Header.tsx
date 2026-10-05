@@ -85,7 +85,9 @@ const Header: React.FC = () => {
       {/* Floating Glass Pill Navigation */}
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50',
+          // 모바일은 화면에 고정하지 않음: 상단 고정 요소가 있으면 애드센스 모바일 앵커 광고가 뜨지 않음
+          // (3/22 sticky→fixed 전환 이후 모바일 앵커 요청 0, 2026-10-05 확인). 데스크톱은 그대로 고정.
+          'relative z-50 lg:fixed lg:top-0 lg:left-0 lg:right-0',
           'transition-all duration-500',
         )}
         style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
@@ -342,8 +344,8 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* Spacer for fixed header */}
-      <div className="h-20" />
+      {/* Spacer for fixed header (데스크톱만 고정) */}
+      <div className="hidden lg:block h-20" />
 
       {/* Mobile Menu — Full-screen overlay */}
       {mobileMenuOpen && (
