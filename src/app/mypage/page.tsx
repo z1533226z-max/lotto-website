@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import Link from 'next/link';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useUserProgress } from '@/hooks/useUserProgress';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
@@ -483,13 +482,13 @@ export default function MyPage() {
               <p className="text-sm mb-5" style={{ color: 'var(--text-tertiary)' }}>
                 {'AI \uBC88\uD638\uB97C \uC0DD\uC131\uD574\uBCF4\uC138\uC694!'}
               </p>
-              <Link
+              <a
                 href="/"
                 className="inline-block px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg, #D36135, #E88A6A)' }}
               >
                 {'\uBC88\uD638 \uC0DD\uC131\uD558\uB7EC \uAC00\uAE30'}
-              </Link>
+              </a>
             </div>
           ) : (
             <>

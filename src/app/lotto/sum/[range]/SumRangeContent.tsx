@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
@@ -106,9 +105,9 @@ export default function SumRangeContent({
               {r.isCurrent ? (
                 <span className="w-24 text-sm font-bold text-yellow-400">{r.label}</span>
               ) : (
-                <Link href={`/lotto/sum/${r.slug}`} className="w-24 text-sm text-blue-400 hover:underline">
+                <a href={`/lotto/sum/${r.slug}`} className="w-24 text-sm text-blue-400 hover:underline">
                   {r.label}
-                </Link>
+                </a>
               )}
               <div className="flex-1 bg-gray-700/50 rounded-full h-5 overflow-hidden">
                 <div
@@ -127,14 +126,14 @@ export default function SumRangeContent({
         <h2 className="text-lg font-bold text-white mb-4">이 구간에서 자주 나오는 번호 TOP 10</h2>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {topNumbers.slice(0, 10).map((item, idx) => (
-            <Link key={item.number} href={`/lotto/number/${item.number}`} className="bg-gray-700/30 rounded-lg p-3 text-center hover:bg-gray-700/50 transition-colors">
+            <a key={item.number} href={`/lotto/number/${item.number}`} className="bg-gray-700/30 rounded-lg p-3 text-center hover:bg-gray-700/50 transition-colors">
               <div className="flex justify-center mb-2">
                 <LottoNumbers numbers={[item.number]} size="md" />
               </div>
               <div className="text-xs text-gray-400">{idx + 1}위</div>
               <div className="text-sm font-bold text-white">{item.count}회</div>
               <div className="text-xs text-gray-500">{item.pct}%</div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -192,7 +191,7 @@ export default function SumRangeContent({
               {recentRounds.map(r => (
                 <tr key={r.round} className="border-b border-gray-700/50 hover:bg-gray-700/20">
                   <td className="py-2 px-3">
-                    <Link href={`/lotto/${r.round}`} className="text-blue-400 hover:underline">{r.round}회</Link>
+                    <a href={`/lotto/${r.round}`} className="text-blue-400 hover:underline">{r.round}회</a>
                   </td>
                   <td className="py-2 px-3 text-gray-400">{r.date}</td>
                   <td className="py-2 px-3">
@@ -214,18 +213,18 @@ export default function SumRangeContent({
       <div className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50">
         <h2 className="text-lg font-bold text-white mb-3">관련 분석</h2>
         <div className="flex flex-wrap gap-2">
-          <Link href="/lotto/pattern/sum-range" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
+          <a href="/lotto/pattern/sum-range" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
             합계 패턴 분석
-          </Link>
-          <Link href="/lotto/pattern/odd-even" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
+          </a>
+          <a href="/lotto/pattern/odd-even" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
             홀짝 패턴 분석
-          </Link>
-          <Link href="/lotto/pattern/high-low" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
+          </a>
+          <a href="/lotto/pattern/high-low" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
             고저 패턴 분석
-          </Link>
-          <Link href="/lotto/statistics" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
+          </a>
+          <a href="/lotto/statistics" className="px-3 py-2 bg-gray-700/50 rounded-lg text-sm text-blue-400 hover:bg-gray-700 transition-colors">
             종합 통계
-          </Link>
+          </a>
         </div>
       </div>
 

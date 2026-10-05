@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
 interface NumberStat {
@@ -190,7 +189,7 @@ export default function ZodiacContent({
         <h2 className="text-xl font-bold text-white mb-4">로또 별자리 궁합</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {bestPair && (
-            <Link
+            <a
               href={`/lotto/zodiac/${bestPair.id}`}
               className="block bg-green-900/20 rounded-lg p-4 border border-green-800/40 hover:border-green-600 transition-colors"
             >
@@ -199,10 +198,10 @@ export default function ZodiacContent({
                 {bestPair.emoji} {bestPair.name}
               </div>
               <div className="text-sm text-gray-400 mt-1">함께 구매하면 시너지!</div>
-            </Link>
+            </a>
           )}
           {worstPair && (
-            <Link
+            <a
               href={`/lotto/zodiac/${worstPair.id}`}
               className="block bg-red-900/20 rounded-lg p-4 border border-red-800/40 hover:border-red-600 transition-colors"
             >
@@ -211,7 +210,7 @@ export default function ZodiacContent({
                 {worstPair.emoji} {worstPair.name}
               </div>
               <div className="text-sm text-gray-400 mt-1">번호 선택 스타일이 달라요</div>
-            </Link>
+            </a>
           )}
         </div>
       </section>
@@ -223,7 +222,7 @@ export default function ZodiacContent({
           </h2>
           <div className="space-y-3">
             {matchedRounds.map(mr => (
-              <Link
+              <a
                 key={mr.round}
                 href={`/lotto/${mr.round}`}
                 className="block bg-gray-700/40 rounded-lg p-4 hover:bg-gray-700/60 transition-colors"
@@ -262,7 +261,7 @@ export default function ZodiacContent({
                     {mr.bonus}
                   </span>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </section>
@@ -287,37 +286,37 @@ export default function ZodiacContent({
       <section className="bg-gray-800/40 rounded-xl p-6 border border-gray-700">
         <h2 className="text-lg font-bold text-white mb-3">다른 유형별 행운번호</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
+          <a href="/lotto/mbti" className="text-sm text-blue-400 hover:text-blue-300 bg-blue-900/20 px-3 py-1.5 rounded-lg">
             MBTI별 행운번호
-          </Link>
-          <Link href="/lotto/blood-type" className="text-sm text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-lg">
+          </a>
+          <a href="/lotto/blood-type" className="text-sm text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-lg">
             혈액형별 행운번호
-          </Link>
-          <Link href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
+          </a>
+          <a href="/lotto/dream" className="text-sm text-purple-400 hover:text-purple-300 bg-purple-900/20 px-3 py-1.5 rounded-lg">
             꿈해몽 번호
-          </Link>
+          </a>
         </div>
       </section>
 
       <nav className="flex justify-between items-center py-4">
-        <Link
+        <a
           href={`/lotto/zodiac/${prevSign.id}`}
           className="text-sm text-gray-400 hover:text-white transition-colors"
         >
           ← {prevSign.name}
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/zodiac"
           className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
         >
           전체 별자리 보기
-        </Link>
-        <Link
+        </a>
+        <a
           href={`/lotto/zodiac/${nextSign.id}`}
           className="text-sm text-gray-400 hover:text-white transition-colors"
         >
           {nextSign.name} →
-        </Link>
+        </a>
       </nav>
 
       <CrossSectionLinks current="zodiac" className="bg-gray-800/60 rounded-xl p-5 border border-gray-700" />

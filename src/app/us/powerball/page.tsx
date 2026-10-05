@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { POWERBALL, FAQ_POWERBALL, POWERBALL_OVERALL_ODDS } from '@/data/usLottoData';
 
 export const metadata: Metadata = {
@@ -46,41 +45,41 @@ export default function PowerballPage() {
       </p>
       <p>
         See the full prize-tier breakdown:{' '}
-        <Link href="/us/powerball/odds">Powerball Prize Odds →</Link>
+        <a href="/us/powerball/odds">Powerball Prize Odds →</a>
       </p>
 
       <h2>Tools</h2>
       <ul>
         <li>
-          <Link href="/us/powerball/generator">Powerball Number Generator</Link> — random pick respecting 5/69 + 1/26
+          <a href="/us/powerball/generator">Powerball Number Generator</a> — random pick respecting 5/69 + 1/26
         </li>
         <li>
-          <Link href="/us/powerball/odds">Prize Odds & Tiers</Link> — every match level, exact odds
+          <a href="/us/powerball/odds">Prize Odds & Tiers</a> — every match level, exact odds
         </li>
       </ul>
 
       <h2>Powerball Guides</h2>
       <ul>
         <li>
-          <Link href="/us/guide/powerball-strategy">Powerball Strategy — 7 statistically grounded tips</Link>
+          <a href="/us/guide/powerball-strategy">Powerball Strategy — 7 statistically grounded tips</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-quick-pick-vs-self-pick">Quick Pick vs Self-Pick — what the data really shows</Link>
+          <a href="/us/guide/powerball-quick-pick-vs-self-pick">Quick Pick vs Self-Pick — what the data really shows</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — head-to-head comparison</Link>
+          <a href="/us/guide/powerball-vs-mega-millions">Powerball vs Mega Millions — head-to-head comparison</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</Link>
+          <a href="/us/guide/powerball-annuity-vs-lump-sum">Annuity vs Lump Sum — which payout to take</a>
         </li>
         <li>
-          <Link href="/us/guide/powerball-most-common-numbers">Most Common Powerball Numbers (and why it doesn&apos;t matter)</Link>
+          <a href="/us/guide/powerball-most-common-numbers">Most Common Powerball Numbers (and why it doesn&apos;t matter)</a>
         </li>
         <li>
-          <Link href="/us/guide/power-play-explained">Power Play Explained — is the $1 add-on worth it?</Link>
+          <a href="/us/guide/power-play-explained">Power Play Explained — is the $1 add-on worth it?</a>
         </li>
         <li>
-          <Link href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</Link>
+          <a href="/us/guide/lottery-tax-by-state">US Lottery Tax by State</a>
         </li>
       </ul>
 

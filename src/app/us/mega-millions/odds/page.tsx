@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { MEGA_MILLIONS_PRIZES, MEGA_MILLIONS_OVERALL_ODDS } from '@/data/usLottoData';
 
 export const metadata: Metadata = {
@@ -66,9 +65,9 @@ export default function MegaMillionsOddsPage() {
       </p>
 
       <p>
-        <Link href="/us/mega-millions/generator">
+        <a href="/us/mega-millions/generator">
           → Try the free Mega Millions number generator
-        </Link>
+        </a>
       </p>
     </article>
   );

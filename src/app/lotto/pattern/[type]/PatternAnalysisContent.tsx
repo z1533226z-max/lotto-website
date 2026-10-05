@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import SectionFrame from '@/components/ui/SectionFrame';
 import type { FaqItem } from '@/lib/seo';
 
@@ -82,7 +81,7 @@ export default function PatternAnalysisContent({ type, name, desc, totalRounds, 
         <h2 className="text-xl font-bold mb-4">📋 다른 패턴 분석</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {allPatterns.map(p => (
-            <Link
+            <a
               key={p.type}
               href={`/lotto/pattern/${p.type}`}
               className={`p-3 rounded-lg text-center text-sm font-medium transition-all hover:opacity-80 ${p.type === type ? 'font-bold' : ''}`}
@@ -92,7 +91,7 @@ export default function PatternAnalysisContent({ type, name, desc, totalRounds, 
               }}
             >
               {patternEmoji[p.type]} {p.name.replace(' 분석', '')}
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -140,9 +139,9 @@ function OddEvenResult({ data }: { data: { ratio: string; count: number; percent
         {data.map(d => {
           const [o, e] = d.ratio.split(':');
           return (
-            <Link key={d.ratio} href={`/lotto/stats/odd-even/${o}-${e}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+            <a key={d.ratio} href={`/lotto/stats/odd-even/${o}-${e}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
               홀{o}짝{e} 상세 →
-            </Link>
+            </a>
           );
         })}
       </div>
@@ -165,9 +164,9 @@ function HighLowResult({ data }: { data: { ratio: string; count: number; percent
           const m = d.ratio.match(/저(\d+):고(\d+)/);
           if (!m) return null;
           return (
-            <Link key={d.ratio} href={`/lotto/stats/high-low/${m[2]}-${m[1]}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+            <a key={d.ratio} href={`/lotto/stats/high-low/${m[2]}-${m[1]}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
               {d.ratio} 상세 →
-            </Link>
+            </a>
           );
         })}
       </div>
@@ -230,9 +229,9 @@ function ConsecutiveResult({ data }: { data: { withConsecutive: number; withoutC
           {Object.keys(data.counts).map(key => {
             const label = key === '0' ? '연번 없음' : `연번 ${key}쌍`;
             return (
-              <Link key={key} href={`/lotto/stats/consecutive/${key}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+              <a key={key} href={`/lotto/stats/consecutive/${key}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
                 {label} 상세 →
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -307,9 +306,9 @@ function ACValueResult({ data }: { data: { ac: number; count: number; percentage
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {data.map(d => (
-          <Link key={d.ac} href={`/lotto/stats/ac/${d.ac}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+          <a key={d.ac} href={`/lotto/stats/ac/${d.ac}`} className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80" style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
             AC {d.ac} 상세 →
-          </Link>
+          </a>
         ))}
       </div>
     </div>
@@ -328,13 +327,13 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
 
 function LinkCard({ href, icon, title }: { href: string; icon: string; title: string }) {
   return (
-    <Link
+    <a
       href={href}
       className="p-3 rounded-lg text-center text-sm font-medium transition-all hover:opacity-80"
       style={{ backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}
     >
       <div className="text-xl mb-1">{icon}</div>
       {title}
-    </Link>
+    </a>
   );
 }

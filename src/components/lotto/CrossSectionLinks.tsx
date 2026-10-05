@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 
 type Section =
   | 'ending' | 'bonus' | 'sum' | 'birthday' | 'monthly'
@@ -55,7 +54,7 @@ export default function CrossSectionLinks({ current, className, theme = 'dark' }
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {links.map((s) => (
-          <Link
+          <a
             key={s.key}
             href={s.href}
             className={isDark
@@ -75,7 +74,7 @@ export default function CrossSectionLinks({ current, className, theme = 'dark' }
             >
               {s.desc}
             </div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>

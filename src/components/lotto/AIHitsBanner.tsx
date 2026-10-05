@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Target } from 'lucide-react';
-import Link from 'next/link';
 
 interface BannerStats {
   avgMatch: number;
@@ -48,7 +47,7 @@ const AIHitsBanner: React.FC = () => {
   if (!latestHit) return null;
 
   return (
-    <Link href="/lotto/ai-hits" className="block group">
+    <a href="/lotto/ai-hits" className="block group">
       <div
         className="relative overflow-hidden rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5"
         style={{
@@ -98,7 +97,7 @@ const AIHitsBanner: React.FC = () => {
           </span>
         </div>
       </div>
-    </Link>
+    </a>
   );
 };
 

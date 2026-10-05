@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
@@ -230,7 +229,7 @@ export default function BirthdayContent({
           </p>
           <div className="space-y-3">
             {matchedRounds.map(r => (
-              <Link
+              <a
                 key={r.round}
                 href={`/lotto/${r.round}`}
                 className="flex items-center gap-3 p-3 rounded-xl transition-colors duration-200 hover:bg-black/5"
@@ -252,7 +251,7 @@ export default function BirthdayContent({
                     {r.matchCount}개 일치
                   </span>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -268,7 +267,7 @@ export default function BirthdayContent({
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {numbers.map(num => (
-            <Link
+            <a
               key={num}
               href={`/lotto/number/${num}`}
               className="flex items-center gap-2 p-2 rounded-lg transition-colors hover:bg-black/5 text-sm"
@@ -284,41 +283,41 @@ export default function BirthdayContent({
                 {num}
               </span>
               {num}번 분석
-            </Link>
+            </a>
           ))}
-          <Link
+          <a
             href="/lotto/fortune"
             className="flex items-center gap-2 p-2 rounded-lg transition-colors hover:bg-black/5 text-sm col-span-2 sm:col-span-3"
             style={{ color: 'var(--primary)' }}
           >
             🎯 이름을 입력해서 번호에 변화를 주고 싶다면? &rarr; 행운번호 생성기
-          </Link>
+          </a>
         </div>
       </div>
 
       {/* 날짜 네비게이션 */}
       <div className="flex items-center justify-between">
-        <Link
+        <a
           href={`/lotto/birthday/${prevDate}`}
           className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-black/5"
           style={{ color: 'var(--text-secondary)' }}
         >
           &larr; {formatPrevNextDate(prevDate)}
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/fortune"
           className="text-sm font-medium"
           style={{ color: 'var(--primary)' }}
         >
           전체 목록
-        </Link>
-        <Link
+        </a>
+        <a
           href={`/lotto/birthday/${nextDate}`}
           className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-black/5"
           style={{ color: 'var(--text-secondary)' }}
         >
           {formatPrevNextDate(nextDate)} &rarr;
-        </Link>
+        </a>
       </div>
 
       <CrossSectionLinks current="birthday" theme="light" />

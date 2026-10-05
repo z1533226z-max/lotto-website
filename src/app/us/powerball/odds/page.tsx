@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { POWERBALL_PRIZES, POWERBALL_OVERALL_ODDS } from '@/data/usLottoData';
 
 export const metadata: Metadata = {
@@ -69,9 +68,9 @@ export default function PowerballOddsPage() {
       </p>
 
       <p>
-        <Link href="/us/powerball/generator">
+        <a href="/us/powerball/generator">
           → Try the free Powerball number generator
-        </Link>
+        </a>
       </p>
     </article>
   );

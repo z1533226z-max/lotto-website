@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 import type { FaqItem } from '@/lib/seo';
@@ -109,7 +108,7 @@ export default function StatsDetailContent({
           {otherValues.map(ov => {
             const isActive = ov.value === value;
             return (
-              <Link
+              <a
                 key={ov.value}
                 href={`/lotto/stats/${category}/${ov.value}`}
                 className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
@@ -124,7 +123,7 @@ export default function StatsDetailContent({
                 <span className="text-sm text-gray-400">
                   {ov.count}회 ({ov.percentage}%)
                 </span>
-              </Link>
+              </a>
             );
           })}
         </div>
@@ -149,9 +148,9 @@ export default function StatsDetailContent({
                 {recentMatches.map(m => (
                   <tr key={m.round} className="border-b border-gray-700/50 hover:bg-gray-700/20">
                     <td className="py-2 px-2">
-                      <Link href={`/lotto/${m.round}`} className="text-blue-400 hover:text-blue-300">
+                      <a href={`/lotto/${m.round}`} className="text-blue-400 hover:text-blue-300">
                         {m.round}회
-                      </Link>
+                      </a>
                     </td>
                     <td className="py-2 px-2 text-gray-400">{m.date}</td>
                     <td className="py-2 px-2">
@@ -182,42 +181,42 @@ export default function StatsDetailContent({
       <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
         <h2 className="text-lg font-bold text-white mb-3">관련 분석</h2>
         <div className="flex flex-wrap gap-2">
-          <Link
+          <a
             href={`/lotto/pattern/${patternSlug}`}
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             {categoryName} 전체 보기
-          </Link>
-          <Link
+          </a>
+          <a
             href="/lotto/statistics"
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             종합 통계
-          </Link>
-          <Link
+          </a>
+          <a
             href="/lotto/pattern/odd-even"
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             홀짝 분석
-          </Link>
-          <Link
+          </a>
+          <a
             href="/lotto/pattern/high-low"
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             고저 분석
-          </Link>
-          <Link
+          </a>
+          <a
             href="/lotto/pattern/ac-value"
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             AC값 분석
-          </Link>
-          <Link
+          </a>
+          <a
             href="/lotto/pattern/consecutive"
             className="px-3 py-1.5 bg-gray-700/50 text-gray-300 rounded-lg text-sm hover:bg-gray-700 transition-colors"
           >
             연번 분석
-          </Link>
+          </a>
         </div>
       </div>
 

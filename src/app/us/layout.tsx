@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lotto.gon.ai.kr'),
@@ -35,24 +34,24 @@ export default function USLayout({ children }: { children: React.ReactNode }) {
     <div lang="en" className="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       <header className="border-b border-gray-200 dark:border-gray-800">
         <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link href="/us" className="text-lg font-bold tracking-tight">
+          <a href="/us" className="text-lg font-bold tracking-tight">
             Lotto.Gon <span className="text-orange-600">US</span>
-          </Link>
+          </a>
           <ul className="flex gap-4 text-sm font-medium">
             <li>
-              <Link href="/us/powerball" className="hover:text-orange-600">
+              <a href="/us/powerball" className="hover:text-orange-600">
                 Powerball
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/us/mega-millions" className="hover:text-orange-600">
+              <a href="/us/mega-millions" className="hover:text-orange-600">
                 Mega Millions
-              </Link>
+              </a>
             </li>
             <li>
-              <Link href="/us/guide" className="hover:text-orange-600">
+              <a href="/us/guide" className="hover:text-orange-600">
                 Guides
-              </Link>
+              </a>
             </li>
           </ul>
         </nav>
@@ -65,26 +64,26 @@ export default function USLayout({ children }: { children: React.ReactNode }) {
         </p>
         <p className="mt-2">
           Need help with problem gambling? Call <strong>1-800-GAMBLER</strong> ·{' '}
-          <Link href="/us/responsible-gambling" className="hover:text-orange-600">
+          <a href="/us/responsible-gambling" className="hover:text-orange-600">
             Resources
-          </Link>
+          </a>
         </p>
         <p className="mt-3 space-x-2">
-          <Link href="/us/privacy" className="hover:text-orange-600">
+          <a href="/us/privacy" className="hover:text-orange-600">
             Privacy
-          </Link>
+          </a>
           <span aria-hidden>·</span>
-          <Link href="/us/terms" className="hover:text-orange-600">
+          <a href="/us/terms" className="hover:text-orange-600">
             Terms
-          </Link>
+          </a>
           <span aria-hidden>·</span>
-          <Link href="/us/responsible-gambling" className="hover:text-orange-600">
+          <a href="/us/responsible-gambling" className="hover:text-orange-600">
             Responsible Gambling
-          </Link>
+          </a>
           <span aria-hidden>·</span>
-          <Link href="/" className="hover:text-orange-600">
+          <a href="/" className="hover:text-orange-600">
             한국 로또
-          </Link>
+          </a>
           <span aria-hidden>·</span>
           <a href="https://www.powerball.com" target="_blank" rel="noopener" className="hover:text-orange-600">
             Powerball.com

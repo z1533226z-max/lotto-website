@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 
 interface BreadcrumbItem {
   label: string;
@@ -34,13 +33,13 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
             <li key={index} className="flex items-center">
               {index > 0 && <span className="mx-1" style={{ color: 'var(--text-tertiary)' }}>/</span>}
               {item.href ? (
-                <Link
+                <a
                   href={item.href}
                   className="hover:text-primary transition-colors"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   {item.label}
-                </Link>
+                </a>
               ) : (
                 <span className="font-medium" style={{ color: 'var(--text)' }}>{item.label}</span>
               )}

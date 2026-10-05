@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import {
   generateDailyFortune,
   formatDateKorean,
@@ -205,7 +204,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
       {/* 날짜 네비게이션 */}
       <div className="flex items-center justify-between mb-6">
         {canGoPrev ? (
-          <Link
+          <a
             href={`/lotto/daily-fortune/${prevStr}`}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{
@@ -215,7 +214,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             ← 이전
-          </Link>
+          </a>
         ) : (
           <span className="px-4 py-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
             ← 이전
@@ -229,7 +228,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             오늘
           </span>
         ) : (
-          <Link
+          <a
             href="/lotto/daily-fortune"
             className="px-3 py-1 rounded-full text-xs font-medium"
             style={{
@@ -239,10 +238,10 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             오늘로
-          </Link>
+          </a>
         )}
         {canGoNext ? (
-          <Link
+          <a
             href={`/lotto/daily-fortune/${nextStr}`}
             className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{
@@ -252,7 +251,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             }}
           >
             다음 →
-          </Link>
+          </a>
         ) : (
           <span className="px-4 py-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
             다음 →
@@ -341,7 +340,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
           { href: '/lotto/ai-hits', label: '🤖 AI 추천번호', desc: '패턴 분석 기반' },
           { href: '/lotto/statistics', label: '📊 번호 통계', desc: '역대 전체 분석' },
         ].map((link) => (
-          <Link
+          <a
             key={link.href}
             href={link.href}
             className="rounded-xl p-3 text-center transition-all hover:scale-[1.02]"
@@ -357,7 +356,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             <div className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
               {link.desc}
             </div>
-          </Link>
+          </a>
         ))}
       </div>
     </>

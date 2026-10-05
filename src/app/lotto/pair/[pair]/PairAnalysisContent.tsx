@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
@@ -166,12 +165,12 @@ export default function PairAnalysisContent({
           </table>
         </div>
         <div className="mt-3 flex gap-3 justify-center text-sm">
-          <Link href={`/lotto/number/${num1}`} className="text-blue-400 hover:text-blue-300">
+          <a href={`/lotto/number/${num1}`} className="text-blue-400 hover:text-blue-300">
             {num1}번 상세 분석 →
-          </Link>
-          <Link href={`/lotto/number/${num2}`} className="text-blue-400 hover:text-blue-300">
+          </a>
+          <a href={`/lotto/number/${num2}`} className="text-blue-400 hover:text-blue-300">
             {num2}번 상세 분석 →
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -183,7 +182,7 @@ export default function PairAnalysisContent({
           </h2>
           <div className="space-y-2">
             {pairRounds.map(r => (
-              <Link
+              <a
                 key={r.round}
                 href={`/lotto/${r.round}`}
                 className="flex items-center justify-between bg-gray-900/50 rounded-lg px-3 py-2 hover:bg-gray-700/50 transition-colors"
@@ -193,7 +192,7 @@ export default function PairAnalysisContent({
                   <span className="text-gray-500 ml-2">{r.date}</span>
                 </span>
                 <LottoNumbers numbers={r.numbers} bonusNumber={r.bonus} size="xs" />
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -211,18 +210,18 @@ export default function PairAnalysisContent({
                 <span className="text-gray-500 text-sm w-6">{idx + 1}.</span>
                 <LottoNumbers numbers={[c.number]} size="sm" />
                 <span className="text-white text-sm flex-1">{c.count}회 동시 출현</span>
-                <Link
+                <a
                   href={pairUrl(num1, c.number)}
                   className="text-xs text-blue-400 hover:text-blue-300"
                 >
                   {num1}-{c.number}
-                </Link>
-                <Link
+                </a>
+                <a
                   href={pairUrl(num2, c.number)}
                   className="text-xs text-blue-400 hover:text-blue-300"
                 >
                   {num2}-{c.number}
-                </Link>
+                </a>
               </div>
             ))}
           </div>
@@ -240,13 +239,13 @@ export default function PairAnalysisContent({
                 .filter(n => n !== num1 && n !== num2)
                 .slice(0, 12)
                 .map(n => (
-                  <Link
+                  <a
                     key={n}
                     href={pairUrl(num1, n)}
                     className="px-2 py-1 text-xs bg-gray-700/50 rounded hover:bg-gray-600/50 text-gray-300 hover:text-white transition-colors"
                   >
                     {num1}-{n}
-                  </Link>
+                  </a>
                 ))}
               <span className="text-xs text-gray-500 self-center">외 {45 - 2 - 12}개</span>
             </div>
@@ -258,13 +257,13 @@ export default function PairAnalysisContent({
                 .filter(n => n !== num1 && n !== num2)
                 .slice(0, 12)
                 .map(n => (
-                  <Link
+                  <a
                     key={n}
                     href={pairUrl(num2, n)}
                     className="px-2 py-1 text-xs bg-gray-700/50 rounded hover:bg-gray-600/50 text-gray-300 hover:text-white transition-colors"
                   >
                     {num2}-{n}
-                  </Link>
+                  </a>
                 ))}
               <span className="text-xs text-gray-500 self-center">외 {45 - 2 - 12}개</span>
             </div>
@@ -274,18 +273,18 @@ export default function PairAnalysisContent({
 
       {/* 하단 네비게이션 */}
       <div className="text-center text-sm text-gray-400 space-x-4">
-        <Link href="/lotto/statistics" className="hover:text-white transition-colors">
+        <a href="/lotto/statistics" className="hover:text-white transition-colors">
           전체 통계 →
-        </Link>
-        <Link href="/lotto/list" className="hover:text-white transition-colors">
+        </a>
+        <a href="/lotto/list" className="hover:text-white transition-colors">
           전체 당첨번호 →
-        </Link>
-        <Link href={`/lotto/number/${num1}`} className="hover:text-white transition-colors">
+        </a>
+        <a href={`/lotto/number/${num1}`} className="hover:text-white transition-colors">
           {num1}번 분석 →
-        </Link>
-        <Link href={`/lotto/number/${num2}`} className="hover:text-white transition-colors">
+        </a>
+        <a href={`/lotto/number/${num2}`} className="hover:text-white transition-colors">
           {num2}번 분석 →
-        </Link>
+        </a>
       </div>
 
       <CrossSectionLinks current="pair" className="bg-gray-800/50 rounded-xl p-5 border border-gray-700/50" />

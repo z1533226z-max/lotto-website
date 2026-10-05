@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { MBTI_PROFILES, MBTI_GROUP_INFO } from '@/data/mbtiLotto';
 import type { MbtiProfile } from '@/data/mbtiLotto';
@@ -41,7 +40,7 @@ function MiniLottoBall({ number }: { number: number }) {
 function MbtiCard({ profile }: { profile: MbtiProfile }) {
   const groupInfo = MBTI_GROUP_INFO[profile.group];
   return (
-    <Link
+    <a
       href={`/lotto/mbti/${profile.type.toLowerCase()}`}
       className="block bg-gray-800/60 rounded-xl p-5 border border-gray-700 hover:border-gray-500 transition-all hover:scale-[1.02]"
     >
@@ -64,7 +63,7 @@ function MbtiCard({ profile }: { profile: MbtiProfile }) {
           <MiniLottoBall key={n} number={n} />
         ))}
       </div>
-    </Link>
+    </a>
   );
 }
 

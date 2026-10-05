@@ -1,6 +1,5 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import { BarChart3, TrendingUp, Hash, BookOpen, Calendar } from 'lucide-react';
@@ -79,7 +78,7 @@ export default function LottoStatisticsPage() {
           더 깊이 분석하기
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link
+          <a
             href="/lotto/pattern/odd-even"
             className="group rounded-2xl p-5 transition-all hover:scale-[1.02]"
             style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
@@ -91,9 +90,9 @@ export default function LottoStatisticsPage() {
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               홀짝, 고저, 연속번호, AC값 등 8가지 패턴 분석
             </p>
-          </Link>
+          </a>
 
-          <Link
+          <a
             href="/lotto/number/1"
             className="group rounded-2xl p-5 transition-all hover:scale-[1.02]"
             style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
@@ -105,9 +104,9 @@ export default function LottoStatisticsPage() {
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               1~45번 각 번호의 출현 빈도, 동반 출현, 미출현 간격
             </p>
-          </Link>
+          </a>
 
-          <Link
+          <a
             href="/lotto/dream"
             className="group rounded-2xl p-5 transition-all hover:scale-[1.02]"
             style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
@@ -119,9 +118,9 @@ export default function LottoStatisticsPage() {
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               꿈 키워드로 행운의 로또 번호 찾기
             </p>
-          </Link>
+          </a>
 
-          <Link
+          <a
             href={`/lotto/year/${new Date().getFullYear()}`}
             className="group rounded-2xl p-5 transition-all hover:scale-[1.02]"
             style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
@@ -133,7 +132,7 @@ export default function LottoStatisticsPage() {
             <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               연도별 당첨번호 트렌드와 변화 추이
             </p>
-          </Link>
+          </a>
         </div>
 
         {/* 패턴 분석 전체 목록 */}
@@ -150,14 +149,14 @@ export default function LottoStatisticsPage() {
               { href: '/lotto/pattern/gap', label: '번호 간격' },
               { href: '/lotto/pattern/ac-value', label: 'AC값 분석' },
             ].map(({ href, label }) => (
-              <Link
+              <a
                 key={href}
                 href={href}
                 className="px-3 py-1.5 rounded-lg text-sm transition-colors hover:opacity-80"
                 style={{ backgroundColor: 'var(--surface-hover)', color: 'var(--text-secondary)' }}
               >
                 {label}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -167,7 +166,7 @@ export default function LottoStatisticsPage() {
           <h3 className="font-semibold mb-3" style={{ color: 'var(--text)' }}>번호별 분석 바로가기</h3>
           <div className="flex flex-wrap gap-1.5">
             {Array.from({ length: 45 }, (_, i) => i + 1).map((num) => (
-              <Link
+              <a
                 key={num}
                 href={`/lotto/number/${num}`}
                 className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-colors hover:opacity-80"
@@ -177,7 +176,7 @@ export default function LottoStatisticsPage() {
                 }}
               >
                 {num}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -195,7 +194,7 @@ export default function LottoStatisticsPage() {
             { href: '/lotto/birthday/01-15', label: '생일 행운번호', desc: '생년월일 번호 추천' },
             { href: '/lotto/monthly/2026-04', label: '월별 아카이브', desc: '연월별 당첨 모아보기' },
           ].map(({ href, label, desc }) => (
-            <Link
+            <a
               key={href}
               href={href}
               className="group rounded-xl p-4 transition-all hover:scale-[1.02]"
@@ -203,7 +202,7 @@ export default function LottoStatisticsPage() {
             >
               <span className="font-semibold text-sm block" style={{ color: 'var(--primary)' }}>{label}</span>
               <span className="text-xs mt-1 block" style={{ color: 'var(--text-secondary)' }}>{desc}</span>
-            </Link>
+            </a>
           ))}
         </div>
       </section>
@@ -212,20 +211,20 @@ export default function LottoStatisticsPage() {
       <section className="mt-8">
         <SectionFrame title="관련 분석">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Link href="/lotto/analysis/weekly" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+            <a href="/lotto/analysis/weekly" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
               <Calendar className="w-8 h-8 text-yellow-400 shrink-0" />
               <div>
                 <p className="font-semibold text-sm">주간 번호 분석</p>
                 <p className="text-xs text-gray-400">이번 주 핫넘버, 트렌드, 패턴 분석</p>
               </div>
-            </Link>
-            <Link href="/lotto/numbers" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+            </a>
+            <a href="/lotto/numbers" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
               <Hash className="w-8 h-8 text-blue-400 shrink-0" />
               <div>
                 <p className="font-semibold text-sm">AI 번호 생성</p>
                 <p className="text-xs text-gray-400">통계 기반 AI 추천 번호 받기</p>
               </div>
-            </Link>
+            </a>
           </div>
         </SectionFrame>
       </section>

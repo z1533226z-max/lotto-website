@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { RefreshCw, TrendingUp, Map, BarChart3, ClipboardList, Flame, Snowflake, Clock, CircleDot, AlertTriangle } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Tabs from '@/components/ui/Tabs';
@@ -229,13 +228,13 @@ const DataSummary: React.FC<{ statistics: NumberStatistics[]; lottoData: LottoRe
                 {latestRound.drawDate}
               </span>
             </h4>
-            <Link
+            <a
               href="/lotto/recent"
               className="text-xs font-medium transition-opacity hover:opacity-80"
               style={{ color: '#D36135' }}
             >
               전체 보기 →
-            </Link>
+            </a>
           </div>
           <div className="flex items-center gap-2 mt-3">
             {latestRound.numbers.map((n: number) => {

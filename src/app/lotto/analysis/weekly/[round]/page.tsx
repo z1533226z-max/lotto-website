@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
@@ -62,30 +61,30 @@ export default async function WeeklyAnalysisRoundPage({ params }: Props) {
       {/* 이전/다음 네비게이션 */}
       <div className="flex justify-between items-center mt-4 mb-2">
         {hasPrev ? (
-          <Link
+          <a
             href={`/lotto/analysis/weekly/${round - 1}`}
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             <ChevronLeft size={16} /> {round - 1}회
-          </Link>
+          </a>
         ) : <span />}
         {hasNext ? (
-          <Link
+          <a
             href={`/lotto/analysis/weekly/${round + 1}`}
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             {round + 1}회 <ChevronRight size={16} />
-          </Link>
+          </a>
         ) : (
-          <Link
+          <a
             href="/lotto/analysis/weekly"
             className="inline-flex items-center gap-1 text-sm"
             style={{ color: 'var(--accent)' }}
           >
             최신 분석 <ArrowRight size={14} />
-          </Link>
+          </a>
         )}
       </div>
 
@@ -184,27 +183,27 @@ export default async function WeeklyAnalysisRoundPage({ params }: Props) {
 
       {/* 관련 링크 */}
       <div className="flex flex-wrap gap-3 mt-6 mb-4">
-        <Link
+        <a
           href={`/lotto/${analysis.round}`}
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           {analysis.round}회 상세보기 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/statistics"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
         >
           전체 통계 <ArrowRight size={14} />
-        </Link>
-        <Link
+        </a>
+        <a
           href="/lotto/analysis/weekly"
           className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium"
           style={{ background: 'var(--accent)', color: '#fff', border: 'none' }}
         >
           최신 주간분석 <ArrowRight size={14} />
-        </Link>
+        </a>
       </div>
 
       {/* JSON-LD */}

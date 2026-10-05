@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
 
@@ -140,9 +139,9 @@ export default function BonusNumberContent({
             return (
               <div key={c.number} className="flex items-center gap-3">
                 <span className="text-sm text-gray-400 w-6">{i + 1}.</span>
-                <Link href={`/lotto/number/${c.number}`} className="flex-shrink-0">
+                <a href={`/lotto/number/${c.number}`} className="flex-shrink-0">
                   <LottoNumbers numbers={[c.number]} size="sm" />
-                </Link>
+                </a>
                 <div className="flex-1 bg-gray-700/30 rounded-full h-5 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-500/60 to-blue-400/40 rounded-full flex items-center justify-end pr-2"
@@ -162,7 +161,7 @@ export default function BonusNumberContent({
         <h2 className="text-lg font-bold text-white mb-4">🏆 보너스번호 출현 순위</h2>
         <div className="grid grid-cols-5 sm:grid-cols-9 gap-2">
           {allBonusFreq.slice(0, 45).map(item => (
-            <Link
+            <a
               key={item.number}
               href={`/lotto/bonus/${item.number}`}
               className={`text-center p-2 rounded-lg border transition-colors ${
@@ -175,7 +174,7 @@ export default function BonusNumberContent({
                 {item.number}
               </div>
               <div className="text-xs text-gray-400">{item.freq}회</div>
-            </Link>
+            </a>
           ))}
         </div>
       </section>
@@ -197,9 +196,9 @@ export default function BonusNumberContent({
               {recentRounds.map(r => (
                 <tr key={r.round} className="border-b border-gray-800/50 hover:bg-gray-800/30">
                   <td className="py-2 px-3">
-                    <Link href={`/lotto/${r.round}`} className="text-blue-400 hover:underline">
+                    <a href={`/lotto/${r.round}`} className="text-blue-400 hover:underline">
                       {r.round}회
-                    </Link>
+                    </a>
                   </td>
                   <td className="py-2 px-3 text-gray-400">{r.date}</td>
                   <td className="py-2 px-3">
@@ -219,24 +218,24 @@ export default function BonusNumberContent({
       <section className="bg-gray-800/30 rounded-xl p-5 border border-gray-700/30">
         <h2 className="text-lg font-bold text-white mb-3">🔗 관련 분석</h2>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/lotto/number/${num}`} className="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg text-sm hover:bg-blue-500/20 transition-colors">
+          <a href={`/lotto/number/${num}`} className="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg text-sm hover:bg-blue-500/20 transition-colors">
             {num}번 본번호 분석
-          </Link>
-          <Link href={`/lotto/ending/${num % 10}`} className="px-3 py-1.5 bg-purple-500/10 text-purple-400 rounded-lg text-sm hover:bg-purple-500/20 transition-colors">
+          </a>
+          <a href={`/lotto/ending/${num % 10}`} className="px-3 py-1.5 bg-purple-500/10 text-purple-400 rounded-lg text-sm hover:bg-purple-500/20 transition-colors">
             끝수 {num % 10} 분석
-          </Link>
-          <Link href="/lotto/statistics" className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
+          </a>
+          <a href="/lotto/statistics" className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
             전체 통계
-          </Link>
+          </a>
           {num > 1 && (
-            <Link href={`/lotto/bonus/${num - 1}`} className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
+            <a href={`/lotto/bonus/${num - 1}`} className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
               ← {num - 1}번 보너스
-            </Link>
+            </a>
           )}
           {num < 45 && (
-            <Link href={`/lotto/bonus/${num + 1}`} className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
+            <a href={`/lotto/bonus/${num + 1}`} className="px-3 py-1.5 bg-gray-500/10 text-gray-400 rounded-lg text-sm hover:bg-gray-500/20 transition-colors">
               {num + 1}번 보너스 →
-            </Link>
+            </a>
           )}
         </div>
       </section>

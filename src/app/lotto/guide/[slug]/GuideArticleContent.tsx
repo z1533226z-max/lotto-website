@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import SectionFrame from '@/components/ui/SectionFrame';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -196,7 +195,7 @@ export default function GuideArticleContent({ article, relatedArticles }: Props)
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {relatedArticles.map(related => (
-              <Link
+              <a
                 key={related.slug}
                 href={`/lotto/guide/${related.slug}`}
                 className={cn(
@@ -223,7 +222,7 @@ export default function GuideArticleContent({ article, relatedArticles }: Props)
                 >
                   {related.title}
                 </p>
-              </Link>
+              </a>
             ))}
           </div>
         </Card>
@@ -231,7 +230,7 @@ export default function GuideArticleContent({ article, relatedArticles }: Props)
 
       {/* Back to Guide Hub */}
       <div className="text-center mb-8">
-        <Link
+        <a
           href="/lotto/guide"
           className={cn(
             'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl',
@@ -246,7 +245,7 @@ export default function GuideArticleContent({ article, relatedArticles }: Props)
           }}
         >
           {'\u2190 \uB85C\uB610 \uAC00\uC774\uB4DC \uBAA9\uB85D\uC73C\uB85C'}
-        </Link>
+        </a>
       </div>
     </div>
   );
