@@ -10,6 +10,9 @@ const nextConfig = {
       { source: '/prediction', destination: '/', permanent: true },
       { source: '/results', destination: '/lotto/list', permanent: true },
       { source: '/statistics', destination: '/lotto/statistics', permanent: true },
+      // 빈도 허브 → 전체 기간. 페이지의 redirect()는 빌드 때 정적 프리렌더되어
+      // Location 헤더 없는 307이 나가므로, 페이지보다 먼저 처리되는 설정 리다이렉트로 처리
+      { source: '/lotto/frequency', destination: '/lotto/frequency/all', permanent: true },
     ];
   },
   // AdSense·GA4 도메인 허용을 위한 CSP 설정
