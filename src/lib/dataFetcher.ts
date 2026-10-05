@@ -1,6 +1,7 @@
 import { cache } from 'react';
 import type { LottoResult } from '@/types/lotto';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
+import { getLatestDrawnRound } from '@/lib/drawSchedule';
 
 // gon-services 백엔드 URL (서버 전용 — NEXT_PUBLIC_ 제거하여 클라이언트 노출 방지)
 const GON_SERVICES_URL = process.env.GON_SERVICES_URL || '';
@@ -27,13 +28,11 @@ const CACHE_TTL = 60 * 60 * 1000; // 1시간
 let allDataCache: { data: LottoResult[]; fetchedAt: number } | null = null;
 const ALL_DATA_CACHE_TTL = 30 * 60 * 1000; // 30분
 
-// 현재 예상 최신 회차 계산
-export function getEstimatedLatestRound(): number {
-  const startDate = new Date(2002, 11, 7); // 2002-12-07 (로컬 타임존, aiPredictionGenerator와 통일)
-  const now = new Date();
-  const diffTime = now.getTime() - startDate.getTime();
-  const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-  return diffWeeks + 1;
+// 현재 추첨이 끝난 최신 회차 (KST 토요일 20:35 기준).
+// 이전 구현은 서버 로컬 타임존(Vercel=UTC) 자정 기준이라 KST 토요일 09:00~20:35에
+// 아직 추첨하지 않은 회차를 최신으로 계산했다.
+export function getEstimatedLatestRound(now: Date = new Date()): number {
+  return getLatestDrawnRound(now);
 }
 
 // gon-services 백엔드 API에서 전체 데이터 fetch

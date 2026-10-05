@@ -4,16 +4,18 @@ import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import { BarChart3, TrendingUp, Hash, BookOpen, Calendar } from 'lucide-react';
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: "로또 당첨번호 통계 분석 - 2026년 최신 핫/콜드 번호 | 로또킹",
-  description: "1회~1,200+회 전체 로또 당첨번호 통계! 가장 많이 나온 번호, 최근 핫번호, 안 나온 콜드번호, 연속번호 패턴까지. 무료 데이터 분석으로 다음 당첨 확률을 높이세요.",
+  description: "1회~1,200+회 전체 로또 당첨번호 통계! 가장 많이 나온 번호, 최근 핫번호, 안 나온 콜드번호, 연속번호 패턴까지. 무료 데이터 분석으로 번호 선택에 참고하세요.",
   alternates: {
     canonical: '/lotto/statistics',
   },
   openGraph: {
     title: "로또 당첨번호 통계 분석 - 2026년 최신 핫/콜드 번호 | 로또킹",
     description: '1,200회+ 로또 데이터 기반 종합 통계 분석. 핫/콜드 번호, 구간별 분포, 패턴 확인!',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
@@ -189,7 +191,7 @@ export default function LottoStatisticsPage() {
           {[
             { href: '/lotto/ending/3', label: '끝수 분석', desc: '끝수별 출현 통계' },
             { href: '/lotto/bonus/7', label: '보너스번호', desc: '보너스 출현 통계' },
-            { href: '/lotto/sum/101-120', label: '합계 구간', desc: '합계별 당첨 분석' },
+            { href: '/lotto/sum/131-145', label: '합계 구간', desc: '합계별 당첨 분석' },
             { href: '/lotto/pair/7-21', label: '번호 궁합', desc: '두 번호 동시출현' },
             { href: '/lotto/birthday/01-15', label: '생일 행운번호', desc: '생년월일 번호 추천' },
             { href: '/lotto/monthly/2026-04', label: '월별 아카이브', desc: '연월별 당첨 모아보기' },
@@ -218,7 +220,7 @@ export default function LottoStatisticsPage() {
                 <p className="text-xs text-gray-400">이번 주 핫넘버, 트렌드, 패턴 분석</p>
               </div>
             </a>
-            <a href="/lotto/numbers" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+            <a href="/#generator" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
               <Hash className="w-8 h-8 text-blue-400 shrink-0" />
               <div>
                 <p className="font-semibold text-sm">AI 번호 생성</p>

@@ -1,4 +1,3 @@
-
 export default function NotFound() {
   return (
     <div className="min-h-[100dvh] flex items-center justify-center bg-background px-4">

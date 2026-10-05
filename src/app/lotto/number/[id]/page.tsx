@@ -4,6 +4,7 @@ import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import NumberAnalysisContent from './NumberAnalysisContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { id: string };
@@ -39,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 ${num}번 번호 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/number/${num}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }

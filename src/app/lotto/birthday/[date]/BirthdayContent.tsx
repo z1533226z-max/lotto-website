@@ -2,6 +2,7 @@
 
 import LottoNumbers from '@/components/lotto/LottoNumbers';
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
 
 interface NumberStat {
   number: number;
@@ -319,6 +320,8 @@ export default function BirthdayContent({
           {formatPrevNextDate(nextDate)} &rarr;
         </a>
       </div>
+
+      <SajuYearlyLink />
 
       <CrossSectionLinks current="birthday" theme="light" />
 

@@ -4,6 +4,7 @@ import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
     title: '로또 당첨번호 전체 조회 | 로또킹',
     description: '역대 전체 로또 당첨번호 목록',
     url: 'https://lotto.gon.ai.kr/lotto/list',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

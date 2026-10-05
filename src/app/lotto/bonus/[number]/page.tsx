@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import BonusNumberContent from './BonusNumberContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { number: string };
@@ -38,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 보너스번호 ${num}번 통계 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/bonus/${num}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -137,21 +140,23 @@ export default async function BonusNumberPage({ params }: Props) {
         { label: `보너스 ${num}번 분석` },
       ]} />
 
-      <BonusNumberContent
-        num={num}
-        totalRounds={totalRounds}
-        latestRound={latestRound}
-        frequency={frequency}
-        mainFrequency={mainFrequency}
-        recentHits={recentHits}
-        avgGap={avgGap}
-        maxGap={maxGap}
-        currentGap={currentGap}
-        rank={rank}
-        topCompanionNumbers={topCompanionNumbers}
-        recentRounds={recentRounds}
-        allBonusFreq={allBonusFreq}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <BonusNumberContent
+          num={num}
+          totalRounds={totalRounds}
+          latestRound={latestRound}
+          frequency={frequency}
+          mainFrequency={mainFrequency}
+          recentHits={recentHits}
+          avgGap={avgGap}
+          maxGap={maxGap}
+          currentGap={currentGap}
+          rank={rank}
+          topCompanionNumbers={topCompanionNumbers}
+          recentRounds={recentRounds}
+          allBonusFreq={allBonusFreq}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

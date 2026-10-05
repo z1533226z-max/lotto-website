@@ -15,7 +15,6 @@ const mainNavLinks = [
   { name: '통계분석', path: '/lotto/statistics' },
   { name: '번호분석', path: '/lotto/number/1' },
   { name: '판매점', path: '/lotto/stores' },
-  { name: '커뮤니티', path: '/community' },
 ];
 
 const toolLinks = [

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { MBTI_PROFILES, MBTI_GROUP_INFO } from '@/data/mbtiLotto';
 import type { MbtiProfile } from '@/data/mbtiLotto';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     title: 'MBTI별 로또 행운번호 추천',
     description: '16가지 MBTI 성격유형에 맞는 로또 행운번호와 구매 전략을 확인하세요.',
     url: 'https://lotto.gon.ai.kr/lotto/mbti',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

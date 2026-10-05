@@ -6,12 +6,18 @@ const nextConfig = {
   // 오래된 URL을 새 경로로 리디렉션 (Google Search Console 404 해결)
   async redirects() {
     return [
-      { source: '/prediction', destination: '/lotto/numbers', permanent: true },
+      // /lotto/numbers 페이지는 없음(404) → AI 번호 생성기가 있는 홈으로
+      { source: '/prediction', destination: '/', permanent: true },
       { source: '/results', destination: '/lotto/list', permanent: true },
       { source: '/statistics', destination: '/lotto/statistics', permanent: true },
     ];
   },
-  // AdSense 도메인 허용을 위한 CSP 설정
+  // AdSense·GA4 도메인 허용을 위한 CSP 설정
+  // 기준: Google 태그 CSP 가이드(GA4 + 광고 기능) https://developers.google.com/tag-platform/security/guides/csp
+  //  - img-src: www.googletagmanager.com, *.google-analytics.com, *.google.<TLD>(한국 *.google.co.kr)
+  //  - connect-src: *.google.<TLD>, (*.analytics.google.com: GA4 수집 도메인)
+  //  - frame-src: www.googletagmanager.com
+  // 애드센스 트래픽 품질 검증(*.adtrafficquality.google)은 이미지 비콘도 쓰므로 img-src에도 허용
   async headers() {
     return [
       {
@@ -33,18 +39,25 @@ const nextConfig = {
               *.google.com
               *.doubleclick.net
               *.googleadservices.com
-              *.adtrafficquality.google;
+              *.adtrafficquality.google
+              www.googletagmanager.com;
               img-src 'self' data: 
               *.googlesyndication.com 
               *.google.com 
               *.gstatic.com
               *.doubleclick.net
-              *.googleadservices.com;
+              *.googleadservices.com
+              *.google-analytics.com
+              www.googletagmanager.com
+              *.adtrafficquality.google
+              *.google.co.kr;
               connect-src 'self'
               *.googlesyndication.com
               *.google.com
               *.google-analytics.com
+              *.analytics.google.com
               *.googletagmanager.com
+              *.google.co.kr
               *.doubleclick.net
               *.googleadservices.com
               *.adtrafficquality.google

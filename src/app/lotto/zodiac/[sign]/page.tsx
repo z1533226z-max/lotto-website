@@ -4,7 +4,10 @@ import { getAllLottoData } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { ZODIAC_IDS, ZODIAC_PROFILES, getZodiacProfile, ELEMENT_INFO } from '@/data/zodiacLotto';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import ZodiacContent from './ZodiacContent';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { sign: string };
@@ -31,6 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${profile.name} ${profile.emoji} 로또 행운번호 추천`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/zodiac/${params.sign}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -120,18 +124,20 @@ export default async function ZodiacPage({ params }: Props) {
         ]}
       />
 
-      <ZodiacContent
-        profile={profile}
-        elementInfo={elementInfo}
-        numberStats={numberStats}
-        avoidStats={avoidStats}
-        matchedRounds={matchedRounds}
-        totalRounds={totalRounds}
-        bestPair={bestPairProfile ? { id: bestPairProfile.id, name: bestPairProfile.name, emoji: bestPairProfile.emoji } : null}
-        worstPair={worstPairProfile ? { id: worstPairProfile.id, name: worstPairProfile.name, emoji: worstPairProfile.emoji } : null}
-        prevSign={{ id: prevProfile.id, name: prevProfile.name }}
-        nextSign={{ id: nextProfile.id, name: nextProfile.name }}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <ZodiacContent
+          profile={profile}
+          elementInfo={elementInfo}
+          numberStats={numberStats}
+          avoidStats={avoidStats}
+          matchedRounds={matchedRounds}
+          totalRounds={totalRounds}
+          bestPair={bestPairProfile ? { id: bestPairProfile.id, name: bestPairProfile.name, emoji: bestPairProfile.emoji } : null}
+          worstPair={worstPairProfile ? { id: worstPairProfile.id, name: worstPairProfile.name, emoji: worstPairProfile.emoji } : null}
+          prevSign={{ id: prevProfile.id, name: prevProfile.name }}
+          nextSign={{ id: nextProfile.id, name: nextProfile.name }}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

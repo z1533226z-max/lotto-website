@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { BLOOD_TYPE_PROFILES } from '@/data/bloodTypeLotto';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     title: '혈액형별 로또 행운번호 추천',
     description: 'A형, B형, O형, AB형 성격에 맞는 로또 행운번호와 구매 전략을 확인하세요.',
     url: 'https://lotto.gon.ai.kr/lotto/blood-type',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

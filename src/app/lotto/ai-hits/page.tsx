@@ -234,9 +234,13 @@ export default function AIHitsPage() {
       </div>
 
       {/* Hit records */}
-      <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>
+      <h2 className="text-lg font-bold mb-2" style={{ color: 'var(--text)' }}>
         회차별 적중 기록
       </h2>
+      <p className="text-xs mb-4" style={{ color: 'var(--text-tertiary)' }}>
+        각 회차 추첨 이전 데이터만으로 계산한 번호를 실제 당첨번호와 비교한 사후 검증 기록입니다.
+        2026년 10월부터 이 기준으로 다시 계산하므로, 그 전에 화면에 표시됐던 번호와 다를 수 있습니다.
+      </p>
 
       <div className="space-y-4">
         {multiSetResults.map((item) => {
@@ -466,7 +470,8 @@ export default function AIHitsPage() {
         <div className="space-y-1 text-xs" style={{ color: 'var(--text-tertiary)' }}>
           <p>* 매 회차 5가지 AI 전략으로 번호를 분석하며, 베스트 적중 세트를 하이라이트합니다.</p>
           <p>* 전략: 통계 기본 / 최근 트렌드 / 핫넘버 / 콜드넘버 역발상 / 균형 분석</p>
-          <p>* 모든 예측번호는 시드 기반 결정론적 생성으로, 과거 데이터 조작이 불가능합니다.</p>
+          <p>* 각 회차 예측번호는 그 회차 추첨 이전까지의 당첨 데이터만으로 계산합니다(시드 기반 결정론적 생성). 해당 회차 결과는 반영되지 않으므로 추첨 후에도 번호가 바뀌지 않습니다.</p>
+          <p>* 로또는 매 회차 독립적인 추첨이므로, 과거 적중 기록이 앞으로의 당첨을 보장하거나 당첨 확률을 높여 주지 않습니다.</p>
         </div>
       </Card>
     </>

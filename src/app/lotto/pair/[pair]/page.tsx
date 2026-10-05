@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import { LottoStatisticsAnalyzer } from '@/lib/statisticsAnalyzer';
 import Breadcrumb from '@/components/layout/Breadcrumb';
+import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
+import { getFreshLinkData } from '@/lib/freshLinks';
 import PairAnalysisContent from './PairAnalysisContent';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 interface Props {
   params: { pair: string };
@@ -56,6 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `로또 ${num1}번 & ${num2}번 동시 출현 분석`,
       description,
       url: `https://lotto.gon.ai.kr/lotto/pair/${num1}-${num2}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -147,30 +150,32 @@ export default async function PairAnalysisPage({ params }: Props) {
         { label: `${num1}번 & ${num2}번 조합` },
       ]} />
 
-      <PairAnalysisContent
-        num1={num1}
-        num2={num2}
-        totalRounds={totalRounds}
-        latestRound={latestRound}
-        pairCount={pairCount}
-        pairRate={pairRate}
-        lastPairRound={lastPairRound}
-        pairGap={pairGap}
-        recentPairCount={recentPairCount}
-        recentRate={recentRate}
-        theoreticalRate={THEORETICAL_RATE}
-        freq1={freq1}
-        freq2={freq2}
-        hot1={hot1}
-        hot2={hot2}
-        last1={last1}
-        last2={last2}
-        topCompanions={topCompanions}
-        pairRounds={pairRounds.slice(0, 20)}
-        avgPairGap={avgPairGap}
-        maxPairGap={maxPairGap}
-        minPairGap={minPairGap}
-      />
+      <FreshLinksProvider value={getFreshLinkData(allData)}>
+        <PairAnalysisContent
+          num1={num1}
+          num2={num2}
+          totalRounds={totalRounds}
+          latestRound={latestRound}
+          pairCount={pairCount}
+          pairRate={pairRate}
+          lastPairRound={lastPairRound}
+          pairGap={pairGap}
+          recentPairCount={recentPairCount}
+          recentRate={recentRate}
+          theoreticalRate={THEORETICAL_RATE}
+          freq1={freq1}
+          freq2={freq2}
+          hot1={hot1}
+          hot2={hot2}
+          last1={last1}
+          last2={last2}
+          topCompanions={topCompanions}
+          pairRounds={pairRounds.slice(0, 20)}
+          avgPairGap={avgPairGap}
+          maxPairGap={maxPairGap}
+          minPairGap={minPairGap}
+        />
+      </FreshLinksProvider>
     </>
   );
 }

@@ -6,8 +6,9 @@
  *
  * 중요: "추첨 전 예측"의 공정성
  * - 정적 데이터(aiPredictionHistory.ts): 배포 전에 확정되므로 공정
- * - 동적 생성: 현재 전체 통계를 사용하므로 해당 회차 데이터가 포함될 수 있음
+ * - 동적 생성: statistics만 넘기면 현재 전체 통계(해당 회차 결과 포함)가 쓰인다
  * - useFairMode 옵션: true이면 해당 회차 미만의 데이터만으로 통계를 재계산
+ *   → /api/ai-predictions는 항상 useFairMode로 생성한다 (적중 기록 = 추첨 전에 보였던 번호)
  * - 단, 시드 기반이므로 통계 유무와 관계없이 결과는 결정론적
  */
 
@@ -15,6 +16,7 @@ import type { LottoResult, NumberStatistics } from '@/types/lotto';
 import type { AIPrediction, AIMultiSetPrediction } from '@/data/aiPredictionHistory';
 import { LOTTO_CONFIG } from './constants';
 import { LottoStatisticsAnalyzer } from './statisticsAnalyzer';
+import { getLatestDrawnRound } from './drawSchedule';
 
 /**
  * 시드 기반 의사 난수 생성기 (Mulberry32)
@@ -187,14 +189,10 @@ export function generateDynamicPredictions(
 }
 
 /**
- * 현재 최신 회차 번호 추정 (클라이언트/서버 공용)
+ * 현재 추첨이 끝난 최신 회차 (클라이언트/서버 공용, KST 토요일 20:35 기준)
  */
 export function estimateCurrentRound(): number {
-  const firstDraw = new Date(2002, 11, 7); // 2002-12-07 (1회)
-  const now = new Date();
-  const diffMs = now.getTime() - firstDraw.getTime();
-  const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
-  return diffWeeks + 1;
+  return getLatestDrawnRound();
 }
 
 /**

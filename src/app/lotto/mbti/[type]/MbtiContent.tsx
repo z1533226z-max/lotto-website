@@ -1,6 +1,7 @@
 'use client';
 
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
 
 interface NumberStat {
   number: number;
@@ -312,6 +313,8 @@ export default function MbtiContent({
           {nextType} →
         </a>
       </nav>
+
+      <SajuYearlyLink />
 
       {/* 다른 분석 더보기 (내부링크) */}
       <CrossSectionLinks current="number" className="bg-gray-800/60 rounded-xl p-5 border border-gray-700" />

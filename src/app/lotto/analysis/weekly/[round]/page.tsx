@@ -7,15 +7,20 @@ import type { Metadata } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { generateWeeklyAnalysisForRound } from '@/lib/weeklyAnalysisGenerator';
 import LottoBall from '@/components/lotto/LottoBall';
-import { NAVER_ONLY_ROBOTS, isIndexableWeeklyAnalysis } from '@/lib/seo';
+import { NAVER_ONLY_ROBOTS, isIndexableWeeklyAnalysis, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400; // 24시간 캐시 (아카이브는 변하지 않음)
 
 type Props = { params: Promise<{ round: string }> };
 
+/** 앞자리 0·문자 없는 양의 정수만 허용 (그 외는 NaN → notFound) */
+function parseRoundParam(raw: string): number {
+  return /^[1-9]\d{0,4}$/.test(raw) ? Number(raw) : NaN;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { round: roundStr } = await params;
-  const round = parseInt(roundStr, 10);
+  const round = parseRoundParam(roundStr);
   const allData = await getAllLottoData();
   const latestRound = allData[allData.length - 1]?.round ?? 0;
   // 최신 52회만 구글/빙 색인, 그 이전 아카이브는 네이버 전용
@@ -27,13 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${round}회 주간 로또 분석 | 로또킹`,
       description: `${round}회 로또 당첨번호 심층 분석 - 핫넘버, 콜드넘버, 패턴 분석!`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
 
 export default async function WeeklyAnalysisRoundPage({ params }: Props) {
   const { round: roundStr } = await params;
-  const round = parseInt(roundStr, 10);
+  const round = parseRoundParam(roundStr);
 
   if (isNaN(round) || round < 11) return notFound();
 

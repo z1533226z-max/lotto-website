@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 import {
   US_GUIDE_ARTICLES,
   getUsGuide,
@@ -41,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime,
       authors: [GUIDE_AUTHOR.name],
       section: article.category,
+      images: DEFAULT_OG_IMAGES,
     },
     twitter: {
       card: 'summary_large_image',

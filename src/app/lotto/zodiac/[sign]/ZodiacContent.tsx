@@ -1,6 +1,7 @@
 'use client';
 
 import CrossSectionLinks from '@/components/lotto/CrossSectionLinks';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
 
 interface NumberStat {
   number: number;
@@ -318,6 +319,8 @@ export default function ZodiacContent({
           {nextSign.name} →
         </a>
       </nav>
+
+      <SajuYearlyLink />
 
       <CrossSectionLinks current="zodiac" className="bg-gray-800/60 rounded-xl p-5 border border-gray-700" />
     </div>

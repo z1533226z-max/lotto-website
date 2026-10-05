@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { ZODIAC_PROFILES, ELEMENT_INFO } from '@/data/zodiacLotto';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     title: '별자리별 로또 행운번호 추천',
     description: '12별자리 성격에 맞는 로또 행운번호와 구매 전략을 확인하세요.',
     url: 'https://lotto.gon.ai.kr/lotto/zodiac',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

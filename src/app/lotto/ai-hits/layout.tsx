@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'AI 로또 적중 기록 - 예측 번호 실제 결과 공개 | 로또킹',
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'AI 로또 적중 기록 - 실제 결과 공개 | 로또킹',
     description: 'AI 로또 예측 번호의 실제 적중 결과를 매주 공개합니다. 투명한 성과 검증!',
+    images: DEFAULT_OG_IMAGES,
   },
   alternates: {
     canonical: 'https://lotto.gon.ai.kr/lotto/ai-hits',

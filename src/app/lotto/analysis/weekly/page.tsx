@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { generateWeeklyAnalysis } from '@/lib/weeklyAnalysisGenerator';
 import LottoBall from '@/components/lotto/LottoBall';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
     description: '매주 자동 업데이트되는 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 패턴 분석!',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 

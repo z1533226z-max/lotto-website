@@ -1,41 +1,17 @@
 /**
  * 로또 관련 유틸리티 함수
  */
+import { getLatestDrawnRound } from './drawSchedule';
 
 /**
- * 다음 추첨 회차 번호를 계산합니다.
- * 로또 추첨: 매주 토요일 20:45 KST
- * 1회차 기준일: 2002-12-07
+ * 다음 추첨 회차 번호 (KST 토요일 20:35 추첨 기준, 실행 환경 타임존과 무관).
+ * 예) 토 20:34 KST → 그날 추첨할 회차, 20:35 이후 → 다음 주 회차
+ *
+ * 이전 구현은 브라우저(KST)에서 토요일 18:00 이전, 서버(UTC)에서 토요일 09:00 이전에
+ * 이미 추첨이 끝난 지난 회차를 '다음 회차'로 돌려줬다.
  */
-export function getNextDrawRound(): number {
-  const now = new Date();
-
-  // KST로 변환
-  const kstOffset = 9 * 60; // UTC+9
-  const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const kstDate = new Date(utcMs + (kstOffset * 60000));
-
-  // 1회차 기준일 (2002-12-07 토요일)
-  const firstDraw = new Date(Date.UTC(2002, 11, 7)); // month is 0-indexed
-  const firstDrawKst = new Date(firstDraw.getTime() + (kstOffset * 60000));
-
-  const diffMs = kstDate.getTime() - firstDrawKst.getTime();
-  const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
-
-  // 현재 주의 회차 (0-indexed 주 → 1-indexed 회차)
-  const currentWeekRound = diffWeeks + 1;
-
-  const dayOfWeek = kstDate.getDay(); // 0=일, 6=토
-  const hour = kstDate.getHours();
-  const minute = kstDate.getMinutes();
-
-  // 토요일 20:45 이전이면 아직 추첨 전 → 현재 주의 회차
-  if (dayOfWeek === 6 && (hour < 20 || (hour === 20 && minute < 45))) {
-    return currentWeekRound;
-  }
-
-  // 그 외(토 20:45 이후, 일~금) → 추첨 완료, 다음 회차
-  return currentWeekRound + 1;
+export function getNextDrawRound(now: Date = new Date()): number {
+  return getLatestDrawnRound(now) + 1;
 }
 
 /**

@@ -10,6 +10,7 @@ import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save, Tren
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
 import type { LottoResult } from '@/types/lotto';
 import type { Metadata } from 'next';
+import { formatDrawMonthDayKo } from '@/lib/utils';
 
 export const revalidate = 3600;
 
@@ -182,15 +183,23 @@ const NumberGenerator = dynamic(
   }
 );
 
-export const metadata: Metadata = {
-  title: 'AI 로또 번호 추천 - 이번주 당첨 확률 높은 번호 5세트 무료 | 로또킹',
-  description: '무료 AI 로또 번호 추천! 1,200회+ 역대 데이터를 딥러닝 분석하여 매주 자동 추천. 당첨번호 조회, 통계 분석, 꿈번호, 세금 계산기까지 무료. 지금 바로 번호 받기!',
-  openGraph: {
-    title: 'AI 로또 번호 추천 - 이번주 당첨 확률 높은 번호 5세트 무료 | 로또킹',
-    description: '무료 AI 로또 번호 추천! 매주 자동 업데이트. 딥러닝 분석으로 이번주 고확률 번호 5세트 즉시 확인!',
-    url: 'https://lotto.gon.ai.kr',
-  },
-};
+// 제목에 데이터상 최신 회차·추첨일을 넣는다 (매주 자동 갱신, 아직 데이터가 없는 회차는 나오지 않음).
+// '당첨 확률 높은 번호'·'딥러닝'·'고확률'은 사실이 아니어서 쓰지 않는다.
+export async function generateMetadata(): Promise<Metadata> {
+  const latest = getLatestRound(await getAllLottoData());
+  const title = latest
+    ? `AI 로또 번호 추천 무료 5세트 - ${latest.round}회 당첨번호(${formatDrawMonthDayKo(latest.drawDate)}) | 로또킹`
+    : 'AI 로또 번호 추천 무료 5세트 | 로또킹';
+  return {
+    title,
+    description: '무료 AI 로또 번호 추천! 1,200회+ 역대 당첨 데이터의 출현 빈도·패턴을 반영해 매주 자동 추천. 당첨번호 조회, 통계 분석, 꿈번호, 세금 계산기까지 무료. 지금 바로 번호 받기!',
+    openGraph: {
+      title,
+      description: '무료 AI 로또 번호 추천! 매주 자동 업데이트. 역대 당첨 데이터 통계로 고른 이번주 추천 번호 5세트 즉시 확인!',
+      url: 'https://lotto.gon.ai.kr',
+    },
+  };
+}
 
 // 구조화 데이터 (JSON-LD) — 홈에서만 출력 (이전에는 layout에서 전 페이지에 주입됨)
 const webAppJsonLd = {

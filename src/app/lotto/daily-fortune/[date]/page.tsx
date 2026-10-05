@@ -11,7 +11,8 @@ import {
 } from '@/lib/dailyFortuneGenerator';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
-import { NAVER_ONLY_ROBOTS } from '@/lib/seo';
+import SajuYearlyLink from '@/components/promotion/SajuYearlyLink';
+import { NAVER_ONLY_ROBOTS, DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 // ISR: 1시간 캐시 (오늘 페이지), 과거 페이지는 영구 캐시
 export const revalidate = 3600;
@@ -133,6 +134,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${formatted} 띠별 로또 행운번호`,
       description: `사주 오행 분석 기반 12띠별 행운번호. 내 띠의 오늘 행운번호를 확인하세요!`,
       url: `https://lotto.gon.ai.kr/lotto/daily-fortune/${date}`,
+      images: DEFAULT_OG_IMAGES,
     },
   };
 }
@@ -302,6 +304,7 @@ export default async function DailyFortuneDatePage({ params }: PageProps) {
             );
           })}
         </div>
+        <SajuYearlyLink className="text-sm text-center mt-4" />
       </div>
 
       {/* 안내 */}

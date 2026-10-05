@@ -4,6 +4,7 @@ import { formatCurrency } from '@/lib/utils';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import SectionFrame from '@/components/ui/SectionFrame';
 import LottoNumbers from '@/components/lotto/LottoNumbers';
+import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const revalidate = 3600; // ISR: 1시간마다 재생성
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: '역대 로또 최고 당첨금 순위 | 로또킹',
     url: 'https://lotto.gon.ai.kr/lotto/rankings',
+    images: DEFAULT_OG_IMAGES,
   },
 };
 
