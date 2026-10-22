@@ -4,12 +4,44 @@ import React from 'react';
 import { Trophy } from 'lucide-react';
 import LottoNumbers from './LottoNumbers';
 import Card from '@/components/ui/Card';
-import { formatCurrency, formatDrawDateKo } from '@/lib/utils';
+import JustAnnouncedBadge from './JustAnnouncedBadge';
+import { formatCurrency, formatDrawDateKo, formatNumber } from '@/lib/utils';
+import { calculateNetPrize } from '@/lib/prizeTax';
 import type { LottoResult } from '@/types/lotto';
 
 interface Props {
   data: LottoResult;
   maxRound: number;
+  /** 당첨금 표 아래에 넣을 서버 렌더 구역 (다음 추첨·판매점·내 번호 확인) */
+  children?: React.ReactNode;
+}
+
+/** 등수별 당첨금 행: 1인 당첨금·당첨자 수·세후 실수령액 */
+function PrizeRow({ rank, prize, winners }: { rank: 1 | 2; prize: number; winners: number }) {
+  const net = calculateNetPrize(prize);
+  return (
+    <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4">
+      <h3 className="text-sm font-medium text-gray-600 mb-1">{rank}등 1인 당첨금</h3>
+      {prize > 0 ? (
+        <>
+          <p className={`text-xl font-bold ${rank === 1 ? 'text-primary' : 'text-secondary'}`}>
+            {formatCurrency(prize)}
+          </p>
+          <p className="text-xs text-gray-500">{formatNumber(prize)}원 · {formatNumber(winners)}명 당첨</p>
+          <p className="mt-2 text-sm text-gray-700">
+            세후 실수령 <strong className="text-gray-900">{formatCurrency(net.net)}</strong>
+            <span className="block text-xs text-gray-500">
+              {formatNumber(net.net)}원 (세금 {formatNumber(net.totalTax)}원, {prize > 300_000_000 ? '3억 이하 22%·초과분 33%' : '22%'})
+            </span>
+          </p>
+        </>
+      ) : (
+        <p className="text-sm text-gray-500">
+          {winners === 0 && rank === 1 ? '1등 당첨자 없음 (당첨금 이월)' : '당첨금 집계 중'}
+        </p>
+      )}
+    </div>
+  );
 }
 
 const sorted = (arr: number[]) => [...arr].sort((a, b) => a - b);
@@ -42,7 +74,7 @@ const analyzeNumbers = (numbers: number[]) => {
   return { oddCount, evenCount, lowCount, highCount, sum, lastDigitSum, consecutivePairs, bands };
 };
 
-const LottoRoundDetail: React.FC<Props> = ({ data, maxRound }) => {
+const LottoRoundDetail: React.FC<Props> = ({ data, maxRound, children }) => {
   const a = analyzeNumbers(data.numbers);
   const sortedNumbers = sorted(data.numbers).join(', ');
   const bandLabels = ['1~9', '10~19', '20~29', '30~39', '40~45'];
@@ -53,8 +85,9 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound }) => {
         <div className="space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-              <span className="flex items-center justify-center gap-2">
+              <span className="flex items-center justify-center gap-2 flex-wrap">
                 <Trophy className="w-7 h-7 text-yellow-500" /> 로또 {data.round}회 당첨번호
+                <JustAnnouncedBadge round={data.round} />
               </span>{' '}
               <span className="block mt-1 text-base md:text-lg font-medium text-gray-600">
                 ({formatDrawDateKo(data.drawDate)} 추첨)
@@ -72,25 +105,15 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-600 mb-1">1등 당첨금</h3>
-              <p className="text-xl font-bold text-primary">
-                {formatCurrency(data.prizeMoney.first)}
-              </p>
-              <p className="text-sm text-gray-500">
-                {data.prizeMoney.firstWinners}명 당첨
-              </p>
-            </div>
-            <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-600 mb-1">2등 당첨금</h3>
-              <p className="text-xl font-bold text-secondary">
-                {formatCurrency(data.prizeMoney.second)}
-              </p>
-              <p className="text-sm text-gray-500">
-                {data.prizeMoney.secondWinners}명 당첨
-              </p>
-            </div>
+            <PrizeRow rank={1} prize={data.prizeMoney.first} winners={data.prizeMoney.firstWinners} />
+            <PrizeRow rank={2} prize={data.prizeMoney.second} winners={data.prizeMoney.secondWinners} />
           </div>
+          <p className="text-xs text-gray-400 -mt-3">
+            세후 금액은 소득세법 기준 원천징수(200만원 이하 비과세, 3억 이하 22%, 3억 초과분 33%) 추정치입니다.{' '}
+            <a href="/lotto/calculator" className="underline hover:text-primary">세금 계산기</a>
+          </p>
+
+          {children}
 
           {/* 당첨번호 패턴 분석 */}
           <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 space-y-3">

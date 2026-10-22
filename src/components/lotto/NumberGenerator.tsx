@@ -14,6 +14,9 @@ import { useUsageLimit } from '@/hooks/useUsageLimit';
 import { useAuthSafe } from '@/components/providers/AuthProvider';
 import UsageLimitBanner from '@/components/usage/UsageLimitBanner';
 import UsageLimitModal from '@/components/usage/UsageLimitModal';
+import ShareButtons from './ShareButtons';
+import { useMyNumbers } from '@/hooks/useMyNumbers';
+import { getShareUrl } from '@/lib/shareCode';
 import { Bot, Target, Lock, Sparkles, Cloud, BarChart3, Brain, Copy, Save, Lightbulb, AlertTriangle } from 'lucide-react';
 import type { NumberStatistics } from '@/types/lotto';
 
@@ -25,6 +28,8 @@ const NumberGenerator: React.FC = () => {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [multiSetMode, setMultiSetMode] = useState(false);
   const [savedToServer, setSavedToServer] = useState(false);
+  const [savedLocally, setSavedLocally] = useState<boolean | null>(null);
+  const myNumbers = useMyNumbers();
 
   // 통계 데이터 관련 상태
   const [statistics, setStatistics] = useState<NumberStatistics[] | null>(null);
@@ -130,6 +135,7 @@ const NumberGenerator: React.FC = () => {
     setIsGenerating(true);
     setShowSuccess(false);
     setSavedToServer(false);
+    setSavedLocally(null);
     setMarketingText(getRandomMarketingText());
 
     try {
@@ -199,19 +205,13 @@ const NumberGenerator: React.FC = () => {
   const handleSaveNumbers = () => {
     if (generatedSets.length === 0) return;
 
-    // 비회원은 localStorage에 저장
+    // 비회원은 브라우저에 저장 → /lotto/my-numbers·회차 페이지에서 자동 당첨 확인
     if (!auth?.user) {
-      const savedNumbers = JSON.parse(localStorage.getItem('savedLottoNumbers') || '[]');
-      for (const numbers of generatedSets) {
-        savedNumbers.push({
-          id: Date.now().toString() + Math.random().toString(36).slice(2),
-          numbers,
-          createdAt: new Date().toISOString(),
-          isAI: true
-        });
+      const ok = myNumbers.add(generatedSets, { isAI: true, round: getNextDrawRound() });
+      setSavedLocally(ok);
+      if (ok && typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'my_numbers_saved', { source: 'ai', set_count: generatedSets.length });
       }
-      localStorage.setItem('savedLottoNumbers', JSON.stringify(savedNumbers));
-      alert('번호가 저장되었습니다!');
     } else {
       // 회원은 이미 자동 저장됨
       alert('번호가 서버에 자동 저장되었습니다! 마이페이지에서 확인하세요.');
@@ -391,8 +391,26 @@ const NumberGenerator: React.FC = () => {
                       onClick={handleSaveNumbers}
                       className="min-w-[100px]"
                     >
-                      <Save className="w-4 h-4 inline-block mr-1" /> {auth?.user ? '서버에 저장됨' : '저장'}
+                      <Save className="w-4 h-4 inline-block mr-1" /> {auth?.user ? '서버에 저장됨' : '저장하고 당첨 자동 확인'}
                     </Button>
+                  </div>
+                  {savedLocally !== null && (
+                    <p className="text-sm font-medium" role="status" style={{ color: savedLocally ? '#16a34a' : '#ea580c' }}>
+                      {savedLocally
+                        ? <>{getNextDrawRound()}회 번호로 저장했습니다. <a href="/lotto/my-numbers" className="underline">내 번호에서 당첨 확인 →</a></>
+                        : '이 브라우저에서는 저장할 수 없습니다(사생활 보호 모드 등).'}
+                    </p>
+                  )}
+
+                  {/* 이번 주 내 행운 번호 공유 (첫 세트) */}
+                  <div className="pt-2 space-y-2" style={{ borderTop: '1px solid var(--border)' }}>
+                    <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>이번 주 내 행운 번호 공유하기</p>
+                    <ShareButtons
+                      url={getShareUrl(getNextDrawRound(), generatedSets[0])}
+                      title={`이번 주 내 행운 번호 (${getNextDrawRound()}회)`}
+                      text={`${[...generatedSets[0]].sort((a, b) => a - b).join(', ')} — 로또킹에서 나도 번호 받기`}
+                      imageUrl={`${getShareUrl(getNextDrawRound(), generatedSets[0])}/opengraph-image`}
+                    />
                   </div>
                 </div>
               ) : (

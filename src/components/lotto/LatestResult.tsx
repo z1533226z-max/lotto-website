@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Card from '@/components/ui/Card';
 import LottoNumbers from './LottoNumbers';
-import { cn, formatDate, formatCurrency, getNextDrawTime, formatCountdown } from '@/lib/utils';
+import JustAnnouncedBadge from './JustAnnouncedBadge';
+import MyNumbersRoundCheck from './MyNumbersRoundCheck';
+import { cn, formatDate, formatCurrency } from '@/lib/utils';
+import { getNextDraw } from '@/lib/drawSchedule';
+import { formatRemaining } from '@/lib/kstFormat';
 import type { LottoResult } from '@/types/lotto';
 
 const LatestResult: React.FC = () => {
@@ -41,13 +45,13 @@ const LatestResult: React.FC = () => {
 
   // Update countdown timer
   useEffect(() => {
+    // KST 토요일 20:35 기준 (이전 getNextDrawTime 은 브라우저 시간대·20:45 기준이었다)
     const updateCountdown = () => {
-      const nextDraw = getNextDrawTime();
-      setCountdown(formatCountdown(nextDraw));
+      setCountdown(formatRemaining(getNextDraw().drawTimeMs - Date.now()));
     };
 
     updateCountdown();
-    const interval = setInterval(updateCountdown, 60000);
+    const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -175,6 +179,7 @@ const LatestResult: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse-slow" />
             최신 당첨 결과
           </div>
+          <div><JustAnnouncedBadge round={result.round} /></div>
           <h1
             className="text-2xl md:text-3xl font-bold"
             style={{ color: 'var(--text)' }}
@@ -195,6 +200,9 @@ const LatestResult: React.FC = () => {
             animated={false}
           />
         </div>
+
+        {/* 저장한 내 번호 자동 당첨 확인 (브라우저 저장분) */}
+        <MyNumbersRoundCheck draw={{ round: result.round, numbers: result.numbers, bonusNumber: result.bonusNumber }} />
 
         {/* Prize and countdown info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -236,7 +244,7 @@ const LatestResult: React.FC = () => {
               className="text-sm mt-1"
               style={{ color: 'var(--text-tertiary)' }}
             >
-              매주 토요일 20:45
+              매주 토요일 20:35
             </p>
           </div>
         </div>

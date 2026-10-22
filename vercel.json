@@ -2,6 +2,14 @@
   "regions": ["icn1"],
   "crons": [
     {
+      "path": "/api/cron/draw-refresh",
+      "schedule": "40,45,50,55 11 * * 6"
+    },
+    {
+      "path": "/api/cron/draw-refresh",
+      "schedule": "5,10,20,30,40,50 12 * * 6"
+    },
+    {
       "path": "/api/cron/revalidate",
       "schedule": "0 12 * * 6"
     },

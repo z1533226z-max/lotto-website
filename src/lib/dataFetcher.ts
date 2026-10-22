@@ -214,52 +214,51 @@ export async function fetchLatestRound(): Promise<{ data: LottoResult; source: s
   throw new Error('로또 데이터를 가져올 수 없습니다.');
 }
 
+// 두 공개 출처(smok95·동행복권)를 동시에 물어 먼저 온 유효한 결과를 쓴다.
+// 추첨(토 20:35) 직후에는 어느 쪽이 먼저 갱신될지 알 수 없어 순서대로 기다리면 그만큼 늦어진다.
+async function fetchNewRoundFastest(round: number): Promise<LottoResult | null> {
+  const cached = roundCache.get(round);
+  if (cached && Date.now() - cached.fetchedAt < CACHE_TTL) return cached.data;
+
+  const result = await new Promise<LottoResult | null>((resolve) => {
+    let pending = 2;
+    const settle = (r: LottoResult | null) => {
+      if (r && r.round === round) resolve(r);
+      else if (--pending === 0) resolve(null);
+    };
+    fetchFromSmok95(round).then(settle, () => settle(null));
+    fetchFromDhlottery(round).then(settle, () => settle(null));
+  });
+  if (result) roundCache.set(round, { data: result, fetchedAt: Date.now() });
+  return result;
+}
+
+// fromRound 부터 예상 최신 회차(+1)까지 이어지는 새 회차를 채운다 (처음 비는 회차에서 멈춤)
+async function fetchNewRounds(fromRound: number): Promise<LottoResult[]> {
+  const estimatedLatest = getEstimatedLatestRound();
+  const newRounds: LottoResult[] = [];
+  for (let round = fromRound; round <= estimatedLatest + 1; round++) {
+    const result = await fetchNewRoundFastest(round);
+    if (!result) break;
+    newRounds.push(result);
+  }
+  return newRounds;
+}
+
 // 전체 로또 데이터 반환 (React cache로 같은 요청 내 중복 호출 dedup)
-// Priority: gon-services API (전체) → 정적 데이터 + API 보충
+// Priority: gon-services API (전체) → 정적 데이터. 어느 쪽이든 추첨이 끝났는데 빠진 최신 회차는
+// smok95·동행복권에서 보충한다 (gon-services 반영이 늦어도 추첨 직후 새 회차가 바로 보이게).
 export const getAllLottoData = cache(async (): Promise<LottoResult[]> => {
   if (allDataCache && Date.now() - allDataCache.fetchedAt < ALL_DATA_CACHE_TTL) {
     return allDataCache.data;
   }
 
   const gonData = await fetchAllFromGonServices();
-  if (gonData && gonData.length > 0) {
-    allDataCache = { data: gonData, fetchedAt: Date.now() };
-    return gonData;
-  }
+  const base = gonData && gonData.length > 0 ? gonData : [...REAL_LOTTO_DATA];
+  const lastRound = base.length > 0 ? base[base.length - 1].round : 0;
+  const newRounds = lastRound < getEstimatedLatestRound() ? await fetchNewRounds(lastRound + 1) : [];
 
-  // Fallback: 정적 데이터 + 최신 API 데이터 합산
-  const staticData = [...REAL_LOTTO_DATA];
-  const lastStaticRound = staticData.length > 0
-    ? staticData[staticData.length - 1].round
-    : 0;
-  const estimatedLatest = getEstimatedLatestRound();
-
-  const newRounds: LottoResult[] = [];
-  for (let round = lastStaticRound + 1; round <= estimatedLatest + 1; round++) {
-    const cached = roundCache.get(round);
-    if (cached && Date.now() - cached.fetchedAt < CACHE_TTL) {
-      newRounds.push(cached.data);
-      continue;
-    }
-
-    const smok95 = await fetchFromSmok95(round);
-    if (smok95) {
-      roundCache.set(round, { data: smok95, fetchedAt: Date.now() });
-      newRounds.push(smok95);
-      continue;
-    }
-
-    const dhl = await fetchFromDhlottery(round);
-    if (dhl) {
-      roundCache.set(round, { data: dhl, fetchedAt: Date.now() });
-      newRounds.push(dhl);
-      continue;
-    }
-
-    break;
-  }
-
-  const allData = [...staticData, ...newRounds];
+  const allData = newRounds.length > 0 ? [...base, ...newRounds] : base;
   allDataCache = { data: allData, fetchedAt: Date.now() };
 
   return allData;

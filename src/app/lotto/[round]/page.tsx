@@ -5,6 +5,12 @@ import { formatCurrency, formatDrawDateKo } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
+import { calculateNetPrize } from '@/lib/prizeTax';
+import { getNextDraw } from '@/lib/drawSchedule';
+import { getFirstPrizeStores } from '@/lib/winningStores';
+import NextDrawCountdown from '@/components/lotto/NextDrawCountdown';
+import RoundWinningStores from '@/components/lotto/RoundWinningStores';
+import MyNumbersRoundCheck from '@/components/lotto/MyNumbersRoundCheck';
 
 interface Props {
   params: { round: string };
@@ -47,7 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const numbersStr = data.numbers.join(', ');
   const drawDateKo = formatDrawDateKo(data.drawDate);
   const title = `로또 ${round}회 당첨번호 (${drawDateKo} 추첨) · 당첨금 | 로또킹`;
-  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). 1등 ${formatCurrency(data.prizeMoney.first)} · ${data.prizeMoney.firstWinners}명 당첨. 홀짝 비율·번호 합계·고저·연속수 등 당첨번호 패턴 분석을 한눈에 확인하세요.`;
+  const firstNet = calculateNetPrize(data.prizeMoney.first).net;
+  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). 1등 ${formatCurrency(data.prizeMoney.first)}(세후 ${formatCurrency(firstNet)}) · ${data.prizeMoney.firstWinners}명 당첨. 2등 당첨자 수, 1등 판매점, 당첨번호 패턴까지 한눈에 확인하세요.`;
 
   return {
     title,
@@ -80,6 +87,8 @@ export default async function LottoRoundPage({ params }: Props) {
 
   // '다음 회차' 링크는 실제 데이터가 있는 회차까지만 (추첨 전·데이터 반영 전 회차로 가는 404 링크 방지)
   const maxRound = getLatestRound(allData)?.round ?? round;
+  const stores = await getFirstPrizeStores(round);
+  const nextDraw = getNextDraw();
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -102,7 +111,11 @@ export default async function LottoRoundPage({ params }: Props) {
         { label: '당첨번호', href: '/lotto/list' },
         { label: `${round}회` },
       ]} />
-      <LottoRoundDetail data={data} maxRound={maxRound} />
+      <LottoRoundDetail data={data} maxRound={maxRound}>
+        <NextDrawCountdown initialRound={nextDraw.round} initialDrawTimeMs={nextDraw.drawTimeMs} />
+        <RoundWinningStores round={round} firstWinners={data.prizeMoney.firstWinners} stores={stores} />
+        <MyNumbersRoundCheck draw={{ round: data.round, numbers: data.numbers, bonusNumber: data.bonusNumber }} />
+      </LottoRoundDetail>
     </>
   );
 }

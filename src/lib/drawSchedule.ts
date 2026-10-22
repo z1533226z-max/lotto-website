@@ -19,3 +19,23 @@ export function getLatestDrawnRound(now: Date = new Date()): number {
   if (elapsed < 0) return 0;
   return Math.floor(elapsed / WEEK_MS) + 1;
 }
+
+/** `round`회 추첨 시각 (UTC 밀리초). 1회 = 2002-12-07 20:35 KST, 이후 매주 같은 시각. */
+export function getDrawTimeMs(round: number): number {
+  return FIRST_DRAW_UTC_MS + (round - 1) * WEEK_MS;
+}
+
+/** 다음 추첨 회차와 추첨 시각 (토요일 20:35 KST 기준). */
+export function getNextDraw(now: Date = new Date()): { round: number; drawTimeMs: number } {
+  const round = getLatestDrawnRound(now) + 1;
+  return { round, drawTimeMs: getDrawTimeMs(round) };
+}
+
+/** 추첨 후 '방금 발표' 표시를 유지하는 시간 (토 20:35 → 다음 날 02:35 KST) */
+export const JUST_ANNOUNCED_WINDOW_MS = 6 * 60 * 60 * 1000;
+
+/** `round`회 추첨 뒤 아직 '방금 발표' 구간인지 */
+export function isJustAnnounced(round: number, now: Date = new Date()): boolean {
+  const since = now.getTime() - getDrawTimeMs(round);
+  return since >= 0 && since < JUST_ANNOUNCED_WINDOW_MS;
+}

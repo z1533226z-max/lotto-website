@@ -3,6 +3,7 @@ import { getAllLottoData, invalidateAllDataCache, getEstimatedLatestRound } from
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { getServiceSupabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import { DRAW_REVALIDATE_PATHS, getRoundPathsToRevalidate } from '@/lib/revalidateTargets';
 import type { SavedNumber } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +16,7 @@ export const maxDuration = 60;
  *   - 토요일 UTC 12:00 (KST 21:00) - 추첨 직후
  *   - 토요일 UTC 13:00 (KST 22:00) - 여유 시간
  *   - 토요일 UTC 15:00 (KST 일요일 00:00) - 최종 확인
+ *   (20:40~21:50 사이 5~10분 간격 빠른 반영은 /api/cron/draw-refresh 가 맡는다)
  *
  * 동작:
  *   1. 메모리 캐시 무효화
@@ -58,28 +60,11 @@ export async function GET(request: NextRequest) {
 
     // 3. ISR 캐시 무효화 - 모든 주요 페이지
     stage = 'revalidate';
-    const pathsToRevalidate = [
-      '/',
-      '/lotto/recent',
-      '/lotto/list',
-      '/lotto/rankings',
-      '/lotto/statistics',
-      '/lotto/ai-hits',
-      '/lotto/calculator',
-      '/lotto/stores',
-      '/community',
-      '/lotto/daily-fortune',
-    ];
+    // 회차 개별 페이지: 최신·직전 + 예상 회차 (/api/cron/draw-refresh 와 같은 목록)
+    const pathsToRevalidate = [...DRAW_REVALIDATE_PATHS, ...getRoundPathsToRevalidate(latestRound, expectedRound)];
 
     for (const path of pathsToRevalidate) {
       revalidatePath(path);
-    }
-
-    // 최신 회차의 개별 페이지도 revalidate
-    if (latestRound > 0) {
-      revalidatePath(`/lotto/${latestRound}`);
-      // 직전 회차도 (당첨금 정보 업데이트 가능)
-      revalidatePath(`/lotto/${latestRound - 1}`);
     }
 
     // 레이아웃 전체 revalidate (공통 부분)
@@ -174,7 +159,7 @@ export async function GET(request: NextRequest) {
       expectedRound,
       dataUpToDate,
       totalRounds: allData.length,
-      revalidatedPaths: pathsToRevalidate.length + 2,
+      revalidatedPaths: pathsToRevalidate.length,
       storeData: storeResult,
       matchCheck: matchCheckResult,
       warmupResults,

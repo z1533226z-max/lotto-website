@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    "test": "node --test tests/*.test.cjs",
     "update-data": "node scripts/updateLottoData.js",
     "scrape-stores": "node scripts/scrapeWinningStores.js"
   },

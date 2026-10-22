@@ -3,6 +3,7 @@ import { Dices } from 'lucide-react';
 
 const navLinks = [
   { name: '당첨번호', path: '/lotto/recent' },
+  { name: '내 번호 확인', path: '/lotto/my-numbers' },
   { name: '통계분석', path: '/lotto/statistics' },
   { name: 'AI적중', path: '/lotto/ai-hits' },
   { name: '시뮬레이터', path: '/lotto/simulator' },
@@ -15,6 +16,7 @@ const navLinks = [
 const legalLinks = [
   { name: '이용약관', path: '/terms' },
   { name: '개인정보처리방침', path: '/privacy' },
+  { name: 'RSS', path: '/rss.xml' },
 ];
 
 // 영문(US) 로또 트랙 진입 링크 — 한국어 사이트에서 /us 트랙으로 가는 내부 크롤 경로 제공
@@ -80,6 +82,29 @@ const Footer: React.FC = () => {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* 운영자·데이터 출처·책임 고지 (네이버·구글 신뢰 신호, 지시 178-E) */}
+        <div
+          className="mb-6 rounded-xl px-4 py-4 text-[12px] leading-relaxed break-keep-all space-y-1.5"
+          style={{ backgroundColor: 'var(--surface)', color: 'var(--text-tertiary)' }}
+        >
+          <p>
+            <strong style={{ color: 'var(--text-secondary)' }}>운영</strong> 로또킹은 개인이 운영하는 무료 로또 정보 사이트로,
+            동행복권·복권위원회와 관계가 없습니다.
+          </p>
+          <p>
+            <strong style={{ color: 'var(--text-secondary)' }}>데이터 출처</strong> 당첨번호·당첨금·1등 판매점은 동행복권(dhlottery.co.kr)이
+            공개한 자료를 기준으로 하며, 정확한 결과는 동행복권 공식 발표로 확인하세요.
+          </p>
+          <p>
+            <strong style={{ color: 'var(--text-secondary)' }}>확률 고지</strong> 모든 번호 조합의 당첨 확률은 같습니다(1등 8,145,060분의 1).
+            통계·AI 추천은 재미와 참고용이며 당첨을 보장하거나 확률을 높이지 않습니다.
+          </p>
+          <p>
+            <strong style={{ color: 'var(--text-secondary)' }}>책임 있는 구매</strong> 만 19세 미만은 복권을 구매할 수 없습니다.
+            도박 문제로 어려움이 있다면 한국도박문제예방치유원 헬프라인 <a href="tel:1336" className="underline">국번 없이 1336</a>(무료, 365일 09:00~22:00)에 문의하세요.
+          </p>
         </div>
 
         {/* Bottom: Legal + Copyright */}

@@ -11,6 +11,7 @@ const mainNavLinks = [
   { name: '홈', path: '/' },
   { name: '최근당첨', path: '/lotto/recent' },
   { name: '당첨조회', path: '/lotto/list' },
+  { name: '내번호', path: '/lotto/my-numbers' },
   { name: 'AI적중', path: '/lotto/ai-hits' },
   { name: '통계분석', path: '/lotto/statistics' },
   { name: '번호분석', path: '/lotto/number/1' },

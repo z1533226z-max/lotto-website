@@ -4,6 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { test } = require('node:test');
 const ts = require('typescript');
+const { loadTs } = require('./_loadTs.cjs');
 
 // Run the real route with an allowlist of fakes: no network, DB, or env files.
 const filename = path.join(__dirname, '../src/app/api/cron/revalidate/route.ts');
@@ -16,6 +17,7 @@ async function invoke(options = {}) {
   const rows = options.rows ?? [{ id: 'saved-1', numbers: [1, 2, 3, 4, 5, 7] }];
   const updates = [];
   const delays = [];
+  const revalidated = [];
   let fetches = 0;
   let updateAttempts = 0;
   const supabase = {
@@ -57,7 +59,8 @@ async function invoke(options = {}) {
       return { success: !options.storeError, count: options.storeError ? 0 : 2 };
     } },
     '@/lib/supabase': { getServiceSupabase: () => supabase },
-    'next/cache': { revalidatePath() {} },
+    'next/cache': { revalidatePath(p) { revalidated.push(p); } },
+    '@/lib/revalidateTargets': loadTs('@/lib/revalidateTargets'),
   };
   const exports = {};
   vm.runInNewContext(source, {
@@ -75,7 +78,7 @@ async function invoke(options = {}) {
   const response = await exports.GET(new Request('http://test.invalid', {
     headers: { authorization: options.unauthorized ? 'invalid' : 'Bearer test-only' },
   }));
-  return { response, body: await response.json(), updates, fetches, delays };
+  return { response, body: await response.json(), updates, fetches, delays, revalidated };
 }
 
 for (const [name, options, stage] of [
@@ -140,4 +143,11 @@ test('unauthorized cron does not run work', async () => {
   const { response, fetches } = await invoke({ unauthorized: true });
   assert.equal(response.status, 401);
   assert.equal(fetches, 0);
+});
+
+test('stale data still revalidates the expected round page (may have been cached as 404)', async () => {
+  const { revalidated } = await invoke({ stale: true });
+  assert.ok(revalidated.includes('/lotto/1200'));
+  assert.ok(revalidated.includes('/lotto/1199'));
+  assert.ok(revalidated.includes('/rss.xml'));
 });
