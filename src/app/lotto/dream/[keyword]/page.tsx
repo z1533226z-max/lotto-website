@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { DREAM_KEYWORDS, type DreamKeyword } from '@/data/dreamNumbers';
 import { getAllLottoData } from '@/lib/dataFetcher';
 import { getFreshLinkData } from '@/lib/freshLinks';
-import { DEFAULT_OG_IMAGES } from '@/lib/seo';
+import { DEFAULT_OG_IMAGES, GOOGLE_INDEXED_DREAM_KEYWORDS, GOOGLE_NOINDEX_ROBOTS } from '@/lib/seo';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
 import DreamDetailContent, { type DreamView } from './DreamDetailContent';
@@ -63,7 +63,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = dream.metaTitle ?? `${dream.keyword} 꿈해몽 로또번호 - ${numbersStr} | 로또킹`;
   const description = dream.metaDescription ?? `꿈에 ${dream.keyword}이(가) 나왔다면? 추천 로또번호: ${numbersStr}. ${dream.description} ${dream.category} 카테고리의 꿈해몽 로또번호를 확인하세요.`;
 
+  // 선정 30개만 구글 색인, 나머지는 구글 대상만 noindex(네이버·방문자 유지) — 2026-10-22 마스터 승인
+  const robotsMeta = GOOGLE_INDEXED_DREAM_KEYWORDS.has(dream.keyword) ? {} : GOOGLE_NOINDEX_ROBOTS;
+
   return {
+    ...robotsMeta,
     title,
     description,
     alternates: {

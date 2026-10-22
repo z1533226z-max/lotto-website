@@ -9,6 +9,7 @@ import LottoBall from '@/components/lotto/LottoBall';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/lotto/analysis/weekly' },
   title: '주간 로또 분석 - 매주 업데이트 | 로또킹',
   description: '매주 자동 업데이트되는 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 홀짝비, 연속번호 패턴, 구간 분포까지. AI 데이터 기반 주간 트렌드 분석!',
   openGraph: {

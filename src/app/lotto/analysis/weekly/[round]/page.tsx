@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ...robotsMeta,
     title: `${round}회 주간 로또 분석 | 로또킹`,
     description: `${round}회 로또 당첨번호 심층 분석. 핫넘버, 콜드넘버, 홀짝비, 연속번호 패턴, 구간 분포 분석.`,
+    alternates: { canonical: `/lotto/analysis/weekly/${round}` },
     openGraph: {
       title: `${round}회 주간 로또 분석 | 로또킹`,
       description: `${round}회 로또 당첨번호 심층 분석 - 핫넘버, 콜드넘버, 패턴 분석!`,

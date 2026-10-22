@@ -4,6 +4,7 @@ import SectionFrame from '@/components/ui/SectionFrame';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/terms' },
   title: '이용약관 - 로또 AI 예측',
   description: '로또 AI 예측 서비스의 이용약관입니다.',
   keywords: '이용약관, 로또, 서비스 약관, 이용규칙',

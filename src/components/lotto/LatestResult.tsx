@@ -6,9 +6,14 @@ import LottoNumbers from './LottoNumbers';
 import { cn, formatDate, formatCurrency, getNextDrawTime, formatCountdown } from '@/lib/utils';
 import type { LottoResult } from '@/types/lotto';
 
-const LatestResult: React.FC = () => {
-  const [result, setResult] = useState<LottoResult | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+interface LatestResultProps {
+  /** 서버에서 미리 읽은 최신 회차 — 있으면 첫 HTML에 결과가 바로 그려지고(검색 로봇·JS 없는 환경 포함), 마운트 후 최신값으로 조용히 갱신 */
+  initialResult?: LottoResult | null;
+}
+
+const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => {
+  const [result, setResult] = useState<LottoResult | null>(initialResult);
+  const [isLoading, setIsLoading] = useState(!initialResult);
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<string>('');
   const [searchRound, setSearchRound] = useState<string>('');
@@ -16,8 +21,9 @@ const LatestResult: React.FC = () => {
 
   // Fetch latest lotto data
   useEffect(() => {
+    const hasInitial = initialResult !== null;
     const fetchLatestResult = async () => {
-      setIsLoading(true);
+      if (!hasInitial) setIsLoading(true);
       setError(null);
 
       try {
@@ -30,14 +36,15 @@ const LatestResult: React.FC = () => {
 
         setResult(data.data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+        // 서버에서 받은 결과가 이미 보이고 있으면 그대로 둔다
+        if (!hasInitial) setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchLatestResult();
-  }, []);
+  }, [initialResult]);
 
   // Update countdown timer
   useEffect(() => {

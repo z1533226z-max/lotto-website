@@ -45,6 +45,33 @@ export const NAVER_ONLY_ROBOTS: Pick<Metadata, 'robots' | 'other'> = {
   other: { bingbot: 'noindex, follow' },
 };
 
+/**
+ * 구글에서만 색인 제외(noindex, follow). 네이버(Yeti)·빙 등 나머지 로봇과 방문자에게는 그대로 노출한다.
+ * 2026-10-22 마스터 승인(안건2 ③): 꿈해몽(선정 30개 제외)·MBTI·별자리·혈액형 상세는 구글 대상에서만 뺀다.
+ */
+export const GOOGLE_NOINDEX_ROBOTS: Pick<Metadata, 'robots'> = {
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
+};
+
+/**
+ * 구글 색인·구글 사이트맵에 남기는 꿈해몽 키워드 (≤30, 나머지는 GOOGLE_NOINDEX_ROBOTS + 네이버 사이트맵).
+ * 선정 기준 (2026-10-22, review177):
+ *  1) 상황별 풀이·전용 FAQ로 심화한 고유 본문 (사과·할머니·잉어 — 각 1,200자 이상, 나머지는 약 200자 틀)
+ *  2) 실제 수요 기록 (daily_history 상위 페이지 PV: 고양이·감옥 / GSC 노출 키워드: 문어·오리)
+ *  3) 사이트가 대표로 내세우는 POPULAR_KEYWORDS 중 본문이 긴 순 23개
+ * 여기서 빼고 넣는 것만으로 구글 대상 여부와 두 사이트맵 배치가 함께 바뀐다.
+ */
+export const GOOGLE_INDEXED_DREAM_KEYWORDS: ReadonlySet<string> = new Set([
+  '사과', '할머니', '잉어',
+  '고양이', '감옥', '문어', '오리',
+  '날다', '돼지', '무지개', '뱀', '돈', '금', '용', '바다', '태양', '물', '보석', '호랑이',
+  '아기', '물고기', '불', '꽃', '화장실', '죽음', '결혼하다', '이빨', '도둑', '복권', '임신',
+]);
+
 /** 주간분석 회차가 구글/빙 색인 대상(최신 52회)인지 */
 export function isIndexableWeeklyAnalysis(round: number, latestRound: number): boolean {
   return latestRound - round < WEEKLY_ANALYSIS_INDEXABLE_COUNT;

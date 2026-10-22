@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {},
+  // canonical은 페이지마다 자기 주소로 둔다. 여기(루트)에 두면 자기 값이 없는 모든 하위 페이지가 홈을 canonical로 물려받는다
   verification: {
     google: 'WUrfnWHUFd9icr_v6BWbC5IWS2mG_Dca7LBuL9Plx-I',
     other: {

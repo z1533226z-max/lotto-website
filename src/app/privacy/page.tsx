@@ -4,6 +4,7 @@ import SectionFrame from '@/components/ui/SectionFrame';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/privacy' },
   title: '개인정보처리방침 - 로또 AI 예측',
   description: '로또 AI 예측 서비스의 개인정보처리방침입니다.',
   keywords: '개인정보처리방침, 로또, 프라이버시, 정책',

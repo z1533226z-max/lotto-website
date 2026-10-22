@@ -150,11 +150,13 @@ export const formatCurrency = (amount: number): string => {
  */
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
+  // 'YYYY-MM-DD'는 UTC 자정으로 해석되므로 UTC로 포맷해야 서버(UTC)·브라우저(어느 시간대든) 결과가 같다 (SSR 하이드레이션 일치)
   return new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    weekday: 'short'
+    weekday: 'short',
+    timeZone: 'UTC',
   }).format(date);
 };
 

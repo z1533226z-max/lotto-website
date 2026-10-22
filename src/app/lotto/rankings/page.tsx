@@ -9,6 +9,7 @@ import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 export const revalidate = 3600; // ISR: 1시간마다 재생성
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/lotto/rankings' },
   title: '역대 로또 최고 당첨금 순위 - 1등 당첨금 랭킹 | 로또킹',
   description: '로또 6/45 역대 최고 1등 당첨금 순위를 확인하세요. 1인당 최고 당첨금액, 당첨자수, 회차 정보를 제공합니다.',
   openGraph: {

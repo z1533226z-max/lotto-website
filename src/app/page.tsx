@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AIHitsBanner from '@/components/lotto/AIHitsBanner';
+import LatestResult from '@/components/lotto/LatestResult';
 import SajuBanner from '@/components/promotion/SajuBanner';
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
 import SectionFrame from '@/components/ui/SectionFrame';
@@ -127,26 +128,6 @@ function LatestResultSSR({ latest }: { latest: LottoResult }) {
   );
 }
 
-const LatestResult = dynamic(
-  () => import('@/components/lotto/LatestResult'),
-  {
-    loading: () => (
-      <div className="animate-pulse rounded-2xl p-8" style={{ backgroundColor: 'var(--surface)' }}>
-        <div className="space-y-6 text-center">
-          <div className="h-6 rounded-lg w-32 mx-auto" style={{ backgroundColor: 'var(--surface-hover)' }} />
-          <div className="h-10 rounded-lg w-48 mx-auto" style={{ backgroundColor: 'var(--surface-hover)' }} />
-          <div className="flex justify-center gap-3">
-            {[...Array(7)].map((_, i) => (
-              <div key={i} className="w-12 h-12 rounded-full" style={{ backgroundColor: 'var(--surface-hover)' }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    ),
-    ssr: false,
-  }
-);
-
 const AnalyticsDashboard = dynamic(
   () => import('@/components/analytics/AnalyticsDashboard'),
   {
@@ -165,18 +146,38 @@ const DailyChallengeWidget = dynamic(
   { ssr: false }
 );
 
+// 번호 생성기는 브라우저 저장소(이용 횟수·회원 여부)에 따라 화면이 달라 브라우저에서만 그린다.
+// 대신 불러오는 동안 회색 막대 대신 생성기 첫 화면과 같은 제목·안내를 보여 줘, 서버 HTML에도 도구 설명이 담긴다.
 const NumberGenerator = dynamic(
   () => import('@/components/lotto/NumberGenerator'),
   {
     loading: () => (
-      <div className="animate-pulse rounded-2xl p-8" style={{ backgroundColor: 'var(--surface)' }}>
-        <div className="h-8 rounded-lg w-48 mx-auto mb-6" style={{ backgroundColor: 'var(--surface-hover)' }} />
-        <div className="flex justify-center gap-3 mb-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="w-14 h-14 rounded-full" style={{ backgroundColor: 'var(--surface-hover)' }} />
-          ))}
+      <div className="rounded-2xl p-8 text-center space-y-6" style={{ backgroundColor: 'var(--surface)' }}>
+        <div className="space-y-2">
+          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            AI 추천번호
+          </h2>
+          <p className="text-sm md:text-base" style={{ color: 'var(--text-secondary)' }}>
+            역대 전체 회차 출현 빈도를 반영한 조합
+          </p>
         </div>
-        <div className="h-12 rounded-xl w-48 mx-auto" style={{ backgroundColor: 'var(--surface-hover)' }} />
+        <div className="rounded-xl p-6" style={{ background: 'var(--surface-hover)' }}>
+          <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text)' }}>AI가 선택할 번호</h3>
+          <div className="flex justify-center gap-2 flex-wrap">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 border-dashed"
+                style={{ borderColor: 'var(--border)' }}
+              >
+                <span className="text-lg md:text-xl font-bold" style={{ color: 'var(--text-tertiary)' }}>?</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+          Tip: 역대 당첨번호의 출현 빈도·최근 흐름을 반영해 번호를 추천합니다
+        </p>
       </div>
     ),
     ssr: false,
@@ -192,6 +193,7 @@ export async function generateMetadata(): Promise<Metadata> {
     : 'AI 로또 번호 추천 무료 5세트 | 로또킹';
   return {
     title,
+    alternates: { canonical: '/' },
     description: '무료 AI 로또 번호 추천! 1,200회+ 역대 당첨 데이터의 출현 빈도·패턴을 반영해 매주 자동 추천. 당첨번호 조회, 통계 분석, 꿈번호, 세금 계산기까지 무료. 지금 바로 번호 받기!',
     openGraph: {
       title,
@@ -338,17 +340,18 @@ export default async function HomePage() {
                     <p className="text-sm font-bold" style={{ color: 'var(--text)' }}>이번주 당첨번호 확인하기</p>
                   </div>
 
-                  {/* Placeholder balls */}
+                  {/* 최신 회차 당첨번호 (이전: '최신 당첨 결과' 아래에 실제와 다른 고정 숫자 3·12·24·33·39·42가 보였음) */}
                   <div className="flex justify-center gap-2.5">
-                    {[3, 12, 24, 33, 39, 42].map((n, i) => {
-                      const colors = ['#FFC107', '#2196F3', '#FF5722', '#757575', '#757575', '#4CAF50'];
+                    {(latest?.numbers ?? []).map((n) => {
+                      const { bg, text } = getBallColor(n);
                       return (
                         <div
-                          key={i}
-                          className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white"
+                          key={n}
+                          className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold"
                           style={{
-                            background: colors[i],
-                            boxShadow: `0 2px 8px ${colors[i]}44`,
+                            background: bg,
+                            color: text,
+                            boxShadow: `0 2px 8px ${bg}44`,
                           }}
                         >
                           {n}
@@ -430,7 +433,7 @@ export default async function HomePage() {
               {latest && <LatestResultSSR latest={latest} />}
 
               <section id="home">
-                <LatestResult />
+                <LatestResult initialResult={latest} />
               </section>
 
               {/* Number Generator */}
