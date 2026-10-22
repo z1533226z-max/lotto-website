@@ -83,11 +83,12 @@ async function invokeRefresh({ latest = 1247, expected = 1247, fetchError = fals
   const route = loadTs('@/app/api/cron/draw-refresh/route', {
     mocks: {
       'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
-      'next/cache': { revalidatePath: (p, type) => revalidated.push(type ? `${p}#${type}` : p) },
+      'next/cache': { revalidatePath: (p, type) => revalidated.push(type ? `${p}#${type}` : p), revalidateTag() {} },
       '@/lib/dataFetcher': {
-        invalidateAllDataCache() { invalidated++; },
+        LOTTO_DATA_TAG: 'lotto-data',
         getEstimatedLatestRound: () => expected,
-        async getAllLottoData() {
+        async refreshAllLottoData() {
+          invalidated++;
           if (fetchError) throw new Error('upstream down');
           return latest ? [round(latest - 1), round(latest)] : [];
         },

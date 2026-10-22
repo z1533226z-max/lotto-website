@@ -6,6 +6,7 @@ import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 import { calculateNetPrize } from '@/lib/prizeTax';
+import { getPrizeState } from '@/lib/prizeStatus';
 import { getNextDraw } from '@/lib/drawSchedule';
 import { getFirstPrizeStores } from '@/lib/winningStores';
 import NextDrawCountdown from '@/components/lotto/NextDrawCountdown';
@@ -54,7 +55,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const drawDateKo = formatDrawDateKo(data.drawDate);
   const title = `로또 ${round}회 당첨번호 (${drawDateKo} 추첨) · 당첨금 | 로또킹`;
   const firstNet = calculateNetPrize(data.prizeMoney.first).net;
-  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). 1등 ${formatCurrency(data.prizeMoney.first)}(세후 ${formatCurrency(firstNet)}) · ${data.prizeMoney.firstWinners}명 당첨. 2등 당첨자 수, 1등 판매점, 당첨번호 패턴까지 한눈에 확인하세요.`;
+  const firstState = getPrizeState(data, 1);
+  const firstSummary = firstState === 'paid'
+    ? `1등 ${formatCurrency(data.prizeMoney.first)}(세후 ${formatCurrency(firstNet)}) · ${data.prizeMoney.firstWinners}명 당첨`
+    : firstState === 'rollover' ? '1등 당첨자 없음(당첨금 이월)' : '당첨금 집계 중';
+  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). ${firstSummary}. 2등 당첨자 수, 1등 판매점, 당첨번호 패턴까지 한눈에 확인하세요.`;
 
   return {
     title,

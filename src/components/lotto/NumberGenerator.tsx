@@ -101,7 +101,14 @@ const NumberGenerator: React.FC = () => {
     loadStatistics();
   }, []);
 
-  // 서버에 번호 저장 (회원만)
+  // 이 브라우저의 '내 번호'에 저장 (회원·비회원 공통 — /lotto/my-numbers·회차·홈에서 자동 당첨 확인, 서버로 보내지 않음)
+  const saveLocally = (sets: number[][]) => {
+    const ok = myNumbers.add(sets, { isAI: true, round: getNextDrawRound() });
+    setSavedLocally(ok);
+    return ok;
+  };
+
+  // 서버에 번호 저장 (회원만 — 기존 회원 저장 목록, 마이페이지)
   const saveToServer = async (sets: number[][]) => {
     if (!auth?.user) return;
     try {
@@ -120,7 +127,7 @@ const NumberGenerator: React.FC = () => {
         setTimeout(() => setSavedToServer(false), 3000);
       }
     } catch {
-      // 서버 저장 실패 시 무시 (로컬에는 이미 저장됨)
+      // 서버 저장 실패 시 무시 (이 브라우저 '내 번호'에는 저장됨)
     }
   };
 
@@ -167,9 +174,10 @@ const NumberGenerator: React.FC = () => {
         window.__trackAction('aiGeneration');
       }
 
-      // 회원이면 서버에 자동 저장
+      // 회원이면 서버에 자동 저장(기존 그대로) + 이 브라우저 '내 번호'에도 저장해 자동 당첨 확인에 잡히게
       if (auth?.user) {
         saveToServer(sets);
+        saveLocally(sets);
       }
 
       setShowSuccess(true);
@@ -205,16 +213,11 @@ const NumberGenerator: React.FC = () => {
   const handleSaveNumbers = () => {
     if (generatedSets.length === 0) return;
 
-    // 비회원은 브라우저에 저장 → /lotto/my-numbers·회차 페이지에서 자동 당첨 확인
-    if (!auth?.user) {
-      const ok = myNumbers.add(generatedSets, { isAI: true, round: getNextDrawRound() });
-      setSavedLocally(ok);
-      if (ok && typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'my_numbers_saved', { source: 'ai', set_count: generatedSets.length });
-      }
-    } else {
-      // 회원은 이미 자동 저장됨
-      alert('번호가 서버에 자동 저장되었습니다! 마이페이지에서 확인하세요.');
+    // 회원·비회원 모두 브라우저 '내 번호'에 저장 → /lotto/my-numbers·회차 페이지에서 자동 당첨 확인
+    // (같은 회차·같은 번호는 한 번만 저장되므로 회원이 다시 눌러도 중복되지 않는다)
+    const ok = saveLocally(generatedSets);
+    if (ok && typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'my_numbers_saved', { source: 'ai', set_count: generatedSets.length });
     }
   };
 
@@ -391,7 +394,7 @@ const NumberGenerator: React.FC = () => {
                       onClick={handleSaveNumbers}
                       className="min-w-[100px]"
                     >
-                      <Save className="w-4 h-4 inline-block mr-1" /> {auth?.user ? '서버에 저장됨' : '저장하고 당첨 자동 확인'}
+                      <Save className="w-4 h-4 inline-block mr-1" /> 저장하고 당첨 자동 확인
                     </Button>
                   </div>
                   {savedLocally !== null && (

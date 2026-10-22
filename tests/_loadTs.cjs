@@ -37,7 +37,7 @@ function loadTs(spec, { mocks = {}, globals = {} } = {}) {
         if (PURE_PACKAGES.has(name)) return require(name);
         throw new Error(`Unmocked dependency: ${name} (from ${path.relative(SRC, file)})`);
       },
-      console, Intl, AbortSignal, Response, Request, setTimeout, clearTimeout,
+      console, Intl, AbortSignal, AbortController, Response, Request, setTimeout, clearTimeout,
       process: { env: {} },
       ...globals,
     }, { filename: file });

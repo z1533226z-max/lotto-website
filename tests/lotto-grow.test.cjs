@@ -116,7 +116,7 @@ test('RSS: 네이버 규격 필드·본문 전체·특수문자 처리', () => {
   });
   assert.equal(item.link, 'https://lotto.gon.ai.kr/lotto/1247');
   assert.match(item.title, /1247회 당첨번호 3, 12, 24, 33, 39, 42 \+ 7/);
-  assert.match(item.html, /세후 실수령 약 1,373,000,000원/);
+  assert.match(item.html, /세후 실수령 <strong>13억 7300만원<\/strong><br>1,373,000,000원/);
   const xml = rss.buildRssXml(
     { title: 'A & B', link: 'https://lotto.gon.ai.kr/', description: '<desc>', selfUrl: 'https://lotto.gon.ai.kr/rss.xml' },
     [{ title: 'x', link: 'https://lotto.gon.ai.kr/g', html: 'evil ]]> end', pubDateMs: 0 }, item],

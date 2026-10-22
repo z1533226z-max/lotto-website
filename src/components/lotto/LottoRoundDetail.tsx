@@ -5,8 +5,19 @@ import { Trophy } from 'lucide-react';
 import LottoNumbers from './LottoNumbers';
 import Card from '@/components/ui/Card';
 import JustAnnouncedBadge from './JustAnnouncedBadge';
-import { formatCurrency, formatDrawDateKo, formatNumber } from '@/lib/utils';
-import { calculateNetPrize } from '@/lib/prizeTax';
+import TextParts from './TextParts';
+import {
+  NUMBER_BAND_LABELS,
+  PRIZE_TAX_NOTE,
+  analyzeRoundNumbers,
+  bandLabel,
+  patternHeading,
+  patternParts,
+  patternStats,
+  prizeText,
+  roundDateLabel,
+  roundTitle,
+} from '@/lib/roundContent';
 import type { LottoResult } from '@/types/lotto';
 
 interface Props {
@@ -16,68 +27,32 @@ interface Props {
   children?: React.ReactNode;
 }
 
-/** 등수별 당첨금 행: 1인 당첨금·당첨자 수·세후 실수령액 */
-function PrizeRow({ rank, prize, winners }: { rank: 1 | 2; prize: number; winners: number }) {
-  const net = calculateNetPrize(prize);
+/** 등수별 당첨금 행: 1인 당첨금·당첨자 수·세후 실수령액 (미집계는 '집계 중', 집계 끝난 1등 0명만 '이월') */
+function PrizeRow({ data, rank }: { data: LottoResult; rank: 1 | 2 }) {
+  const t = prizeText(data, rank);
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4">
-      <h3 className="text-sm font-medium text-gray-600 mb-1">{rank}등 1인 당첨금</h3>
-      {prize > 0 ? (
+      <h3 className="text-sm font-medium text-gray-600 mb-1">{t.heading}</h3>
+      {t.state === 'paid' ? (
         <>
-          <p className={`text-xl font-bold ${rank === 1 ? 'text-primary' : 'text-secondary'}`}>
-            {formatCurrency(prize)}
-          </p>
-          <p className="text-xs text-gray-500">{formatNumber(prize)}원 · {formatNumber(winners)}명 당첨</p>
+          <p className={`text-xl font-bold ${rank === 1 ? 'text-primary' : 'text-secondary'}`}>{t.amount}</p>
+          <p className="text-xs text-gray-500">{t.detail}</p>
           <p className="mt-2 text-sm text-gray-700">
-            세후 실수령 <strong className="text-gray-900">{formatCurrency(net.net)}</strong>
-            <span className="block text-xs text-gray-500">
-              {formatNumber(net.net)}원 (세금 {formatNumber(net.totalTax)}원, {prize > 300_000_000 ? '3억 이하 22%·초과분 33%' : '22%'})
-            </span>
+            세후 실수령 <strong className="text-gray-900">{t.net}</strong>
+            <span className="block text-xs text-gray-500">{t.netDetail}</span>
           </p>
         </>
       ) : (
-        <p className="text-sm text-gray-500">
-          {winners === 0 && rank === 1 ? '1등 당첨자 없음 (당첨금 이월)' : '당첨금 집계 중'}
-        </p>
+        <p className="text-sm text-gray-500">{t.status}</p>
       )}
     </div>
   );
 }
 
-const sorted = (arr: number[]) => [...arr].sort((a, b) => a - b);
-
-const analyzeNumbers = (numbers: number[]) => {
-  const nums = sorted(numbers);
-  const oddCount = nums.filter(n => n % 2 === 1).length;
-  const evenCount = nums.length - oddCount;
-  const lowCount = nums.filter(n => n <= 22).length; // 저번호 1~22
-  const highCount = nums.length - lowCount;           // 고번호 23~45
-  const sum = nums.reduce((a, b) => a + b, 0);
-  const lastDigitSum = nums.reduce((a, b) => a + (b % 10), 0);
-
-  // 연속번호 쌍 개수 (예: 14,15 → 1쌍)
-  let consecutivePairs = 0;
-  for (let i = 1; i < nums.length; i++) {
-    if (nums[i] - nums[i - 1] === 1) consecutivePairs++;
-  }
-
-  // 구간별 분포 (1-9, 10-19, 20-29, 30-39, 40-45)
-  const bands = [0, 0, 0, 0, 0];
-  nums.forEach(n => {
-    if (n <= 9) bands[0]++;
-    else if (n <= 19) bands[1]++;
-    else if (n <= 29) bands[2]++;
-    else if (n <= 39) bands[3]++;
-    else bands[4]++;
-  });
-
-  return { oddCount, evenCount, lowCount, highCount, sum, lastDigitSum, consecutivePairs, bands };
-};
+const STAT_BG = ['bg-blue-50', 'bg-purple-50', 'bg-green-50', 'bg-amber-50'];
 
 const LottoRoundDetail: React.FC<Props> = ({ data, maxRound, children }) => {
-  const a = analyzeNumbers(data.numbers);
-  const sortedNumbers = sorted(data.numbers).join(', ');
-  const bandLabels = ['1~9', '10~19', '20~29', '30~39', '40~45'];
+  const a = analyzeRoundNumbers(data.numbers);
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -86,11 +61,11 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound, children }) => {
           <div className="text-center space-y-2">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
               <span className="flex items-center justify-center gap-2 flex-wrap">
-                <Trophy className="w-7 h-7 text-yellow-500" /> 로또 {data.round}회 당첨번호
+                <Trophy className="w-7 h-7 text-yellow-500" /> {roundTitle(data)}
                 <JustAnnouncedBadge round={data.round} />
               </span>{' '}
               <span className="block mt-1 text-base md:text-lg font-medium text-gray-600">
-                ({formatDrawDateKo(data.drawDate)} 추첨)
+                {roundDateLabel(data)}
               </span>
             </h1>
           </div>
@@ -105,11 +80,11 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound, children }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <PrizeRow rank={1} prize={data.prizeMoney.first} winners={data.prizeMoney.firstWinners} />
-            <PrizeRow rank={2} prize={data.prizeMoney.second} winners={data.prizeMoney.secondWinners} />
+            <PrizeRow data={data} rank={1} />
+            <PrizeRow data={data} rank={2} />
           </div>
           <p className="text-xs text-gray-400 -mt-3">
-            세후 금액은 소득세법 기준 원천징수(200만원 이하 비과세, 3억 이하 22%, 3억 초과분 33%) 추정치입니다.{' '}
+            {PRIZE_TAX_NOTE}{' '}
             <a href="/lotto/calculator" className="underline hover:text-primary">세금 계산기</a>
           </p>
 
@@ -117,47 +92,29 @@ const LottoRoundDetail: React.FC<Props> = ({ data, maxRound, children }) => {
 
           {/* 당첨번호 패턴 분석 */}
           <div className="bg-white/70 backdrop-blur-sm rounded-lg p-4 space-y-3">
-            <h2 className="text-base font-bold text-gray-800">
-              로또 {data.round}회 당첨번호 패턴 분석
-            </h2>
+            <h2 className="text-base font-bold text-gray-800">{patternHeading(data)}</h2>
             <p className="text-sm text-gray-700 leading-relaxed">
-              {data.round}회 로또 당첨번호는 <strong>{sortedNumbers}</strong> 이며 보너스 번호는{' '}
-              <strong>{data.bonusNumber}</strong>입니다. 이번 회차는 홀수 {a.oddCount}개·짝수{' '}
-              {a.evenCount}개로 구성되었고, 저번호(1~22) {a.lowCount}개·고번호(23~45) {a.highCount}개가
-              나왔습니다. 당첨번호 6개의 합계는 <strong>{a.sum}</strong>이며,{' '}
-              {a.consecutivePairs > 0
-                ? `연속번호가 ${a.consecutivePairs}쌍 포함되어 있습니다.`
-                : '연속번호는 포함되지 않았습니다.'}
+              <TextParts parts={patternParts(data, a)} />
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-              <div className="rounded-md bg-blue-50 py-2">
-                <div className="text-xs text-gray-500">홀 : 짝</div>
-                <div className="text-sm font-bold text-gray-800">{a.oddCount} : {a.evenCount}</div>
-              </div>
-              <div className="rounded-md bg-purple-50 py-2">
-                <div className="text-xs text-gray-500">저 : 고</div>
-                <div className="text-sm font-bold text-gray-800">{a.lowCount} : {a.highCount}</div>
-              </div>
-              <div className="rounded-md bg-green-50 py-2">
-                <div className="text-xs text-gray-500">번호 합계</div>
-                <div className="text-sm font-bold text-gray-800">{a.sum}</div>
-              </div>
-              <div className="rounded-md bg-amber-50 py-2">
-                <div className="text-xs text-gray-500">연속번호</div>
-                <div className="text-sm font-bold text-gray-800">{a.consecutivePairs}쌍</div>
-              </div>
+              {patternStats(a).map(([label, value], i) => (
+                <div key={label} className={`rounded-md ${STAT_BG[i]} py-2`}>
+                  <div className="text-xs text-gray-500">{label}</div>
+                  <div className="text-sm font-bold text-gray-800">{value}</div>
+                </div>
+              ))}
             </div>
             <div>
               <div className="text-xs text-gray-500 mb-1">번호대별 분포</div>
               <div className="flex flex-wrap gap-1.5">
-                {a.bands.map((count, i) => (
+                {NUMBER_BAND_LABELS.map((label, i) => (
                   <span
-                    key={bandLabels[i]}
+                    key={label}
                     className={`text-xs px-2 py-1 rounded-md ${
-                      count > 0 ? 'bg-primary/10 text-primary font-medium' : 'bg-gray-100 text-gray-400'
+                      a.bands[i] > 0 ? 'bg-primary/10 text-primary font-medium' : 'bg-gray-100 text-gray-400'
                     }`}
                   >
-                    {bandLabels[i]}: {count}개
+                    {bandLabel(a, i)}
                   </span>
                 ))}
               </div>

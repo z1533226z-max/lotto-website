@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLottoData, invalidateAllDataCache, getEstimatedLatestRound } from '@/lib/dataFetcher';
+import { refreshAllLottoData, getEstimatedLatestRound, LOTTO_DATA_TAG } from '@/lib/dataFetcher';
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { getServiceSupabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { isPrizePending } from '@/lib/prizeStatus';
 import { DRAW_REVALIDATE_PATHS, getRoundPathsToRevalidate } from '@/lib/revalidateTargets';
 import type { SavedNumber } from '@/types/database';
 
@@ -19,8 +20,8 @@ export const maxDuration = 60;
  *   (20:40~21:50 사이 5~10분 간격 빠른 반영은 /api/cron/draw-refresh 가 맡는다)
  *
  * 동작:
- *   1. 메모리 캐시 무효화
- *   2. API에서 최신 데이터 fetch
+ *   1. 공유 데이터 캐시 태그 무효화 (다른 인스턴스도 다음 조회에서 새로 읽음)
+ *   2. API에서 최신 데이터 fetch (캐시를 거치지 않음, 당첨금 미집계면 failedStages 'prizes')
  *   3. 모든 주요 페이지 ISR 캐시 무효화 (revalidatePath)
  *   4. 주요 API 엔드포인트 워밍업 호출
  */
@@ -37,12 +38,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 1. 메모리 캐시 전체 무효화
-    invalidateAllDataCache();
+    // 1. 공유 데이터 캐시 태그 무효화(요청 끝에 적용 — 다른 인스턴스의 다음 조회가 새로 읽음)
+    revalidateTag(LOTTO_DATA_TAG);
 
-    // 2. 최신 데이터 fetch (정적 데이터 이후 → API에서 새 회차 가져옴)
+    // 2. 최신 데이터 fetch (이 인스턴스 메모리·데이터 캐시를 거치지 않고 출처에서)
     // 여러 번 시도하여 안정성 확보
-    let allData = await getAllLottoData();
+    let allData = await refreshAllLottoData();
     let latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
     const expectedRound = getEstimatedLatestRound();
 
@@ -50,13 +51,15 @@ export async function GET(request: NextRequest) {
     if (latestRound < expectedRound) {
       console.log(`[Cron] 예상 회차(${expectedRound}) > 실제 회차(${latestRound}), 5초 후 재시도`);
       await new Promise(r => setTimeout(r, 5000));
-      invalidateAllDataCache();
-      allData = await getAllLottoData();
+      allData = await refreshAllLottoData();
       latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
     }
 
     const dataUpToDate = latestRound > 0 && latestRound >= expectedRound;
     if (!dataUpToDate) failedStages.push('latestRound');
+    // 번호는 있어도 당첨금·인원이 미집계면 완료가 아니다 (다음 cron 에서 다시 확인)
+    const prizePending = dataUpToDate && isPrizePending(allData[allData.length - 1]);
+    if (prizePending) failedStages.push('prizes');
 
     // 3. ISR 캐시 무효화 - 모든 주요 페이지
     stage = 'revalidate';
@@ -158,6 +161,7 @@ export async function GET(request: NextRequest) {
       latestRound,
       expectedRound,
       dataUpToDate,
+      prizePending,
       totalRounds: allData.length,
       revalidatedPaths: pathsToRevalidate.length,
       storeData: storeResult,

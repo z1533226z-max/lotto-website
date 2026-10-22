@@ -8,7 +8,8 @@
  *    https://www.law.go.kr/법령/소득세법/제129조
  *  - 국세청 기타소득 원천징수 안내: "복권 당첨금 … 소득금액이 3억원을 초과하는 경우 30%"
  *    https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7893
- *  - 지방소득세법 제103조의3: 개인지방소득세 = 소득세의 10% → 실효세율 22% / 33%
+ *  - 지방세법 제103조의13: 원천징수하는 소득세의 10%를 개인지방소득세로 특별징수 → 실효세율 22% / 33%
+ *    https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1000226093
  *
  * 구입비(1게임 1,000원) 필요경비 공제는 반영하지 않아 실제 지급액과 수백 원 차이가 날 수 있다
  * (/lotto/calculator 와 같은 방식).

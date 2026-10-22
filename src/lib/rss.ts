@@ -9,8 +9,27 @@
 import type { LottoResult } from '@/types/lotto';
 import type { GuideArticle } from '@/data/guideArticles';
 import { getDrawTimeMs } from './drawSchedule';
-import { calculateNetPrize } from './prizeTax';
-import { formatDrawDateKo, formatNumber } from './utils';
+import {
+  NUMBER_BAND_LABELS,
+  PRIZE_TAX_NOTE,
+  PROBABILITY_NOTE,
+  STORES_SOURCE_NOTE,
+  STORE_TABLE_HEADERS,
+  analyzeRoundNumbers,
+  bandLabel,
+  patternHeading,
+  patternParts,
+  patternStats,
+  prizeText,
+  roundDateLabel,
+  roundTitle,
+  storesFallback,
+  storesHeading,
+  storesSummaryParts,
+  type StoreLike,
+  type TextPart,
+} from './roundContent';
+import { formatDrawDateKo } from './utils';
 
 export const RSS_SITE_URL = 'https://lotto.gon.ai.kr';
 export const RSS_ROUND_COUNT = 10;
@@ -60,26 +79,53 @@ ${body}
 `;
 }
 
-/** 회차 페이지(/lotto/[round]) 본문을 RSS item 으로 */
-export function roundToRssItem(d: LottoResult): RssItem {
+const partsHtml = (parts: TextPart[]) =>
+  parts.map(p => (typeof p === 'string' ? escapeHtml(p) : `<strong>${escapeHtml(p.strong)}</strong>`)).join('');
+
+function prizeHtml(d: LottoResult, rank: 1 | 2): string {
+  const t = prizeText(d, rank);
+  const body = t.state === 'paid'
+    ? `<p><strong>${escapeHtml(t.amount!)}</strong><br>${escapeHtml(t.detail!)}</p><p>세후 실수령 <strong>${escapeHtml(t.net!)}</strong><br>${escapeHtml(t.netDetail!)}</p>`
+    : `<p>${escapeHtml(t.status!)}</p>`;
+  return `<h3>${escapeHtml(t.heading)}</h3>${body}`;
+}
+
+function storesHtml(d: LottoResult, stores: StoreLike[] | null): string {
+  const heading = `<h2>${escapeHtml(storesHeading(d.round))}</h2>`;
+  let body: string;
+  if (stores && stores.length > 0) {
+    const rows = stores
+      .map((s, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.purchaseType)}</td><td>${escapeHtml(s.address)}</td></tr>`)
+      .join('');
+    body = `<p>${partsHtml(storesSummaryParts(d.round, d.prizeMoney.firstWinners, stores))}</p>`
+      + `<table><thead><tr>${STORE_TABLE_HEADERS.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+  } else {
+    const f = storesFallback(d.round);
+    body = `<p>${escapeHtml(f.before)}<a href="${RSS_SITE_URL}/lotto/stores">${escapeHtml(f.link)}</a>${escapeHtml(f.after)}</p>`;
+  }
+  return `${heading}${body}<p>${escapeHtml(STORES_SOURCE_NOTE)}</p>`;
+}
+
+/**
+ * 회차 페이지(/lotto/[round]) 본문 전체를 RSS item 으로 — 화면과 같은 lib/roundContent 글을 쓴다.
+ * stores: 1등 판매점(조회 실패·수집 전이면 null → 화면과 같은 '순차 반영' 안내)
+ */
+export function roundToRssItem(d: LottoResult, stores: StoreLike[] | null = null): RssItem {
   const nums = [...d.numbers].sort((a, b) => a - b).join(', ');
   const date = formatDrawDateKo(d.drawDate);
-  const first = calculateNetPrize(d.prizeMoney.first);
-  const second = calculateNetPrize(d.prizeMoney.second);
-  const sum = d.numbers.reduce((a, b) => a + b, 0);
-  const odd = d.numbers.filter(n => n % 2 === 1).length;
-  const prizeLine = (rank: number, gross: number, winners: number, net: number) =>
-    gross > 0
-      ? `<li>${rank}등: 1인 ${formatNumber(gross)}원 · ${formatNumber(winners)}명 당첨 · 세후 실수령 약 ${formatNumber(net)}원</li>`
-      : `<li>${rank}등: ${rank === 1 && winners === 0 ? '당첨자 없음(이월)' : '당첨금 집계 중'}</li>`;
+  const a = analyzeRoundNumbers(d.numbers);
   const html = [
-    `<p>${escapeHtml(date)} 추첨된 로또 6/45 제${d.round}회 당첨번호는 <strong>${nums}</strong>, 보너스 번호는 <strong>${d.bonusNumber}</strong>입니다.</p>`,
-    '<ul>',
-    prizeLine(1, d.prizeMoney.first, d.prizeMoney.firstWinners, first.net),
-    prizeLine(2, d.prizeMoney.second, d.prizeMoney.secondWinners, second.net),
-    '</ul>',
-    `<p>번호 합계 ${sum}, 홀수 ${odd}개·짝수 ${6 - odd}개. 세후 금액은 200만원 이하 비과세, 3억 이하 22%, 3억 초과분 33% 원천징수 기준 추정치입니다.</p>`,
-    '<p>모든 번호 조합의 당첨 확률은 같습니다(1등 8,145,060분의 1). 정확한 결과는 동행복권 공식 발표로 확인하세요.</p>',
+    `<h2>${escapeHtml(roundTitle(d))} ${escapeHtml(roundDateLabel(d))}</h2>`,
+    `<p>당첨번호 <strong>${nums}</strong> + 보너스 <strong>${d.bonusNumber}</strong></p>`,
+    prizeHtml(d, 1),
+    prizeHtml(d, 2),
+    `<p>${escapeHtml(PRIZE_TAX_NOTE)}</p>`,
+    storesHtml(d, stores),
+    `<h2>${escapeHtml(patternHeading(d))}</h2>`,
+    `<p>${partsHtml(patternParts(d, a))}</p>`,
+    `<ul>${patternStats(a).map(([label, value]) => `<li>${escapeHtml(label)}: ${escapeHtml(value)}</li>`).join('')}</ul>`,
+    `<p>번호대별 분포</p><ul>${NUMBER_BAND_LABELS.map((_, i) => `<li>${escapeHtml(bandLabel(a, i))}</li>`).join('')}</ul>`,
+    `<p>${escapeHtml(PROBABILITY_NOTE)}</p>`,
   ].join('');
   return {
     title: `로또 ${d.round}회 당첨번호 ${nums} + ${d.bonusNumber} (${date})`,

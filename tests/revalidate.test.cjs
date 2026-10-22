@@ -13,11 +13,17 @@ const source = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
 }).outputText;
 
 async function invoke(options = {}) {
-  const draw = { round: 1200, numbers: [1, 2, 3, 4, 5, 6], bonusNumber: 7 };
+  const draw = {
+    round: 1200, numbers: [1, 2, 3, 4, 5, 6], bonusNumber: 7,
+    prizeMoney: options.prizePending
+      ? { first: 0, firstWinners: 0, second: 0, secondWinners: 0 }
+      : { first: 2_000_000_000, firstWinners: 10, second: 50_000_000, secondWinners: 70 },
+  };
   const rows = options.rows ?? [{ id: 'saved-1', numbers: [1, 2, 3, 4, 5, 7] }];
   const updates = [];
   const delays = [];
   const revalidated = [];
+  const tags = [];
   let fetches = 0;
   let updateAttempts = 0;
   const supabase = {
@@ -45,9 +51,9 @@ async function invoke(options = {}) {
   const dependencies = {
     'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
     '@/lib/dataFetcher': {
-      invalidateAllDataCache() {},
+      LOTTO_DATA_TAG: 'lotto-data',
       getEstimatedLatestRound: () => 1200,
-      async getAllLottoData() {
+      async refreshAllLottoData() {
         fetches++;
         if (options.fetchError) throw new Error('fake upstream failure');
         if (options.empty) return [];
@@ -59,8 +65,9 @@ async function invoke(options = {}) {
       return { success: !options.storeError, count: options.storeError ? 0 : 2 };
     } },
     '@/lib/supabase': { getServiceSupabase: () => supabase },
-    'next/cache': { revalidatePath(p) { revalidated.push(p); } },
+    'next/cache': { revalidatePath(p) { revalidated.push(p); }, revalidateTag(t) { tags.push(t); } },
     '@/lib/revalidateTargets': loadTs('@/lib/revalidateTargets'),
+    '@/lib/prizeStatus': loadTs('@/lib/prizeStatus'),
   };
   const exports = {};
   vm.runInNewContext(source, {
@@ -78,7 +85,7 @@ async function invoke(options = {}) {
   const response = await exports.GET(new Request('http://test.invalid', {
     headers: { authorization: options.unauthorized ? 'invalid' : 'Bearer test-only' },
   }));
-  return { response, body: await response.json(), updates, fetches, delays, revalidated };
+  return { response, body: await response.json(), updates, fetches, delays, revalidated, tags };
 }
 
 for (const [name, options, stage] of [
@@ -150,4 +157,17 @@ test('stale data still revalidates the expected round page (may have been cached
   assert.ok(revalidated.includes('/lotto/1200'));
   assert.ok(revalidated.includes('/lotto/1199'));
   assert.ok(revalidated.includes('/rss.xml'));
+});
+
+test('번호는 반영됐지만 당첨금 미집계면 prizes 단계 실패로 보고 (지시 187 F2)', async () => {
+  const { response, body } = await invoke({ prizePending: true });
+  assert.equal(response.status, 503);
+  assert.equal(body.prizePending, true);
+  assert.ok(body.failedStages.includes('prizes'));
+  assert.ok(!body.failedStages.includes('latestRound'));
+});
+
+test('공유 데이터 캐시 태그를 무효화한다 (지시 187 F1)', async () => {
+  const { tags } = await invoke();
+  assert.deepEqual(tags, ['lotto-data']);
 });
