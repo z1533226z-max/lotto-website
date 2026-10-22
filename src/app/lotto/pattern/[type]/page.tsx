@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: `/lotto/pattern/${pattern.type}` },
     openGraph: {
       title: `로또 ${pattern.name}`,
       description,

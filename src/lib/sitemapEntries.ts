@@ -7,12 +7,14 @@ import { ZODIAC_IDS } from '@/data/zodiacLotto';
 import { BLOOD_TYPE_IDS } from '@/data/bloodTypeLotto';
 import { getAllUsGuideSlugs } from '@/data/usGuideArticles';
 import { getTodayKST, shiftDateStr, DAILY_FORTUNE_FIRST_DATE } from '@/lib/dailyFortuneGenerator';
-import { CONTENT_DATES, isIndexableWeeklyAnalysis } from '@/lib/seo';
+import { CONTENT_DATES, GOOGLE_INDEXED_DREAM_KEYWORDS, isIndexableWeeklyAnalysis } from '@/lib/seo';
 
 /**
  * 사이트맵 2종
  * - /sitemap.xml        : 구글·빙에 색인시키고 싶은 URL만 (robots.txt에 등록)
- * - /sitemap-naver.xml  : 구글·빙에는 noindex(googlebot/bingbot)인 템플릿 페이지 — 네이버 서치어드바이저에 수동 제출용
+ * - /sitemap-naver.xml  : 구글(·빙)에는 noindex인 페이지 — 네이버 서치어드바이저에 수동 제출용
+ *
+ * 규칙: 구글 noindex 페이지는 /sitemap.xml에 넣지 않는다 (tests/sitemap.test.cjs가 확인).
  *
  * lastmod는 실제 값만 사용: 당첨 데이터 기반 페이지는 해당(또는 최신) 추첨일, 정적 콘텐츠는 CONTENT_DATES.
  */
@@ -68,6 +70,8 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('/lotto/guide', D.guide, 'monthly', 0.6),
     entry('/lotto/dream', D.dream, 'monthly', 0.7),
     entry('/lotto/fortune', D.tools, 'monthly', 0.7),
+    // 띠별 행운번호: 대표 URL(허브, 오늘 내용을 그대로 보여 줌)만. 날짜별 URL은 매일 새로 생기므로 구글 noindex + 네이버 사이트맵
+    entry('/lotto/daily-fortune', today, 'daily', 0.9),
     entry('/lotto/calculator', D.tools, 'monthly', 0.7),
     entry('/lotto/simulator', D.tools, 'monthly', 0.6),
     entry('/lotto/stores', D.tools, 'weekly', 0.7),
@@ -79,13 +83,10 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('/privacy', D.legal, 'yearly', 0.3),
   ];
 
-  // 띠별 행운번호: 오늘 날짜만. 허브(/lotto/daily-fortune)는 오늘 날짜로 리다이렉트만 하므로 제외,
-  // 지난 날짜는 구글·빙 noindex라 네이버 사이트맵에 둔다.
-  const dailyFortune = entry(`/lotto/daily-fortune/${today}`, today, 'daily', 0.9);
-
   const guides = getAllGuideSlugs().map(slug => entry(`/lotto/guide/${slug}`, D.guide, 'monthly', 0.7));
 
-  const dreams = DREAM_KEYWORDS.map(d =>
+  // 꿈해몽: 선정 30개만 (나머지는 구글 noindex → 네이버 사이트맵)
+  const dreams = DREAM_KEYWORDS.filter(d => GOOGLE_INDEXED_DREAM_KEYWORDS.has(d.keyword)).map(d =>
     entry(`/lotto/dream/${encodeURIComponent(d.keyword)}`, D.dream, 'monthly', 0.6)
   );
 
@@ -105,10 +106,6 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
   });
 
   const patterns = PATTERN_TYPES.map(type => entry(`/lotto/pattern/${type}`, latestDraw, 'weekly', 0.7));
-
-  const mbti = MBTI_TYPES.map(type => entry(`/lotto/mbti/${type.toLowerCase()}`, D.mbti, 'monthly', 0.6));
-  const zodiac = ZODIAC_IDS.map(sign => entry(`/lotto/zodiac/${sign}`, D.zodiac, 'monthly', 0.6));
-  const bloodType = BLOOD_TYPE_IDS.map(type => entry(`/lotto/blood-type/${type}`, D.bloodType, 'monthly', 0.6));
 
   // 주간분석: 최신 52회만
   const weekly: Entry[] = [];
@@ -144,14 +141,15 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
   ];
 
   return [
-    ...hubs, dailyFortune, ...guides, ...dreams, ...numbers, ...years, ...frequency, ...patterns,
-    ...mbti, ...zodiac, ...bloodType, ...weekly, ...rounds, ...us,
+    ...hubs, ...guides, ...dreams, ...numbers, ...years, ...frequency, ...patterns,
+    ...weekly, ...rounds, ...us,
   ];
 }
 
 /** 구글·빙 noindex 템플릿 페이지 (/sitemap-naver.xml, 네이버 서치어드바이저 수동 제출용) */
 export function getNaverSitemapEntries(allData: LottoResult[], today: string = getTodayKST()): MetadataRoute.Sitemap {
   const { latestDraw, latestRound } = dataContext(allData);
+  const D = CONTENT_DATES;
 
   const pairs: Entry[] = [];
   for (let i = 1; i <= 44; i++) {
@@ -189,13 +187,24 @@ export function getNaverSitemapEntries(allData: LottoResult[], today: string = g
     sc.values.map(v => entry(`/lotto/stats/${sc.category}/${v}`, latestDraw, 'weekly', 0.6))
   );
 
-  // 띠별 행운번호 지난 날짜 전체 (DAILY_FORTUNE_FIRST_DATE ~ 어제, 최신순)
-  const pastFortunes: Entry[] = [];
-  for (let date = shiftDateStr(today, -1); date >= DAILY_FORTUNE_FIRST_DATE; date = shiftDateStr(date, -1)) {
-    pastFortunes.push(entry(`/lotto/daily-fortune/${date}`, date, 'never', 0.5));
+  // 띠별 행운번호 날짜별 전체 (DAILY_FORTUNE_FIRST_DATE ~ 오늘, 최신순) — 구글 대표 URL은 허브
+  const dailyFortunes: Entry[] = [];
+  for (let date = today; date >= DAILY_FORTUNE_FIRST_DATE; date = shiftDateStr(date, -1)) {
+    dailyFortunes.push(entry(`/lotto/daily-fortune/${date}`, date, date === today ? 'daily' : 'never', 0.5));
   }
 
-  return [...pairs, ...birthdays, ...monthly, ...weeklyArchive, ...endings, ...bonuses, ...sums, ...stats, ...pastFortunes];
+  // 구글 대상에서만 뺀 콘텐츠 (2026-10-22 마스터 승인): 선정 외 꿈해몽, MBTI·별자리·혈액형 상세
+  const dreams = DREAM_KEYWORDS.filter(d => !GOOGLE_INDEXED_DREAM_KEYWORDS.has(d.keyword)).map(d =>
+    entry(`/lotto/dream/${encodeURIComponent(d.keyword)}`, D.dream, 'monthly', 0.5)
+  );
+  const mbti = MBTI_TYPES.map(type => entry(`/lotto/mbti/${type.toLowerCase()}`, D.mbti, 'monthly', 0.5));
+  const zodiac = ZODIAC_IDS.map(sign => entry(`/lotto/zodiac/${sign}`, D.zodiac, 'monthly', 0.5));
+  const bloodType = BLOOD_TYPE_IDS.map(type => entry(`/lotto/blood-type/${type}`, D.bloodType, 'monthly', 0.5));
+
+  return [
+    ...pairs, ...birthdays, ...monthly, ...weeklyArchive, ...endings, ...bonuses, ...sums, ...stats, ...dailyFortunes,
+    ...dreams, ...mbti, ...zodiac, ...bloodType,
+  ];
 }
 
 function escapeXml(value: string): string {

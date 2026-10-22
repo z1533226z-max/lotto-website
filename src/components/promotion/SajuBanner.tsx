@@ -124,7 +124,8 @@ export default function SajuBanner() {
       </div>
 
       {/* Glow + shine animation */}
-      <style>{`
+      {/* 문자열 그대로 넣는다: <style>{`...`}</style>는 서버가 ' 를 &#x27;로 바꿔 하이드레이션이 깨지고 홈 전체가 브라우저에서 다시 그려졌다 */}
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes saju-glow {
           0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.15), 0 0 30px rgba(212, 175, 55, 0.08), 0 4px 20px rgba(0,0,0,0.3); }
           50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.3), 0 0 50px rgba(212, 175, 55, 0.12), 0 4px 20px rgba(0,0,0,0.3); }
@@ -150,7 +151,7 @@ export default function SajuBanner() {
           pointer-events: none;
           border-radius: 16px;
         }
-      `}</style>
+      ` }} />
     </a>
   );
 }

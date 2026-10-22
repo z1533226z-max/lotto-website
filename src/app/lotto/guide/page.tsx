@@ -5,6 +5,12 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
 import { GUIDE_ARTICLES } from '@/data/guideArticles';
+import type { Metadata } from 'next';
+
+// 제목·설명은 guide/layout.tsx. canonical은 하위 글(/lotto/guide/[slug])이 물려받지 않도록 이 페이지에만 둔다
+export const metadata: Metadata = {
+  alternates: { canonical: '/lotto/guide' },
+};
 
 // ============================================
 // Accordion component (client-side interactive)

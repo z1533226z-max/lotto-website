@@ -7,7 +7,7 @@ import { BLOOD_TYPE_IDS, BLOOD_TYPE_PROFILES, getBloodTypeProfile } from '@/data
 import { FreshLinksProvider } from '@/components/lotto/CrossSectionLinks';
 import { getFreshLinkData } from '@/lib/freshLinks';
 import BloodTypeContent from './BloodTypeContent';
-import { DEFAULT_OG_IMAGES } from '@/lib/seo';
+import { DEFAULT_OG_IMAGES, GOOGLE_NOINDEX_ROBOTS } from '@/lib/seo';
 
 interface Props {
   params: { type: string };
@@ -26,7 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${profile.name} 로또 행운번호 추천 ${profile.emoji} | 로또킹`;
   const description = `${profile.name}(한국인 ${profile.percentage}) 행운번호는 ${profile.luckyNumbers.join(', ')}! ${profile.trait}인 당신을 위한 맞춤 번호 추천, 구매 전략, 혈액형 궁합까지.`;
 
+  // 구글 대상만 색인 제외(2026-10-22 마스터 승인). 네이버·방문자에게는 그대로 노출
   return {
+    ...GOOGLE_NOINDEX_ROBOTS,
     title,
     description,
     alternates: { canonical: `/lotto/blood-type/${params.type}` },
