@@ -24,6 +24,8 @@ export const maxDuration = 60;
  */
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
+  let stage = 'latestRound';
+  const failedStages: string[] = [];
 
   try {
     // Vercel Cron 인증 (필수)
@@ -51,7 +53,11 @@ export async function GET(request: NextRequest) {
       latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
     }
 
+    const dataUpToDate = latestRound > 0 && latestRound >= expectedRound;
+    if (!dataUpToDate) failedStages.push('latestRound');
+
     // 3. ISR 캐시 무효화 - 모든 주요 페이지
+    stage = 'revalidate';
     const pathsToRevalidate = [
       '/',
       '/lotto/recent',
@@ -80,48 +86,60 @@ export async function GET(request: NextRequest) {
     revalidatePath('/', 'layout');
 
     // 4. 1등 당첨 판매점 데이터 자동 수집 (pyony.com → Supabase)
+    stage = 'stores';
     let storeResult = { success: false, count: 0 };
     if (latestRound > 0) {
-      storeResult = await fetchAndSaveWinningStores(latestRound);
+      try {
+        storeResult = await fetchAndSaveWinningStores(latestRound);
+      } catch {
+        // 판매점 실패와 무관한 번호 판정은 계속 진행한다.
+      }
     }
+    if (!storeResult.success) failedStages.push('stores');
 
     // 5. 저장된 번호 자동 당첨 확인
+    stage = 'matchCheck';
     let matchCheckResult = { checked: 0 };
     if (latestRound > 0) {
       try {
         const supabase = getServiceSupabase();
-        const { data: uncheckedRaw } = await supabase
+        const { data: uncheckedRaw, error: selectError } = await supabase
           .from('saved_numbers')
           .select('*')
           .eq('round_target', latestRound)
           .is('checked_at', null);
+        if (selectError) throw new Error('Saved-number query failed');
         const unchecked = (uncheckedRaw || []) as SavedNumber[];
 
         if (unchecked.length > 0) {
           const drawData = allData.find(d => d.round === latestRound);
-          if (drawData) {
-            const winningSet = new Set(drawData.numbers);
-            for (const saved of unchecked) {
-              const matchedCount = saved.numbers.filter((n) => winningSet.has(n)).length;
-              const bonusMatched = saved.numbers.includes(drawData.bonusNumber);
-              await supabase
-                .from('saved_numbers')
-                .update({
-                  matched_count: matchedCount,
-                  bonus_matched: bonusMatched,
-                  checked_at: new Date().toISOString(),
-                })
-                .eq('id', saved.id);
-            }
-            matchCheckResult.checked = unchecked.length;
+          if (!drawData) throw new Error('Draw data missing for match check');
+          const winningSet = new Set(drawData.numbers);
+          for (const saved of unchecked) {
+            const matchedCount = saved.numbers.filter((n) => winningSet.has(n)).length;
+            const bonusMatched = saved.numbers.includes(drawData.bonusNumber);
+            const { error: updateError } = await supabase
+              .from('saved_numbers')
+              .update({
+                matched_count: matchedCount,
+                bonus_matched: bonusMatched,
+                checked_at: new Date().toISOString(),
+              })
+              .eq('id', saved.id);
+            if (updateError) throw new Error('Saved-number update failed');
+            matchCheckResult.checked++;
           }
         }
-      } catch (e) {
-        console.error('[Cron] Match check failed:', e);
+      } catch {
+        failedStages.push('matchCheck');
+        console.error('[Cron] Match check failed');
       }
+    } else {
+      failedStages.push('matchCheck');
     }
 
     // 6. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
+    stage = 'warmup';
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lotto.gon.ai.kr';
     const warmupResults: Record<string, string> = {};
 
@@ -147,10 +165,11 @@ export async function GET(request: NextRequest) {
 
     const elapsed = Date.now() - startTime;
 
-    const dataUpToDate = latestRound >= expectedRound;
+    const success = failedStages.length === 0;
 
     return NextResponse.json({
-      success: true,
+      success,
+      failedStages,
       latestRound,
       expectedRound,
       dataUpToDate,
@@ -161,7 +180,7 @@ export async function GET(request: NextRequest) {
       warmupResults,
       elapsed: `${elapsed}ms`,
       timestamp: new Date().toISOString(),
-    });
+    }, { status: success ? 200 : 503 });
   } catch (error) {
     const elapsed = Date.now() - startTime;
     console.error(`[Cron] Revalidation failed (${elapsed}ms):`, error);
@@ -169,6 +188,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
+        failedStages: [...failedStages, stage],
         error: error instanceof Error ? error.message : 'Revalidation failed',
         elapsed: `${elapsed}ms`,
         timestamp: new Date().toISOString(),
