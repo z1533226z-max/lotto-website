@@ -1,4 +1,6 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import type { LottoResult } from '@/types/lotto';
 import { REAL_LOTTO_DATA } from '@/data/realLottoData';
 import { getLatestDrawnRound } from '@/lib/drawSchedule';
@@ -32,15 +34,18 @@ let allDataCache: { data: LottoResult[]; fetchedAt: number } | null = null;
 const ALL_DATA_CACHE_TTL = 30 * 60 * 1000; // 30분
 
 /**
- * 외부 조회는 Next 데이터 캐시(Vercel 에서는 인스턴스들이 함께 쓰는 리전 캐시)에 이 태그로 저장한다.
- * cron 이 revalidateTag(LOTTO_DATA_TAG) 하면 모든 인스턴스의 다음 조회가 출처에서 새로 읽는다.
+ * 외부 조회 결과는 Next 데이터 캐시(Vercel 에서는 인스턴스들이 함께 쓰는 리전 캐시)에 두 가지 태그로 나눠 담는다.
+ * - LOTTO_HISTORY_TAG: 확정된 지난 회차 목록(gon-services 전체). cron 이 비우지 않는다 → 과거 회차 페이지 HTML 이 유지된다.
+ * - LOTTO_LATEST_TAG: 새 회차·미집계 당첨금 확인. cron 이 새 번호를 확인한 뒤에만 revalidateTag 한다.
+ * 데이터 캐시를 읽은 페이지에도 같은 태그·주기가 기록되므로, 최신 확인을 거친 페이지만 cron 무효화 대상이 된다.
  * (https://nextjs.org/docs/14/app/building-your-application/caching#fetch-optionsnexttags-and-revalidatetag)
  */
-export const LOTTO_DATA_TAG = 'lotto-data';
+export const LOTTO_HISTORY_TAG = 'lotto-history';
+export const LOTTO_LATEST_TAG = 'lotto-latest';
 // 지난 회차 전체 목록: 페이지 주기(1시간)와 같게 둬 페이지 재생성 주기를 앞당기지 않는다
 const BASE_REVALIDATE = 3600;
-// 새 회차·미집계 당첨금 확인은 짧게. 이 조회가 들어간 페이지도 주기가 60초로 줄어 구회차 HTML 이 오래 남지 않는다
-// (Next 14 는 페이지 안 fetch 중 가장 짧은 revalidate 로 페이지 주기를 정한다)
+// 새 회차·미집계 당첨금 확인은 짧게. '아직 없음'·실패 결과도 이 동안 다시 쓴다
+// (Next 14 는 페이지 안 조회 중 가장 짧은 revalidate 로 페이지 주기를 정한다 → 최신 확인을 거친 페이지는 60초)
 const PROBE_REVALIDATE = 60;
 
 /** cached: 지난 회차 · probe: 새 회차/미집계 확인 · fresh: cron 전용, 데이터 캐시를 거치지 않음 */
@@ -49,7 +54,24 @@ type FetchMode = 'cached' | 'probe' | 'fresh';
 function fetchOptions(mode: FetchMode, timeoutMs: number, headers?: Record<string, string>): RequestInit {
   const base: RequestInit = { signal: AbortSignal.timeout(timeoutMs), ...(headers ? { headers } : {}) };
   if (mode === 'fresh') return { ...base, cache: 'no-store' };
-  return { ...base, next: { revalidate: mode === 'probe' ? PROBE_REVALIDATE : BASE_REVALIDATE, tags: [LOTTO_DATA_TAG] } };
+  const probe = mode === 'probe';
+  return { ...base, next: { revalidate: probe ? PROBE_REVALIDATE : BASE_REVALIDATE, tags: [probe ? LOTTO_LATEST_TAG : LOTTO_HISTORY_TAG] } };
+}
+
+// 같은 인스턴스에서 겹쳐 들어온 같은 외부 조회는 한 번만 보낸다: 진행 중인 조회, 또는 이 조회를 부른 쪽이
+// 기다리기 시작한 뒤에 끝난 조회의 결과를 함께 쓴다. 시작 전에 끝난 결과는 쓰지 않는다 → cron 이 캐시를 비운 뒤
+// 시작한 요청은 반드시 데이터 캐시·출처를 다시 본다(시간으로 붙잡아 두지 않음).
+const callStartedAt = new AsyncLocalStorage<number>();
+const recentLoads = new Map<string, { result: Promise<unknown>; settledAt?: number }>();
+function loadOnce<T>(key: string, load: () => Promise<T>): Promise<T> {
+  const since = callStartedAt.getStore() ?? Date.now();
+  const recent = recentLoads.get(key);
+  if (recent && (recent.settledAt === undefined || recent.settledAt >= since)) return recent.result as Promise<T>;
+  const entry: { result: Promise<unknown>; settledAt?: number } = {
+    result: load().finally(() => { entry.settledAt = Date.now(); }),
+  };
+  recentLoads.set(key, entry);
+  return entry.result as Promise<T>;
 }
 
 /** 최신 회차와 그 당첨금까지 확인된 데이터인가 (현재 시각 기준 예상 회차와 비교) */
@@ -176,6 +198,36 @@ async function fetchFromDhlottery(round: number, mode: FetchMode): Promise<Lotto
   }
 }
 
+type ProbeSource = 'gon' | 'smok95' | 'dhlottery';
+const PROBE_SOURCES: Record<ProbeSource, (round: number, mode: FetchMode) => Promise<LottoResult | null>> = {
+  gon: fetchFromGonServices,
+  smok95: fetchFromSmok95,
+  dhlottery: fetchFromDhlottery,
+};
+
+/**
+ * 새 회차 확인 결과를 '없음(null)'까지 데이터 캐시에 PROBE_REVALIDATE 초 동안 담는다.
+ * fetch 캐시는 200 응답만 저장해(Next 14.2 patch-fetch) 발표 전 404·timeout 이 방문 요청마다 외부로 나갔다.
+ * unstable_cache 는 함수 결과를 저장하고 읽은 페이지에 태그·주기를 남기며, 안의 fetch 는 따로 캐시하지 않는다.
+ */
+const probeShared = unstable_cache(
+  (source: ProbeSource, round: number) => loadOnce(`probe:${source}:${round}`, () => PROBE_SOURCES[source](round, 'probe')),
+  ['lotto-probe-v1'],
+  { revalidate: PROBE_REVALIDATE, tags: [LOTTO_LATEST_TAG] },
+);
+
+async function probeSource(source: ProbeSource, round: number, mode: FetchMode): Promise<LottoResult | null> {
+  if (mode !== 'probe') return PROBE_SOURCES[source](round, mode);
+  return callStartedAt.run(Date.now(), async () => {
+    try {
+      return await probeShared(source, round);
+    } catch {
+      // 데이터 캐시를 쓸 수 없는 실행 환경(요청 밖 등)에서만 — 겹친 조회 합치기만 하고 바로 조회
+      return loadOnce(`probe:${source}:${round}`, () => PROBE_SOURCES[source](round, 'probe'));
+    }
+  });
+}
+
 // 당첨금까지 확인된 결과만 메모리에 담는다 (미집계 결과는 다음 조회에서 다시 확인)
 function rememberRound(result: LottoResult): void {
   if (!isPrizePending(result)) roundCache.set(result.round, { data: result, fetchedAt: Date.now() });
@@ -192,7 +244,7 @@ export async function fetchRound(round: number): Promise<{ data: LottoResult; so
   const mode: FetchMode = round >= getEstimatedLatestRound() ? 'probe' : 'cached';
 
   // 2. gon-services 백엔드 API (primary)
-  const gonResult = await fetchFromGonServices(round, mode);
+  const gonResult = await probeSource('gon', round, mode);
   if (gonResult) {
     rememberRound(gonResult);
     return { data: gonResult, source: 'gon_services' };
@@ -205,14 +257,14 @@ export async function fetchRound(round: number): Promise<{ data: LottoResult; so
   }
 
   // 4. smok95 API (secondary fallback)
-  const smok95Result = await fetchFromSmok95(round, mode);
+  const smok95Result = await probeSource('smok95', round, mode);
   if (smok95Result) {
     rememberRound(smok95Result);
     return { data: smok95Result, source: 'smok95_api' };
   }
 
   // 5. 동행복권 API (마지막 시도)
-  const dhlResult = await fetchFromDhlottery(round, mode);
+  const dhlResult = await probeSource('dhlottery', round, mode);
   if (dhlResult) {
     rememberRound(dhlResult);
     return { data: dhlResult, source: 'dhlottery_api' };
@@ -243,11 +295,12 @@ export async function fetchLatestRound(): Promise<{ data: LottoResult; source: s
 // 세 출처(gon-services 단건·smok95·동행복권)를 동시에 물어 먼저 온 '당첨금까지 집계된' 결과를 쓴다.
 // 추첨(토 20:35) 직후에는 어느 쪽이 먼저 갱신될지 알 수 없어 순서대로 기다리면 그만큼 늦어진다.
 // 모두 번호만 있고 당첨금이 미집계면 먼저 온 결과를 쓴다(화면은 '당첨금 집계 중').
-async function fetchRoundFastest(round: number, mode: FetchMode): Promise<LottoResult | null> {
+// skipGon: 방금 출처에서 받은 gon-services 전체 목록에 없던 회차라 gon-services 단건은 다시 묻지 않는다.
+async function fetchRoundFastest(round: number, mode: FetchMode, skipGon: boolean): Promise<LottoResult | null> {
   const cached = roundCache.get(round);
   if (mode !== 'fresh' && cached && Date.now() - cached.fetchedAt < CACHE_TTL) return cached.data;
 
-  const sources = [fetchFromGonServices, fetchFromSmok95, fetchFromDhlottery];
+  const sources: ProbeSource[] = skipGon ? ['smok95', 'dhlottery'] : ['gon', 'smok95', 'dhlottery'];
   return new Promise<LottoResult | null>((resolve) => {
     let remaining = sources.length;
     let firstPending: LottoResult | null = null;
@@ -261,33 +314,73 @@ async function fetchRoundFastest(round: number, mode: FetchMode): Promise<LottoR
       }
       if (--remaining === 0) resolve(firstPending);
     };
-    for (const source of sources) source(round, mode).then(settle, () => settle(null));
+    for (const source of sources) probeSource(source, round, mode).then(settle, () => settle(null));
   });
 }
 
 // fromRound 부터 예상 최신 회차(+1)까지 이어지는 새 회차를 채운다 (처음 비는 회차에서 멈춤)
-async function fetchNewRounds(fromRound: number, mode: FetchMode): Promise<LottoResult[]> {
+async function fetchNewRounds(fromRound: number, mode: FetchMode, skipGon: boolean): Promise<LottoResult[]> {
   const estimatedLatest = getEstimatedLatestRound();
   const newRounds: LottoResult[] = [];
   for (let round = fromRound; round <= estimatedLatest + 1; round++) {
-    const result = await fetchRoundFastest(round, mode);
+    const result = await fetchRoundFastest(round, mode, skipGon);
     if (!result) break;
     newRounds.push(result);
   }
   return newRounds;
 }
 
+interface GonHistory { data: LottoResult[]; fetchedAt: number }
+class GonHistoryUnavailable extends Error {}
+
+// gon-services 전체 목록(확정 자료). 실패는 담지 않는다(던지면 unstable_cache 가 저장하지 않음) — 1시간 동안 정적 자료로 굳지 않게
+const gonHistoryShared = unstable_cache(
+  async (): Promise<GonHistory> => {
+    const data = await loadOnce('gon-all', () => fetchAllFromGonServices('cached'));
+    if (!data || data.length === 0) throw new GonHistoryUnavailable('gon-services 전체 조회 실패');
+    return { data, fetchedAt: Date.now() };
+  },
+  ['lotto-history-v1'],
+  { revalidate: BASE_REVALIDATE, tags: [LOTTO_HISTORY_TAG] },
+);
+// 실패는 이 인스턴스에서 PROBE_REVALIDATE 초 동안 다시 묻지 않는다 (장애 중 방문마다 10초 기다리며 외부 호출하지 않게)
+let gonHistoryFailedAt = 0;
+
+async function loadGonHistory(mode: 'cached' | 'fresh'): Promise<GonHistory | null> {
+  if (!GON_SERVICES_URL) return null;
+  if (mode === 'fresh') {
+    const data = await fetchAllFromGonServices('fresh');
+    return data && data.length > 0 ? { data, fetchedAt: Date.now() } : null;
+  }
+  if (Date.now() - gonHistoryFailedAt < PROBE_REVALIDATE * 1000) return null;
+  return callStartedAt.run(Date.now(), async () => {
+    try {
+      return await gonHistoryShared();
+    } catch (e) {
+      if (!(e instanceof GonHistoryUnavailable)) {
+        // 데이터 캐시를 쓸 수 없는 실행 환경에서만 — 바로 조회
+        const data = await loadOnce('gon-all', () => fetchAllFromGonServices('cached'));
+        if (data && data.length > 0) return { data, fetchedAt: Date.now() };
+      }
+      gonHistoryFailedAt = Date.now();
+      return null;
+    }
+  });
+}
+
 // gon-services 전체(없으면 정적 데이터) + 빠진 최신 회차·미집계 당첨금 보충
 async function loadAllLottoData(mode: 'cached' | 'fresh'): Promise<LottoResult[]> {
-  const gonData = await fetchAllFromGonServices(mode);
-  const base = gonData && gonData.length > 0 ? gonData : [...REAL_LOTTO_DATA];
+  const gon = await loadGonHistory(mode);
+  const base = gon ? gon.data : [...REAL_LOTTO_DATA];
   const latest = base[base.length - 1];
   // 마지막 회차 당첨금이 아직 미집계면 그 회차부터 다시 확인한다
   const recheckLatest = !!latest && isPrizePending(latest);
   const fromRound = latest ? (recheckLatest ? latest.round : latest.round + 1) : 1;
   if (fromRound > getEstimatedLatestRound()) return base;
 
-  const newRounds = await fetchNewRounds(fromRound, mode === 'fresh' ? 'fresh' : 'probe');
+  // 방금(PROBE_REVALIDATE 안) 출처에서 받은 gon-services 목록이면 단건도 같은 내용이라 다시 묻지 않는다
+  const gonFresh = !!gon && Date.now() - gon.fetchedAt < PROBE_REVALIDATE * 1000;
+  const newRounds = await fetchNewRounds(fromRound, mode === 'fresh' ? 'fresh' : 'probe', gonFresh);
   if (newRounds.length === 0) return base;
   return [...(recheckLatest ? base.slice(0, -1) : base), ...newRounds];
 }
@@ -311,8 +404,19 @@ export const getAllLottoData = cache(async (): Promise<LottoResult[]> => {
 });
 
 /**
+ * 확정된 지난 회차 목록만 (새 회차 확인 없이). 지난 회차 페이지용 —
+ * 최신 확인 태그·60초 주기가 붙지 않아 추첨 뒤 cron 이 과거 회차 HTML 을 무효화하지 않는다.
+ */
+export const getLottoHistory = cache(async (): Promise<LottoResult[]> => {
+  if (allDataCache && Date.now() - allDataCache.fetchedAt < ALL_DATA_CACHE_TTL) return allDataCache.data;
+  const gon = await loadGonHistory('cached');
+  return gon ? gon.data : [...REAL_LOTTO_DATA];
+});
+
+/**
  * cron 전용: 이 인스턴스의 메모리와 Next 데이터 캐시를 모두 거치지 않고 출처에서 새로 읽는다.
- * 다른 인스턴스는 호출한 라우트가 revalidateTag(LOTTO_DATA_TAG) 로 공유 캐시를 비워 다음 조회에서 새로 읽는다.
+ * 새 번호가 확인되면 호출한 라우트가 revalidateTag(LOTTO_LATEST_TAG) 로 공유 캐시의 '아직 없음'을 비워
+ * 다른 인스턴스도 다음 조회에서 새로 읽는다. 발표 전·실패면 아무것도 비우지 않는다.
  * (revalidateTag 는 요청이 끝난 뒤 적용되므로 같은 요청 안의 이 조회는 no-store 여야 새 값을 본다)
  */
 export async function refreshAllLottoData(): Promise<LottoResult[]> {
@@ -338,6 +442,7 @@ export function registerCacheInvalidationCallback(cb: () => void): void {
 export function invalidateAllDataCache(): void {
   allDataCache = null;
   roundCache.clear();
+  gonHistoryFailedAt = 0;
   // 등록된 외부 캐시도 모두 무효화
   for (const cb of cacheInvalidationCallbacks) {
     cb();

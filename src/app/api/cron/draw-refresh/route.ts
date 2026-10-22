@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { refreshAllLottoData, getEstimatedLatestRound, LOTTO_DATA_TAG } from '@/lib/dataFetcher';
+import { refreshAllLottoData, getEstimatedLatestRound, LOTTO_LATEST_TAG } from '@/lib/dataFetcher';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { DRAW_REVALIDATE_PATHS, getRoundPathsToRevalidate } from '@/lib/revalidateTargets';
 import { isPrizePending } from '@/lib/prizeStatus';
@@ -11,9 +11,10 @@ export const maxDuration = 30;
  * Vercel Cron - 토요일 추첨(20:35 KST) 직후 빠른 반영 전용
  *
  * 실행 시점: 토요일 KST 20:40~21:50 (vercel.json, UTC 11:40~12:50) 5~10분 간격.
- * 동작: 공유 데이터 캐시 태그 무효화 + 캐시를 거치지 않고 새 회차 조회(gon-services + smok95·동행복권 동시 보충)
- *       → 주요 페이지 ISR 무효화. 다른 인스턴스의 메모리 캐시는 최신 회차·당첨금이 확인되기 전에는
- *       쓰이지 않으므로(dataFetcher) 재생성된 페이지도 새 값을 읽는다.
+ * 동작: 캐시를 거치지 않고 새 회차 조회(gon-services + smok95·동행복권 동시 보충) → 새 번호가 확인됐을 때만
+ *       최신 확인 태그(LOTTO_LATEST_TAG)와 최신·직전 회차·홈·RSS 등 주요 페이지를 무효화한다.
+ *       다른 인스턴스의 메모리 캐시는 최신 회차·당첨금이 확인되기 전에는 쓰이지 않으므로(dataFetcher)
+ *       재생성된 페이지도 새 값을 읽는다. 과거 회차 페이지는 확정 자료 태그만 써서 건드리지 않는다.
  * 판매점 수집·저장 번호 판정·워밍업은 하지 않는다 (21:00 이후 /api/cron/revalidate 가 맡음).
  *
  * 응답: 새 회차가 아직 없으면(발표 전) 정상 대기로 보고 200 + pending:true.
@@ -30,8 +31,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // 다른 인스턴스·페이지가 데이터 캐시에 남은 '발표 전'·'미집계' 응답을 다시 쓰지 않게 비운다 (요청 끝에 적용)
-    revalidateTag(LOTTO_DATA_TAG);
     const allData = await refreshAllLottoData();
     const latest = allData.length > 0 ? allData[allData.length - 1] : null;
     const latestRound = latest?.round ?? 0;
@@ -43,8 +42,10 @@ export async function GET(request: NextRequest) {
     const paths = dataUpToDate
       ? [...DRAW_REVALIDATE_PATHS, ...getRoundPathsToRevalidate(latestRound, expectedRound)]
       : [];
-    // 새 회차가 아직 없으면 페이지를 다시 만들어도 같은 내용이라 건너뛴다.
-    // 레이아웃 전체 무효화('/', 'layout')는 회차 페이지 1,200여 개를 모두 다시 만들게 하므로 여기서는 하지 않는다.
+    // 새 회차가 아직 없거나(발표 전) 조회가 실패하면 아무것도 무효화하지 않는다 — 데이터 캐시의 '아직 없음'은 60초 안에 저절로 다시 확인된다.
+    // 새 번호가 확인되면 다른 인스턴스가 남은 '발표 전'·'미집계' 확인 결과를 다시 쓰지 않게 최신 확인 태그를 비운다 (요청 끝에 적용).
+    // 레이아웃 전체 무효화('/', 'layout')는 과거 회차 페이지 1,200여 개까지 다시 만들게 하므로 하지 않는다.
+    if (dataUpToDate) revalidateTag(LOTTO_LATEST_TAG);
     for (const path of paths) revalidatePath(path);
 
     return NextResponse.json({

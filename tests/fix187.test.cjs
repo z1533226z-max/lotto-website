@@ -5,7 +5,7 @@ const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { loadTs } = require('./_loadTs.cjs');
 
-const TAG = 'lotto-data';
+const TAG = 'lotto-latest';
 const last = (all) => all[all.length - 1];
 const WIN = [3, 12, 24, 33, 39, 42];
 
@@ -48,103 +48,88 @@ function createWorld() {
   return world;
 }
 
-// ---------- Next 데이터 캐시(가짜, 모든 인스턴스가 함께 씀 — Vercel 의 리전 공유 Data Cache 와 같은 역할) ----------
-// Next 14.2 patch-fetch 와 같은 규칙: 200 응답만 저장, cache:'no-store' 는 읽지도 쓰지도 않음,
-// next 옵션이 없는 fetch 도 페이지 주기(3600초)로 저장(auto cache), revalidateTag 는 그 태그 항목을 지운다.
-function createDataCache(world) {
-  const entries = new Map();
-  const fetch = async (url, init = {}) => {
-    const next = init.next || {};
-    world.calls.push({ url, cache: init.cache, tags: next.tags || [], revalidate: next.revalidate });
-    const cacheable = init.cache !== 'no-store' && next.revalidate !== 0;
-    const hit = cacheable && entries.get(url);
-    if (hit && hit.expiresAt > Date.now()) return new Response(hit.body, { status: 200 });
-    const res = await world.upstream(url);
-    if (!cacheable || res.status !== 200) return res;
-    const body = await res.text();
-    entries.set(url, { body, tags: next.tags || [], expiresAt: Date.now() + 1000 * (next.revalidate ?? 3600) });
-    return new Response(body, { status: 200 });
-  };
-  const revalidateTag = (tag) => { for (const [k, e] of entries) if (e.tags.includes(tag)) entries.delete(k); };
-  return { fetch, revalidateTag, entries };
+// ---------- Next 데이터 캐시 ----------
+// 지시 192: 가짜 캐시 규칙 대신 설치된 Next 14.2 의 patchFetch·unstable_cache·revalidateTag·FileSystemCache 를 그대로 쓴다.
+// 리전 캐시 하나를 여러 인스턴스(dataFetcher 를 따로 불러온 것)가 함께 쓴다 — Vercel 의 리전 공유 Data Cache 와 같은 역할.
+const rt = require('./_nextRuntime.cjs');
+function useWorld(world) {
+  rt.setUpstream((url) => world.upstream(url));
+  rt.resetCalls();
+  world.calls = rt.calls;
+  return rt.createRegionCache();
 }
+const loadInstance = () => rt.loadDataFetcher();
+// 페이지 하나를 다시 만드는 요청처럼 실행 (ISR 재생성 = 정적 생성 저장소)
+const render = (region, instance, path = '/lotto/1247') =>
+  rt.run(region, () => instance.getAllLottoData(), { path, isStaticGeneration: true, revalidate: 3600 }).then((r) => r.value);
 
-// 서버 인스턴스 하나 = dataFetcher 모듈을 따로 한 번 더 불러온 것 (메모리 캐시가 따로 생김)
-function loadInstance(dataCache) {
-  return loadTs('@/lib/dataFetcher', {
-    mocks: {
-      react: { cache: (fn) => fn },
-      '@/data/realLottoData': { REAL_LOTTO_DATA: [] },
-      '@/lib/drawSchedule': { getLatestDrawnRound: () => 1247 }, // 토요일 20:35 추첨이 끝난 뒤
-    },
-    globals: { fetch: dataCache.fetch, process: { env: { GON_SERVICES_URL: 'https://gon.test' } } },
-  });
-}
-
-// 실제 draw-refresh 라우트를 cron 인스턴스로 실행. revalidateTag/revalidatePath 는 Next 처럼 응답 뒤에 적용한다.
-async function runDrawRefresh(cronInstance, dataCache) {
-  const revalidated = [];
-  const tags = [];
+// 실제 draw-refresh 라우트를 cron 인스턴스로 실행. revalidateTag/revalidatePath 는 Next 그대로, 응답 뒤에 데이터 캐시에 적용된다.
+async function runDrawRefresh(cronInstance, region) {
   const route = loadTs('@/app/api/cron/draw-refresh/route', {
     mocks: {
       'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
-      'next/cache': { revalidatePath: (p) => revalidated.push(p), revalidateTag: (t) => tags.push(t) },
+      'next/cache': rt.nextCache,
       '@/lib/dataFetcher': cronInstance,
     },
     globals: { process: { env: { CRON_SECRET: 'test-only' } }, console: { log() {}, error() {} } },
   });
-  const res = await route.GET(new Request('http://test.invalid', { headers: { authorization: 'Bearer test-only' } }));
-  tags.forEach(dataCache.revalidateTag);
-  return { res, body: await res.json(), revalidated, tags };
+  const { value: res, revalidatedTags } = await rt.run(region,
+    () => route.GET(new Request('http://test.invalid', { headers: { authorization: 'Bearer test-only' } })),
+    { path: '/api/cron/draw-refresh' });
+  const revalidated = revalidatedTags.filter((t) => t.startsWith('_N_T_')).map((t) => t.slice('_N_T_'.length));
+  return { res, body: await res.json(), revalidated, tags: revalidatedTags.filter((t) => !t.startsWith('_N_T_')) };
 }
 
 // ---------- F1 ----------
 test('F1: cron 인스턴스가 새 회차를 받으면 다른 웹 인스턴스도 바로 새 회차를 읽는다(구회차 메모리·데이터 캐시 잔존 없음)', async () => {
   const world = createWorld();
-  const dataCache = createDataCache(world);
-  const web = loadInstance(dataCache);
-  const cron = loadInstance(dataCache);
+  const region = useWorld(world);
+  const web = loadInstance();
+  const cron = loadInstance();
 
-  // 20:36 웹이 먼저 열림: 아직 발표 전 → 1246 (동행복권 'fail' 200 응답이 데이터 캐시에 들어갈 수 있음)
-  assert.equal(last(await web.getAllLottoData()).round, 1246);
+  // 20:36 웹이 먼저 열림: 아직 발표 전 → 1246 ('없음'·동행복권 'fail' 확인 결과가 데이터 캐시에 60초 담김)
+  assert.equal(last(await render(region, web)).round, 1246);
 
   world.published[1247] = { smok95: 'complete', dhl: true };
-  const { body, revalidated, tags } = await runDrawRefresh(cron, dataCache);
+  // cron 전: 같은 60초 안이면 웹은 담아 둔 '없음'을 다시 쓴다(외부 조회 없음)
+  const before = world.calls.length;
+  assert.equal(last(await render(region, web)).round, 1246);
+  assert.equal(world.calls.length, before);
+
+  const { body, revalidated, tags } = await runDrawRefresh(cron, region);
   assert.equal(body.latestRound, 1247);
   assert.equal(body.pending, false);
   assert.ok(revalidated.includes('/') && revalidated.includes('/lotto/1247'));
 
-  // 웹 인스턴스(메모리에 1246 보유)에서 페이지가 다시 만들어질 때 새 회차를 읽어야 한다
-  const webLast = last(await web.getAllLottoData());
+  // 웹 인스턴스(메모리에 1246 보유)에서 페이지가 다시 만들어질 때 cron 직후 바로 새 회차를 읽어야 한다
+  const webLast = last(await render(region, web));
   assert.equal(webLast.round, 1247, `web=${webLast.round}`);
   assert.equal(webLast.prizeMoney.first, 2_000_000_000);
-  assert.ok(tags.includes(TAG), 'cron 은 공유 데이터 캐시 태그를 무효화해야 한다');
+  assert.deepEqual(tags, [TAG], 'cron 은 새 번호 확인 뒤 최신 확인 태그만 무효화해야 한다');
 });
 
-test('F1: 외부 조회는 공유 캐시 태그를 달고, 새 회차 확인은 짧게(60초 이하), cron 은 캐시를 거치지 않는다', async () => {
+test('F1: 새 회차 확인을 거친 페이지는 최신 확인 태그·60초 주기가 기록되고, cron 은 캐시를 거치지 않는다', async () => {
   const world = createWorld();
-  const dataCache = createDataCache(world);
-  const web = loadInstance(dataCache);
-  await web.getAllLottoData();
-  const webCalls = world.calls.splice(0);
-  assert.ok(webCalls.length > 1);
-  for (const c of webCalls) {
-    assert.ok(c.tags.includes(TAG), `태그 없음: ${c.url}`);
-    if (!c.url.endsWith('/lotto/results')) assert.ok(c.revalidate <= 60, `새 회차 확인이 오래 캐시됨: ${c.url} ${c.revalidate}`);
-  }
+  const region = useWorld(world);
+  const { store } = await rt.run(region, () => loadInstance().getAllLottoData(), { path: '/', isStaticGeneration: true, revalidate: 3600 });
+  assert.ok(store.tags.includes(TAG), `태그 없음: ${store.tags}`);
+  assert.ok(store.revalidate <= 60, `새 회차 확인이 오래 캐시됨: ${store.revalidate}`);
 
   world.published[1247] = { smok95: 'complete', dhl: true };
-  await runDrawRefresh(loadInstance(dataCache), dataCache);
-  for (const c of world.calls.splice(0)) assert.equal(c.cache, 'no-store', `cron 이 캐시를 읽음: ${c.url}`);
+  world.calls.length = 0;
+  await runDrawRefresh(loadInstance(), region);
+  assert.ok(world.calls.length > 0);
+  for (const c of world.calls) assert.equal(c.cache, 'no-store', `cron 이 캐시를 읽음: ${c.url}`);
 });
 
 test('F1: 최신 회차·당첨금이 확인된 뒤에는 메모리 캐시를 다시 써서 외부 조회를 반복하지 않는다', async () => {
   const world = createWorld();
   world.published[1247] = { smok95: 'complete', dhl: true };
-  const web = loadInstance(createDataCache(world));
-  assert.equal(last(await web.getAllLottoData()).round, 1247);
+  const region = useWorld(world);
+  const web = loadInstance();
+  assert.equal(last(await render(region, web)).round, 1247);
   const before = world.calls.length;
-  await web.getAllLottoData();
+  await render(region, web);
   assert.equal(world.calls.length, before);
 });
 
@@ -156,11 +141,11 @@ const draw = (prizeMoney, round = 1247) => ({ round, drawDate: '2026-10-24', num
 
 test('F2: 번호만 먼저 나온 회차(당첨금 미집계)는 "집계 중"으로 보이고 이월로 표시하지 않는다', async () => {
   const world = createWorld();
-  const dataCache = createDataCache(world);
-  const web = loadInstance(dataCache);
+  const region = useWorld(world);
+  const web = loadInstance();
   world.published[1247] = { smok95: 'pending' };
 
-  const pendingLast = last(await web.getAllLottoData());
+  const pendingLast = last(await render(region, web));
   assert.equal(pendingLast.round, 1247);
   assert.equal(status().isPrizePending(pendingLast), true);
   const html = renderToStaticMarkup(React.createElement(Detail(), { data: pendingLast, maxRound: 1247 }));
@@ -172,18 +157,18 @@ test('F2: 번호만 먼저 나온 회차(당첨금 미집계)는 "집계 중"으
 
   // 집계가 끝나면 다음 cron 에서 완료로 바뀌고, 웹 인스턴스도 미집계 값을 붙들고 있지 않는다
   world.published[1247] = { smok95: 'complete' };
-  const { body } = await runDrawRefresh(loadInstance(dataCache), dataCache);
+  const { body } = await runDrawRefresh(loadInstance(), region);
   assert.equal(body.prizePending, false);
-  const done = last(await web.getAllLottoData());
+  const done = last(await render(region, web));
   assert.equal(done.prizeMoney.first, 2_000_000_000);
   assert.equal(done.prizeMoney.firstWinners, 10);
 });
 
 test('F2: draw-refresh 완료 판정은 당첨금까지 본다 (번호만 있으면 prizePending)', async () => {
   const world = createWorld();
-  const dataCache = createDataCache(world);
+  const region = useWorld(world);
   world.published[1247] = { smok95: 'pending' };
-  const { res, body, revalidated } = await runDrawRefresh(loadInstance(dataCache), dataCache);
+  const { res, body, revalidated } = await runDrawRefresh(loadInstance(), region);
   assert.equal(res.status, 200);
   assert.equal(body.latestRound, 1247);
   assert.equal(body.pending, false); // 번호는 반영됨 → 페이지는 다시 만든다

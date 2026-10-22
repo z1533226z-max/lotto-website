@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const ts = require('typescript');
 
 const SRC = path.join(__dirname, '../src');
-const PURE_PACKAGES = new Set(['clsx', 'tailwind-merge', 'react', 'react/jsx-runtime', 'lucide-react']);
+const PURE_PACKAGES = new Set(['clsx', 'tailwind-merge', 'react', 'react/jsx-runtime', 'lucide-react', 'node:async_hooks']);
 
 function resolveFile(spec, fromDir) {
   const base = spec.startsWith('@/') ? path.join(SRC, spec.slice(2)) : path.resolve(fromDir, spec);

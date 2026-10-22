@@ -51,7 +51,7 @@ async function invoke(options = {}) {
   const dependencies = {
     'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
     '@/lib/dataFetcher': {
-      LOTTO_DATA_TAG: 'lotto-data',
+      LOTTO_LATEST_TAG: 'lotto-latest',
       getEstimatedLatestRound: () => 1200,
       async refreshAllLottoData() {
         fetches++;
@@ -65,7 +65,7 @@ async function invoke(options = {}) {
       return { success: !options.storeError, count: options.storeError ? 0 : 2 };
     } },
     '@/lib/supabase': { getServiceSupabase: () => supabase },
-    'next/cache': { revalidatePath(p) { revalidated.push(p); }, revalidateTag(t) { tags.push(t); } },
+    'next/cache': { revalidatePath(p, type) { revalidated.push(type ? p + '#' + type : p); }, revalidateTag(t) { tags.push(t); } },
     '@/lib/revalidateTargets': loadTs('@/lib/revalidateTargets'),
     '@/lib/prizeStatus': loadTs('@/lib/prizeStatus'),
   };
@@ -152,11 +152,19 @@ test('unauthorized cron does not run work', async () => {
   assert.equal(fetches, 0);
 });
 
-test('stale data still revalidates the expected round page (may have been cached as 404)', async () => {
-  const { revalidated } = await invoke({ stale: true });
-  assert.ok(revalidated.includes('/lotto/1200'));
-  assert.ok(revalidated.includes('/lotto/1199'));
-  assert.ok(revalidated.includes('/rss.xml'));
+// 지시 192 N2: 재시도 뒤에도 새 번호가 없으면 데이터 캐시·페이지를 비우지 않는다.
+// 먼저 열려 404 로 담긴 예상 회차 페이지는 번호가 확인된 cron 에서 함께 다시 만든다 (아래 시험).
+test('stale data revalidates nothing (judged before invalidation)', async () => {
+  const { revalidated, tags } = await invoke({ stale: true });
+  assert.deepEqual(revalidated, []);
+  assert.deepEqual(tags, []);
+});
+
+test('fresh draw revalidates latest/previous round, home and RSS only — never the whole layout', async () => {
+  const { revalidated } = await invoke();
+  for (const p of ['/lotto/1200', '/lotto/1199', '/', '/rss.xml']) assert.ok(revalidated.includes(p), p);
+  assert.deepEqual(revalidated.filter((p) => /^\/lotto\/\d+$/.test(p)), ['/lotto/1200', '/lotto/1199']);
+  assert.ok(!revalidated.some((p) => p.endsWith('#layout')));
 });
 
 test('번호는 반영됐지만 당첨금 미집계면 prizes 단계 실패로 보고 (지시 187 F2)', async () => {
@@ -167,7 +175,7 @@ test('번호는 반영됐지만 당첨금 미집계면 prizes 단계 실패로 �
   assert.ok(!body.failedStages.includes('latestRound'));
 });
 
-test('공유 데이터 캐시 태그를 무효화한다 (지시 187 F1)', async () => {
+test('새 번호 확인 뒤 최신 확인 태그만 무효화한다 (지시 187 F1 · 192 N2)', async () => {
   const { tags } = await invoke();
-  assert.deepEqual(tags, ['lotto-data']);
+  assert.deepEqual(tags, ['lotto-latest']);
 });

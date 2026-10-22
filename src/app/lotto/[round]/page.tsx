@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllLottoData, getEstimatedLatestRound, getLatestRound } from '@/lib/dataFetcher';
+import { getAllLottoData, getEstimatedLatestRound, getLatestRound, getLottoHistory } from '@/lib/dataFetcher';
 import { formatCurrency, formatDrawDateKo } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
 import { calculateNetPrize } from '@/lib/prizeTax';
-import { getPrizeState } from '@/lib/prizeStatus';
+import { getPrizeState, isPrizePending } from '@/lib/prizeStatus';
 import { getNextDraw } from '@/lib/drawSchedule';
 import { getFirstPrizeStores } from '@/lib/winningStores';
 import NextDrawCountdown from '@/components/lotto/NextDrawCountdown';
@@ -37,6 +37,19 @@ function parseRoundParam(raw: string): number | null {
   return round;
 }
 
+/**
+ * 지난 회차(최신·직전 제외)는 확정 자료만 읽는다 — 새 회차 확인(60초 주기·cron 무효화 태그)에 묶이지 않아
+ * 추첨 뒤에도 과거 회차 HTML 이 그대로 유지된다. 최신·직전 회차와 확정 자료에 없는 회차는 전체 데이터를 쓴다.
+ */
+async function getRoundPageData(round: number) {
+  if (round < getEstimatedLatestRound() - 1) {
+    const history = await getLottoHistory();
+    const found = history.find(d => d.round === round);
+    if (found && !isPrizePending(found)) return history;
+  }
+  return getAllLottoData();
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const round = parseRoundParam(params.round);
 
@@ -44,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: '로또 당첨번호 조회 | 로또킹' };
   }
 
-  const allData = await getAllLottoData();
+  const allData = await getRoundPageData(round);
   const data = allData.find(d => d.round === round);
 
   if (!data) {
@@ -83,7 +96,7 @@ export default async function LottoRoundPage({ params }: Props) {
     notFound();
   }
 
-  const allData = await getAllLottoData();
+  const allData = await getRoundPageData(round);
   const data = allData.find(d => d.round === round);
 
   if (!data) {

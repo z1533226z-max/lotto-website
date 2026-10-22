@@ -38,6 +38,7 @@ function loadFetcher({ gonLast, smok95 = {}, dhl = {} }) {
   const mod = loadTs('@/lib/dataFetcher', {
     mocks: {
       react: { cache: (fn) => fn },
+      'next/cache': { unstable_cache: (fn) => fn }, // 데이터 캐시 없이 보충 순서만 본다 (캐시는 fix187·fix192 가 실제 Next 로 시험)
       '@/data/realLottoData': { REAL_LOTTO_DATA: [round(1200)] },
       '@/lib/drawSchedule': { getLatestDrawnRound: () => 1247 },
     },
@@ -79,13 +80,14 @@ test('gon-services 가 최신이면 외부 출처를 부르지 않는다', async
 // ---------- /api/cron/draw-refresh ----------
 async function invokeRefresh({ latest = 1247, expected = 1247, fetchError = false, unauthorized = false } = {}) {
   const revalidated = [];
+  const tags = [];
   let invalidated = 0;
   const route = loadTs('@/app/api/cron/draw-refresh/route', {
     mocks: {
       'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
-      'next/cache': { revalidatePath: (p, type) => revalidated.push(type ? `${p}#${type}` : p), revalidateTag() {} },
+      'next/cache': { revalidatePath: (p, type) => revalidated.push(type ? `${p}#${type}` : p), revalidateTag: (t) => tags.push(t) },
       '@/lib/dataFetcher': {
-        LOTTO_DATA_TAG: 'lotto-data',
+        LOTTO_LATEST_TAG: 'lotto-latest',
         getEstimatedLatestRound: () => expected,
         async refreshAllLottoData() {
           invalidated++;
@@ -99,28 +101,33 @@ async function invokeRefresh({ latest = 1247, expected = 1247, fetchError = fals
   const res = await route.GET(new Request('http://test.invalid', {
     headers: { authorization: unauthorized ? 'nope' : 'Bearer test-only' },
   }));
-  return { res, body: await res.json(), revalidated, invalidated };
+  return { res, body: await res.json(), revalidated, tags, invalidated };
 }
 
 test('draw-refresh: 새 회차가 있으면 주요 페이지·회차 페이지를 다시 만든다 (레이아웃 전체는 건드리지 않음)', async () => {
-  const { res, body, revalidated, invalidated } = await invokeRefresh();
+  const { res, body, revalidated, tags, invalidated } = await invokeRefresh();
   assert.equal(res.status, 200);
+  assert.deepEqual(tags, ['lotto-latest']);
   assert.equal(body.pending, false);
   assert.equal(invalidated, 1);
   for (const p of ['/', '/lotto/1247', '/lotto/1246', '/rss.xml', '/lotto/my-numbers']) assert.ok(revalidated.includes(p), p);
   assert.ok(!revalidated.some((p) => p.endsWith('#layout')));
 });
 
-test('draw-refresh: 발표 전이면 200 + pending, 페이지는 그대로', async () => {
-  const { res, body, revalidated } = await invokeRefresh({ latest: 1246, expected: 1247 });
+test('draw-refresh: 발표 전이면 200 + pending, 페이지·데이터 캐시 모두 그대로 (지시 192 N2)', async () => {
+  const { res, body, revalidated, tags } = await invokeRefresh({ latest: 1246, expected: 1247 });
   assert.equal(res.status, 200);
   assert.equal(body.pending, true);
   assert.equal(revalidated.length, 0);
+  assert.deepEqual(tags, []);
 });
 
-test('draw-refresh: 데이터 조회 실패·빈 데이터는 503', async () => {
-  assert.equal((await invokeRefresh({ fetchError: true })).res.status, 503);
-  assert.equal((await invokeRefresh({ latest: 0 })).res.status, 503);
+test('draw-refresh: 데이터 조회 실패·빈 데이터는 503, 아무것도 무효화하지 않음', async () => {
+  for (const opts of [{ fetchError: true }, { latest: 0 }]) {
+    const { res, revalidated, tags } = await invokeRefresh(opts);
+    assert.equal(res.status, 503);
+    assert.deepEqual([revalidated, tags], [[], []]);
+  }
 });
 
 test('draw-refresh: 인증 없으면 401, 아무것도 하지 않음', async () => {
