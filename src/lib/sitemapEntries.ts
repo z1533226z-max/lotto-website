@@ -62,6 +62,8 @@ export function getGoogleSitemapEntries(allData: LottoResult[], today: string = 
     entry('', latestDraw, 'daily', 1.0),
     entry('/lotto/list', latestDraw, 'weekly', 0.9),
     entry('/lotto/recent', latestDraw, 'weekly', 0.8),
+    // 공개일보다 앞서지 않도록 하고, 최근 결과가 바뀌면 추첨일을 반영한다.
+    entry('/lotto/my-numbers', latestDraw > '2026-10-22' ? latestDraw : '2026-10-22', 'weekly', 0.8),
     entry('/lotto/statistics', latestDraw, 'weekly', 0.8),
     // /lotto/frequency: /lotto/frequency/all로 307 리다이렉트만 하는 주소라 제외 (frequency/all은 아래 frequency 목록에 있음)
     entry('/lotto/rankings', latestDraw, 'weekly', 0.7),

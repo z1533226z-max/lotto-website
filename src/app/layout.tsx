@@ -65,6 +65,9 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
+        {/* 페이지별 alternates.canonical이 상위 alternates를 덮어쓰므로 공통 head에 둔다. */}
+        <link rel="alternate" type="application/rss+xml" title="로또킹 최신 당첨번호" href="https://lotto.gon.ai.kr/rss.xml" />
+
         {/* Theme initialization script - prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
 

@@ -69,6 +69,17 @@ test('daily fortune: Google gets only the representative hub, dated URLs go to N
   assert.ok(naver.includes('/lotto/daily-fortune/2026-10-21'));
 });
 
+test('public my-numbers tool is discoverable once in the Google sitemap', () => {
+  assert.equal(google.filter((u) => u === '/lotto/my-numbers').length, 1);
+  assert.ok(!naver.includes('/lotto/my-numbers'));
+});
+
+test('my-numbers lastmod tracks new draw content after the tool publication date', () => {
+  const findTool = data => getGoogleSitemapEntries(data, TODAY).find(e => e.url === `${BASE_URL}/lotto/my-numbers`);
+  assert.equal(findTool([]).lastModified, '2026-10-22');
+  assert.equal(findTool([{ ...allData[0], drawDate: '2026-10-24' }]).lastModified, '2026-10-24');
+});
+
 test('no URL is in both sitemaps and neither has duplicates', () => {
   assert.equal(new Set(google).size, google.length);
   assert.equal(new Set(naver).size, naver.length);
