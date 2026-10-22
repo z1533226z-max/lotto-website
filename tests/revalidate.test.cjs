@@ -4,6 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { test } = require('node:test');
 const ts = require('typescript');
+const { loadTs } = require('./_loadTs.cjs');
 
 // Run the real route with an allowlist of fakes: no network, DB, or env files.
 const filename = path.join(__dirname, '../src/app/api/cron/revalidate/route.ts');
@@ -12,10 +13,17 @@ const source = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
 }).outputText;
 
 async function invoke(options = {}) {
-  const draw = { round: 1200, numbers: [1, 2, 3, 4, 5, 6], bonusNumber: 7 };
+  const draw = {
+    round: 1200, numbers: [1, 2, 3, 4, 5, 6], bonusNumber: 7,
+    prizeMoney: options.prizePending
+      ? { first: 0, firstWinners: 0, second: 0, secondWinners: 0 }
+      : { first: 2_000_000_000, firstWinners: 10, second: 50_000_000, secondWinners: 70 },
+  };
   const rows = options.rows ?? [{ id: 'saved-1', numbers: [1, 2, 3, 4, 5, 7] }];
   const updates = [];
   const delays = [];
+  const revalidated = [];
+  const tags = [];
   let fetches = 0;
   let updateAttempts = 0;
   const supabase = {
@@ -43,9 +51,9 @@ async function invoke(options = {}) {
   const dependencies = {
     'next/server': { NextResponse: { json: (body, init) => Response.json(body, init) } },
     '@/lib/dataFetcher': {
-      invalidateAllDataCache() {},
+      LOTTO_LATEST_TAG: 'lotto-latest',
       getEstimatedLatestRound: () => 1200,
-      async getAllLottoData() {
+      async refreshAllLottoData() {
         fetches++;
         if (options.fetchError) throw new Error('fake upstream failure');
         if (options.empty) return [];
@@ -57,7 +65,9 @@ async function invoke(options = {}) {
       return { success: !options.storeError, count: options.storeError ? 0 : 2 };
     } },
     '@/lib/supabase': { getServiceSupabase: () => supabase },
-    'next/cache': { revalidatePath() {} },
+    'next/cache': { revalidatePath(p, type) { revalidated.push(type ? p + '#' + type : p); }, revalidateTag(t) { tags.push(t); } },
+    '@/lib/revalidateTargets': loadTs('@/lib/revalidateTargets'),
+    '@/lib/prizeStatus': loadTs('@/lib/prizeStatus'),
   };
   const exports = {};
   vm.runInNewContext(source, {
@@ -75,7 +85,7 @@ async function invoke(options = {}) {
   const response = await exports.GET(new Request('http://test.invalid', {
     headers: { authorization: options.unauthorized ? 'invalid' : 'Bearer test-only' },
   }));
-  return { response, body: await response.json(), updates, fetches, delays };
+  return { response, body: await response.json(), updates, fetches, delays, revalidated, tags };
 }
 
 for (const [name, options, stage] of [
@@ -140,4 +150,32 @@ test('unauthorized cron does not run work', async () => {
   const { response, fetches } = await invoke({ unauthorized: true });
   assert.equal(response.status, 401);
   assert.equal(fetches, 0);
+});
+
+// 지시 192 N2: 재시도 뒤에도 새 번호가 없으면 데이터 캐시·페이지를 비우지 않는다.
+// 먼저 열려 404 로 담긴 예상 회차 페이지는 번호가 확인된 cron 에서 함께 다시 만든다 (아래 시험).
+test('stale data revalidates nothing (judged before invalidation)', async () => {
+  const { revalidated, tags } = await invoke({ stale: true });
+  assert.deepEqual(revalidated, []);
+  assert.deepEqual(tags, []);
+});
+
+test('fresh draw revalidates latest/previous round, home and RSS only — never the whole layout', async () => {
+  const { revalidated } = await invoke();
+  for (const p of ['/lotto/1200', '/lotto/1199', '/', '/rss.xml']) assert.ok(revalidated.includes(p), p);
+  assert.deepEqual(revalidated.filter((p) => /^\/lotto\/\d+$/.test(p)), ['/lotto/1200', '/lotto/1199']);
+  assert.ok(!revalidated.some((p) => p.endsWith('#layout')));
+});
+
+test('번호는 반영됐지만 당첨금 미집계면 prizes 단계 실패로 보고 (지시 187 F2)', async () => {
+  const { response, body } = await invoke({ prizePending: true });
+  assert.equal(response.status, 503);
+  assert.equal(body.prizePending, true);
+  assert.ok(body.failedStages.includes('prizes'));
+  assert.ok(!body.failedStages.includes('latestRound'));
+});
+
+test('새 번호 확인 뒤 최신 확인 태그만 무효화한다 (지시 187 F1 · 192 N2)', async () => {
+  const { tags } = await invoke();
+  assert.deepEqual(tags, ['lotto-latest']);
 });

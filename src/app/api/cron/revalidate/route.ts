@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllLottoData, invalidateAllDataCache, getEstimatedLatestRound } from '@/lib/dataFetcher';
+import { refreshAllLottoData, getEstimatedLatestRound, LOTTO_LATEST_TAG } from '@/lib/dataFetcher';
 import { fetchAndSaveWinningStores } from '@/lib/storeFetcher';
 import { getServiceSupabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { isPrizePending } from '@/lib/prizeStatus';
+import { DRAW_REVALIDATE_PATHS, getRoundPathsToRevalidate } from '@/lib/revalidateTargets';
 import type { SavedNumber } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
@@ -15,11 +17,13 @@ export const maxDuration = 60;
  *   - 토요일 UTC 12:00 (KST 21:00) - 추첨 직후
  *   - 토요일 UTC 13:00 (KST 22:00) - 여유 시간
  *   - 토요일 UTC 15:00 (KST 일요일 00:00) - 최종 확인
+ *   (20:40~21:50 사이 5~10분 간격 빠른 반영은 /api/cron/draw-refresh 가 맡는다)
  *
  * 동작:
- *   1. 메모리 캐시 무효화
- *   2. API에서 최신 데이터 fetch
- *   3. 모든 주요 페이지 ISR 캐시 무효화 (revalidatePath)
+ *   1. API에서 최신 데이터 fetch (캐시를 거치지 않음, 당첨금 미집계면 failedStages 'prizes')
+ *   2. 새 번호가 확인됐을 때만 최신 확인 태그 + 최신·직전 회차·홈·RSS 등 주요 페이지 ISR 무효화
+ *      (과거 회차 페이지는 확정 자료 태그만 써서 건드리지 않는다)
+ *   3. 판매점 수집·저장 번호 판정
  *   4. 주요 API 엔드포인트 워밍업 호출
  */
 export async function GET(request: NextRequest) {
@@ -35,12 +39,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 1. 메모리 캐시 전체 무효화
-    invalidateAllDataCache();
-
-    // 2. 최신 데이터 fetch (정적 데이터 이후 → API에서 새 회차 가져옴)
+    // 1. 최신 데이터 fetch (이 인스턴스 메모리·데이터 캐시를 거치지 않고 출처에서)
     // 여러 번 시도하여 안정성 확보
-    let allData = await getAllLottoData();
+    let allData = await refreshAllLottoData();
     let latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
     const expectedRound = getEstimatedLatestRound();
 
@@ -48,44 +49,32 @@ export async function GET(request: NextRequest) {
     if (latestRound < expectedRound) {
       console.log(`[Cron] 예상 회차(${expectedRound}) > 실제 회차(${latestRound}), 5초 후 재시도`);
       await new Promise(r => setTimeout(r, 5000));
-      invalidateAllDataCache();
-      allData = await getAllLottoData();
+      allData = await refreshAllLottoData();
       latestRound = allData.length > 0 ? allData[allData.length - 1].round : 0;
     }
 
     const dataUpToDate = latestRound > 0 && latestRound >= expectedRound;
     if (!dataUpToDate) failedStages.push('latestRound');
+    // 번호는 있어도 당첨금·인원이 미집계면 완료가 아니다 (다음 cron 에서 다시 확인)
+    const prizePending = dataUpToDate && isPrizePending(allData[allData.length - 1]);
+    if (prizePending) failedStages.push('prizes');
 
-    // 3. ISR 캐시 무효화 - 모든 주요 페이지
+    // 2. ISR 캐시 무효화 - 새 번호가 확인됐을 때만 (발표 전·조회 실패면 비워도 같은 내용이라 건너뛴다)
     stage = 'revalidate';
-    const pathsToRevalidate = [
-      '/',
-      '/lotto/recent',
-      '/lotto/list',
-      '/lotto/rankings',
-      '/lotto/statistics',
-      '/lotto/ai-hits',
-      '/lotto/calculator',
-      '/lotto/stores',
-      '/community',
-      '/lotto/daily-fortune',
-    ];
+    // 회차 개별 페이지: 최신·직전 + 예상 회차 (/api/cron/draw-refresh 와 같은 목록)
+    const pathsToRevalidate = dataUpToDate
+      ? [...DRAW_REVALIDATE_PATHS, ...getRoundPathsToRevalidate(latestRound, expectedRound)]
+      : [];
 
+    // 다른 인스턴스가 데이터 캐시에 남은 '발표 전'·'미집계' 확인 결과를 다시 쓰지 않게 비운다 (요청 끝에 적용)
+    if (dataUpToDate) revalidateTag(LOTTO_LATEST_TAG);
     for (const path of pathsToRevalidate) {
       revalidatePath(path);
     }
+    // 레이아웃 전체 무효화('/', 'layout')는 과거 회차 페이지 1,200여 개까지 다시 만들게 하므로 하지 않는다.
+    // 최신 확인을 거친 통계 페이지는 위 태그로, 나머지는 각 페이지 주기(대부분 1시간)로 갱신된다.
 
-    // 최신 회차의 개별 페이지도 revalidate
-    if (latestRound > 0) {
-      revalidatePath(`/lotto/${latestRound}`);
-      // 직전 회차도 (당첨금 정보 업데이트 가능)
-      revalidatePath(`/lotto/${latestRound - 1}`);
-    }
-
-    // 레이아웃 전체 revalidate (공통 부분)
-    revalidatePath('/', 'layout');
-
-    // 4. 1등 당첨 판매점 데이터 자동 수집 (pyony.com → Supabase)
+    // 3. 1등 당첨 판매점 데이터 자동 수집 (pyony.com → Supabase)
     stage = 'stores';
     let storeResult = { success: false, count: 0 };
     if (latestRound > 0) {
@@ -97,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
     if (!storeResult.success) failedStages.push('stores');
 
-    // 5. 저장된 번호 자동 당첨 확인
+    // 4. 저장된 번호 자동 당첨 확인
     stage = 'matchCheck';
     let matchCheckResult = { checked: 0 };
     if (latestRound > 0) {
@@ -138,7 +127,7 @@ export async function GET(request: NextRequest) {
       failedStages.push('matchCheck');
     }
 
-    // 6. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
+    // 5. API 엔드포인트 워밍업 (새 인스턴스에서도 캐시 갱신)
     stage = 'warmup';
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://lotto.gon.ai.kr';
     const warmupResults: Record<string, string> = {};
@@ -173,8 +162,9 @@ export async function GET(request: NextRequest) {
       latestRound,
       expectedRound,
       dataUpToDate,
+      prizePending,
       totalRounds: allData.length,
-      revalidatedPaths: pathsToRevalidate.length + 2,
+      revalidatedPaths: pathsToRevalidate.length,
       storeData: storeResult,
       matchCheck: matchCheckResult,
       warmupResults,

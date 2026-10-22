@@ -1,10 +1,17 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllLottoData, getEstimatedLatestRound, getLatestRound } from '@/lib/dataFetcher';
+import { getAllLottoData, getEstimatedLatestRound, getLatestRound, getLottoHistory } from '@/lib/dataFetcher';
 import { formatCurrency, formatDrawDateKo } from '@/lib/utils';
 import LottoRoundDetail from '@/components/lotto/LottoRoundDetail';
 import Breadcrumb from '@/components/layout/Breadcrumb';
 import { DEFAULT_OG_IMAGES } from '@/lib/seo';
+import { calculateNetPrize } from '@/lib/prizeTax';
+import { getPrizeState, isPrizePending } from '@/lib/prizeStatus';
+import { getNextDraw } from '@/lib/drawSchedule';
+import { getFirstPrizeStores } from '@/lib/winningStores';
+import NextDrawCountdown from '@/components/lotto/NextDrawCountdown';
+import RoundWinningStores from '@/components/lotto/RoundWinningStores';
+import MyNumbersRoundCheck from '@/components/lotto/MyNumbersRoundCheck';
 
 interface Props {
   params: { round: string };
@@ -30,6 +37,19 @@ function parseRoundParam(raw: string): number | null {
   return round;
 }
 
+/**
+ * 지난 회차(최신·직전 제외)는 확정 자료만 읽는다 — 새 회차 확인(60초 주기·cron 무효화 태그)에 묶이지 않아
+ * 추첨 뒤에도 과거 회차 HTML 이 그대로 유지된다. 최신·직전 회차와 확정 자료에 없는 회차는 전체 데이터를 쓴다.
+ */
+async function getRoundPageData(round: number) {
+  if (round < getEstimatedLatestRound() - 1) {
+    const history = await getLottoHistory();
+    const found = history.find(d => d.round === round);
+    if (found && !isPrizePending(found)) return history;
+  }
+  return getAllLottoData();
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const round = parseRoundParam(params.round);
 
@@ -37,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: '로또 당첨번호 조회 | 로또킹' };
   }
 
-  const allData = await getAllLottoData();
+  const allData = await getRoundPageData(round);
   const data = allData.find(d => d.round === round);
 
   if (!data) {
@@ -47,7 +67,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const numbersStr = data.numbers.join(', ');
   const drawDateKo = formatDrawDateKo(data.drawDate);
   const title = `로또 ${round}회 당첨번호 (${drawDateKo} 추첨) · 당첨금 | 로또킹`;
-  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). 1등 ${formatCurrency(data.prizeMoney.first)} · ${data.prizeMoney.firstWinners}명 당첨. 홀짝 비율·번호 합계·고저·연속수 등 당첨번호 패턴 분석을 한눈에 확인하세요.`;
+  const firstNet = calculateNetPrize(data.prizeMoney.first).net;
+  const firstState = getPrizeState(data, 1);
+  const firstSummary = firstState === 'paid'
+    ? `1등 ${formatCurrency(data.prizeMoney.first)}(세후 ${formatCurrency(firstNet)}) · ${data.prizeMoney.firstWinners}명 당첨`
+    : firstState === 'rollover' ? '1등 당첨자 없음(당첨금 이월)' : '당첨금 집계 중';
+  const description = `로또 ${round}회 당첨번호 ${numbersStr}+${data.bonusNumber} (${drawDateKo} 추첨). ${firstSummary}. 2등 당첨자 수, 1등 판매점, 당첨번호 패턴까지 한눈에 확인하세요.`;
 
   return {
     title,
@@ -71,7 +96,7 @@ export default async function LottoRoundPage({ params }: Props) {
     notFound();
   }
 
-  const allData = await getAllLottoData();
+  const allData = await getRoundPageData(round);
   const data = allData.find(d => d.round === round);
 
   if (!data) {
@@ -80,6 +105,8 @@ export default async function LottoRoundPage({ params }: Props) {
 
   // '다음 회차' 링크는 실제 데이터가 있는 회차까지만 (추첨 전·데이터 반영 전 회차로 가는 404 링크 방지)
   const maxRound = getLatestRound(allData)?.round ?? round;
+  const stores = await getFirstPrizeStores(round);
+  const nextDraw = getNextDraw();
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -102,7 +129,11 @@ export default async function LottoRoundPage({ params }: Props) {
         { label: '당첨번호', href: '/lotto/list' },
         { label: `${round}회` },
       ]} />
-      <LottoRoundDetail data={data} maxRound={maxRound} />
+      <LottoRoundDetail data={data} maxRound={maxRound}>
+        <NextDrawCountdown initialRound={nextDraw.round} initialDrawTimeMs={nextDraw.drawTimeMs} />
+        <RoundWinningStores round={round} firstWinners={data.prizeMoney.firstWinners} stores={stores} />
+        <MyNumbersRoundCheck draw={{ round: data.round, numbers: data.numbers, bonusNumber: data.bonusNumber }} />
+      </LottoRoundDetail>
     </>
   );
 }

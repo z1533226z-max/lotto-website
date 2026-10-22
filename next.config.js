@@ -21,6 +21,8 @@ const nextConfig = {
   //  - connect-src: *.google.<TLD>, (*.analytics.google.com: GA4 수집 도메인)
   //  - frame-src: www.googletagmanager.com
   // 애드센스 트래픽 품질 검증(*.adtrafficquality.google)은 이미지 비콘도 쓰므로 img-src에도 허용
+  // 카카오톡 공유(ShareButtons): SDK t1.kakaocdn.net, 공유 창·API *.kakao.com
+  //  https://developers.kakao.com/docs/latest/ko/javascript/getting-started
   async headers() {
     return [
       {
@@ -36,8 +38,10 @@ const nextConfig = {
               *.gstatic.com
               *.doubleclick.net
               *.googleadservices.com
-              *.adtrafficquality.google;
+              *.adtrafficquality.google
+              t1.kakaocdn.net;
               frame-src 'self' 
+              *.kakao.com
               *.googlesyndication.com 
               *.google.com
               *.doubleclick.net
@@ -64,6 +68,7 @@ const nextConfig = {
               *.doubleclick.net
               *.googleadservices.com
               *.adtrafficquality.google
+              *.kakao.com
               *.up.railway.app;
             `.replace(/\s+/g, ' ').trim(),
           },
