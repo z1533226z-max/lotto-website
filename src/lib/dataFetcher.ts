@@ -295,12 +295,13 @@ export async function fetchLatestRound(): Promise<{ data: LottoResult; source: s
 // 세 출처(gon-services 단건·smok95·동행복권)를 동시에 물어 먼저 온 '당첨금까지 집계된' 결과를 쓴다.
 // 추첨(토 20:35) 직후에는 어느 쪽이 먼저 갱신될지 알 수 없어 순서대로 기다리면 그만큼 늦어진다.
 // 모두 번호만 있고 당첨금이 미집계면 먼저 온 결과를 쓴다(화면은 '당첨금 집계 중').
-// skipGon: 방금 출처에서 받은 gon-services 전체 목록에 없던 회차라 gon-services 단건은 다시 묻지 않는다.
-async function fetchRoundFastest(round: number, mode: FetchMode, skipGon: boolean): Promise<LottoResult | null> {
+// gon-services 전체 목록이 방금 받은 것이어도 단건은 늘 묻는다: 목록은 cron 이 비우지 않는 1시간 캐시라
+// gon 만 먼저 공개하면 cron 뒤에도 단건 확인이 새 회차를 보는 유일한 길이다 (지시 197 C2).
+async function fetchRoundFastest(round: number, mode: FetchMode): Promise<LottoResult | null> {
   const cached = roundCache.get(round);
   if (mode !== 'fresh' && cached && Date.now() - cached.fetchedAt < CACHE_TTL) return cached.data;
 
-  const sources: ProbeSource[] = skipGon ? ['smok95', 'dhlottery'] : ['gon', 'smok95', 'dhlottery'];
+  const sources: ProbeSource[] = ['gon', 'smok95', 'dhlottery'];
   return new Promise<LottoResult | null>((resolve) => {
     let remaining = sources.length;
     let firstPending: LottoResult | null = null;
@@ -319,11 +320,11 @@ async function fetchRoundFastest(round: number, mode: FetchMode, skipGon: boolea
 }
 
 // fromRound 부터 예상 최신 회차(+1)까지 이어지는 새 회차를 채운다 (처음 비는 회차에서 멈춤)
-async function fetchNewRounds(fromRound: number, mode: FetchMode, skipGon: boolean): Promise<LottoResult[]> {
+async function fetchNewRounds(fromRound: number, mode: FetchMode): Promise<LottoResult[]> {
   const estimatedLatest = getEstimatedLatestRound();
   const newRounds: LottoResult[] = [];
   for (let round = fromRound; round <= estimatedLatest + 1; round++) {
-    const result = await fetchRoundFastest(round, mode, skipGon);
+    const result = await fetchRoundFastest(round, mode);
     if (!result) break;
     newRounds.push(result);
   }
@@ -378,9 +379,7 @@ async function loadAllLottoData(mode: 'cached' | 'fresh'): Promise<LottoResult[]
   const fromRound = latest ? (recheckLatest ? latest.round : latest.round + 1) : 1;
   if (fromRound > getEstimatedLatestRound()) return base;
 
-  // 방금(PROBE_REVALIDATE 안) 출처에서 받은 gon-services 목록이면 단건도 같은 내용이라 다시 묻지 않는다
-  const gonFresh = !!gon && Date.now() - gon.fetchedAt < PROBE_REVALIDATE * 1000;
-  const newRounds = await fetchNewRounds(fromRound, mode === 'fresh' ? 'fresh' : 'probe', gonFresh);
+  const newRounds = await fetchNewRounds(fromRound, mode === 'fresh' ? 'fresh' : 'probe');
   if (newRounds.length === 0) return base;
   return [...(recheckLatest ? base.slice(0, -1) : base), ...newRounds];
 }
