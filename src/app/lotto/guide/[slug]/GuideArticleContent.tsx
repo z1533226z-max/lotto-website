@@ -40,7 +40,7 @@ export default function GuideArticleContent({ article, relatedArticles }: Props)
           className="text-sm font-semibold mb-3"
           style={{ color: 'var(--text)' }}
         >
-          \uBAA9\uCC28
+          목차
         </p>
         <div className="flex flex-wrap gap-2">
           {article.sections.map((section, i) => (

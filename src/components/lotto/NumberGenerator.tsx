@@ -269,7 +269,7 @@ const NumberGenerator: React.FC = () => {
               onClick={() => setMultiSetMode(false)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
               style={{
-                background: !multiSetMode ? 'linear-gradient(135deg, #D36135, #E88A6A)' : 'var(--surface)',
+                background: !multiSetMode ? 'linear-gradient(135deg, #A64729, #8C3B22)' : 'var(--surface)',
                 color: !multiSetMode ? '#fff' : 'var(--text-secondary)',
                 border: !multiSetMode ? 'none' : '1px solid var(--border)',
               }}
@@ -280,7 +280,7 @@ const NumberGenerator: React.FC = () => {
               onClick={() => setMultiSetMode(true)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
               style={{
-                background: multiSetMode ? 'linear-gradient(135deg, #D36135, #E88A6A)' : 'var(--surface)',
+                background: multiSetMode ? 'linear-gradient(135deg, #A64729, #8C3B22)' : 'var(--surface)',
                 color: multiSetMode ? '#fff' : 'var(--text-secondary)',
                 border: multiSetMode ? 'none' : '1px solid var(--border)',
               }}

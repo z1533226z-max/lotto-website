@@ -9,7 +9,6 @@ import DoubleBezelCard from '@/components/ui/DoubleBezelCard';
 import SectionFrame from '@/components/ui/SectionFrame';
 import { ClipboardList, Clock, BarChart3, Calculator, Trophy, Target, Save, TrendingUp } from 'lucide-react';
 import { getAllLottoData, getLatestRound } from '@/lib/dataFetcher';
-import type { LottoResult } from '@/types/lotto';
 import type { Metadata } from 'next';
 import { formatDrawMonthDayKo } from '@/lib/utils';
 
@@ -21,111 +20,6 @@ function getBallColor(num: number): { bg: string; text: string } {
   if (num <= 30) return { bg: '#FF5722', text: '#FFFFFF' };
   if (num <= 40) return { bg: '#757575', text: '#FFFFFF' };
   return { bg: '#4CAF50', text: '#FFFFFF' };
-}
-
-function LatestResultSSR({ latest }: { latest: LottoResult }) {
-
-  const drawDateFormatted = latest.drawDate.replace(/-/g, '.');
-  const firstPrize = latest.prizeMoney.first;
-  const firstWinners = latest.prizeMoney.firstWinners;
-  const prizeDisplay =
-    firstPrize > 0
-      ? `${Math.floor(firstPrize / 100000000).toLocaleString()}억원`
-      : '미정';
-
-  return (
-    <DoubleBezelCard>
-    <section
-      aria-label={`로또 ${latest.round}회 당첨번호`}
-    >
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <p className="text-xs font-medium mb-0.5" style={{ color: 'var(--text-tertiary)' }}>
-            최신 당첨 결과
-          </p>
-          <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-            <a href={`/lotto/${latest.round}`} className="hover:underline">
-              제 {latest.round.toLocaleString()}회 당첨번호
-            </a>
-          </h2>
-        </div>
-        <span
-          className="text-xs font-semibold px-2.5 py-1 rounded-full"
-          style={{ backgroundColor: 'rgba(211, 97, 53, 0.1)', color: '#D36135' }}
-        >
-          {drawDateFormatted}
-        </span>
-      </div>
-
-      <div className="flex items-center justify-center gap-2 flex-wrap mb-5">
-        {latest.numbers.map((num) => {
-          const { bg, text } = getBallColor(num);
-          return (
-            <div
-              key={num}
-              className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold"
-              style={{
-                background: `radial-gradient(circle at 35% 30%, ${bg}CC, ${bg} 50%, ${bg}99 100%)`,
-                color: text,
-                boxShadow: `0 4px 12px ${bg}66`,
-              }}
-            >
-              {num}
-            </div>
-          );
-        })}
-        <span className="text-lg font-bold mx-1" style={{ color: 'var(--text-tertiary)' }}>+</span>
-        {(() => {
-          const { bg, text } = getBallColor(latest.bonusNumber);
-          return (
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold ring-2 ring-yellow-400 ring-offset-1"
-              style={{
-                background: `radial-gradient(circle at 35% 30%, ${bg}CC, ${bg} 50%, ${bg}99 100%)`,
-                color: text,
-                boxShadow: `0 4px 12px ${bg}66`,
-              }}
-            >
-              {latest.bonusNumber}
-            </div>
-          );
-        })()}
-      </div>
-
-      <div
-        className="flex items-center justify-center gap-6 pt-4 text-sm"
-        style={{ borderTop: '1px solid var(--border)' }}
-      >
-        <div className="text-center">
-          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>1등 당첨금</p>
-          <p className="font-bold" style={{ color: 'var(--text)' }}>{prizeDisplay}</p>
-        </div>
-        <div className="w-px h-8" style={{ backgroundColor: 'var(--border)' }} />
-        <div className="text-center">
-          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>1등 당첨자</p>
-          <p className="font-bold" style={{ color: 'var(--text)' }}>
-            {firstWinners > 0 ? `${firstWinners.toLocaleString()}명` : '미정'}
-          </p>
-        </div>
-        <div className="w-px h-8" style={{ backgroundColor: 'var(--border)' }} />
-        <div className="text-center">
-          <p className="text-xs mb-0.5" style={{ color: 'var(--text-tertiary)' }}>추첨일</p>
-          <p className="font-bold" style={{ color: 'var(--text)' }}>{drawDateFormatted}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 text-center">
-        <a
-          href={`/lotto/${latest.round}`}
-          className="inline-flex items-center gap-1 text-sm font-semibold hover:underline"
-          style={{ color: '#D36135' }}
-        >
-          {latest.round}회 당첨 결과 자세히 보기 →
-        </a>
-      </div>
-    </section>
-    </DoubleBezelCard>
-  );
 }
 
 const AnalyticsDashboard = dynamic(
@@ -292,7 +186,7 @@ export default async function HomePage() {
                   <a
                     href="#generator"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
-                    style={{ background: 'linear-gradient(135deg, #D36135, #C05430)' }}
+                    style={{ background: 'linear-gradient(135deg, #A64729, #8C3B22)' }}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
                     AI 번호 받기
@@ -310,6 +204,10 @@ export default async function HomePage() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                   </a>
                 </div>
+
+                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                  비회원은 주 3회·1회 1세트, 무료 회원은 주 10회·1회 최대 5세트를 이용할 수 있습니다.
+                </p>
 
                 {/* Trust indicators */}
                 <div className="flex items-center gap-6 pt-2">
@@ -430,8 +328,6 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Main content */}
             <div className="lg:col-span-8 space-y-8">
-              {latest && <LatestResultSSR latest={latest} />}
-
               <section id="home">
                 <LatestResult initialResult={latest} />
               </section>
@@ -447,17 +343,9 @@ export default async function HomePage() {
               </div>
 
               {/* Statistics Dashboard */}
-              <SectionFrame
-                eyebrow="AI 분석"
-                title="통계 대시보드"
-                subtitle="매주 업데이트되는 동적 통계 분석"
-                size="sm"
-                index={2}
-              >
-                <div id="statistics">
-                  <AnalyticsDashboard />
-                </div>
-              </SectionFrame>
+              <section id="statistics">
+                <AnalyticsDashboard />
+              </section>
             </div>
 
             {/* Sidebar */}

@@ -429,7 +429,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Tabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} variant="default" fullWidth />
+        <Tabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} variant="default" fullWidth className="mx-0 grid grid-cols-2 gap-1 px-0 sm:flex [&>button]:min-h-11" />
       </motion.div>
 
       {/* Tab Content */}

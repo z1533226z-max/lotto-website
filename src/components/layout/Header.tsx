@@ -298,7 +298,7 @@ const Header: React.FC = () => {
                       onClick={() => auth.openAuthModal()}
                       className={cn(
                         'px-4 py-1.5 rounded-full text-[13px] font-semibold text-white',
-                        'bg-primary hover:scale-[1.02] active:scale-[0.98]',
+                        'bg-primary-600 hover:bg-primary-700 hover:scale-[1.02] active:scale-[0.98]',
                         'transition-all duration-300',
                         'shadow-[0_0_20px_rgba(211,97,53,0.2)]',
                       )}
@@ -436,7 +436,7 @@ const Header: React.FC = () => {
                       className={cn(
                         'w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl',
                         'text-[15px] font-semibold text-white',
-                        'bg-primary hover:scale-[1.01] active:scale-[0.99]',
+                        'bg-primary-600 hover:bg-primary-700 hover:scale-[1.01] active:scale-[0.99]',
                         'transition-all duration-300',
                       )}
                       style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}

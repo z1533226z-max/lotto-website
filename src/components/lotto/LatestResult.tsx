@@ -157,7 +157,7 @@ const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => 
           </p>
           <button
             onClick={handleBackToLatest}
-            className="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-medium"
+            className="px-5 py-2.5 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium"
           >
             다시 시도
           </button>
@@ -187,12 +187,14 @@ const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => 
             최신 당첨 결과
           </div>
           <div><JustAnnouncedBadge round={result.round} /></div>
-          <h1
+          <h2
             className="text-2xl md:text-3xl font-bold"
             style={{ color: 'var(--text)' }}
           >
-            {result.round}회 당첨번호
-          </h1>
+            <a href={`/lotto/${result.round}`} className="hover:underline">
+              {result.round}회 당첨번호
+            </a>
+          </h2>
           <p style={{ color: 'var(--text-secondary)' }}>
             {formatDate(result.drawDate)} 추첨
           </p>
@@ -264,7 +266,7 @@ const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => 
           >
             회차별 검색
           </h3>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <input
               type="number"
               placeholder="회차 입력 (예: 1209)"
@@ -272,7 +274,7 @@ const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => 
               onChange={(e) => setSearchRound(e.target.value)}
               onKeyPress={handleKeyPress}
               className={cn(
-                'flex-1 px-4 py-2.5 rounded-xl',
+                'min-w-0 flex-1 px-4 py-2.5 rounded-xl',
                 'text-sm font-medium',
                 'transition-all duration-200',
                 'focus:outline-none focus:ring-2 focus:ring-primary/50'
@@ -291,7 +293,7 @@ const LatestResult: React.FC<LatestResultProps> = ({ initialResult = null }) => 
               disabled={isSearching || !searchRound}
               className={cn(
                 'px-5 py-2.5 rounded-xl font-medium text-sm text-white',
-                'bg-primary hover:bg-primary/90',
+                'bg-primary-600 hover:bg-primary-700',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 'transition-all duration-200'
               )}

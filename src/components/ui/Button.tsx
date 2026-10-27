@@ -13,8 +13,8 @@ const sizeStyles: Record<string, string> = {
 
 const variantStyles: Record<string, string> = {
   primary: cn(
-    'bg-primary text-white',
-    'hover:bg-primary-500',
+    'bg-primary-600 text-white',
+    'hover:bg-primary-700',
     'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
     'shadow-md hover:shadow-lg',
     'transform hover:-translate-y-0.5 active:translate-y-0'
@@ -27,8 +27,8 @@ const variantStyles: Record<string, string> = {
     'transform hover:-translate-y-0.5 active:translate-y-0'
   ),
   outline: cn(
-    'border-2 border-primary text-primary bg-transparent',
-    'hover:bg-primary hover:text-white',
+    'border-2 border-primary text-primary-600 dark:text-primary-300 bg-transparent',
+    'hover:bg-primary-600 hover:text-white dark:hover:text-white',
     'focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'
   ),
   ghost: cn(
@@ -47,7 +47,7 @@ const variantStyles: Record<string, string> = {
     'focus-visible:ring-2 focus-visible:ring-white/50'
   ),
   gradient: cn(
-    'bg-gradient-to-r from-primary to-secondary text-white',
+    'bg-gradient-to-r from-primary-600 to-secondary text-white',
     'hover:brightness-110',
     'shadow-md hover:shadow-lg',
     'transform hover:-translate-y-0.5 active:translate-y-0',

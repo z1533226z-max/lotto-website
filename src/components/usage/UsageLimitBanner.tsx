@@ -42,7 +42,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
         <span>이번 주 남은 이용:</span>
         <span
           style={{
-            color: remainingCount > 0 ? '#D36135' : '#EF4444',
+            color: 'var(--text)',
             fontWeight: 700,
             fontSize: '14px',
           }}
@@ -99,13 +99,13 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
             fontSize: '12px',
             fontWeight: 700,
             color: '#fff',
-            background: 'linear-gradient(135deg, #D36135, #E88A6A)',
+            background: 'linear-gradient(135deg, #A64729, #8C3B22)',
             border: 'none',
             cursor: 'pointer',
             whiteSpace: 'nowrap',
             transition: 'opacity 0.15s',
           }}
-          onMouseEnter={(e) => { (e.target as HTMLButtonElement).style.opacity = '0.85'; }}
+          onMouseEnter={(e) => { (e.target as HTMLButtonElement).style.opacity = '0.9'; }}
           onMouseLeave={(e) => { (e.target as HTMLButtonElement).style.opacity = '1'; }}
         >
           회원가입하면 주 10회!
@@ -134,7 +134,7 @@ const UsageLimitBanner: React.FC<UsageLimitBannerProps> = ({ feature }) => {
       <span>이번 주 남은 무료 이용:</span>
       <span
         style={{
-          color: '#D36135',
+          color: 'var(--text)',
           fontWeight: 700,
           fontSize: '14px',
         }}

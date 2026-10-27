@@ -98,7 +98,7 @@ const MyNumbersManager: React.FC<Props> = ({ draws, latestRound, nextRound }) =>
             <Shuffle className="w-3.5 h-3.5" /> 무작위
           </button>
         </div>
-        <div className="grid grid-cols-9 gap-1.5" role="group" aria-label="번호 선택 1~45">
+        <div className="grid grid-cols-5 min-[375px]:grid-cols-6 sm:grid-cols-9 gap-1.5" role="group" aria-label="번호 선택 1~45">
           {Array.from({ length: 45 }, (_, i) => i + 1).map(n => {
             const on = picked.includes(n);
             return (
@@ -107,9 +107,9 @@ const MyNumbersManager: React.FC<Props> = ({ draws, latestRound, nextRound }) =>
                 type="button"
                 onClick={() => toggle(n)}
                 aria-pressed={on}
-                className="aspect-square rounded-full text-xs sm:text-sm font-bold transition-colors"
+                className="aspect-square min-h-11 rounded-full text-sm font-bold transition-colors"
                 style={on
-                  ? { background: '#D36135', color: '#fff' }
+                  ? { background: '#A64729', color: '#fff' }
                   : { background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}
               >
                 {n}
@@ -135,7 +135,7 @@ const MyNumbersManager: React.FC<Props> = ({ draws, latestRound, nextRound }) =>
             onClick={handleSave}
             disabled={picked.length !== 6}
             className="sm:ml-auto px-5 py-2.5 rounded-xl font-bold text-sm text-white disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, #D36135, #C05430)' }}
+            style={{ background: 'linear-gradient(135deg, #A64729, #8C3B22)' }}
           >
             <Bookmark className="w-4 h-4 inline-block mr-1 align-text-bottom" /> 내 번호로 저장
           </button>
